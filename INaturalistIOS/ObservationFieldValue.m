@@ -120,9 +120,40 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     [self didChangeValueForKey:@"value"];
 }
 
-- (void)willSave
-{
-    [super willSave];
+#pragma mark - Uploadable
+
++ (NSArray *)needingUpload {
+    // observations (the parent object) take care of this
+    return @[];
+}
+
+- (BOOL)needsUpload {
+    return self.needsSync;
+}
+
+- (NSArray *)childrenNeedingUpload {
+    return @[];
+}
+
+
+- (NSDictionary *)uploadableRepresentation {
+    NSDictionary *mapping = @{
+                              @"recordID": @"observation_field_value[id]",
+                              @"value": @"observation_field_value[value]",
+                              @"observationID": @"observation_field_value[observation_id]",
+                              @"observationFieldID": @"observation_field_value[observation_field_id]",
+                              };
+    
+    NSMutableDictionary *mutableParams = [NSMutableDictionary dictionary];
+    for (NSString *key in mapping) {
+        if ([self valueForKey:key]) {
+            NSString *mappedName = mapping[key];
+            mutableParams[mappedName] = [self valueForKey:key];
+        }
+    }
+    
+    // return an immutable copy
+    return [NSDictionary dictionaryWithDictionary:mutableParams];
 }
 
 @end

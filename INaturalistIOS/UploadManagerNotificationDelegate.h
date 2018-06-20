@@ -22,6 +22,9 @@
                number:(NSInteger)current
                    of:(NSInteger)total;
 - (void)uploadManager:(UploadManager *)uploadManager
+     uploadStartedFor:(Observation *)observation;
+
+- (void)uploadManager:(UploadManager *)uploadManager
      uploadSuccessFor:(Observation *)observation;
 - (void)uploadManager:(UploadManager *)uploadManager
        uploadProgress:(float)progress
@@ -36,8 +39,7 @@
 
 - (void)uploadManager:(UploadManager *)uploadManager
      deleteStartedFor:(DeletedRecord *)deletedRecord;
-- (void)uploadManager:(UploadManager *)uploadManager
-     deleteSuccessFor:(DeletedRecord *)deletedRecord;
+- (void)uploadManagerDeleteSuccess:(UploadManager *)uploadManager;
 - (void)uploadManagerDeleteSessionFinished:(UploadManager *)uploadManager;
 - (void)uploadManager:(UploadManager *)uploadManager
       deleteFailedFor:(DeletedRecord *)deletedRecord

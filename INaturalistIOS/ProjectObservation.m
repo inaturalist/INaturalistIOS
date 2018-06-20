@@ -88,4 +88,38 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     }
 }
 
+#pragma mark - Uploadable
+
++ (NSArray *)needingUpload {
+    // observations (the parent object) take care of this
+    return @[];
+}
+
+- (BOOL)needsUpload {
+    return self.needsSync;
+}
+
+- (NSArray *)childrenNeedingUpload {
+    return @[];
+}
+
+
+- (NSDictionary *)uploadableRepresentation {
+    NSDictionary *mapping = @{
+                              @"projectID": @"project_observation[project_id]",
+                              @"observationID": @"project_observation[observation_id]",
+                              };
+    
+    NSMutableDictionary *mutableParams = [NSMutableDictionary dictionary];
+    for (NSString *key in mapping) {
+        if ([self valueForKey:key]) {
+            NSString *mappedName = mapping[key];
+            mutableParams[mappedName] = [self valueForKey:key];
+        }
+    }
+    
+    // return an immutable copy
+    return [NSDictionary dictionaryWithDictionary:mutableParams];
+}
+
 @end

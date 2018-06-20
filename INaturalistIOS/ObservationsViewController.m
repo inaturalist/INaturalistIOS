@@ -663,7 +663,7 @@
         [self configureErrorCell:cell forIndexPath:indexPath];
         return cell;
     } else if (o.needsUpload || o.childrenNeedingUpload.count > 0) {
-        if (appDelegate.loginController.uploadManager.isUploading && [appDelegate.loginController.uploadManager.currentlyUploadingObservation isEqual:o]) {
+        if ([self.uploadProgress valueForKey:o.uuid]) {
             // actively uploading this observation
             ObservationViewUploadingCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationUploadingCell"];
             [self configureUploadingCell:cell forIndexPath:indexPath];
@@ -893,25 +893,7 @@
     if (uploadManager.isSyncingDeletes) {
         self.meHeader.obsCountLabel.text = NSLocalizedString(@"Syncing...", @"Title of me header when syncing deletions.");
     } else {
-        NSInteger current = uploadManager.indexOfCurrentlyUploadingObservation + 1;
-        NSInteger total = uploadManager.currentUploadSessionTotalObservations;
-        if (total > 1) {
-            NSString *baseUploadingStatusStr  = NSLocalizedString(@"Uploading %d of %d",
-                                                                  @"Title of me header while uploading observations. First number is the index of the obs being uploaded, second is the count in the current upload 'session'.");
-            self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, current, total];
-        } else {
-            NSString *baseUploadingStatusStr = NSLocalizedString(@"Uploading '%@'", @"Title of me header while uploading one observation. Text is observation species.");
-            NSString *speciesName = NSLocalizedString(@"Unknown", @"unknown taxon");
-            Observation *cuo = uploadManager.currentlyUploadingObservation;
-            if (cuo.exploreTaxonRealm) {
-            	speciesName = cuo.exploreTaxonRealm.commonName ?: cuo.exploreTaxonRealm.scientificName;
-            } else if (cuo.speciesGuess) {
-                speciesName = cuo.speciesGuess;
-            } else if (cuo.inatDescription) {
-                speciesName = cuo.inatDescription;
-            }
-            self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, speciesName];
-        }
+        self.meHeader.obsCountLabel.text = NSLocalizedString(@"Syncing...", @"Title of me header when syncing deletions.");
     }
     
     [view startAnimatingUpload];
@@ -1713,11 +1695,32 @@
     }
 }
 
+- (void)uploadManager:(UploadManager *)uploadManager uploadStartedFor:(Observation *)observation {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    
+    if (observation.uuid) {
+        self.uploadProgress[observation.uuid] = @(0);
+    }
+    
+    [self configureHeaderForLoggedInUser];
+    [self.meHeader startAnimatingUpload];
+    
+    NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
+    if (ip) {
+        [self.tableView beginUpdates];
+        [self.tableView reloadRowsAtIndexPaths:@[ ip ]
+                              withRowAnimation:UITableViewRowAnimationAutomatic];
+        [self.tableView endUpdates];
+    }
+}
+
 - (void)uploadManager:(UploadManager *)uploadManager uploadSuccessFor:(Observation *)observation {
     [[Analytics sharedClient] debugLog:@"Upload - Success"];
-
+    
     [self configureHeaderForLoggedInUser];
-
+    
+    self.uploadProgress[observation.uuid] = nil;
+    
     NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
     if (ip) {
         [self.tableView beginUpdates];
@@ -1757,7 +1760,7 @@
 
 - (void)uploadManager:(UploadManager *)uploadManager uploadFailedFor:(INatModel *)object error:(NSError *)error {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Fatal Error %@", error.localizedDescription]];
-    
+        
     // stop uploading
     [self syncStopped];
     
@@ -1799,7 +1802,7 @@
     [self.meHeader startAnimatingUpload];
 }
 
-- (void)uploadManager:(UploadManager *)uploadManager deleteSuccessFor:(DeletedRecord *)deletedRecord {
+- (void)uploadManagerDeleteSuccess:(UploadManager *)uploadManager {
     [[Analytics sharedClient] debugLog:@"Upload - Delete Success"];
 }
 
@@ -1811,7 +1814,7 @@
 
 - (void)uploadManager:(UploadManager *)uploadManager deleteFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Delete Failed: %@", [error localizedDescription]]];
-
+    
     [self syncStopped];
     
     NSString *alertTitle = NSLocalizedString(@"Deleted Failed", @"Delete failed message");

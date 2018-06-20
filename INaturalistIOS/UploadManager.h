@@ -14,8 +14,8 @@
 @interface UploadManager : NSObject
 
 @property (assign, getter=isCancelled) BOOL cancelled;
-@property (assign, getter=isUploading) BOOL uploading;
-@property (assign, getter=isSyncingDeletes) BOOL syncingDeletes;
+@property (readonly, getter=isUploading) BOOL uploading;
+@property (readonly, getter=isSyncingDeletes) BOOL syncingDeletes;
 
 @property (assign, readonly) BOOL shouldNotifyAboutNetworkState;
 - (void)notifiedAboutNetworkState;
@@ -23,11 +23,6 @@
 
 @property (assign, readonly) BOOL shouldAutoupload;
 @property (assign, readonly) BOOL isAutouploadEnabled;
-
-@property Observation *currentlyUploadingObservation;
-
-// index counting from zero
-@property (readonly) NSInteger indexOfCurrentlyUploadingObservation;
 
 @property (readonly) NSInteger currentUploadSessionTotalObservations;
 
