@@ -12,12 +12,6 @@
 #import "NSURL+INaturalist.h"
 #import "DeletedRecord.h"
 
-@interface DeleteRecordOperation () {
-    BOOL _is_executing;
-    BOOL _is_finished;
-}
-@end
-
 @implementation DeleteRecordOperation
 
 - (void)deleteRecordFinishedSuccess:(BOOL)success syncError:(NSError *)syncError {
