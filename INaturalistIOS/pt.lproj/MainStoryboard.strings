@@ -32,13 +32,13 @@
 "1hu-IK-XsQ.text" = "Nome científico";
 
 /* Class = "IBUINavigationItem"; title = "Sign in"; ObjectID = "1yP-Oa-9Kj"; */
-"1yP-Oa-9Kj.title" = "Entre";
+"1yP-Oa-9Kj.title" = "Iniciar sessão";
 
 /* Class = "IBUIBarButtonItem"; title = "Add"; ObjectID = "31c-qh-A6S"; */
 "31c-qh-A6S.title" = "Adicionar";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Sign in with Facebook"; ObjectID = "3DS-CL-NMe"; */
-"3DS-CL-NMe.headerTitle" = "Entre com sua conta do Facebook";
+"3DS-CL-NMe.headerTitle" = "Iniciar sessão com a sua conta do Facebook";
 
 /* Class = "IBUILabel"; text = "???"; ObjectID = "46e-pE-mJn"; */
 "46e-pE-mJn.text" = "???";
@@ -56,7 +56,7 @@
 "7ua-fh-uvU.placeholder" = "Nome de usuário do iNaturalist";
 
 /* Class = "IBUITableViewSection"; headerTitle = "What did you see?"; ObjectID = "9br-9C-J7v"; */
-"9br-9C-J7v.headerTitle" = "O que você viu?";
+"9br-9C-J7v.headerTitle" = "O que viu?";
 
 /* Class = "IBUILabel"; text = "Attribution"; ObjectID = "AWa-0U-YdH"; */
 "AWa-0U-YdH.text" = "Atribuição";
@@ -98,7 +98,7 @@
 "GC7-gQ-cDA.text" = "Desconhecido";
 
 /* Class = "IBUIBarButtonItem"; title = "Observe"; ObjectID = "GKo-Sv-g5X"; */
-"GKo-Sv-g5X.title" = "Observe";
+"GKo-Sv-g5X.title" = "Observar";
 
 /* Class = "IBUITabBarItem"; title = "Projects"; ObjectID = "GmQ-fX-MuU"; */
 "GmQ-fX-MuU.title" = "Projetos";
@@ -134,13 +134,13 @@
 "Kfy-Up-oCb.title" = "Procurar espécies";
 
 /* Class = "IBUILabel"; text = "Sign up"; ObjectID = "Kp6-B4-NJv"; */
-"Kp6-B4-NJv.text" = "Inscreva-se";
+"Kp6-B4-NJv.text" = "Registar-se";
 
 /* Class = "IBUILabel"; text = "???"; ObjectID = "M93-9f-xgT"; */
 "M93-9f-xgT.text" = "???";
 
 /* Class = "IBUIButton"; normalTitle = "View more..."; ObjectID = "ME2-ai-L2I"; */
-"ME2-ai-L2I.normalTitle" = "Veja mais...";
+"ME2-ai-L2I.normalTitle" = "Ver mais...";
 
 /* Class = "IBUINavigationItem"; title = "Choose projects"; ObjectID = "Nsa-pu-mCD"; */
 "Nsa-pu-mCD.title" = "Escolha projetos";
@@ -164,7 +164,7 @@
 "QYT-BR-dNq.text" = "Precisa de ajuda com a Identificação?";
 
 /* Class = "IBUILabel"; text = "Designed and built by iNaturalist at the California Academy of Sciences, with support from the Encyclopedia of Life.\n\nThis app uses numerous open source and Creative Common-licensed materials, including Three20, Restkit, TapkuLibrary by Devin Ross, DejalActivityView by David Sinclair, and Glyphish icons by Joseph Wain. Many thanks to these generous and talented engineers and artists! "; ObjectID = "Qrv-G3-6nh"; */
-"Qrv-G3-6nh.text" = "Idealizado e desenvolvido por iNaturalist na Academia de Ciências da California, com o apoio da Enciclopédia da Vida. \n\nEste aplicativo utiliza Software Livre e materiais licenciados por Creative Commons, incluindo Three20, Restkit, TapkuLibrary por Devin Ross, DejalActivityView por David Sinclair, e ícones Glyphish por Joseph Wain. Muito obrigado a todos estes talentosos e generosos engenheiros e artistas! ";
+"Qrv-G3-6nh.text" = "Designed and built by iNaturalist at the California Academy of Sciences, with support from the Encyclopedia of Life.\n\nThis app uses numerous open source and Creative Common-licensed materials, including Three20, Restkit, TapkuLibrary by Devin Ross, DejalActivityView by David Sinclair, and Glyphish icons by Joseph Wain. Many thanks to these generous and talented engineers and artists! ";
 
 /* Class = "IBUILabel"; text = "???"; ObjectID = "R4F-3k-D7x"; */
 "R4F-3k-D7x.text" = "???";
@@ -182,7 +182,7 @@
 "Sr1-uD-ljI.text" = "2.1.1, compilação 2.1.12";
 
 /* Class = "IBUILabel"; text = "Sign in with Facebook"; ObjectID = "TJg-mX-i6C"; */
-"TJg-mX-i6C.text" = "Entre usando o Facebook";
+"TJg-mX-i6C.text" = "Iniciar sessão com a sua conta do Facebook";
 
 /* Class = "IBUILabel"; text = "m"; ObjectID = "UWz-sc-ZIU"; */
 "UWz-sc-ZIU.text" = "m";
@@ -236,7 +236,7 @@
 "cSZ-cD-dfS.title" = "Adicionar";
 
 /* Class = "IBUINavigationItem"; title = "Guide Title"; ObjectID = "cTI-n2-vmb"; */
-"cTI-n2-vmb.title" = "Título da Guia";
+"cTI-n2-vmb.title" = "Título do Guia";
 
 /* Class = "IBUILabel"; text = "Add observation"; ObjectID = "dYu-ti-1gC"; */
 "dYu-ti-1gC.text" = "Adicionar observação";
@@ -257,7 +257,7 @@
 "gq3-Sv-hEY.text" = "Lat:";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Sign in with Google+"; ObjectID = "h2K-Kg-3dh"; */
-"h2K-Kg-3dh.headerTitle" = "Entrar com o Google+";
+"h2K-Kg-3dh.headerTitle" = "Iniciar sessão com a sua conta do Google+";
 
 /* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "hKK-sS-qAN"; */
 "hKK-sS-qAN.title" = "Cancelar";
@@ -266,7 +266,7 @@
 "hX2-Qg-qfb.normalTitle" = "Visualizar no iNaturalist";
 
 /* Class = "IBUILabel"; text = "Sign in"; ObjectID = "hfA-vB-13u"; */
-"hfA-vB-13u.text" = "Entrar";
+"hfA-vB-13u.text" = "Iniciar sessão";
 
 /* Class = "IBUIBarButtonItem"; title = "Cancel"; ObjectID = "jaz-9S-FvT"; */
 "jaz-9S-FvT.title" = "Cancelar";
@@ -299,7 +299,7 @@
 "LbD-zB-zU2.headerTitle" = "Configurações do aplicativo";
 
 /* Class = "IBUILabel"; text = "Sign in with Google"; ObjectID = "ohk-ES-lZM"; */
-"ohk-ES-lZM.text" = "Fazer login com o Google";
+"ohk-ES-lZM.text" = "Iniciar sessão com a sua conta do Google";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Help"; ObjectID = "pL9-Nd-0JB"; */
 "pL9-Nd-0JB.headerTitle" = "Ajuda";
@@ -335,10 +335,10 @@
 "s0d-iz-ydn.title" = "Observações";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Sign in to iNaturalist.org"; ObjectID = "tW8-NR-sj7"; */
-"tW8-NR-sj7.headerTitle" = "Acesse iNaturalist.org";
+"tW8-NR-sj7.headerTitle" = "Iniciar sessão em iNaturalist.org";
 
 /* Class = "IBUIBarButtonItem"; title = "Log in"; ObjectID = "tiA-DP-jEV"; */
-"tiA-DP-jEV.title" = "Fazer Login";
+"tiA-DP-jEV.title" = "Iniciar sessão";
 
 /* Class = "IBUITableViewSection"; headerTitle = "Terms"; ObjectID = "tnA-n3-DOC"; */
 "tnA-n3-DOC.headerTitle" = "Termos";
@@ -359,7 +359,7 @@
 "x9r-Ta-0Z8.title" = "Mapa";
 
 /* Class = "IBUILabel"; text = "Guide name"; ObjectID = "xdk-Tu-cps"; */
-"xdk-Tu-cps.text" = "Nome da Guia";
+"xdk-Tu-cps.text" = "Nome do Guia";
 
 /* Class = "IBUINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G"; */
 "zpr-b5-V8G.title" = "Editar localização";
