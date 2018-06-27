@@ -26,10 +26,7 @@
 
 static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 
-@interface UploadManager () {
-    Observation *_currentlyUploadingObservation;
-    NSInteger _currentUploadSessionTotalObservations;
-}
+@interface UploadManager ()
 
 @property NSMutableArray *observationsToUpload;
 @property NSMutableArray *recordsToDelete;
@@ -58,7 +55,6 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
  */
 - (void)uploadObservations:(NSArray *)observations {
     self.observationsToUpload = [observations mutableCopy];
-    _currentUploadSessionTotalObservations = self.observationsToUpload.count;
     
     self.sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL inat_baseURL]];
     [self.sessionManager.requestSerializer setValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
@@ -75,7 +71,6 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     self.recordsToDelete = [deletedRecords mutableCopy];
     
     self.observationsToUpload = [recordsToUpload mutableCopy];
-    _currentUploadSessionTotalObservations = self.observationsToUpload.count;
     
     self.sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL inat_baseURL]];
     [self.sessionManager.requestSerializer setValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
@@ -200,12 +195,6 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
                                                      name:kINatLoggedInNotificationKey
                                                    object:nil];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(observationUploadStartedNote:)
-                                                     name:@"INatUploadStarted"
-                                                   object:nil];
-
-        
         self.startTimesForPhotoUploads = [[NSMutableDictionary alloc] init];
         self.photoUploads = [[NSMutableDictionary alloc] init];
         
@@ -292,21 +281,6 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     }
 }
 
-- (void)observationUploadStartedNote:(NSNotification *)note {
-    if ([note.name isEqualToString:@"INatUploadStarted"]) {
-        if ([note.object isKindOfClass:[NSString class]]) {
-            NSString *noteUuid = (NSString *)note.object;
-
-            for (Observation *o in self.observationsToUpload) {
-                if ([o.uuid isEqualToString:noteUuid]) {
-                    self.currentlyUploadingObservation = o;
-                }
-            }
-        }
-    }
-
-}
-
 #pragma mark - Reachability Updates
 
 - (void)reachabilityChanged:(NSNotification *)note {
@@ -318,31 +292,6 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 }
 
 #pragma mark - setters & getters
-
-- (void)setCurrentlyUploadingObservation:(Observation *)currentlyUploadingObservation {
-    _currentlyUploadingObservation = currentlyUploadingObservation;
-}
-
-- (Observation *)currentlyUploadingObservation {
-    if (self.isUploading) {
-        return _currentlyUploadingObservation;
-    } else {
-        return nil;
-    }
-}
-
-- (NSInteger)indexOfCurrentlyUploadingObservation {
-    if (self.isUploading) {
-        NSInteger idx = self.currentUploadSessionTotalObservations - self.observationsToUpload.count;
-        return idx;
-    } else {
-        return 0;
-    }
-}
-
-- (NSInteger)currentUploadSessionTotalObservations {
-    return _currentUploadSessionTotalObservations;
-}
 
 - (BOOL)shouldAutoupload {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];

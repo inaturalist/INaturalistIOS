@@ -24,8 +24,6 @@
 @property (assign, readonly) BOOL shouldAutoupload;
 @property (assign, readonly) BOOL isAutouploadEnabled;
 
-@property (readonly) NSInteger currentUploadSessionTotalObservations;
-
 @property (nonatomic, weak) id <UploadManagerNotificationDelegate> delegate;
 
 - (void)syncDeletedRecords:(NSArray *)deletedRecords thenUploadObservations:(NSArray *)recordsToUpload;
