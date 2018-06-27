@@ -183,6 +183,7 @@
     };
     
     void (^failureBlock)(NSURLSessionDataTask *, NSError *) = ^(NSURLSessionDataTask *task, NSError * _Nonnull error) {
+        // TODO: handle 422 validations for Project Observation Stuff
         [self syncObservationFinishedSuccess:NO syncError:error];
     };
     
@@ -214,6 +215,7 @@
                 NSStringFromClass(child.class).underscore.pluralize];
         
         if ([child respondsToSelector:@selector(fileUploadParameter)]) {
+            // TODO: handle missing file for fileUploadParameter
             // we'll need a body block for the multi-part post
             void (^bodyBlock)(id <AFMultipartFormData>) = ^(id<AFMultipartFormData>  _Nonnull formData) {
                 NSString *path = [child fileUploadParameter];

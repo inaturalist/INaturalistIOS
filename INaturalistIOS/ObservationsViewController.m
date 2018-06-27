@@ -1660,6 +1660,8 @@
         // reload the Me user from the server
         [self loadUserForHeader];
     });
+    
+    // TODO: clear all upload ids
 
     [[Analytics sharedClient] debugLog:@"Upload - Session Finished"];
     [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
@@ -1760,8 +1762,10 @@
 
 - (void)uploadManager:(UploadManager *)uploadManager uploadFailedFor:(INatModel *)object error:(NSError *)error {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Fatal Error %@", error.localizedDescription]];
-        
-    // stop uploading
+    
+    // TODO: clear uploadProgress for this observation
+    
+    // TODO: actually stop the upload
     [self syncStopped];
     
     NSString *alertTitle = NSLocalizedString(@"Whoops!", @"Default upload failure alert title.");
