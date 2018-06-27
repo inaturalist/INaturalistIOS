@@ -17,9 +17,9 @@
 @property NSManagedObjectID *rootObjectId;
 @property (weak) id <UploadManagerNotificationDelegate> delegate;
 
-// children will implement this to do their upload work
+// subclasses will implement this to do their upload work
 - (void)startUploadWork;
 
-// children will call this to safely mark the upload operation as finished
+// subclasses will call this to safely mark the upload operation as finished
 - (void)markOperationCompleted;
 @end

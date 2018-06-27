@@ -69,5 +69,8 @@
     [self didChangeValueForKey:@"isFinished"];
 }
 
+- (void)startUploadWork {
+    // subclasses will implement this to do their upload work
+}
 
 @end
