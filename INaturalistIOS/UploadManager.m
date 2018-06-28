@@ -238,7 +238,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
                          change:(NSDictionary *)change context:(void *)context
 {
     if (object == self.deleteQueue && [keyPath isEqualToString:@"operationCount"] && context == &kQueueOperationCountChanged) {
-        if ([self.deleteQueue.operations count] == 0) {
+        if (self.deleteQueue.operationCount == 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[self delegate] uploadManagerDeleteSessionFinished:self];
             });
@@ -252,7 +252,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
             }
         }
     } else if (object == self.uploadQueue && [keyPath isEqualToString:@"operationCount"] && context == &kQueueOperationCountChanged) {
-        if ([self.uploadQueue.operations count] == 0) {
+        if (self.uploadQueue.operationCount == 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[self delegate] uploadManagerUploadSessionFinished:self];
                 [self stopUploadActivity];
