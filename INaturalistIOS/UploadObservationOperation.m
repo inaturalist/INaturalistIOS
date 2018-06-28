@@ -8,6 +8,9 @@
 
 #import "UploadObservationOperation.h"
 #import "Observation.h"
+#import "ProjectObservation.h"
+#import "Project.h"
+#import "ObservationFieldValue.h"
 
 @interface UploadObservationOperation ()
 @property NSInteger totalBytesToUpload;
@@ -63,6 +66,11 @@
         return;
     }
     
+    // clear any validation errors
+    o.validationErrorMsg = nil;
+    // save the core data object store
+    [[[RKObjectManager sharedManager] objectStore] save:nil];
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.delegate uploadManager:nil uploadStartedFor:o];
     });
@@ -79,11 +87,8 @@
     }
     
     if (o.needsSync) {
-        if (o.syncedAt) {
-            [self putObservation:o];
-        } else {
-            [self postObservation:o];
-        }
+        NSString *httpMethod = o.syncedAt ? @"PUT" : @"POST";
+        [self syncObservation:o method:httpMethod];
     } else if (o.childrenNeedingUpload.count > 0) {
         [self syncChildRecord:o.childrenNeedingUpload.firstObject
                 ofObservation:o];
@@ -92,23 +97,6 @@
     }
 }
 
-- (void)postObservation:(Observation *)observation {
-    [self syncObservation:observation method:@"POST"];
-}
-
-- (void)putObservation:(Observation *)observation {
-    if (observation.childrenNeedingUpload.count > 0) {
-        // first upload each of the children
-        // when this is done, the last child callback will upload
-        // the parent observation via PUT
-        [self syncChildRecord:observation.childrenNeedingUpload.firstObject
-                ofObservation:observation];
-    } else {
-        // just upload the parent via PUT
-        [self syncObservation:observation method:@"PUT"];
-    }
-}
-         
 - (void)syncObservation:(Observation *)observation method:(NSString *)HTTPMethod {
     void (^successBlock)(NSURLSessionDataTask *, id _Nullable) = ^(NSURLSessionDataTask *task, id _Nullable responseObject) {
         // this observation has been synced
@@ -184,6 +172,49 @@
     
     void (^failureBlock)(NSURLSessionDataTask *, NSError *) = ^(NSURLSessionDataTask *task, NSError * _Nonnull error) {
         // TODO: handle 422 validations for Project Observation Stuff
+        if ([[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey]) {
+            NSHTTPURLResponse *response = [[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey];
+            if (response.statusCode == 422) {
+                
+                // try to extract a validation error from the json response
+                NSData *data = [[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseDataErrorKey];
+                NSError *jsonDecodeError = nil;
+                id json = [NSJSONSerialization JSONObjectWithData:data
+                                                          options:NSJSONReadingAllowFragments
+                                                            error:&jsonDecodeError];
+                
+                NSString *validationError = error.localizedDescription;
+                NSArray *validationErrors = [json valueForKey:@"errors"];
+                if (validationErrors && validationErrors.count > 0) {
+                    validationError = validationErrors.firstObject;
+                }
+
+                if ([child isKindOfClass:ProjectObservation.class]) {
+                    // add project validation error notice
+                    ProjectObservation *po = (ProjectObservation *)child;
+                    Observation *o = po.observation;
+                    NSString *baseErrMsg = NSLocalizedString(@"Couldn't be added to project %@. %@",
+                                                             @"Project validation error. first string is project title, second is the specific error");
+                    o.validationErrorMsg = [NSString stringWithFormat:baseErrMsg,
+                                            po.project.title, validationError];
+                    // save the core data object store
+                    [[[RKObjectManager sharedManager] objectStore] save:nil];
+                    
+                    // fall through to failing and reporting the error
+                } else if ([child isKindOfClass:ObservationFieldValue.class]) {
+                    // add observation field validation error notice
+                    ObservationFieldValue *po = (ObservationFieldValue *)child;
+                    Observation *o = po.observation;
+                    NSString *baseErrMsg = NSLocalizedString(@"Observation Field Validation error: %@",
+                                                             @"Project validation error, with the specific error");
+                    o.validationErrorMsg = [NSString stringWithFormat:baseErrMsg, validationError];
+                    // save the core data object store
+                    [[[RKObjectManager sharedManager] objectStore] save:nil];
+                    
+                    // fall through to failing and reporting the error
+                }
+            }
+        }
         [self syncObservationFinishedSuccess:NO syncError:error];
     };
     
