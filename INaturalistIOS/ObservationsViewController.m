@@ -657,7 +657,7 @@
     Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 
-    if (o.validationErrorMsg && o.validationErrorMsg > 0 && ![appDelegate.loginController.uploadManager currentUploadWorkContainsObservation:o]) {
+    if (o.validationErrorMsg && o.validationErrorMsg.length > 0 && ![appDelegate.loginController.uploadManager currentUploadWorkContainsObservation:o]) {
         // only show validation error status if this obs has a validation error, and it's not being retried
         ObservationViewErrorCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationErrorCell"];
         [self configureErrorCell:cell forIndexPath:indexPath];
