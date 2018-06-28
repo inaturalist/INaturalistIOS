@@ -1760,10 +1760,11 @@
     }
 }
 
-- (void)uploadManager:(UploadManager *)uploadManager uploadFailedFor:(INatModel *)object error:(NSError *)error {
+- (void)uploadManager:(UploadManager *)uploadManager uploadFailedFor:(Observation *)o error:(NSError *)error {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Fatal Error %@", error.localizedDescription]];
     
-    // TODO: clear uploadProgress for this observation
+    // clear progress for this upload
+    self.uploadProgress[o.uuid] = nil;
     
     // TODO: actually stop the upload
     [self syncStopped];
@@ -1795,6 +1796,8 @@
                                               style:UIAlertActionStyleCancel
                                             handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
+    
+    [self.tableView reloadData];
 }
 
 - (void)uploadManager:(UploadManager *)uploadManager deleteStartedFor:(DeletedRecord *)deletedRecord {

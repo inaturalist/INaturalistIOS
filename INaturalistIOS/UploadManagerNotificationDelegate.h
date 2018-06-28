@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@class INatModel;
 @class Observation;
 @class DeletedRecord;
 @class UploadManager;
@@ -30,10 +29,10 @@
        uploadProgress:(float)progress
                   for:(Observation *)observation;
 - (void)uploadManager:(UploadManager *)uploadManager
-            uploadFailedFor:(INatModel *)object
+            uploadFailedFor:(Observation *)observation
                 error:(NSError *)error;
 - (void)uploadManager:(UploadManager *)uploadManager
-         cancelledFor:(INatModel *)object;
+         cancelledFor:(Observation *)observation;
 
 - (void)uploadManager:(UploadManager *)uploadManager nonFatalErrorForObservation:(Observation *)observation;
 
