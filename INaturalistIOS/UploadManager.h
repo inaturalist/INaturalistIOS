@@ -30,6 +30,5 @@
 - (void)uploadObservations:(NSArray *)observations;
 - (void)cancelSyncsAndUploads;
 - (void)autouploadPendingContent;
-- (BOOL)currentUploadWorkContainsObservation:(Observation *)observation;
 
 @end
