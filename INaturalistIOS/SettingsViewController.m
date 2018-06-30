@@ -485,7 +485,7 @@ static const int SuggestionsSwitchTag = 103;
                 }
             } else {
                 // cancel autoupload if it's currently running
-                if (uploadManager.isUploading) {
+                if (uploadManager.state == UploadManagerStateUploading) {
                     [uploadManager cancelSyncsAndUploads];
                 }
             }

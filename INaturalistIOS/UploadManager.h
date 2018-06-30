@@ -11,11 +11,15 @@
 
 @class INatModel;
 
+typedef NS_ENUM(NSInteger, UploadManagerState) {
+    UploadManagerStateIdle,
+    UploadManagerStateUploading,
+    UploadManagerStateCancelling
+};
+
 @interface UploadManager : NSObject
 
-@property (assign, getter=isCancelled) BOOL cancelled;
-@property (readonly, getter=isUploading) BOOL uploading;
-@property (readonly, getter=isSyncingDeletes) BOOL syncingDeletes;
+@property (readonly) UploadManagerState state;
 
 @property (assign, readonly) BOOL shouldNotifyAboutNetworkState;
 - (void)notifiedAboutNetworkState;

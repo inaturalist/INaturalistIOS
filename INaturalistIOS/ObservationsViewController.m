@@ -407,8 +407,7 @@
 
 - (BOOL)isSyncing {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    return appDelegate.loginController.uploadManager.isUploading;
-    return [UIApplication sharedApplication].isIdleTimerDisabled;
+    return appDelegate.loginController.uploadManager.state != UploadManagerStateIdle;
 }
 
 /**
@@ -651,8 +650,10 @@
 
     Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-
-    if (o.validationErrorMsg && o.validationErrorMsg.length > 0 && ![appDelegate.loginController.uploadManager isUploading]) {
+    UploadManager *uploader = appDelegate.loginController.uploadManager;
+    
+    
+    if (o.validationErrorMsg && o.validationErrorMsg.length > 0 && uploader.state == UploadManagerStateIdle) {
         // only show validation error status if this obs has a validation error, and it's not being retried
         ObservationViewErrorCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationErrorCell"];
         [self configureErrorCell:cell forIndexPath:indexPath];
@@ -724,8 +725,9 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    UploadManager *uploader = appDelegate.loginController.uploadManager;
     Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    if ([appDelegate.loginController.uploadManager isUploading] && (o.needsUpload || o.childrenNeedingUpload.count > 0)) {
+    if (uploader.state != UploadManagerStateIdle && (o.needsUpload || o.childrenNeedingUpload.count > 0)) {
         return;
     } else {
         [self performSegueWithIdentifier:@"obsDetailV2" sender:o];
@@ -801,20 +803,21 @@
                 forControlEvents:UIControlEventTouchUpInside];
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    if (appDelegate.loginController.uploadManager.isUploading) {
-        // waiting upload, with uploads happening
-        cell.uploadButton.enabled = NO;
-        cell.backgroundColor = [UIColor colorWithHexString:@"#eaeaea"];
-        cell.titleLabel.textColor = [UIColor colorWithHexString:@"#969696"];
-        cell.subtitleLabel.textColor = [UIColor colorWithHexString:@"#969696"];
-        cell.observationImage.alpha = 0.5f;
-    } else {
+    UploadManager *uploader = appDelegate.loginController.uploadManager;
+    if (uploader.state == UploadManagerStateIdle) {
         // waiting upload, with uploads not happening
         cell.uploadButton.enabled = YES;
         cell.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.2f];
         cell.subtitleLabel.textColor = [UIColor colorWithHexString:@"#787878"];
         cell.titleLabel.textColor = [UIColor blackColor];
         cell.observationImage.alpha = 1.0f;
+    } else {
+        // waiting upload, with uploads happening
+        cell.uploadButton.enabled = NO;
+        cell.backgroundColor = [UIColor colorWithHexString:@"#eaeaea"];
+        cell.titleLabel.textColor = [UIColor colorWithHexString:@"#969696"];
+        cell.subtitleLabel.textColor = [UIColor colorWithHexString:@"#969696"];
+        cell.observationImage.alpha = 0.5f;
     }
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -869,6 +872,11 @@
     }
 }
 
+- (void)configureHeaderForCancelled:(MeHeaderView *)view {
+    view.obsCountLabel.text = NSLocalizedString(@"Cancelling...", @"Title of me header while cancellling an upload session.");
+    [view startAnimatingUpload];
+}
+
 - (void)configureHeaderForActiveUploading:(MeHeaderView *)view {
     [view.iconButton cancelImageDownloadTaskForState:UIControlStateNormal];
     [view.iconButton setImage:nil forState:UIControlStateNormal];
@@ -896,10 +904,11 @@
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         UploadManager *uploadManager = appDelegate.loginController.uploadManager;
         
-        if (uploadManager.isUploading) {
+        if (uploadManager.state == UploadManagerStateUploading) {
             [self configureHeaderForActiveUploading:view];
+        } else if (uploadManager.state == UploadManagerStateCancelling) {
+            [self configureHeaderForCancelled:view];
         } else {
-            
             // cancel any existing upload animations
             [view stopAnimatingUpload];
             

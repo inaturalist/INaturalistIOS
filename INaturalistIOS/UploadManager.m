@@ -34,6 +34,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 @property NSMutableDictionary *startTimesForPhotoUploads;
 @property NSMutableDictionary *photoUploads;
 @property NSDate *lastNetworkOutageNotificationDate;
+@property (assign, getter=isCancelled) BOOL cancelled;
 
 // workaround for restkit bug
 @property NSMutableArray *objectLoaders;
@@ -84,10 +85,12 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 }
 
 - (void)syncDeletes {
-    if (self.syncingDeletes || self.isUploading) {
+    if (self.state != UploadManagerStateIdle) {
         return;
     }
     
+    self.cancelled = NO;
+
     for (DeletedRecord *dr in self.recordsToDelete) {
         DeleteRecordOperation *op = [[DeleteRecordOperation alloc] init];
         op.rootObjectId = dr.objectID;
@@ -98,9 +101,11 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 }
 
 - (void)syncUploads {
-    if (self.syncingDeletes || self.isUploading) {
+    if (self.state != UploadManagerStateIdle) {
         return;
     }
+    
+    self.cancelled = NO;
     
     for (Observation *o in self.observationsToUpload) {
         UploadObservationOperation *op = [[UploadObservationOperation alloc] init];
@@ -113,7 +118,9 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 
 - (void)cancelSyncsAndUploads {
     // can't cancel if we're not actually doing anything
-    if (!self.syncingDeletes && !self.isUploading) { return; }
+    if (self.state != UploadManagerStateUploading) {
+        return;
+    }
     
     [self.deleteQueue cancelAllOperations];
     [self.uploadQueue cancelAllOperations];
@@ -136,7 +143,6 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
  */
 - (void)autouploadPendingContentExcludeInvalids:(BOOL)excludeInvalids {
     if (!self.shouldAutoupload) { return; }
-    if (self.isUploading) { return; }
     
     NSMutableArray *recordsToDelete = [NSMutableArray array];
     for (Class klass in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
@@ -235,6 +241,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 {
     if (object == self.deleteQueue && [keyPath isEqualToString:@"operationCount"] && context == &kQueueOperationCountChanged) {
         if (self.deleteQueue.operationCount == 0) {
+            self.cancelled = NO;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.delegate deleteSessionFinished];
             });
@@ -249,6 +256,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
         }
     } else if (object == self.uploadQueue && [keyPath isEqualToString:@"operationCount"] && context == &kQueueOperationCountChanged) {
         if (self.uploadQueue.operationCount == 0) {
+            self.cancelled = NO;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.delegate uploadSessionFinished];
                 [self stopUploadActivity];
@@ -297,7 +305,8 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     if (![[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey])
         return NO;
     
-    if ([self isUploading])
+    // don't trigger autoupload if we're already uploading or cancelling
+    if ([self state] != UploadManagerStateIdle)
         return NO;
     
     // restkit hasn't finished loading yet
@@ -333,12 +342,16 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     self.lastNetworkOutageNotificationDate = [NSDate date];
 }
 
-- (BOOL)isSyncingDeletes {
-    return self.deleteQueue.operationCount > 0;
-}
-
-- (BOOL)isUploading {
-    return self.uploadQueue.operationCount > 0;
+- (UploadManagerState)state {
+    if (self.cancelled) {
+        return UploadManagerStateCancelling;
+    } else if (self.deleteQueue.operationCount > 0) {
+        return UploadManagerStateUploading;
+    } else if (self.uploadQueue.operationCount > 0) {
+        return UploadManagerStateUploading;
+    } else {
+        return UploadManagerStateIdle;
+    }
 }
 
 @end
