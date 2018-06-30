@@ -21,9 +21,7 @@
             NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];
             NSError *contextError = nil;
             DeletedRecord *dr = [context existingObjectWithID:self.rootObjectId error:&contextError];
-            [self.delegate uploadManager:nil deleteFailedFor:dr error:syncError];
-        } else {
-            [self.delegate uploadManagerDeleteSuccess:nil];
+            [self.delegate deleteSessionFailedFor:dr error:syncError];
         }
     });
     
@@ -33,10 +31,12 @@
 
 - (void)startUploadWork {
     if (self.cancelled) {
+        [self markOperationCompleted];
         return;
     }
     
     if (!self.sessionManager) {
+        [self markOperationCompleted];
         return;
     }
     
@@ -49,9 +49,10 @@
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegate uploadManager:nil deleteStartedFor:dr];
+        [self.delegate deleteSessionStarted:dr];
     });
-    
+
+        
     NSString *deletePath = [NSString stringWithFormat:@"/%@/%ld",
                             dr.modelName.underscore.pluralize,
                             (long)dr.recordID.integerValue];

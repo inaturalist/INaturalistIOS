@@ -13,34 +13,14 @@
 @class UploadManager;
 
 @protocol UploadManagerNotificationDelegate <NSObject>
-- (void)uploadManagerSessionFailed:(UploadManager *)uploadManager errorCode:(NSInteger)httpErrorCode;
+- (void)uploadSessionStarted:(Observation *)observation;
+- (void)uploadSessionFinished;
+- (void)uploadSessionProgress:(float)progress for:(Observation *)observation;
+- (void)uploadSessionSuccessFor:(Observation *)observation;
+- (void)uploadSessionFailedFor:(Observation *)observation error:(NSError *)error;
+- (void)uploadSessionCancelledFor:(Observation *)observation;
 
-- (void)uploadManagerUploadSessionFinished:(UploadManager *)uploadManager;
-- (void)uploadManager:(UploadManager *)uploadManager
-     uploadStartedFor:(Observation *)observation
-               number:(NSInteger)current
-                   of:(NSInteger)total;
-- (void)uploadManager:(UploadManager *)uploadManager
-     uploadStartedFor:(Observation *)observation;
-
-- (void)uploadManager:(UploadManager *)uploadManager
-     uploadSuccessFor:(Observation *)observation;
-- (void)uploadManager:(UploadManager *)uploadManager
-       uploadProgress:(float)progress
-                  for:(Observation *)observation;
-- (void)uploadManager:(UploadManager *)uploadManager
-            uploadFailedFor:(Observation *)observation
-                error:(NSError *)error;
-- (void)uploadManager:(UploadManager *)uploadManager
-         cancelledFor:(Observation *)observation;
-
-- (void)uploadManager:(UploadManager *)uploadManager nonFatalErrorForObservation:(Observation *)observation;
-
-- (void)uploadManager:(UploadManager *)uploadManager
-     deleteStartedFor:(DeletedRecord *)deletedRecord;
-- (void)uploadManagerDeleteSuccess:(UploadManager *)uploadManager;
-- (void)uploadManagerDeleteSessionFinished:(UploadManager *)uploadManager;
-- (void)uploadManager:(UploadManager *)uploadManager
-      deleteFailedFor:(DeletedRecord *)deletedRecord
-                error:(NSError *)error;
+- (void)deleteSessionStarted:(DeletedRecord *)deletedRecord;
+- (void)deleteSessionFinished;
+- (void)deleteSessionFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error;
 @end

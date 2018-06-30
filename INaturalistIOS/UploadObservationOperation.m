@@ -35,7 +35,7 @@
         NSError *contextError = nil;
         Observation *o = [context existingObjectWithID:self.rootObjectId error:&contextError];
         if (o && success) {
-            [self.delegate uploadManager:nil uploadSuccessFor:o];
+            [self.delegate uploadSessionSuccessFor:o];
         } else {
             NSError *error = nil;
             if (syncError) {
@@ -43,7 +43,7 @@
             } else if (contextError) {
                 error = contextError;
             }
-            [self.delegate uploadManager:nil uploadFailedFor:o error:error];
+            [self.delegate uploadSessionFailedFor:o error:error];
         }
     });
     
@@ -72,7 +72,7 @@
     [[[RKObjectManager sharedManager] objectStore] save:nil];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegate uploadManager:nil uploadStartedFor:o];
+        [self.delegate uploadSessionStarted:o];
     });
     
     // figure out total bytes to upload
@@ -225,9 +225,8 @@
         // notify the upload delegate about the total upload progress
         // for this observation
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.delegate uploadManager:nil
-                          uploadProgress:[self totalFileUploadProgress]
-                                     for:observation];
+            [self.delegate uploadSessionProgress:[self totalFileUploadProgress]
+                                             for:observation];
         });
     };
 

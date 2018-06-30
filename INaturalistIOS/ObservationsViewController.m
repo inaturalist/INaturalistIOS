@@ -526,11 +526,6 @@
     }
 }
 
-- (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification {
-    // reload me
-    [self configureHeaderForLoggedInUser];
-}
-
 - (BOOL)autoLaunchNewFeatures
 {
     NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
@@ -887,14 +882,7 @@
     view.iconButton.enabled = YES;
     view.iconButton.accessibilityLabel = NSLocalizedString(@"Stop Uploading",
                                                            @"accessibility label for stop uploading button");
-    
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    UploadManager *uploadManager = appDelegate.loginController.uploadManager;
-    if (uploadManager.isSyncingDeletes) {
-        self.meHeader.obsCountLabel.text = NSLocalizedString(@"Syncing...", @"Title of me header when syncing deletions.");
-    } else {
-        self.meHeader.obsCountLabel.text = NSLocalizedString(@"Syncing...", @"Title of me header when syncing deletions.");
-    }
+    view.obsCountLabel.text = NSLocalizedString(@"Syncing...", @"Title of me header when syncing.");
     
     [view startAnimatingUpload];
 }
@@ -1594,61 +1582,7 @@
 
 #pragma mark - Upload Notification Delegate
 
-- (void)uploadManagerSessionFailed:(UploadManager *)uploadManager errorCode:(NSInteger)httpErrorCode {
-    [self syncStopped];
-    
-    [[Analytics sharedClient] event:kAnalyticsEventSyncFailed
-                     withProperties:@{
-                                      @"Alert": @(httpErrorCode),
-                                      }];
-    
-    if (httpErrorCode == 401) {
-        [[Analytics sharedClient] debugLog:@"Upload - Auth Required"];
-        [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
-                         withProperties:@{
-                                          @"Via": @"Auth Required",
-                                          }];
-        
-        NSString *reasonMsg = NSLocalizedString(@"You must be logged in to upload to iNaturalist.org.",
-                                                @"This is an explanation for why the sync button triggers a login prompt.");
-        [self presentSignupSplashWithReason:reasonMsg];
-    } else if (httpErrorCode == 403) {
-        [[Analytics sharedClient] debugLog:@"Upload - Forbidden"];
-        [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
-                         withProperties:@{
-                                          @"Via": @"Auth Forbidden",
-                                          }];
-
-        NSString *alertTitle = NSLocalizedString(@"Not Authorized", @"403 unauthorized title");
-        NSString *alertMessage = NSLocalizedString(@"You don't have permission to do that. Your account may have been suspended. Please contact help@inaturalist.org.",
-                                                   @"403 forbidden message");
-        
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
-                                                                       message:alertMessage
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
-}
-
-- (void)uploadManagerUploadSessionAuthRequired:(UploadManager *)uploadManager {
-
-    [self syncStopped];
-    
-    [[Analytics sharedClient] debugLog:@"Upload - Auth Required"];
-    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
-                     withProperties:@{
-                                      @"Via": @"Auth Required",
-                                      }];
-    
-    NSString *reasonMsg = NSLocalizedString(@"You must be logged in to upload to iNaturalist.org.",
-                                            @"This is an explanation for why the sync button triggers a login prompt.");
-    [self presentSignupSplashWithReason:reasonMsg];
-}
-
-- (void)uploadManagerUploadSessionFinished:(UploadManager *)uploadManager {
+- (void)uploadSessionFinished {
     // allow any pending upload animations to finish
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         // make sure any deleted records get gone
@@ -1670,34 +1604,14 @@
                                       }];
 }
 
-- (void)uploadManager:(UploadManager *)uploadManager cancelledFor:(INatModel *)object {
+- (void)uploadSessionCancelledFor:(Observation *)observation {
     [[Analytics sharedClient] debugLog:@"Upload - Upload Cancelled"];
-
+    
     self.meHeader.obsCountLabel.text = NSLocalizedString(@"Cancelling...", @"Title of me header while cancellling an upload session.");
     [self syncStopped];
 }
 
-- (void)uploadManager:(UploadManager *)uploadManager uploadStartedFor:(Observation *)observation number:(NSInteger)current of:(NSInteger)total {
-    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Started %ld of %ld uploads", (long)current, (long)total]];
-    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-    
-    if (observation.uuid) {
-        self.uploadProgress[observation.uuid] = @(0);
-    }
-
-    [self configureHeaderForLoggedInUser];
-    [self.meHeader startAnimatingUpload];
-    
-    NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
-    if (ip) {
-        [self.tableView beginUpdates];
-        [self.tableView reloadRowsAtIndexPaths:@[ ip ]
-                              withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView endUpdates];
-    }
-}
-
-- (void)uploadManager:(UploadManager *)uploadManager uploadStartedFor:(Observation *)observation {
+- (void)uploadSessionStarted:(Observation *)observation {
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
     if (observation.uuid) {
@@ -1716,7 +1630,7 @@
     }
 }
 
-- (void)uploadManager:(UploadManager *)uploadManager uploadSuccessFor:(Observation *)observation {
+- (void)uploadSessionSuccessFor:(Observation *)observation {
     [[Analytics sharedClient] debugLog:@"Upload - Success"];
     
     [self configureHeaderForLoggedInUser];
@@ -1732,9 +1646,7 @@
     }
 }
 
-
-- (void)uploadManager:(UploadManager *)uploadManager uploadProgress:(float)progress for:(Observation *)observation {
-    
+- (void)uploadSessionProgress:(float)progress for:(Observation *)observation {
     if (observation.uuid) {
         self.uploadProgress[observation.uuid] = @(progress);
     }
@@ -1748,27 +1660,102 @@
     }
 }
 
-- (void)uploadManager:(UploadManager *)uploadManager nonFatalErrorForObservation:(Observation *)observation {
-    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Non-Fatal Error for %@", observation]];
-    
-    NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
-    if (ip) {
-        [self.tableView beginUpdates];
-        [self.tableView reloadRowsAtIndexPaths:@[ ip ]
-                              withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView endUpdates];
-    }
-}
 
-- (void)uploadManager:(UploadManager *)uploadManager uploadFailedFor:(Observation *)o error:(NSError *)error {
+- (void)uploadSessionFailedFor:(Observation *)observation error:(NSError *)error {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Fatal Error %@", error.localizedDescription]];
     
     // clear progress for this upload
-    self.uploadProgress[o.uuid] = nil;
+    self.uploadProgress[observation.uuid] = nil;
     
     // TODO: actually stop the upload
     [self syncStopped];
     
+    if ([error.userInfo valueForKey:AFNetworkingOperationFailingURLResponseErrorKey]) {
+        NSHTTPURLResponse *resp = [error.userInfo valueForKey:AFNetworkingOperationFailingURLResponseErrorKey];
+        if (resp.statusCode == 401) {
+            [self notifyUploadErrorAuthRequired];
+        } else if (resp.statusCode == 403) {
+            [self notifyUploadErrorSuspended];
+        } else {
+            [self notifyUploadErrorOtherError:error];
+        }
+    } else {
+        [self notifyUploadErrorOtherError:error];
+    }
+    
+    [self.tableView reloadData];
+}
+
+
+- (void)deleteSessionStarted:(DeletedRecord *)deletedRecord {
+    [[Analytics sharedClient] debugLog:@"Upload - Delete Started"];
+
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    
+    [self configureHeaderForLoggedInUser];
+    [self.meHeader startAnimatingUpload];
+}
+
+- (void)deleteSessionFinished {
+    [[Analytics sharedClient] debugLog:@"Upload - Delete Session Finished"];
+
+    [self syncStopped];
+}
+
+- (void)deleteSessionFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error {
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Delete Failed: %@", [error localizedDescription]]];
+    
+    [self syncStopped];
+    
+    if ([error.userInfo valueForKey:AFNetworkingOperationFailingURLResponseErrorKey]) {
+        NSHTTPURLResponse *resp = [error.userInfo valueForKey:AFNetworkingOperationFailingURLResponseErrorKey];
+        if (resp.statusCode == 401) {
+            [self notifyUploadErrorAuthRequired];
+        } else if (resp.statusCode == 403) {
+            [self notifyUploadErrorSuspended];
+        } else {
+            [self notifyUploadErrorOtherError:error];
+        }
+    } else {
+        [self notifyUploadErrorOtherError:error];
+    }
+}
+
+#pragma mark - uploader delegate helpers
+
+- (void)notifyUploadErrorAuthRequired {
+    [[Analytics sharedClient] debugLog:@"Upload - Auth Required"];
+    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                     withProperties:@{
+                                      @"Via": @"Auth Required",
+                                      }];
+    
+    NSString *reasonMsg = NSLocalizedString(@"You must be logged in to upload to iNaturalist.org.",
+                                            @"This is an explanation for why the sync button triggers a login prompt.");
+    [self presentSignupSplashWithReason:reasonMsg];
+}
+
+- (void)notifyUploadErrorSuspended {
+    [[Analytics sharedClient] debugLog:@"Upload - Forbidden"];
+    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                     withProperties:@{
+                                      @"Via": @"Auth Forbidden",
+                                      }];
+    
+    NSString *alertTitle = NSLocalizedString(@"Not Authorized", @"403 unauthorized title");
+    NSString *alertMessage = NSLocalizedString(@"You don't have permission to do that. Your account may have been suspended. Please contact help@inaturalist.org.",
+                                               @"403 forbidden message");
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                   message:alertMessage
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)notifyUploadErrorOtherError:(NSError *)error {
     NSString *alertTitle = NSLocalizedString(@"Whoops!", @"Default upload failure alert title.");
     NSString *alertMessage;
     
@@ -1796,49 +1783,7 @@
                                               style:UIAlertActionStyleCancel
                                             handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
-    
-    [self.tableView reloadData];
 }
 
-- (void)uploadManager:(UploadManager *)uploadManager deleteStartedFor:(DeletedRecord *)deletedRecord {
-    [[Analytics sharedClient] debugLog:@"Upload - Delete Started"];
-
-    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-    
-    [self configureHeaderForLoggedInUser];
-    [self.meHeader startAnimatingUpload];
-}
-
-- (void)uploadManagerDeleteSuccess:(UploadManager *)uploadManager {
-    [[Analytics sharedClient] debugLog:@"Upload - Delete Success"];
-}
-
-- (void)uploadManagerDeleteSessionFinished:(UploadManager *)uploadManager {
-    [[Analytics sharedClient] debugLog:@"Upload - Delete Session Finished"];
-
-    [self syncStopped];
-}
-
-- (void)uploadManager:(UploadManager *)uploadManager deleteFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error {
-    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Delete Failed: %@", [error localizedDescription]]];
-    
-    [self syncStopped];
-    
-    NSString *alertTitle = NSLocalizedString(@"Deleted Failed", @"Delete failed message");
-    NSString *alertMsg;
-    if (error) {
-        alertMsg = error.localizedDescription;
-    } else {
-        alertMsg = NSLocalizedString(@"Unknown error while attempting to delete.", @"unknown delete error");
-    }
-    
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
-                                                                   message:alertMsg
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                              style:UIAlertActionStyleCancel
-                                            handler:nil]];
-    [self presentViewController:alert animated:YES completion:nil];
-}
 
 @end

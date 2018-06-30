@@ -120,7 +120,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     
     self.cancelled = YES;
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegate uploadManager:self cancelledFor:nil];
+        [self.delegate uploadSessionCancelledFor:nil];
     });
 }
 
@@ -236,13 +236,13 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     if (object == self.deleteQueue && [keyPath isEqualToString:@"operationCount"] && context == &kQueueOperationCountChanged) {
         if (self.deleteQueue.operationCount == 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[self delegate] uploadManagerDeleteSessionFinished:self];
+                [self.delegate deleteSessionFinished];
             });
             if (self.observationsToUpload.count > 0) {
                 [self syncUploads];
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [[self delegate] uploadManagerUploadSessionFinished:self];
+                    [self.delegate uploadSessionFinished];
                     [self stopUploadActivity];
                 });
             }
@@ -250,7 +250,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     } else if (object == self.uploadQueue && [keyPath isEqualToString:@"operationCount"] && context == &kQueueOperationCountChanged) {
         if (self.uploadQueue.operationCount == 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[self delegate] uploadManagerUploadSessionFinished:self];
+                [self.delegate uploadSessionFinished];
                 [self stopUploadActivity];
             });
         }
