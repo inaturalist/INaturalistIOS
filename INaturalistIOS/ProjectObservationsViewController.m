@@ -182,8 +182,13 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         ProjectObservationField *pof = [project sortedProjectObservationFields][indexPath.item];
         ObservationField *field = pof.observationField;
         
-        NSSet *ofvs = [field.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL *stop) {
-            return [ofv.observation isEqual:self.observation];
+        NSSet *ofvs = [self.observation.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL * _Nonnull stop) {
+            if (ofv.observationFieldID.integerValue == pof.observationFieldID.integerValue) {
+                stop = YES;
+                return YES;
+            } else {
+                return NO;
+            }
         }];
         if (ofvs.count > 0) {
             ObservationFieldValue *ofv = ofvs.anyObject;
@@ -650,8 +655,13 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 
     cell.textField.delegate = self;
     
-    NSSet *ofvs = [field.observationField.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL *stop) {
-        return [ofv.observation isEqual:self.observation];
+    NSSet *ofvs = [self.observation.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL * _Nonnull stop) {
+        if (ofv.observationFieldID.integerValue == field.observationFieldID.integerValue) {
+            stop = YES;
+            return YES;
+        } else {
+            return NO;
+        }
     }];
     
     if (ofvs.count > 0) {
