@@ -113,12 +113,19 @@
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     __weak typeof(self) weakSelf = self;
     
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+    hud.labelText = NSLocalizedString(@"Saving...", nil);
+
     [api addIdentificationTaxonId:weakSelf.taxon.taxonId
                     observationId:weakSelf.observation.inatRecordId
                              body:weakSelf.comment ?: nil
                            vision:self.taxonViaVision
                           handler:^(NSArray *results, NSInteger count, NSError *error) {
-                              [MBProgressHUD hideAllHUDsForView:weakSelf.view animated:YES];
+                              if (weakSelf.navigationController.view) {
+                                  [MBProgressHUD hideAllHUDsForView:weakSelf.navigationController.view animated:YES];
+                              }
                               
                               if (error) {
                                   UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
@@ -129,7 +136,7 @@
                                                                           handler:nil]];
                                   [weakSelf presentViewController:alert animated:YES completion:nil];
                               } else {
-                                  [self.navigationController popViewControllerAnimated:YES];
+                                  [weakSelf.navigationController popViewControllerAnimated:YES];
                               }
                           }];
 }

@@ -507,8 +507,8 @@
     [api addIdentificationTaxonId:button.tag observationId:self.observation.inatRecordId body:nil vision:NO handler:^(NSArray *results, NSInteger count, NSError *error) {
         [weakSelf.delegate hideProgressHud];
         if (error) {
-            [self.delegate noticeWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                                   message:error.localizedDescription];
+            [weakSelf.delegate noticeWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                       message:error.localizedDescription];
         } else {
             [weakSelf.delegate reloadObservation];
         }
