@@ -190,10 +190,13 @@ static NSString *LongTextFieldIdentifier = @"longtext";
                 return NO;
             }
         }];
+
         if (ofvs.count > 0) {
             ObservationFieldValue *ofv = ofvs.anyObject;
-            ofv.value = [self currentValueForIndexPath:indexPath];
-            ofv.localUpdatedAt = [NSDate date];
+            if (![ofv.value isEqualToString:[self currentValueForIndexPath:indexPath]]) {
+                ofv.value = [self currentValueForIndexPath:indexPath];
+                ofv.localUpdatedAt = [NSDate date];
+            }
         } else {
             ObservationFieldValue *ofv = [ObservationFieldValue object];
             ofv.observationField = field;
