@@ -11,6 +11,7 @@
 #import "INatModel.h"
 #import "Uploadable.h"
 #import "ObservationVisualization.h"
+#import "ObservationFieldValue.h"
 
 #define INatUserSavedObservationNotification @"INatObservationsNeedSyncNotification"
 
@@ -76,6 +77,7 @@
 
 - (NSString *)presentableGeoprivacy;
 - (ObsDataQuality)dataQuality;
+- (ObservationFieldValue *)valueWithObservationFieldId:(NSInteger)fieldId;
 
 @end
 

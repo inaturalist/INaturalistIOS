@@ -430,6 +430,20 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     }
 }
 
+- (ObservationFieldValue *)valueWithObservationFieldId:(NSInteger)fieldId {
+    // candidates will be only a single value at most because we stop when
+    // we find a candidate
+    NSSet *candidates = [self.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL * _Nonnull stop) {
+        if (ofv.observationFieldID.integerValue == fieldId) {
+            *stop = YES;
+            return YES;
+        } else {
+            return NO;
+        }
+    }];
+    return [candidates anyObject];
+}
+
 #pragma mark - Uploadable protocol
 
 + (NSArray *)needingUpload {

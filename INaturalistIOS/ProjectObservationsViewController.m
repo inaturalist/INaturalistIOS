@@ -182,17 +182,8 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         ProjectObservationField *pof = [project sortedProjectObservationFields][indexPath.item];
         ObservationField *field = pof.observationField;
         
-        NSSet *ofvs = [self.observation.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL * _Nonnull stop) {
-            if (ofv.observationFieldID.integerValue == pof.observationFieldID.integerValue) {
-                stop = YES;
-                return YES;
-            } else {
-                return NO;
-            }
-        }];
-
-        if (ofvs.count > 0) {
-            ObservationFieldValue *ofv = ofvs.anyObject;
+        ObservationFieldValue *ofv = [self.observation valueWithObservationFieldId:pof.observationFieldID.integerValue];
+        if (ofv) {
             if (![ofv.value isEqualToString:[self currentValueForIndexPath:indexPath]]) {
                 ofv.value = [self currentValueForIndexPath:indexPath];
                 ofv.localUpdatedAt = [NSDate date];
@@ -269,13 +260,8 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     Project *project = [self projectForSection:self.taxaSearchIndexPath.section];
     ProjectObservationField *field = [project sortedProjectObservationFields][self.taxaSearchIndexPath.item];
     
-    NSSet *ofvs = [field.observationField.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL *stop) {
-        return [ofv.observation isEqual:self.observation];
-    }];
-    
-    if (ofvs.count > 0) {
-        // pick one?
-        ObservationFieldValue *ofv = ofvs.anyObject;
+    ObservationFieldValue *ofv = [self.observation valueWithObservationFieldId:field.observationFieldID.integerValue];
+    if (ofv) {
         ofv.value = [NSString stringWithFormat:@"%ld", (long)taxon.taxonId];
         ofv.localUpdatedAt = [NSDate date];
     }
@@ -619,14 +605,8 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         cell.fieldLabel.font = [UIFont systemFontOfSize:cell.fieldLabel.font.pointSize];
     }
     
-    
-    NSSet *ofvs = [self.observation.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL *stop) {
-        return [ofv.observationField.recordID isEqual:field.observationField.recordID];
-    }];
-    
-    if (ofvs.count > 0) {
-        // pick one?
-        ObservationFieldValue *ofv = ofvs.anyObject;
+    ObservationFieldValue *ofv = [self.observation valueWithObservationFieldId:field.observationFieldID.integerValue];
+    if (ofv) {
         if ([field.observationField.datatype isEqualToString:@"taxon"]) {
             ExploreTaxonRealm *etr = [ExploreTaxonRealm objectForPrimaryKey:@(ofv.value.integerValue)];
             if (etr) {
@@ -658,18 +638,8 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 
     cell.textField.delegate = self;
     
-    NSSet *ofvs = [self.observation.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL * _Nonnull stop) {
-        if (ofv.observationFieldID.integerValue == field.observationFieldID.integerValue) {
-            stop = YES;
-            return YES;
-        } else {
-            return NO;
-        }
-    }];
-    
-    if (ofvs.count > 0) {
-        // pick one?
-        ObservationFieldValue *ofv = ofvs.anyObject;
+    ObservationFieldValue *ofv = [self.observation valueWithObservationFieldId:field.observationFieldID.integerValue];
+    if (ofv) {
         cell.textField.text = ofv.value ?: ofv.defaultValue;
     } else {
         cell.textField.text = nil;
