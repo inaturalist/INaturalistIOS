@@ -855,7 +855,7 @@
                                        action:@selector(clickedActivity:event:)
                              forControlEvents:UIControlEventTouchUpInside];
     
-    cell.dateLabel.text = [[YLMoment momentWithDate:o.timeObservedAt] fromNowWithSuffix:NO];
+    cell.dateLabel.text = [[YLMoment momentWithDate:o.observedOn] fromNowWithSuffix:NO];
 }
 
 
