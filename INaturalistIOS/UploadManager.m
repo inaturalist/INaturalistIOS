@@ -31,7 +31,6 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 @property NSMutableArray *observationsToUpload;
 @property NSMutableArray *recordsToDelete;
 @property AFNetworkReachabilityManager *reachabilityMgr;
-@property NSMutableDictionary *startTimesForPhotoUploads;
 @property NSMutableDictionary *photoUploads;
 @property NSDate *lastNetworkOutageNotificationDate;
 @property (assign, getter=isCancelled) BOOL cancelled;
@@ -197,7 +196,6 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
                                                      name:kINatLoggedInNotificationKey
                                                    object:nil];
         
-        self.startTimesForPhotoUploads = [[NSMutableDictionary alloc] init];
         self.photoUploads = [[NSMutableDictionary alloc] init];
         
         self.sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL inat_baseURL]];

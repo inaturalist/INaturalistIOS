@@ -11,6 +11,7 @@
 #import "ProjectObservation.h"
 #import "Project.h"
 #import "ObservationFieldValue.h"
+#import "Analytics.h"
 
 @interface UploadObservationOperation ()
 @property NSInteger totalBytesToUpload;
@@ -146,6 +147,8 @@
 - (void)syncChildRecord:(INatModel <Uploadable> *)child ofObservation:(Observation *)observation {
     NSString *HTTPMethod = child.syncedAt ? @"PUT" : @"POST";
     
+    NSDate *uploadStartTime = [NSDate date];
+    
     void (^successBlock)(NSURLSessionDataTask *, id _Nullable) = ^(NSURLSessionDataTask *task, id _Nullable responseObject) {
         // this observation has been synced
         child.syncedAt = [NSDate date];
@@ -158,6 +161,12 @@
         // save the core data object store
         [[[RKObjectManager sharedManager] objectStore] save:nil];
         
+        if ([HTTPMethod isEqualToString:@"POST"] && [child respondsToSelector:@selector(fileUploadParameter)]) {
+            // notify analytics about file upload performance
+            NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:uploadStartTime];
+            [[Analytics sharedClient] logMetric:@"PhotoUploadGauge" value:@(timeInterval)];
+        }
+
         // if there are more children to upload, upload first child
         if (observation.childrenNeedingUpload.count > 0) {
             [self syncChildRecord:observation.childrenNeedingUpload.firstObject
