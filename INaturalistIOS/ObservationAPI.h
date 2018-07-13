@@ -8,6 +8,8 @@
 
 #import "INatAPI.h"
 
+@class Observation;
+
 @interface ObservationAPI : INatAPI
 
 - (void)observationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done;
@@ -16,5 +18,7 @@
 - (void)seenUpdatesForObservationId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)topObserversForTaxaIds:(NSArray *)taxaIds handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)topIdentifiersForTaxaIds:(NSArray *)taxaIds handler:(INatAPIFetchCompletionCountHandler)done;
+
+- (void)postObservation:(Observation *)observation handler:(INatAPIFetchCompletionCountHandler)done;
 
 @end

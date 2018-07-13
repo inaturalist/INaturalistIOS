@@ -106,8 +106,8 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 
 - (NSDictionary *)uploadableRepresentation {
     NSDictionary *mapping = @{
-                              @"projectID": @"project_observation[project_id]",
-                              @"observationID": @"project_observation[observation_id]",
+                              @"projectID": @"project_id",
+                              @"observationID": @"observation_id",
                               };
     
     NSMutableDictionary *mutableParams = [NSMutableDictionary dictionary];

@@ -1319,13 +1319,6 @@
     settingsBarButton.accessibilityLabel = NSLocalizedString(@"Settings", @"accessibility label for settings button");
     self.navigationItem.rightBarButtonItem = settingsBarButton;
     
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
-                                                 name:NSManagedObjectContextDidSaveNotification 
-                                               object:[Observation managedObjectContext]];
-    
-    
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.loginController.uploadManager setDelegate:self];
 }

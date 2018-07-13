@@ -512,21 +512,23 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 
 
 - (NSDictionary *)uploadableRepresentation {
+    // TODO: owners_identification_from_vision temporarily disabled
+    // for node uploads since it's causing 500s when taxon_id is set
     NSDictionary *mapping = @{
-                              @"speciesGuess": @"observation[species_guess]",
-                              @"inatDescription": @"observation[description]",
-                              @"observedOnString": @"observation[observed_on_string]",
-                              @"placeGuess": @"observation[place_guess]",
-                              @"latitude": @"observation[latitude]",
-                              @"longitude": @"observation[longitude]",
-                              @"positionalAccuracy": @"observation[positional_accuracy]",
-                              @"taxonID": @"observation[taxon_id]",
-                              @"iconicTaxonID": @"observation[iconic_taxon_id]",
-                              @"idPlease": @"observation[id_please]",
-                              @"geoprivacy": @"observation[geoprivacy]",
-                              @"uuid": @"observation[uuid]",
-                              @"captive": @"observation[captive_flag]",
-                              @"ownersIdentificationFromVision": @"observation[owners_identification_from_vision]",
+                              @"speciesGuess": @"species_guess",
+                              @"inatDescription": @"description",
+                              @"observedOnString": @"observed_on_string",
+                              @"placeGuess": @"place_guess",
+                              @"latitude": @"latitude",
+                              @"longitude": @"longitude",
+                              @"positionalAccuracy": @"positional_accuracy",
+                              @"taxonID": @"taxon_id",
+                              @"iconicTaxonID": @"iconic_taxon_id",
+                              @"idPlease": @"id_please",
+                              @"geoprivacy": @"geoprivacy",
+                              @"uuid": @"uuid",
+                              @"captive": @"captive_flag",
+                              //@"ownersIdentificationFromVision": @"owners_identification_from_vision",
                               };
     
     NSMutableDictionary *mutableParams = [NSMutableDictionary dictionary];
@@ -538,7 +540,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     }
     
     // return an immutable copy
-    return [NSDictionary dictionaryWithDictionary:mutableParams];
+    return @{ @"observation": [NSDictionary dictionaryWithDictionary:mutableParams] };
 }
 
 #pragma mark - ObservationVisualization

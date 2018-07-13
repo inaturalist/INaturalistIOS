@@ -138,10 +138,9 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 
 - (NSDictionary *)uploadableRepresentation {
     NSDictionary *mapping = @{
-                              @"recordID": @"observation_field_value[id]",
-                              @"value": @"observation_field_value[value]",
-                              @"observationID": @"observation_field_value[observation_id]",
-                              @"observationFieldID": @"observation_field_value[observation_field_id]",
+                              @"value": @"value",
+                              @"observationID": @"observation_id",
+                              @"observationFieldID": @"observation_field_id",
                               };
     
     NSMutableDictionary *mutableParams = [NSMutableDictionary dictionary];
@@ -153,7 +152,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     }
     
     // return an immutable copy
-    return [NSDictionary dictionaryWithDictionary:mutableParams];
+    return @{ @"observation_field_value": [NSDictionary dictionaryWithDictionary:mutableParams] };
 }
 
 @end

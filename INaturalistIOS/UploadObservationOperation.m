@@ -54,7 +54,7 @@
 
 - (void)startUploadWork {
     
-    if (!self.sessionManager) {
+    if (!self.nodeSessionManager) {
         [self syncObservationFinishedSuccess:NO syncError:nil];
         return;
     }
@@ -124,23 +124,24 @@
         [self syncObservationFinishedSuccess:NO syncError:error];
     };
     
+    
     if ([HTTPMethod isEqualToString:@"PUT"]) {
-        NSString *path = [NSString stringWithFormat:@"/%@/%ld.json",
+        NSString *path = [NSString stringWithFormat:@"/v1/%@/%ld",
                           NSStringFromClass(observation.class).underscore.pluralize,
                           (long)observation.recordID.integerValue
                           ];
-        [self.sessionManager PUT:path
-                      parameters:[observation uploadableRepresentation]
-                         success:successBlock
-                         failure:failureBlock];
+        [self.nodeSessionManager PUT:path
+                          parameters:[observation uploadableRepresentation]
+                             success:successBlock
+                             failure:failureBlock];
     } else {
-        NSString *path = [NSString stringWithFormat:@"/%@.json",
-                          NSStringFromClass(observation.class).underscore.pluralize];
-        [self.sessionManager POST:path
-                       parameters:[observation uploadableRepresentation]
-                         progress:nil
-                          success:successBlock
-                          failure:failureBlock];
+        NSString *path = [NSString stringWithFormat:@"/v1/%@",
+                          NSStringFromClass(observation.class).underscore.pluralize];        
+        [self.nodeSessionManager POST:path
+                           parameters:[observation uploadableRepresentation]
+                             progress:nil
+                              success:successBlock
+                              failure:failureBlock];
     }
 }
 
@@ -241,16 +242,16 @@
 
     NSString *path = nil;
     if ([HTTPMethod isEqualToString:@"PUT"]) {
-        path = [NSString stringWithFormat:@"/%@/%ld.json",
+        path = [NSString stringWithFormat:@"/v1/%@/%ld",
                 NSStringFromClass(child.class).underscore.pluralize,
                 (long)child.recordID.integerValue];
         
-        [self.sessionManager PUT:path
-                      parameters:[child uploadableRepresentation]
-                         success:successBlock
-                         failure:failureBlock];
+        [self.nodeSessionManager PUT:path
+                          parameters:[child uploadableRepresentation]
+                             success:successBlock
+                             failure:failureBlock];
     } else {
-        path = [NSString stringWithFormat:@"/%@.json",
+        path = [NSString stringWithFormat:@"/v1/%@",
                 NSStringFromClass(child.class).underscore.pluralize];
         
         if ([child respondsToSelector:@selector(fileUploadParameter)]) {
@@ -265,20 +266,20 @@
                                        mimeType:@"image/jpeg"
                                           error:nil];
             };
-
-            [self.sessionManager POST:path
-                           parameters:[child uploadableRepresentation]
-            constructingBodyWithBlock:bodyBlock
-                             progress:progressBlock
-                              success:successBlock
-                              failure:failureBlock];
+            
+            [self.nodeSessionManager POST:path
+                               parameters:[child uploadableRepresentation]
+                constructingBodyWithBlock:bodyBlock
+                                 progress:progressBlock
+                                  success:successBlock
+                                  failure:failureBlock];
         } else {
             // skip the progress block if there was no file upload param
-            [self.sessionManager POST:path
-                           parameters:[child uploadableRepresentation]
-                             progress:nil
-                              success:successBlock
-                              failure:failureBlock];
+            [self.nodeSessionManager POST:path
+                               parameters:[child uploadableRepresentation]
+                                 progress:nil
+                                  success:successBlock
+                                  failure:failureBlock];
         }
     }
 }

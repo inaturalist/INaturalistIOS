@@ -114,18 +114,34 @@
             totalResults = [[json valueForKey:totalResultsKey] integerValue];
         }
         
-        for (NSDictionary *resultJSON in [json valueForKey:@"results"]) {
+        if ([json valueForKey:@"results"]) {
+            for (NSDictionary *resultJSON in [json valueForKey:@"results"]) {
+                NSError *error;
+                MTLModel *result = [MTLJSONAdapter modelOfClass:ClassForMapping
+                                             fromJSONDictionary:resultJSON
+                                                          error:&error];
+                
+                if (result) {
+                    [results addObject:result];
+                } else {
+                    // skip this one
+                    NSLog(@"MANTLE ERROR: %@", error);
+                }
+            }
+        } else {
             NSError *error;
             MTLModel *result = [MTLJSONAdapter modelOfClass:ClassForMapping
-                                         fromJSONDictionary:resultJSON
+                                         fromJSONDictionary:json
                                                       error:&error];
             
             if (result) {
                 [results addObject:result];
+                totalResults = 1;
             } else {
                 // skip this one
                 NSLog(@"MANTLE ERROR: %@", error);
             }
+            
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             done([NSArray arrayWithArray:results], totalResults, nil);

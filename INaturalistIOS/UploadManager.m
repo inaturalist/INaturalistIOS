@@ -23,6 +23,7 @@
 #import "ImageStore.h"
 #import "UploadObservationOperation.h"
 #import "DeleteRecordOperation.h"
+#import "ObservationAPI.h"
 
 static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 
@@ -35,9 +36,10 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 @property NSDate *lastNetworkOutageNotificationDate;
 @property (assign, getter=isCancelled) BOOL cancelled;
 
-// workaround for restkit bug
-@property NSMutableArray *objectLoaders;
-@property AFHTTPSessionManager *sessionManager;
+// we mostly upload to node...
+@property AFHTTPSessionManager *nodeSessionManager;
+// but for some things we have to talk to rails
+@property AFHTTPSessionManager *railsSessionManager;
 @property NSInteger currentSessionTotalToUpload;
 @property NSInteger currentSessionTotalUploaded;
 @property NSMutableDictionary *uploadTasksProgress;
@@ -55,10 +57,6 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
  */
 - (void)uploadObservations:(NSArray *)observations {
     self.observationsToUpload = [observations mutableCopy];
-    
-    self.sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL inat_baseURL]];
-    [self.sessionManager.requestSerializer setValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
-                                 forHTTPHeaderField:@"Authorization"];
     [self syncUploads];
 }
 
@@ -71,10 +69,6 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     self.recordsToDelete = [deletedRecords mutableCopy];
     
     self.observationsToUpload = [recordsToUpload mutableCopy];
-    
-    self.sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL inat_baseURL]];
-    [self.sessionManager.requestSerializer setValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
-                                 forHTTPHeaderField:@"Authorization"];
     
     if (self.recordsToDelete.count > 0) {
         [self syncDeletes];
@@ -89,11 +83,19 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     }
     
     self.cancelled = NO;
+    
+    // deletes aren't using node yet so we use the rails session manager
 
+    // set the authorization for the rails session manager
+    // as close to sync as possible
+    [self.railsSessionManager.requestSerializer setValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
+                                      forHTTPHeaderField:@"Authorization"];
+    
+    // add the delete jobs to the queue
     for (DeletedRecord *dr in self.recordsToDelete) {
         DeleteRecordOperation *op = [[DeleteRecordOperation alloc] init];
         op.rootObjectId = dr.objectID;
-        op.sessionManager = self.sessionManager;
+        op.railsSessionManager = self.railsSessionManager;
         op.delegate = self.delegate;
         [self.deleteQueue addOperation:op];
     }
@@ -106,13 +108,24 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     
     self.cancelled = NO;
     
-    for (Observation *o in self.observationsToUpload) {
-        UploadObservationOperation *op = [[UploadObservationOperation alloc] init];
-        op.rootObjectId = o.objectID;
-        op.sessionManager = self.sessionManager;
-        op.delegate = self.delegate;
-        [self.uploadQueue addOperation:op];
-    }
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.loginController getJWTTokenSuccess:^(NSDictionary *info) {
+        // set the authorization for the rails session manager
+        // as close to sync as possible
+        [self.nodeSessionManager.requestSerializer setValue:appDelegate.loginController.jwtToken
+                                         forHTTPHeaderField:@"Authorization"];
+
+        // add the observations to the queue
+        for (Observation *o in self.observationsToUpload) {
+            UploadObservationOperation *op = [[UploadObservationOperation alloc] init];
+            op.rootObjectId = o.objectID;
+            op.nodeSessionManager = self.nodeSessionManager;
+            op.delegate = self.delegate;
+            [self.uploadQueue addOperation:op];
+        }
+    } failure:^(NSError *error) {
+        [self.delegate uploadSessionFailedFor:nil error:error];
+    }];
 }
 
 - (void)cancelSyncsAndUploads {
@@ -174,8 +187,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 }
 
 - (void)stopUploadActivity {
-    
-    [self.sessionManager invalidateSessionCancelingTasks:YES];
+    [self.nodeSessionManager invalidateSessionCancelingTasks:YES];
 }
 
 #pragma mark - NSObject lifecycle
@@ -198,9 +210,17 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
         
         self.photoUploads = [[NSMutableDictionary alloc] init];
         
-        self.sessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL inat_baseURL]];
-        [self.sessionManager.requestSerializer setValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
-                                     forHTTPHeaderField:@"Authorization"];
+        // setup rails session manager
+        // we'll add authentication headers when we start an upload
+        self.railsSessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL inat_baseURL]];
+        
+        // setup node session manager
+        // we'll add authentication headers when we start an upload
+        NSURL *nodeApiHost = [NSURL URLWithString:@"https://api.inaturalist.org"];
+        self.nodeSessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:nodeApiHost];
+        AFJSONRequestSerializer *serializer = [[AFJSONRequestSerializer alloc] init];
+        [serializer setValue:@"Patrick 1.0" forHTTPHeaderField:@"User-Agent"];
+        [self.nodeSessionManager setRequestSerializer:serializer];
         
         self.uploadTasksProgress = [NSMutableDictionary dictionary];
         
@@ -229,7 +249,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     [self.deleteQueue removeObserver:self forKeyPath:@"operationCount"];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
-    [self.sessionManager invalidateSessionCancelingTasks:YES];
+    [self.nodeSessionManager invalidateSessionCancelingTasks:YES];
 }
 
 #pragma mark - KVO of operation queues
