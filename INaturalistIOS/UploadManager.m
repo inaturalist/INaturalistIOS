@@ -85,9 +85,10 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     self.cancelled = NO;
     
     // deletes aren't using node yet so we use the rails session manager
-
+    
+    // setup rails session manager
+    self.railsSessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL inat_baseURL]];
     // set the authorization for the rails session manager
-    // as close to sync as possible
     [self.railsSessionManager.requestSerializer setValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
                                       forHTTPHeaderField:@"Authorization"];
     
@@ -108,20 +109,28 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     
     self.cancelled = NO;
     
+    __weak typeof(self)weakSelf = self;
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.loginController getJWTTokenSuccess:^(NSDictionary *info) {
+        
+        // setup node session manager
+        NSURL *nodeApiHost = [NSURL URLWithString:@"https://api.inaturalist.org"];
+        weakSelf.nodeSessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:nodeApiHost];
+        AFJSONRequestSerializer *serializer = [[AFJSONRequestSerializer alloc] init];
+        [serializer setValue:@"Patrick 1.0" forHTTPHeaderField:@"User-Agent"];
+        [weakSelf.nodeSessionManager setRequestSerializer:serializer];
+        
         // set the authorization for the rails session manager
-        // as close to sync as possible
-        [self.nodeSessionManager.requestSerializer setValue:appDelegate.loginController.jwtToken
-                                         forHTTPHeaderField:@"Authorization"];
-
+        [weakSelf.nodeSessionManager.requestSerializer setValue:appDelegate.loginController.jwtToken
+                                             forHTTPHeaderField:@"Authorization"];
+        
         // add the observations to the queue
         for (Observation *o in self.observationsToUpload) {
             UploadObservationOperation *op = [[UploadObservationOperation alloc] init];
             op.rootObjectId = o.objectID;
-            op.nodeSessionManager = self.nodeSessionManager;
-            op.delegate = self.delegate;
-            [self.uploadQueue addOperation:op];
+            op.nodeSessionManager = weakSelf.nodeSessionManager;
+            op.delegate = weakSelf.delegate;
+            [weakSelf.uploadQueue addOperation:op];
         }
     } failure:^(NSError *error) {
         [self.delegate uploadSessionFailedFor:nil error:error];
@@ -187,6 +196,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 }
 
 - (void)stopUploadActivity {
+    [self.railsSessionManager invalidateSessionCancelingTasks:YES];
     [self.nodeSessionManager invalidateSessionCancelingTasks:YES];
 }
 
@@ -209,18 +219,6 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
                                                    object:nil];
         
         self.photoUploads = [[NSMutableDictionary alloc] init];
-        
-        // setup rails session manager
-        // we'll add authentication headers when we start an upload
-        self.railsSessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL inat_baseURL]];
-        
-        // setup node session manager
-        // we'll add authentication headers when we start an upload
-        NSURL *nodeApiHost = [NSURL URLWithString:@"https://api.inaturalist.org"];
-        self.nodeSessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:nodeApiHost];
-        AFJSONRequestSerializer *serializer = [[AFJSONRequestSerializer alloc] init];
-        [serializer setValue:@"Patrick 1.0" forHTTPHeaderField:@"User-Agent"];
-        [self.nodeSessionManager setRequestSerializer:serializer];
         
         self.uploadTasksProgress = [NSMutableDictionary dictionary];
         
@@ -249,6 +247,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     [self.deleteQueue removeObserver:self forKeyPath:@"operationCount"];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
+    [self.railsSessionManager invalidateSessionCancelingTasks:YES];
     [self.nodeSessionManager invalidateSessionCancelingTasks:YES];
 }
 
