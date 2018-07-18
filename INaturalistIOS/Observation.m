@@ -512,8 +512,6 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 
 
 - (NSDictionary *)uploadableRepresentation {
-    // TODO: owners_identification_from_vision temporarily disabled
-    // for node uploads since it's causing 500s when taxon_id is set
     NSDictionary *mapping = @{
                               @"speciesGuess": @"species_guess",
                               @"inatDescription": @"description",
@@ -528,14 +526,19 @@ static RKObjectMapping *defaultSerializationMapping = nil;
                               @"geoprivacy": @"geoprivacy",
                               @"uuid": @"uuid",
                               @"captive": @"captive_flag",
-                              //@"ownersIdentificationFromVision": @"owners_identification_from_vision",
+                              @"ownersIdentificationFromVision": @"owners_identification_from_vision",
                               };
     
     NSMutableDictionary *mutableParams = [NSMutableDictionary dictionary];
     for (NSString *key in mapping) {
         if ([self valueForKey:key]) {
             NSString *mappedName = mapping[key];
-            mutableParams[mappedName] = [self valueForKey:key];
+            NSAttributeDescription *attribute = self.entity.attributesByName[key];
+            if (attribute.attributeType == NSBooleanAttributeType) {
+                mutableParams[mappedName] = @([[self valueForKey:key] boolValue]);
+            } else {
+                mutableParams[mappedName] = [self valueForKey:key];
+            }
         }
     }
     // this is required to avoid clobbering obs photos
