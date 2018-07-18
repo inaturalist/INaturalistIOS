@@ -538,6 +538,9 @@ static RKObjectMapping *defaultSerializationMapping = nil;
             mutableParams[mappedName] = [self valueForKey:key];
         }
     }
+    // this is required to avoid clobbering obs photos
+    // when updating an observation via the node endpoint
+    mutableParams[@"ignore_photos"] = @"true";
     
     // return an immutable copy
     return @{ @"observation": [NSDictionary dictionaryWithDictionary:mutableParams] };
