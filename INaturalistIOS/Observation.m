@@ -541,12 +541,14 @@ static RKObjectMapping *defaultSerializationMapping = nil;
             }
         }
     }
-    // this is required to avoid clobbering obs photos
-    // when updating an observation via the node endpoint
-    mutableParams[@"ignore_photos"] = @"true";
     
     // return an immutable copy
-    return @{ @"observation": [NSDictionary dictionaryWithDictionary:mutableParams] };
+    // ignore_photos is required to avoid clobbering obs photos
+    // when updating an observation via the node endpoint
+    return @{
+             @"observation": [NSDictionary dictionaryWithDictionary:mutableParams],
+             @"ignore_photos": @(YES)
+             };
 }
 
 #pragma mark - ObservationVisualization
