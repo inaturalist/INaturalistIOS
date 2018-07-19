@@ -36,10 +36,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 @property NSDate *lastNetworkOutageNotificationDate;
 @property (assign, getter=isCancelled) BOOL cancelled;
 
-// we mostly upload to node...
 @property AFHTTPSessionManager *nodeSessionManager;
-// but for some things we have to talk to rails
-@property AFHTTPSessionManager *railsSessionManager;
 @property NSInteger currentSessionTotalToUpload;
 @property NSInteger currentSessionTotalUploaded;
 @property NSMutableDictionary *uploadTasksProgress;
@@ -84,22 +81,32 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     
     self.cancelled = NO;
     
-    // deletes aren't using node yet so we use the rails session manager
-    
-    // setup rails session manager
-    self.railsSessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL inat_baseURL]];
-    // set the authorization for the rails session manager
-    [self.railsSessionManager.requestSerializer setValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
-                                      forHTTPHeaderField:@"Authorization"];
-    
-    // add the delete jobs to the queue
-    for (DeletedRecord *dr in self.recordsToDelete) {
-        DeleteRecordOperation *op = [[DeleteRecordOperation alloc] init];
-        op.rootObjectId = dr.objectID;
-        op.railsSessionManager = self.railsSessionManager;
-        op.delegate = self.delegate;
-        [self.deleteQueue addOperation:op];
-    }
+    __weak typeof(self)weakSelf = self;
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.loginController getJWTTokenSuccess:^(NSDictionary *info) {
+        
+        // setup node session manager
+        NSURL *nodeApiHost = [NSURL URLWithString:@"https://api.inaturalist.org"];
+        weakSelf.nodeSessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:nodeApiHost];
+        AFJSONRequestSerializer *serializer = [[AFJSONRequestSerializer alloc] init];
+        [weakSelf.nodeSessionManager setRequestSerializer:serializer];
+        
+        // set the authorization for the rails session manager
+        [weakSelf.nodeSessionManager.requestSerializer setValue:appDelegate.loginController.jwtToken
+                                             forHTTPHeaderField:@"Authorization"];
+
+        
+        // add the delete jobs to the queue
+        for (DeletedRecord *dr in self.recordsToDelete) {
+            DeleteRecordOperation *op = [[DeleteRecordOperation alloc] init];
+            op.rootObjectId = dr.objectID;
+            op.nodeSessionManager = weakSelf.nodeSessionManager;
+            op.delegate = self.delegate;
+            [self.deleteQueue addOperation:op];
+        }
+    } failure:^(NSError *error) {
+        [self.delegate deleteSessionFailedFor:nil error:error];
+    }];
 }
 
 - (void)syncUploads {
@@ -117,7 +124,6 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
         NSURL *nodeApiHost = [NSURL URLWithString:@"https://api.inaturalist.org"];
         weakSelf.nodeSessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:nodeApiHost];
         AFJSONRequestSerializer *serializer = [[AFJSONRequestSerializer alloc] init];
-        [serializer setValue:@"Patrick 1.0" forHTTPHeaderField:@"User-Agent"];
         [weakSelf.nodeSessionManager setRequestSerializer:serializer];
         
         // set the authorization for the rails session manager
@@ -196,7 +202,6 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 }
 
 - (void)stopUploadActivity {
-    [self.railsSessionManager invalidateSessionCancelingTasks:YES];
     [self.nodeSessionManager invalidateSessionCancelingTasks:YES];
 }
 
@@ -247,7 +252,6 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     [self.deleteQueue removeObserver:self forKeyPath:@"operationCount"];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
-    [self.railsSessionManager invalidateSessionCancelingTasks:YES];
     [self.nodeSessionManager invalidateSessionCancelingTasks:YES];
 }
 

@@ -35,7 +35,7 @@
         return;
     }
     
-    if (!self.railsSessionManager) {
+    if (!self.nodeSessionManager) {
         [self markOperationCompleted];
         return;
     }
@@ -53,36 +53,36 @@
     });
 
         
-    NSString *deletePath = [NSString stringWithFormat:@"/%@/%ld.json",
+    NSString *deletePath = [NSString stringWithFormat:@"/%@/%ld",
                             dr.modelName.underscore.pluralize,
                             (long)dr.recordID.integerValue];
     
-    [self.railsSessionManager DELETE:deletePath
-                          parameters:nil
-                             success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                                 // purge from core data
-                                 [dr deleteEntity];
-                                 [[[RKObjectManager sharedManager] objectStore] save:nil];
-                                 
-                                 [self deleteRecordFinishedSuccess:YES syncError:nil];
-                             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                                 BOOL actualSuccess = NO;
-                                 NSHTTPURLResponse *r = [error.userInfo valueForKey:AFNetworkingOperationFailingURLResponseErrorKey];
-                                 if (r) {
-                                     if (r.statusCode == 404) {
-                                         // purge from core data
-                                         [dr deleteEntity];
-                                         [[[RKObjectManager sharedManager] objectStore] save:nil];
-                                         actualSuccess = YES;
-                                     }
-                                 }
-                                 
-                                 if (actualSuccess) {
-                                     [self deleteRecordFinishedSuccess:YES syncError:nil];
-                                 } else {
-                                     [self deleteRecordFinishedSuccess:NO syncError:error];
-                                 }
-                             }];
+    [self.nodeSessionManager DELETE:deletePath
+                         parameters:nil
+                            success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                                // purge from core data
+                                [dr deleteEntity];
+                                [[[RKObjectManager sharedManager] objectStore] save:nil];
+                                
+                                [self deleteRecordFinishedSuccess:YES syncError:nil];
+                            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                                BOOL actualSuccess = NO;
+                                NSHTTPURLResponse *r = [error.userInfo valueForKey:AFNetworkingOperationFailingURLResponseErrorKey];
+                                if (r) {
+                                    if (r.statusCode == 404) {
+                                        // purge from core data
+                                        [dr deleteEntity];
+                                        [[[RKObjectManager sharedManager] objectStore] save:nil];
+                                        actualSuccess = YES;
+                                    }
+                                }
+                                
+                                if (actualSuccess) {
+                                    [self deleteRecordFinishedSuccess:YES syncError:nil];
+                                } else {
+                                    [self deleteRecordFinishedSuccess:NO syncError:error];
+                                }
+                            }];
 }
 
 @end

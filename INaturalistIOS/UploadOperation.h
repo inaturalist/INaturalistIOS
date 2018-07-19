@@ -14,10 +14,7 @@
 #import "ObservationAPI.h"
 
 @interface UploadOperation : NSOperation
-// we mostly upload to the node endpoint...
 @property AFHTTPSessionManager *nodeSessionManager;
-// but for a few things we need to talk to rails
-@property AFHTTPSessionManager *railsSessionManager;
 @property NSManagedObjectID *rootObjectId;
 @property (weak) id <UploadManagerNotificationDelegate> delegate;
 
