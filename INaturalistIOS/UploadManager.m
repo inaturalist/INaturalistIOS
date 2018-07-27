@@ -88,8 +88,8 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
         // setup node session manager
         NSURL *nodeApiHost = [NSURL URLWithString:@"https://api.inaturalist.org"];
         weakSelf.nodeSessionManager = [[AFHTTPSessionManager alloc] initWithBaseURL:nodeApiHost];
-        AFJSONRequestSerializer *serializer = [[AFJSONRequestSerializer alloc] init];
-        [weakSelf.nodeSessionManager setRequestSerializer:serializer];
+        // delete operations return no data
+        weakSelf.nodeSessionManager.responseSerializer = [AFHTTPResponseSerializer serializer];
         
         // set the authorization for the rails session manager
         [weakSelf.nodeSessionManager.requestSerializer setValue:appDelegate.loginController.jwtToken
