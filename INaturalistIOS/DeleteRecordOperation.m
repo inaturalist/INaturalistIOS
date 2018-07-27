@@ -52,8 +52,8 @@
         [self.delegate deleteSessionStarted:dr];
     });
 
-        
-    NSString *deletePath = [NSString stringWithFormat:@"/%@/%ld",
+    
+    NSString *deletePath = [NSString stringWithFormat:@"/v1/%@/%ld",
                             dr.modelName.underscore.pluralize,
                             (long)dr.recordID.integerValue];
     
