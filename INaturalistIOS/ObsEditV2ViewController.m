@@ -1660,7 +1660,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - UITableViewCell title helpers
 
 - (NSString *)geoPrivacyTitle {
-    return NSLocalizedString(@"Geo Privacy", @"Geoprivacy button title");
+    return NSLocalizedString(@"Geoprivacy", @"Geoprivacy button title");
 }
 
 - (NSString *)captiveTitle {
