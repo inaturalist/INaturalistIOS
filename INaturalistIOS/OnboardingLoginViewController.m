@@ -30,8 +30,6 @@
 #import "INatReachability.h"
 #import "LoginSwitchContextButton.h"
 
-static char PARTNER_ASSOCIATED_KEY;
-
 @interface OnboardingLoginViewController () <UITextFieldDelegate, INatWebControllerDelegate>
 
 @property IBOutlet UILabel *titleLabel;
@@ -297,7 +295,7 @@ static char PARTNER_ASSOCIATED_KEY;
             }
         }
     }
-    
+        
     if (self.startsInLoginMode && self.textfieldStackView.arrangedSubviews.count == 3) {
         [self switchAuthContext:nil];
     }
