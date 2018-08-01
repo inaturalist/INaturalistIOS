@@ -4,6 +4,22 @@
 <array>
 	<dict>
 		<key>countryName</key>
+		<string>Portugal</string>
+		<key>identifier</key>
+		<string>8</string>
+		<key>logoName</key>
+		<string>network_logo_pt</string>
+		<key>name</key>
+		<string>Biodiversity4All</string>
+		<key>baseUrl</key>
+		<string>https://www.biodiversity4all.org</string>
+		<key>mobileCountryCodes</key>
+		<array>
+			<string>268</string>
+		</array>
+	</dict>
+	<dict>
+		<key>countryName</key>
 		<string>New Zealand</string>
 		<key>identifier</key>
 		<string>3</string>
