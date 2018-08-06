@@ -1,35 +1,35 @@
 /* Class = "UILabel"; text = "Project name"; ObjectID = "5g3-Ck-7dj"; */
-"5g3-Ck-7dj.text" = "Project name";
+"5g3-Ck-7dj.text" = "Nome do projeto";
 
 /* Class = "UILabel"; text = "Label"; ObjectID = "8Dx-bO-69j"; */
-"8Dx-bO-69j.text" = "Label";
+"8Dx-bO-69j.text" = "Etiqueta";
 
 /* Class = "UITabBarItem"; title = "Projects"; ObjectID = "AeY-f8-V2Q"; */
-"AeY-f8-V2Q.title" = "Projects";
+"AeY-f8-V2Q.title" = "Projetos";
 
 /* Class = "UILabel"; text = "Label"; ObjectID = "DxM-XT-Dil"; */
-"DxM-XT-Dil.text" = "Label";
+"DxM-XT-Dil.text" = "Etiqueta";
 
 /* Class = "UILabel"; text = "Label"; ObjectID = "VoO-3j-QSk"; */
-"VoO-3j-QSk.text" = "Label";
+"VoO-3j-QSk.text" = "Etiqueta";
 
 /* Class = "UILabel"; text = "50"; ObjectID = "Wp5-th-kO8"; */
 "Wp5-th-kO8.text" = "50";
 
 /* Class = "UIButton"; normalTitle = "Join"; ObjectID = "XoY-j9-s3Z"; */
-"XoY-j9-s3Z.normalTitle" = "Join";
+"XoY-j9-s3Z.normalTitle" = "Aderir";
 
 /* Class = "UINavigationItem"; title = "Projects"; ObjectID = "erP-HQ-jwa"; */
-"erP-HQ-jwa.title" = "Projects";
+"erP-HQ-jwa.title" = "Projetos";
 
 /* Class = "UITabBarItem"; title = "Projects"; ObjectID = "f8w-lW-pBK"; */
-"f8w-lW-pBK.title" = "Projects";
+"f8w-lW-pBK.title" = "Projetos";
 
 /* Class = "UILabel"; text = "Label"; ObjectID = "gpj-j1-cmk"; */
-"gpj-j1-cmk.text" = "Label";
+"gpj-j1-cmk.text" = "Etiqueta";
 
 /* Class = "UIButton"; normalTitle = "About"; ObjectID = "mg1-3N-wrc"; */
-"mg1-3N-wrc.normalTitle" = "About";
+"mg1-3N-wrc.normalTitle" = "Acerca de";
 
 /* Class = "UILabel"; text = "Label"; ObjectID = "vWl-jb-1Ry"; */
-"vWl-jb-1Ry.text" = "Label";
+"vWl-jb-1Ry.text" = "Etiqueta";
