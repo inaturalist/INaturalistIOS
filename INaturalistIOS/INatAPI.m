@@ -69,14 +69,40 @@
                                 done(nil, 0, error);
                             });
                         } else {
-                            if (classForMapping) {
-                                [weakSelf extractObjectsFromData:data
-                                                    classMapping:classForMapping
-                                                         handler:done];
-                            } else {
+                            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                            if (httpResponse.statusCode != 200) {
+                                NSString *baseErrorText = NSLocalizedString(@"Unknown Error: %ld", @"message to the user when we get an unknown error. the %ld will be a status code");
+                                NSString *errorText = [NSString stringWithFormat:baseErrorText, httpResponse.statusCode];
+                                if (data) {
+                                    // this seems to be how we get errors back from node
+                                    id json = [NSJSONSerialization JSONObjectWithData:data options:nil error:nil];
+                                    id originalErrors = [json valueForKeyPath:@"error.original.errors"];
+                                    if (originalErrors) {
+                                        id firstKey = [[originalErrors allKeys] firstObject];
+                                        id firstValue = [originalErrors[firstKey] firstObject];
+                                        errorText = [NSString stringWithFormat:@"%@ %@", firstKey, firstValue];
+                                    }
+                                }
+                                
+                                NSDictionary *userInfo = @{
+                                                           NSLocalizedDescriptionKey: errorText,
+                                                           };
+                                NSError *error = [NSError errorWithDomain:@"org.inaturalist.api.http"
+                                                                     code:httpResponse.statusCode
+                                                                 userInfo:userInfo];
                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                    done(nil, 0, nil);
+                                    done(nil, 0, error);
                                 });
+                            } else {
+                                if (classForMapping) {
+                                    [weakSelf extractObjectsFromData:data
+                                                        classMapping:classForMapping
+                                                             handler:done];
+                                } else {
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        done(nil, 0, nil);
+                                    });
+                                }
                             }
                         }
                     }] resume];
