@@ -25,6 +25,7 @@
 #import "ExploreUser.h"
 #import "PeopleAPI.h"
 #import "ExploreUserRealm.h"
+#import "ExploreTaxonRealm.h"
 
 @interface LoginController () <GPPSignInDelegate> {
     NSString    *externalAccessToken;
@@ -492,7 +493,7 @@ NSInteger INatMinPasswordLength = 6;
     me.siteId = partner.identifier;
     [realm commitWriteTransaction];
     
-    // delete any stashed taxa
+    // delete any stashed taxa from core data
     [Taxon deleteAll];
     
     NSError *saveError = nil;
@@ -500,36 +501,17 @@ NSInteger INatMinPasswordLength = 6;
     if (saveError) {
         [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving: %@",
                                             saveError.localizedDescription]];
-        return;
     }
     
-    [[Analytics sharedClient] debugLog:@"Network - Re-fetch Taxa after login"];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/taxa"
-                                                    usingBlock:^(RKObjectLoader *loader) {
-                                                        
-                                                        loader.objectMapping = [Taxon mapping];
-                                                        
-                                                        loader.onDidLoadObjects = ^(NSArray *objects) {
-                                                            
-                                                            // update timestamps on taxa objects
-                                                            NSDate *now = [NSDate date];
-                                                            [objects enumerateObjectsUsingBlock:^(INatModel *o,
-                                                                                                  NSUInteger idx,
-                                                                                                  BOOL *stop) {
-                                                                [o setSyncedAt:now];
-                                                            }];
-                                                            
-                                                            NSError *saveError = nil;
-                                                            [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-                                                            if (saveError) {
-                                                                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error saving store: %@",
-                                                                                                    saveError.localizedDescription]];
-                                                            }
-                                                        };
-                                                    }];
+    // delete any stashed taxa from realm
+    RLMResults *allExploreTaxa = [ExploreTaxonRealm allObjects];
+    [realm beginWriteTransaction];
+    [realm deleteObjects:allExploreTaxa];
+    [realm commitWriteTransaction];
     
+    // can't do this in node yet
     [[Analytics sharedClient] debugLog:@"Network - Put Me User"];
-    [[RKClient sharedClient] put:[NSString stringWithFormat:@"/users/%ld", me.userId]
+    [[RKClient sharedClient] put:[NSString stringWithFormat:@"/users/%ld", (long)me.userId]
                       usingBlock:^(RKRequest *request) {
                           request.params = @{
                                              @"user[site_id]": @(partner.identifier),
