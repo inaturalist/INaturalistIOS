@@ -22,6 +22,9 @@
 #import "User.h"
 #import "UploadManager.h"
 #import "Taxon.h"
+#import "ExploreUser.h"
+#import "PeopleAPI.h"
+#import "ExploreUserRealm.h"
 
 @interface LoginController () <GPPSignInDelegate> {
     NSString    *externalAccessToken;
@@ -53,6 +56,15 @@ NSInteger INatMinPasswordLength = 6;
     }
     
     return self;
+}
+
+- (PeopleAPI *)peopleApi {
+    static PeopleAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[PeopleAPI alloc] init];
+    });
+    return _api;
 }
 
 - (void)logout {
@@ -263,28 +275,22 @@ NSInteger INatMinPasswordLength = 6;
                                       NSLog(@"error parsing json: %@", error.localizedDescription);
                                   }
                                   
-                                  NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];
-                                  User *user = [[User alloc] initWithEntity:[User entity]
-                                             insertIntoManagedObjectContext:context];
-                                  user.login = [parsedData objectForKey:@"login"] ?: nil;
-                                  user.recordID = [parsedData objectForKey:@"id"] ?: nil;
-                                  user.observationsCount = [parsedData objectForKey:@"observations_count"] ?: @(0);
-                                  user.identificationsCount = [parsedData objectForKey:@"identifications_count"] ?: @(0);
-                                  user.siteId = [parsedData objectForKey:@"site_id"] ?: @(1);
+                                  ExploreUserRealm *me = [[ExploreUserRealm alloc] init];
+                                  me.login = [parsedData objectForKey:@"login"] ?: @"";
+                                  me.userId = [[parsedData objectForKey:@"id"] integerValue];
+                                  me.observationsCount = [[parsedData objectForKey:@"observations_count"] integerValue];
+                                  me.siteId = [[parsedData objectForKey:@"site_id"] integerValue];
+                                  me.siteId = [parsedData objectForKey:@"site_id"] ?: @(1);
                                   
-                                  [[Analytics sharedClient] registerUserWithIdentifier:user.recordID.stringValue];
+                                  RLMRealm *realm = [RLMRealm defaultRealm];
+                                  [realm beginWriteTransaction];
+                                  [realm addOrUpdateObject:me];
+                                  [realm commitWriteTransaction];
                                   
-                                  NSError *saveError = nil;
-                                  [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-                                  if (saveError) {
-                                      [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving: %@",
-                                                                          saveError.localizedDescription]];
-                                      [self executeError:saveError];
-                                      return;
-                                  }
+                                  NSString *identifier = [NSString stringWithFormat:@"%ld", me.userId];
+                                  [[Analytics sharedClient] registerUserWithIdentifier:identifier];
                                   
-                                  NSNumber *userId = user.recordID;
-                                  [[NSUserDefaults standardUserDefaults] setValue:userId
+                                  [[NSUserDefaults standardUserDefaults] setValue:@(me.userId)
                                   										   forKey:kINatUserIdPrefKey];
                                   [[NSUserDefaults standardUserDefaults] setValue:iNatAccessToken
                                                                            forKey:INatTokenPrefKey];
@@ -479,9 +485,12 @@ NSInteger INatMinPasswordLength = 6;
     [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) reconfigureForNewBaseUrl];
     
     // put user object changing site id
-    User *me = [self fetchMe];
+    ExploreUserRealm *me = [self meUserLocal];
     if (!me) { return; }
-    me.siteId = @(partner.identifier);
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    me.siteId = partner.identifier;
+    [realm commitWriteTransaction];
     
     // delete any stashed taxa
     [Taxon deleteAll];
@@ -520,7 +529,7 @@ NSInteger INatMinPasswordLength = 6;
                                                     }];
     
     [[Analytics sharedClient] debugLog:@"Network - Put Me User"];
-    [[RKClient sharedClient] put:[NSString stringWithFormat:@"/users/%ld", (long)me.recordID.integerValue]
+    [[RKClient sharedClient] put:[NSString stringWithFormat:@"/users/%ld", me.userId]
                       usingBlock:^(RKRequest *request) {
                           request.params = @{
                                              @"user[site_id]": @(partner.identifier),
@@ -538,8 +547,69 @@ NSInteger INatMinPasswordLength = 6;
 
 #pragma mark - Convenience method for fetching the logged in User
 
-- (User *)fetchMe {
-	
+- (ExploreUserRealm *)meUserLocal {
+    NSNumber *userId = nil;
+    NSString *username = nil;
+    if ([[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey]) {
+        userId = [[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey];
+    } else {
+        username = [[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey];
+    }
+    
+    if (userId) {
+        ExploreUserRealm *me = [ExploreUserRealm objectForPrimaryKey:userId];
+        if (me) {
+            return me;
+        }
+    } else if (username) {
+        ExploreUserRealm *me = [[ExploreUserRealm objectsWhere:@"login == %@", username] firstObject];
+        if (me) {
+            [[NSUserDefaults standardUserDefaults] setValue:@(me.userId) forKey:kINatUserIdPrefKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            return me;
+        }
+    }
+    
+    // if we can't find the me user in realm,
+    // try to fetch from core data
+    User *meFromCoreData = [self fetchMeFromCoreData];
+    if (meFromCoreData) {
+        ExploreUserRealm *me = [[ExploreUserRealm alloc] init];
+        me.login = meFromCoreData.login;
+        me.userId = meFromCoreData.recordID.integerValue;
+        me.name = meFromCoreData.name;
+        me.userIconString = meFromCoreData.userIconURL;
+        me.email = nil;
+        me.observationsCount = meFromCoreData.observationsCount.integerValue;
+        me.siteId = meFromCoreData.siteId.integerValue;
+        
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        [realm addOrUpdateObject:me];
+        [realm commitWriteTransaction];
+        
+        return me;
+    }
+    
+    return nil;
+}
+
+- (void)meUserRemoteCompletion:(void (^)(ExploreUserRealm *))completion {
+    [[self peopleApi] fetchMeHandler:^(NSArray *results, NSInteger count, NSError *error) {
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        ExploreUserRealm *me = nil;
+        for (ExploreUser *user in results) {
+            me = [[ExploreUserRealm alloc] initWithMantleModel:user];
+            [realm addOrUpdateObject:me];
+        }
+        [realm commitWriteTransaction];
+        
+        completion(me);
+    }];
+}
+
+- (User *)fetchMeFromCoreData {
 	NSNumber *userId = nil;
 	NSString *username = nil;
 	if ([[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey]) {

@@ -18,7 +18,6 @@
 #import "LoginController.h"
 #import "ObservationAPI.h"
 #import "Analytics.h"
-#import "User.h"
 #import "Observation.h"
 #import "UpdatesItemCell.h"
 #import "ObservationPhoto.h"
@@ -91,8 +90,8 @@
     });
 
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    User *me = [appDelegate.loginController fetchMe];
-    NSPredicate *myUpdates = [NSPredicate predicateWithFormat:@"resourceOwnerId == %ld", me.recordID.integerValue];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+    NSPredicate *myUpdates = [NSPredicate predicateWithFormat:@"resourceOwnerId == %ld", me.userId];
     self.updates = [[ExploreUpdateRealm objectsWithPredicate:myUpdates]
                     sortedResultsUsingProperty:@"createdAt" ascending:NO];
     
@@ -154,7 +153,6 @@
         [self.tableView.pullToRefreshView startAnimating];
     }
 
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [self.observationApi updatesWithHandler:^(NSArray *results, NSInteger count, NSError *error) {
         
         if (error) {

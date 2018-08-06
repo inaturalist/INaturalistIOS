@@ -37,9 +37,9 @@
 #import "OnboardingLoginViewController.h"
 #import "UIColor+INaturalist.h"
 #import "LoginController.h"
-#import "User.h"
 #import "INaturalistAppDelegate.h"
 #import "INatReachability.h"
+#import "ExploreUserRealm.h"
 
 @interface ExploreSearchViewController () <CLLocationManagerDelegate, ActiveSearchTextDelegate> {
     ExploreObservationsController *observationsController;
@@ -304,13 +304,13 @@
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = [appDelegate loginController];
-    User *me = [login fetchMe];
+    ExploreUserRealm *me = [login meUserLocal];
     if (me) {
         ExploreUser *exploreMe = [[ExploreUser alloc] init];
-        exploreMe.userId = me.recordID.integerValue;
+        exploreMe.userId = me.userId;
         exploreMe.login = me.login;
         exploreMe.name = me.name;
-        exploreMe.userIcon = [NSURL URLWithString:me.userIconURL];
+        exploreMe.userIcon = me.userIcon;
         
        	[observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:exploreMe]];
         [searchMenu showActiveSearch];

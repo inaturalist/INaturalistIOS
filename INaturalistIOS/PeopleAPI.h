@@ -12,8 +12,10 @@
 
 @interface PeopleAPI : INatAPI
 
-- (void)removeProfilePhotoForUser:(User *)user handler:(INatAPIFetchCompletionCountHandler)done;
-- (void)uploadProfilePhoto:(UIImage *)image forUser:(User *)user handler:(INatAPIFetchCompletionCountHandler)done;
-- (void)setUsername:(NSString *)username forUser:(User *)user handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)removeProfilePhotoForUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)uploadProfilePhoto:(UIImage *)image forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)setUsername:(NSString *)username forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)fetchMeHandler:(INatAPIFetchCompletionCountHandler)done;
+- (void)setEmailAddress:(NSString *)email forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
 
 @end

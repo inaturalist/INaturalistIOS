@@ -33,7 +33,6 @@
 #import "UIImageView+WebCache.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
-#import "User.h"
 #import "MeHeaderView.h"
 #import "AnonHeaderView.h"
 #import "INatWebController.h"
@@ -205,8 +204,8 @@
                                                                     preferredStyle:UIAlertControllerStyleActionSheet];
             
             INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-            User *me = [appDelegate.loginController fetchMe];
-            if (me.userIconURL && ![me.userIconURL isEqualToString:@""]) {
+            ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+            if (me.userIcon) {
 	            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Remove my profile photo", nil)
 	                                                      style:UIAlertActionStyleDefault
 	                                                    handler:^(UIAlertAction * _Nonnull action) {
@@ -242,7 +241,7 @@
     }
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    User *me = [appDelegate.loginController fetchMe];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
     if (me) {
         [[Analytics sharedClient] event:kAnalyticsEventProfilePhotoRemoved];
 
@@ -252,7 +251,7 @@
         hud.labelText = NSLocalizedString(@"Removing...", nil);
 
         __weak typeof(self) weakSelf = self;
-        [self.peopleApi removeProfilePhotoForUser:me handler:^(NSArray *results, NSInteger count, NSError *error) {
+        [self.peopleApi removeProfilePhotoForUserId:me.userId handler:^(NSArray *results, NSInteger count, NSError *error) {
         	[hud hide:YES];
             if (error) {
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Delete Error", nil)
@@ -295,9 +294,9 @@
     UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    User *me = [appDelegate.loginController fetchMe];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
 	if (me) {
-        BOOL alreadyHadPhoto = [me userIconURL] && ![[me userIconURL] isEqualToString:@""];
+        BOOL alreadyHadPhoto = me.userIcon != nil;
         [[Analytics sharedClient] event:kAnalyticsEventProfilePhotoChanged
                          withProperties:@{ @"AlreadyHadPhoto": alreadyHadPhoto ? @"Yes" : @"No" }];
 
@@ -307,7 +306,7 @@
         hud.labelText = NSLocalizedString(@"Uploading...", nil);
 
 		__weak typeof(self) weakSelf = self;
-		[self.peopleApi uploadProfilePhoto:image forUser:me handler:^(NSArray *results, NSInteger count, NSError *error) {
+        [self.peopleApi uploadProfilePhoto:image forUserId:me.userId handler:^(NSArray *results, NSInteger count, NSError *error) {
 			[hud hide:YES];
 			if (error) {
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Upload Error", nil)
@@ -460,7 +459,7 @@
 	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 	if ([appDelegate.loginController isLoggedIn]) {
         
-		User *me = [appDelegate.loginController fetchMe];
+        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
         [[Analytics sharedClient] debugLog:@"Network - Refresh 10 recent observations"];
         
         NSString *obsFetchPath = [NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields",
@@ -492,8 +491,8 @@
 - (void)checkForDeleted {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     if ([appDelegate.loginController isLoggedIn]) {
-        User *me = [appDelegate.loginController fetchMe];
-        
+        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+
         NSDate *lastSyncDate = [[NSUserDefaults standardUserDefaults] objectForKey:INatLastDeletedSync];
         if (!lastSyncDate) {
             // have never synced; use unix timestamp date of 0
@@ -862,13 +861,21 @@
 #pragma mark - Header helpers
 
 - (void)configureHeaderForLoggedInUser {
-	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-	if ([appDelegate.loginController isLoggedIn]) {
-		User *me = [appDelegate.loginController fetchMe];
-		if (me) {
-            self.navigationItem.title = me.login;
-            [self configureHeaderView:self.meHeader forUser:me];
-        }
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if ([appDelegate.loginController isLoggedIn]) {
+        // initially configure header for the cached user...
+        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+        self.navigationItem.title = me.login;
+        [self configureHeaderView:self.meHeader forUser:me];
+
+        // and try to fetch the user from the server just in case
+        __weak typeof(self)weakSelf = self;
+        [appDelegate.loginController meUserRemoteCompletion:^(ExploreUserRealm *me) {
+            if (me) {
+                weakSelf.navigationItem.title = me.login;
+                [weakSelf configureHeaderView:self.meHeader forUser:me];
+            }
+        }];
     }
 }
 
@@ -895,7 +902,7 @@
     [view startAnimatingUpload];
 }
 
-- (void)configureHeaderView:(MeHeaderView *)view forUser:(User *)user {
+- (void)configureHeaderView:(MeHeaderView *)view forUser:(id <UserVisualization>)user {
     NSUInteger needingUploadCount = [[Observation needingUpload] count];
     NSUInteger needingDeleteCount = [Observation deletedRecordCount] + [ObservationPhoto deletedRecordCount] + [ProjectObservation deletedRecordCount] + [ObservationFieldValue deletedRecordCount];
     
@@ -1004,9 +1011,9 @@
                                                                @"accessibility label for choose profile photo button");
         
         // icon
-        if (user.mediumUserIconURL && ![user.mediumUserIconURL isEqualToString:@""]) {
+        if (user.userIconMedium) {
             // render the user icon as an image, not a mask
-            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:user.mediumUserIconURL]];
+            NSURLRequest *request = [NSURLRequest requestWithURL:user.userIconMedium];
             __weak typeof(view)weakView = view;
             [view.iconButton setImageForState:UIControlStateNormal
                                withURLRequest:request
@@ -1015,9 +1022,9 @@
                                           [weakView.iconButton setImage:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                                                            forState:UIControlStateNormal];
                                       } failure:nil];
-        } else if (user.userIconURL && ![user.userIconURL isEqualToString:@""]) {
+        } else if (user.userIcon) {
             // render the user icon as an image, not a mask
-            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:user.userIconURL]];
+            NSURLRequest *request = [NSURLRequest requestWithURL:user.userIcon];
             __weak typeof(view)weakView = view;
             [view.iconButton setImageForState:UIControlStateNormal
                                withURLRequest:request
@@ -1034,7 +1041,7 @@
         }
         
         // observation count
-        NSInteger observationCount = MAX(user.observationsCount.integerValue, [[Observation allObjects] count]);
+        NSInteger observationCount = MAX(user.observationsCount, [[Observation allObjects] count]);
         if (observationCount > 0) {
             NSString *baseObsCountStr;
             if (observationCount == 1) {
@@ -1052,18 +1059,14 @@
 - (void)loadUserForHeader {
 	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 	if ([appDelegate.loginController isLoggedIn]) {
-		User *me = [appDelegate.loginController fetchMe];        
+        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
         self.navigationItem.title = me.login;
         
         if ([[INatReachability sharedClient] isNetworkReachable]) {
-            NSString *path = [NSString stringWithFormat:@"/people/%ld.json", (long)me.recordID.integerValue];
-            
-            [[Analytics sharedClient] debugLog:@"Network - Load me for header"];
-            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
-                                                            usingBlock:^(RKObjectLoader *loader) {
-                                                                loader.objectMapping = [User mapping];
-                                                                loader.delegate = self;
-                                                            }];
+            __weak typeof(self)weakSelf = self;
+            [appDelegate.loginController meUserRemoteCompletion:^(ExploreUserRealm *me) {
+                [weakSelf.tableView reloadData];
+            }];
         }
     } else {
         self.navigationItem.title = NSLocalizedString(@"Me", @"Placeholder text for not logged title on me tab.");
@@ -1403,31 +1406,7 @@
 
 #pragma mark - RKObjectLoaderDelegate
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
-{
-    if ([objectLoader.URL.absoluteString rangeOfString:@"/people/"].location != NSNotFound) {
-        // got me object
-        
-        NSError *saveError;
-        [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-        if (saveError) {
-            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"save error: %@",
-                                                saveError.localizedDescription]];
-            
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Save Error", nil)
-                                                                           message:saveError.localizedDescription
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                      style:UIAlertActionStyleCancel
-                                                    handler:nil]];
-            [self presentViewController:alert animated:YES completion:nil];
-        }
-        
-        // triggers reconfiguration of the header
-        [self.tableView reloadData];
-
-        return;
-    }
-    
+{    
 	[self.refreshControl endRefreshing];
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {

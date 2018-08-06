@@ -15,7 +15,6 @@
 #import "ObsDetailActivityViewModel.h"
 #import "Observation.h"
 #import "DisclosureCell.h"
-#import "User.h"
 #import "Taxon.h"
 #import "ExploreTaxon.h"
 #import "ExploreTaxonRealm.h"
@@ -542,8 +541,8 @@
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = appDelegate.loginController;
     if (login.isLoggedIn) {
-        User *loggedInUser = [login fetchMe];
-        if ([loggedInUser.login isEqualToString:[activity userName]]) {
+        ExploreUserRealm *me = [login meUserLocal];
+        if ([me.login isEqualToString:[activity userName]]) {
             return YES;
         }
     }
@@ -555,7 +554,7 @@
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = appDelegate.loginController;
     if (login.isLoggedIn) {
-        User *loggedInUser = [login fetchMe];
+        ExploreUserRealm *loggedInUser = [login meUserLocal];
         for (id <IdentificationVisualization> eachId in self.observation.identifications) {
             if ([[eachId userName] isEqualToString:loggedInUser.login] && [eachId isCurrent]) {
                 

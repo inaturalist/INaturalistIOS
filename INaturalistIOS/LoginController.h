@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+@class ExploreUserRealm;
 @class Partner;
 @class User;
 @class UploadManager;
@@ -47,7 +48,8 @@ typedef void (^LoginErrorBlock)(NSError *error);
 
 - (void)loggedInUserSelectedPartner:(Partner *)partner
                          completion:(void (^)(void))completion;
-- (User *)fetchMe;
+- (ExploreUserRealm *)meUserLocal;
+- (void)meUserRemoteCompletion:(void (^)(ExploreUserRealm *me))completion;
 
 @property (readonly) BOOL isLoggedIn;
 @property UploadManager *uploadManager;

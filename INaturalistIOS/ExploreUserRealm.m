@@ -16,6 +16,7 @@
         self.login = model.login;
         self.name = model.name;
         self.userIconString = model.userIcon.absoluteString;
+        self.email = model.email;
     }
     return self;
 }
@@ -26,6 +27,12 @@
 
 - (NSURL *)userIcon {
     return [NSURL URLWithString:self.userIconString];
+}
+
+- (NSURL *)userIconMedium {
+    NSString *mediumUrlString = [self.userIconString stringByReplacingOccurrencesOfString:@"thumb"
+                                                                               withString:@"medium"];
+    return [NSURL URLWithString:mediumUrlString];
 }
 
 @end

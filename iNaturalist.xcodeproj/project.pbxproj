@@ -594,6 +594,7 @@
 		FA4529E71A03F70200147895 /* ExploreRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreRegion.m; sourceTree = "<group>"; };
 		FA4714F61ED7A88F00D57FDE /* TaxonSelectButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxonSelectButtonCell.h; sourceTree = "<group>"; };
 		FA4714F71ED7A88F00D57FDE /* TaxonSelectButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonSelectButtonCell.m; sourceTree = "<group>"; };
+		FA4B096421116F5600E942B3 /* UserVisualization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserVisualization.h; sourceTree = "<group>"; };
 		FA4C195F1B30EDB70066CA22 /* partners.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = partners.plist; sourceTree = "<group>"; };
 		FA4C19621B30EE890066CA22 /* Partner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Partner.h; sourceTree = "<group>"; };
 		FA4C19631B30EE890066CA22 /* Partner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Partner.m; sourceTree = "<group>"; };
@@ -1783,6 +1784,7 @@
 				FAA6EB071C8E5A1300F43552 /* CommentVisualization.h */,
 				FAA6EB081C8E61A300F43552 /* ActivityVisualization.h */,
 				FAA6EB0C1C8F821800F43552 /* FaveVisualization.h */,
+				FA4B096421116F5600E942B3 /* UserVisualization.h */,
 			);
 			name = ViewProtocols;
 			sourceTree = "<group>";

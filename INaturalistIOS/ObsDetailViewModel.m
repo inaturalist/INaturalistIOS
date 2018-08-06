@@ -13,7 +13,6 @@
 
 #import "ObsDetailViewModel.h"
 #import "Observation.h"
-#import "User.h"
 #import "Taxon.h"
 #import "TaxaAPI.h"
 #import "ExploreTaxonRealm.h"
@@ -38,6 +37,7 @@
 #import "INatPhoto.h"
 #import "UIImage+INaturalist.h"
 #import "NSLocale+INaturalist.h"
+#import "ExploreUserRealm.h"
 
 @interface ObsDetailViewModel ()
 
@@ -106,14 +106,14 @@
         // me
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         if (appDelegate.loginController.isLoggedIn) {
-            User *user = [appDelegate.loginController fetchMe];
-            if (user.userIconURL) {
-                [cell.cellImageView setImageWithURL:[NSURL URLWithString:user.userIconURL]
+            ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+            if (me.userIcon) {
+                [cell.cellImageView setImageWithURL:me.userIcon
                                    placeholderImage:[UIImage inat_defaultUserImage]];
             } else {
                 cell.cellImageView.image = [UIImage inat_defaultUserImage];
             }
-            cell.titleLabel.text = user.login;
+            cell.titleLabel.text = me.login;
         } else {
             cell.titleLabel.text = @"Me";            
             cell.cellImageView.image = [UIImage inat_defaultUserImage];

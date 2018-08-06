@@ -27,7 +27,6 @@
 #import "ProjectObservation.h"
 #import "Comment.h"
 #import "Identification.h"
-#import "User.h"
 #import "DeletedRecord.h"
 #import "INatUITabBarController.h"
 #import "NXOAuth2.h"
@@ -47,6 +46,7 @@
 #import "SettingsSwitchCell.h"
 #import "SettingsDetailTextCell.h"
 #import "SettingsVersionCell.h"
+#import "ExploreUserRealm.h"
 
 typedef NS_ENUM(NSInteger, SettingsSection) {
     SettingsSectionAccount = 0,
@@ -65,12 +65,13 @@ static const int SettingsHelpRowCount = 3;
 
 typedef NS_ENUM(NSInteger, SettingsAppCell) {
     SettingsAppCellChangeUsername = 0,
+    SettingsAppCellChangeEmail,
     SettingsAppCellAutocompleteNames,
     SettingsAppCellAutomaticUpload,
     SettingsAppCellSuggestSpecies,
     SettingsAppCellNetwork
 };
-static const int SettingsAppRowCount = 5;
+static const int SettingsAppRowCount = 6;
 
 typedef NS_ENUM(NSInteger, SettingsAccountCell) {
     SettingsAccountCellUsername,
@@ -145,6 +146,14 @@ static const int SettingsVersionRowCount = 1;
                                                                    target:self
                                                                    action:@selector(launchCredits)];
     self.navigationItem.rightBarButtonItem = aboutButton;
+    
+    // fetch the me user from the server to populate login and email address fields
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    LoginController *login = appDelegate.loginController;
+    __weak typeof(self)weakSelf = self;
+    [login meUserRemoteCompletion:^(ExploreUserRealm *me) {
+        [weakSelf.tableView reloadData];
+    }];
 }
 
 - (void)dealloc {
@@ -163,6 +172,41 @@ static const int SettingsVersionRowCount = 1;
 
 #pragma mark - Settings Event Actions target
 
+- (void)tappedEmail {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
+        NSString *title = NSLocalizedString(@"Change email address?",nil);
+        NSString *msg = NSLocalizedString(@"Are you really sure?",
+                                          nil);
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:msg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+            textField.text = me.email;
+        }];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Change Email", nil)
+                                                  style:UIAlertActionStyleDefault
+                                                handler:^(UIAlertAction * _Nonnull action) {
+                                                    UITextField *field = [alert.textFields firstObject];
+                                                    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+                                                    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+                                                    if (![me.login isEqualToString:field.text]) {
+                                                        [self changeEmailTo:(NSString *)field.text];
+                                                    }
+                                                }]];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+    } else {
+        [self networkUnreachableAlert];
+    }
+
+}
+
 - (void)tappedUsername {
     if ([[INatReachability sharedClient] isNetworkReachable]) {
         NSString *title = NSLocalizedString(@"Change username?",nil);
@@ -174,7 +218,7 @@ static const int SettingsVersionRowCount = 1;
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
             INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-            User *me = [appDelegate.loginController fetchMe];
+            ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
             textField.text = me.login;
         }];
         [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",nil)
@@ -185,7 +229,7 @@ static const int SettingsVersionRowCount = 1;
                                                 handler:^(UIAlertAction * _Nonnull action) {
                                                     UITextField *field = [alert.textFields firstObject];
                                                     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-                                                    User *me = [appDelegate.loginController fetchMe];
+                                                    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
                                                     if (![me.login isEqualToString:field.text]) {
                                                         [self changeUsernameTo:(NSString *)field.text];
                                                     }
@@ -217,10 +261,9 @@ static const int SettingsVersionRowCount = 1;
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)changeUsernameTo:(NSString *)newUsername {
+- (void)changeEmailTo:(NSString *)newEmail {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    User *me = [appDelegate.loginController fetchMe];
-    
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
     
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tabBarController.view animated:YES];
     hud.removeFromSuperViewOnHide = YES;
@@ -231,7 +274,49 @@ static const int SettingsVersionRowCount = 1;
     // so don't change it locally
     
     __weak typeof(self) weakSelf = self;
-    [[self peopleApi] setUsername:newUsername forUser:me handler:^(NSArray *results, NSInteger count, NSError *error) {
+    [[self peopleApi] setEmailAddress:newEmail forUserId:me.userId handler:^(NSArray *results, NSInteger count, NSError *error) {
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hide:YES];
+        });
+        
+        if (error) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Whoops", nil)
+                                                                           message:error.localizedDescription
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:nil]];
+            [weakSelf presentViewController:alert animated:YES completion:nil];
+        } else {
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            
+            ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+            if (me) {
+                RLMRealm *realm = [RLMRealm defaultRealm];
+                [realm beginWriteTransaction];
+                me.email = newEmail;
+                [realm commitWriteTransaction];
+                [weakSelf.tableView reloadData];
+            }
+        }
+    }];
+}
+
+- (void)changeUsernameTo:(NSString *)newUsername {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tabBarController.view animated:YES];
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+    hud.labelText = NSLocalizedString(@"Updating...", nil);
+    
+    // the server validates the new username (since it might be a duplicate or something)
+    // so don't change it locally
+    
+    __weak typeof(self) weakSelf = self;
+    [[self peopleApi] setUsername:newUsername forUserId:me.userId handler:^(NSArray *results, NSInteger count, NSError *error) {
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [hud hide:YES];
@@ -248,17 +333,11 @@ static const int SettingsVersionRowCount = 1;
         } else {
             [[Analytics sharedClient] event:kAnalyticsEventProfileLoginChanged];
             
-            RKObjectManager *manager = [RKObjectManager sharedManager];
-            
-            [manager loadObjectsAtResourcePath:[NSString stringWithFormat:@"/users/%ld.json", (long)me.recordID.integerValue ]
-                                    usingBlock:^(RKObjectLoader *loader) {
-                                        loader.objectMapping = [User mapping];
-                                        loader.onDidLoadObject = ^(id object) {
-                                            NSError *error = nil;
-                                            [[User managedObjectContext] save:&error];
-                                            [[weakSelf tableView] reloadData];
-                                        };
-                                    }];
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            [realm beginWriteTransaction];
+            me.login = newUsername;
+            [realm commitWriteTransaction];
+            [[weakSelf tableView] reloadData];
         }
     }];
 }
@@ -376,8 +455,8 @@ static const int SettingsVersionRowCount = 1;
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     
     if ([appDelegate.loginController isLoggedIn]) {
-        User *me = [appDelegate.loginController fetchMe];
-        email = [email stringByAppendingString:[NSString stringWithFormat:@" user id %ld", (long)me.recordID.integerValue]];
+        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+        email = [email stringByAppendingString:[NSString stringWithFormat:@" user id %ld", (long)me.userId]];
     } else {
         email = [email stringByAppendingString:@" user not logged in"];
     }
@@ -422,14 +501,14 @@ static const int SettingsVersionRowCount = 1;
 
 - (void)choseToChangeNetworkPartner {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-    User *me = [appDelegate.loginController fetchMe];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
     if (!me) { return; }
     
     NSArray *partnerNames = [self.partnerController.partners bk_map:^id(Partner *p) {
         return p.name;
     }];
     
-    Partner *currentPartner = [self.partnerController partnerForSiteId:me.siteId.integerValue];
+    Partner *currentPartner = [self.partnerController partnerForSiteId:me.siteId];
     
     __weak typeof(self) weakSelf = self;
     [[[ActionSheetStringPicker alloc] initWithTitle:NSLocalizedString(@"Choose iNat Network", "title of inat network picker")
@@ -523,9 +602,9 @@ static const int SettingsVersionRowCount = 1;
     if (indexPath.section == SettingsSectionAccount) {
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         if (appDelegate.loginController.isLoggedIn) {
-            if (indexPath.item == 0) {
+            if (indexPath.item == SettingsAccountCellUsername) {
                 return [self tableView:tableView accountUsernameCellForIndexPath:indexPath];
-            } else if (indexPath.item == 1) {
+            } else if (indexPath.item == SettingsAccountCellEmail) {
                 return [self tableView:tableView accountEmailCellForIndexPath:indexPath];
             } else {
                 return [self tableView:tableView accountActionCellForIndexPath:indexPath];
@@ -534,21 +613,23 @@ static const int SettingsVersionRowCount = 1;
             return [self tableView:tableView accountActionCellForIndexPath:indexPath];
         }
     } else if (indexPath.section == SettingsSectionApp) {
-        if (indexPath.item == 0) {
+        if (indexPath.item == SettingsAppCellChangeUsername) {
             return [self tableView:tableView appChangeUsernameCellForIndexPath:indexPath];
-        } else if (indexPath.item == 1) {
+        } else if (indexPath.item == SettingsAppCellChangeEmail) {
+            return [self tableView:tableView appChangeEmailCellForIndexPath:indexPath];
+        } else if (indexPath.item == SettingsAppCellAutocompleteNames) {
             return [self tableView:tableView appAutocompleteNamesCellForIndexPath:indexPath];
-        } else if (indexPath.item == 2) {
+        } else if (indexPath.item == SettingsAppCellAutomaticUpload) {
             return [self tableView:tableView appAutoUploadCellForIndexPath:indexPath];
-        } else if (indexPath.item == 3) {
+        } else if (indexPath.item == SettingsAppCellSuggestSpecies) {
             return [self tableView:tableView appSuggestSpeciesCellForIndexPath:indexPath];
         } else {
             return [self tableView:tableView appInaturalistNetworkCellForIndexPath:indexPath];
         }
     } else if (indexPath.section == SettingsSectionHelp) {
-        if (indexPath.item == 0) {
+        if (indexPath.item == SettingsHelpCellTutorial) {
             return [self tableView:tableView tutorialCellForIndexPath:indexPath];
-        } else if (indexPath.item == 1) {
+        } else if (indexPath.item == SettingsHelpCellContact) {
             return [self tableView:tableView contactUsCellForIndexPath:indexPath];
         } else {
             return [self tableView:tableView rateUsCellForIndexPath:indexPath];
@@ -565,6 +646,8 @@ static const int SettingsVersionRowCount = 1;
     if (indexPath.section == SettingsSectionApp) {
         if (indexPath.item == SettingsAppCellChangeUsername) {
             [self tappedUsername];
+        } else if (indexPath.item == SettingsAppCellChangeEmail) {
+            [self tappedEmail];
         } else if (indexPath.item == SettingsAppCellNetwork) {
 			INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 			if (![appDelegate.loginController isLoggedIn]) {
@@ -648,6 +731,16 @@ static const int SettingsVersionRowCount = 1;
                     [self networkUnreachableAlert];
                 }
             }
+        } else if (indexPath.item == SettingsAccountCellEmail) {
+            if ([appDelegate.loginController isLoggedIn]) {
+                [self tappedEmail];
+            } else {
+                if ([[INatReachability sharedClient] isNetworkReachable]) {
+                    [self presentSignup];
+                } else {
+                    [self networkUnreachableAlert];
+                }
+            }
         } else if (indexPath.item == SettingsAccountCellAction) {
             if ([appDelegate.loginController isLoggedIn]) {
                 [self clickedSignOut];
@@ -669,7 +762,7 @@ static const int SettingsVersionRowCount = 1;
                                                                    forIndexPath:indexPath];
     cell.leadingTextLabel.text = NSLocalizedString(@"Username", @"label for username field in settings");
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    cell.trailingTextLabel.text = appDelegate.loginController.fetchMe.login;
+    cell.trailingTextLabel.text = appDelegate.loginController.meUserLocal.login;
     return cell;
 }
 
@@ -677,6 +770,8 @@ static const int SettingsVersionRowCount = 1;
     SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
                                                                    forIndexPath:indexPath];
     cell.leadingTextLabel.text = NSLocalizedString(@"Email", @"label for email field in settings");
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    cell.trailingTextLabel.text = appDelegate.loginController.meUserLocal.email;
     return cell;
 }
 
@@ -696,6 +791,14 @@ static const int SettingsVersionRowCount = 1;
     SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
                                                                    forIndexPath:indexPath];
     cell.leadingTextLabel.text = NSLocalizedString(@"Change username", @"label for change username action in settings");
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView appChangeEmailCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
+                                                                   forIndexPath:indexPath];
+    cell.leadingTextLabel.text = NSLocalizedString(@"Change email", @"label for change email address action in settings");
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     return cell;
 }
@@ -742,9 +845,9 @@ static const int SettingsVersionRowCount = 1;
     cell.leadingTextLabel.text = NSLocalizedString(@"iNaturalist Network", @"label for inaturalist network action in settings");
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    User *me = [appDelegate.loginController fetchMe];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
     if (me) {
-        Partner *p = [self.partnerController partnerForSiteId:me.siteId.integerValue];
+        Partner *p = [self.partnerController partnerForSiteId:me.siteId];
         cell.trailingTextLabel.text = p.name;
     } else {
         cell.trailingTextLabel.text = @"iNaturalist";

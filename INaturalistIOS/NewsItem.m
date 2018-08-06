@@ -9,7 +9,6 @@
 #import <NSString_stripHtml/NSString_stripHTML.h>
 
 #import "NewsItem.h"
-#import "User.h"
 #import "NSURL+INaturalist.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;

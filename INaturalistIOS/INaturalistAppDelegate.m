@@ -239,7 +239,7 @@
 - (void)configureApplication {
     
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
-	config.schemaVersion = 9;
+	config.schemaVersion = 10;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
         if (oldSchemaVersion < 1) {
             // add searchable (ie diacritic-less) taxon names
@@ -294,8 +294,9 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
             
-            User *me = self.loginController.fetchMe;
-            [[Analytics sharedClient] registerUserWithIdentifier:me.recordID.stringValue];
+            ExploreUserRealm *me = self.loginController.meUserLocal;
+            NSString *identifier = [NSString stringWithFormat:@"%ld", me.userId];
+            [[Analytics sharedClient] registerUserWithIdentifier:identifier];
         });
     }
 }

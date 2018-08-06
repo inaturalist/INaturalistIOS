@@ -15,12 +15,32 @@
              @"userId": @"id",
              @"login": @"login",
              @"name": @"name",
-             @"userIcon": @"icon_url",
+             @"userIcon": @"icon",
+             @"email": @"email",
+             @"observationsCount": @"observations_count",
+             @"siteId": @"site_id",
              };
 }
 
 + (NSValueTransformer *)userIconJSONTransformer {
     return [NSValueTransformer valueTransformerForName:MTLURLValueTransformerName];
+}
+
+- (NSURL *)userIconMedium {
+    NSString *thumbUrlString = [[self userIcon] absoluteString];
+    NSString *mediumUrlString = [thumbUrlString stringByReplacingOccurrencesOfString:@"thumb"
+                                                                          withString:@"medium"];
+    return [NSURL URLWithString:mediumUrlString];
+}
+
+- (void)setNilValueForKey:(NSString *)key {
+    if ([key isEqualToString:@"siteId"]) {
+        // inaturalist site
+        self.siteId = 1;
+    } else {
+        [super setNilValueForKey:key];
+    }
+
 }
 
 @end

@@ -29,9 +29,9 @@
 #import "Taxon.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
-#import "User.h"
 #import "ExploreTaxonRealm.h"
 #import "INatReachability.h"
+#import "ExploreUserRealm.h"
 
 static NSString *SimpleFieldIdentifier = @"simple";
 static NSString *LongTextFieldIdentifier = @"longtext";
@@ -80,7 +80,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     if ([[INatReachability sharedClient] isNetworkReachable]) {
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         if ([appDelegate.loginController isLoggedIn]) {
-        	User *me = [appDelegate.loginController fetchMe];
+            ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
 	        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     	    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
         	NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",

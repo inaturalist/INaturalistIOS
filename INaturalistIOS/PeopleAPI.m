@@ -10,13 +10,19 @@
 
 #import "PeopleAPI.h"
 #import "NSURL+INaturalist.h"
-#import "User.h"
+#import "ExploreUser.h"
 #import "Analytics.h"
 
 @implementation PeopleAPI
 
-- (void)removeProfilePhotoForUser:(User *)user handler:(INatAPIFetchCompletionCountHandler)done {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"/users/%ld.json", (long)user.recordID.integerValue]
+- (void)fetchMeHandler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - fetch me from node"];
+    NSString *path = @"users/me";
+    [self fetch:path classMapping:ExploreUser.class handler:done];
+}
+
+- (void)removeProfilePhotoForUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"/users/%ld.json", (long)userId]
                         relativeToURL:[NSURL inat_baseURL]];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.HTTPMethod = @"PUT";
@@ -45,11 +51,11 @@
     }
 }
 
-- (void)uploadProfilePhoto:(UIImage *)image forUser:(User *)user handler:(INatAPIFetchCompletionCountHandler)done {
+- (void)uploadProfilePhoto:(UIImage *)image forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
     NSData *imageData = UIImageJPEGRepresentation(image, 0.8f);
     if (imageData) {
         // use afnetworking to deal with icky multi-part forms
-        NSString *path = [NSString stringWithFormat:@"/users/%ld.json", (long)user.recordID.integerValue];
+        NSString *path = [NSString stringWithFormat:@"/users/%ld.json", (long)userId];
         NSString *urlString = [[NSURL URLWithString:path relativeToURL:[NSURL inat_baseURL]] absoluteString];
 
         AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
@@ -79,8 +85,8 @@
     }
 }
 
-- (void)setUsername:(NSString *)username forUser:(User *)user handler:(INatAPIFetchCompletionCountHandler)done {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"/users/%ld.json", (long)user.recordID.integerValue]
+- (void)setUsername:(NSString *)username forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"/users/%ld.json", (long)userId]
                         relativeToURL:[NSURL inat_baseURL]];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.HTTPMethod = @"PUT";
@@ -130,6 +136,15 @@
         }] resume];
     }
 
+}
+
+- (void)setEmailAddress:(NSString *)email forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - set email address via node"];
+    NSDictionary *params = @{
+                             @"user": @{ @"email": email },
+                             };
+    NSString *path = [NSString stringWithFormat:@"users/%ld", (long)userId];
+    [self put:path params:params classMapping:nil handler:done];
 }
 
 @end

@@ -22,9 +22,9 @@
 #import "UIImage+INaturalist.h"
 #import "NSURL+INaturalist.h"
 #import "UIColor+INaturalist.h"
-#import "User.h"
 #import "OnboardingLoginViewController.h"
 #import "INatReachability.h"
+#import "ExploreUserRealm.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -75,7 +75,7 @@ static const int ListControlIndexNearby = 2;
 - (void)loadUserGuides
 {
 	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-	User *me = [appDelegate.loginController fetchMe];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
 	if (me) {
 		NSMutableArray *unsortedGuides = [NSMutableArray arrayWithArray:[Guide objectsWithPredicate:[NSPredicate predicateWithFormat:@"userLogin = %@ OR ngzDownloadedAt != nil", me.login]]];
 		self.guides = [unsortedGuides sortedArrayUsingComparator:^NSComparisonResult(Guide *g1, Guide *g2) {
@@ -230,7 +230,7 @@ static const int ListControlIndexNearby = 2;
 - (void)syncUserGuides
 {
 	INaturalistAppDelegate *delegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-	User *me = [delegate.loginController fetchMe];
+    ExploreUserRealm *me = [delegate.loginController meUserLocal];
 	if (me) {
     	NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     	NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];

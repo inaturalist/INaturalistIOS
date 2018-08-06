@@ -31,11 +31,11 @@
 #import "ObsEditV2ViewController.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
-#import "User.h"
 #import "NSFileManager+INaturalist.h"
 #import "ExploreUpdateRealm.h"
 #import "NewsPagerViewController.h"
 #import "ImageStore.h"
+#import "ExploreUserRealm.h"
 
 #define EXPLORE_TAB_INDEX   0
 #define NEWS_TAB_INDEX      1
@@ -330,7 +330,7 @@ static char PROJECT_ASSOCIATED_KEY;
         return NO;
     } else if ([tabBarController.viewControllers indexOfObject:viewController] == ME_TAB_INDEX) {
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-        if (appDelegate.loginController.fetchMe.observationsCount.integerValue == 0) {
+        if (appDelegate.loginController.meUserLocal.observationsCount == 0) {
             if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey] && ![Observation hasAtLeastOneEntity]) {
                 // show the "make your first" tooltip
                 [self makeAndShowFirstObsTooltip];
@@ -525,10 +525,10 @@ static char PROJECT_ASSOCIATED_KEY;
 
 - (void)setUpdatesBadge {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    User *me = [appDelegate.loginController fetchMe];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
     if (me) {
         NSPredicate *myNewPredicate = [NSPredicate predicateWithFormat:@"viewed == false and resourceOwnerId == %ld",
-                                       (unsigned long)me.recordID.integerValue];
+                                       me.userId];
         
         RLMResults *myNewResults = [ExploreUpdateRealm objectsWithPredicate:myNewPredicate];
         UINavigationController *activity = [self.viewControllers objectAtIndex:1];
@@ -567,8 +567,8 @@ static char PROJECT_ASSOCIATED_KEY;
         [self dismissViewControllerAnimated:YES completion:nil];
     }
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    User *user = appDelegate.loginController.fetchMe;
-    if (user.observationsCount.integerValue > 0) {
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+    if (me.observationsCount > 0) {
         // user has made an observation
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:HasMadeAnObservationKey];
         [[NSUserDefaults standardUserDefaults] synchronize];

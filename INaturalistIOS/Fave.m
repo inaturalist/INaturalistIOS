@@ -8,7 +8,6 @@
 
 #import "Fave.h"
 #import "Observation.h"
-#import "User.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 

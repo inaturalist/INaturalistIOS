@@ -19,9 +19,9 @@
 #import "ProjectTableViewCell.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
-#import "User.h"
 #import "OnboardingLoginViewController.h"
 #import "INatReachability.h"
+#import "ExploreUserRealm.h"
 
 @implementation ProjectChooserViewController
 
@@ -127,7 +127,7 @@
     if ((!self.projectUsers || self.projectUsers.count == 0) && [[INatReachability sharedClient] isNetworkReachable]) {
     	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     	if ([appDelegate.loginController isLoggedIn]) {
-    		User *me = [appDelegate.loginController fetchMe];
+            ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
 	        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
 	        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
 	        NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",

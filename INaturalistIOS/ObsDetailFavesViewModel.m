@@ -13,7 +13,6 @@
 #import "ObsDetailFavesViewModel.h"
 #import "Observation.h"
 #import "FaveVisualization.h"
-#import "User.h"
 #import "DisclosureCell.h"
 #import "ObsDetailAddFaveHeader.h"
 #import "INaturalistAppDelegate.h"
@@ -25,6 +24,7 @@
 #import "Analytics.h"
 #import "UIImage+INaturalist.h"
 #import "INatReachability.h"
+#import "ExploreUserRealm.h"
 
 @implementation ObsDetailFavesViewModel
 
@@ -224,7 +224,7 @@
     LoginController *login = appDelegate.loginController;
     if (login.isLoggedIn) {
         for (id <FaveVisualization> fave in self.observation.faves) {
-            if ([[fave userName] isEqualToString:[[login fetchMe] login]]) {
+            if ([[fave userName] isEqualToString:[[login meUserLocal] login]]) {
                 return YES;
             }
         }

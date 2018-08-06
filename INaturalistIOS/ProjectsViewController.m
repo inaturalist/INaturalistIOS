@@ -22,9 +22,9 @@
 #import "UIColor+INaturalist.h"
 #import "NSURL+INaturalist.h"
 #import "ProjectDetailV2ViewController.h"
-#import "User.h"
 #import "OnboardingLoginViewController.h"
 #import "INatReachability.h"
+#import "ExploreUserRealm.h"
 
 static const int ListControlIndexFeatured = 1;
 static const int ListControlIndexNearby = 2;
@@ -205,7 +205,7 @@ static const int ListControlIndexNearby = 2;
 - (void)syncUserProjects {
 	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 	if ([appDelegate.loginController isLoggedIn]) {
-		User *me = [appDelegate.loginController fetchMe];
+        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
         NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
         NSString *language = [[NSLocale preferredLanguages] firstObject];
         NSString *path = [NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
