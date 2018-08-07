@@ -17,6 +17,7 @@
         self.name = model.name;
         self.userIconString = model.userIcon.absoluteString;
         self.email = model.email;
+        self.observationsCount = model.observationsCount;
     }
     return self;
 }
