@@ -46,6 +46,7 @@
             vc.skipAction = ^{
                 [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
             };
+            vc.startsInLoginMode = YES;
             return vc;
         } else {
             return [onboarding instantiateViewControllerWithIdentifier:identifier];
