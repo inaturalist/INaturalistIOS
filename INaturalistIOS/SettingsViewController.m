@@ -150,10 +150,12 @@ static const int SettingsVersionRowCount = 1;
     // fetch the me user from the server to populate login and email address fields
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = appDelegate.loginController;
-    __weak typeof(self)weakSelf = self;
-    [login meUserRemoteCompletion:^(ExploreUserRealm *me) {
-        [weakSelf.tableView reloadData];
-    }];
+    if (login.isLoggedIn) {
+        __weak typeof(self)weakSelf = self;
+        [login meUserRemoteCompletion:^(ExploreUserRealm *me) {
+            [weakSelf.tableView reloadData];
+        }];
+    }
 }
 
 - (void)dealloc {
