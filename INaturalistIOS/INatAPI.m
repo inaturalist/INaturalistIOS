@@ -76,12 +76,16 @@
                                 if (data) {
                                     // this seems to be how we get errors back from node
                                     id json = [NSJSONSerialization JSONObjectWithData:data options:nil error:nil];
-                                    id originalErrors = [json valueForKeyPath:@"error.original.errors"];
-                                    if (originalErrors) {
-                                        id firstKey = [[originalErrors allKeys] firstObject];
-                                        id firstValue = [originalErrors[firstKey] firstObject];
-                                        errorText = [NSString stringWithFormat:@"%@ %@", firstKey, firstValue];
+                                    
+                                    @try {
+                                        id originalErrors = [json valueForKeyPath:@"error.original.errors"];
+                                        if (originalErrors) {
+                                            id firstKey = [[originalErrors allKeys] firstObject];
+                                            id firstValue = [originalErrors[firstKey] firstObject];
+                                            errorText = [NSString stringWithFormat:@"%@ %@", firstKey, firstValue];
+                                        }
                                     }
+                                    @catch (NSException *exception) { }
                                 }
                                 
                                 NSDictionary *userInfo = @{
