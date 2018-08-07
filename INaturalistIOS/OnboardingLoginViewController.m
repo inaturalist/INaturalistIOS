@@ -278,6 +278,9 @@
         button;
     });
     
+    if (self.startsInLoginMode && self.textfieldStackView.arrangedSubviews.count == 3) {
+        [self switchAuthContext:nil];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -294,10 +297,6 @@
                 [self showPartnerAlertForPartner:p];
             }
         }
-    }
-        
-    if (self.startsInLoginMode && self.textfieldStackView.arrangedSubviews.count == 3) {
-        [self switchAuthContext:nil];
     }
 }
 
