@@ -150,10 +150,12 @@ static const int SettingsVersionRowCount = 1;
     // fetch the me user from the server to populate login and email address fields
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = appDelegate.loginController;
-    __weak typeof(self)weakSelf = self;
-    [login meUserRemoteCompletion:^(ExploreUserRealm *me) {
-        [weakSelf.tableView reloadData];
-    }];
+    if (login.isLoggedIn) {
+        __weak typeof(self)weakSelf = self;
+        [login meUserRemoteCompletion:^(ExploreUserRealm *me) {
+            [weakSelf.tableView reloadData];
+        }];
+    }
 }
 
 - (void)dealloc {
@@ -643,13 +645,21 @@ static const int SettingsVersionRowCount = 1;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     if (indexPath.section == SettingsSectionApp) {
         if (indexPath.item == SettingsAppCellChangeUsername) {
-            [self tappedUsername];
+            if (![appDelegate.loginController isLoggedIn]) {
+                [self presentSignup];
+            } else {
+                [self tappedUsername];
+            }
         } else if (indexPath.item == SettingsAppCellChangeEmail) {
-            [self tappedEmail];
+            if (![appDelegate.loginController isLoggedIn]) {
+                [self presentSignup];
+            } else {
+                [self tappedEmail];
+            }
         } else if (indexPath.item == SettingsAppCellNetwork) {
-			INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 			if (![appDelegate.loginController isLoggedIn]) {
 				[self presentSignup];
             } else {

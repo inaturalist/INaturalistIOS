@@ -278,6 +278,9 @@
         button;
     });
     
+    if (self.startsInLoginMode && self.textfieldStackView.arrangedSubviews.count == 3) {
+        [self switchAuthContext:nil];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -294,10 +297,6 @@
                 [self showPartnerAlertForPartner:p];
             }
         }
-    }
-        
-    if (self.startsInLoginMode && self.textfieldStackView.arrangedSubviews.count == 3) {
-        [self switchAuthContext:nil];
     }
 }
 
@@ -345,34 +344,40 @@
 }
 
 - (IBAction)switchAuthContext:(id)sender {
+    void (^switchContextBlock)() = nil;
     if (self.textfieldStackView.arrangedSubviews.count == 3) {
-        // switch to login mode
-        [UIView animateWithDuration:0.2f
-                         animations:^{
-                             [self.textfieldStackView removeArrangedSubview:self.emailField];
-                             self.emailField.hidden = YES;
-                             self.titleLabel.text = NSLocalizedString(@"Log In", nil);
-                             [self.actionButton setTitle:NSLocalizedString(@"Log In", nil)
-                                                forState:UIControlStateNormal];
-                             self.licenseStackView.hidden = YES;
-                             self.passwordField.rightViewMode = UITextFieldViewModeUnlessEditing;
-                             [self.switchContextButton setContext:LoginContextLogin];
-                         }];
+        switchContextBlock = ^{
+            [self.textfieldStackView removeArrangedSubview:self.emailField];
+            self.emailField.hidden = YES;
+            self.titleLabel.text = NSLocalizedString(@"Log In", nil);
+            [self.actionButton setTitle:NSLocalizedString(@"Log In", nil)
+                               forState:UIControlStateNormal];
+            self.licenseStackView.hidden = YES;
+            self.passwordField.rightViewMode = UITextFieldViewModeUnlessEditing;
+            [self.switchContextButton setContext:LoginContextLogin];
+        };
     } else {
-        // switch to signup mode        
-        [UIView animateWithDuration:0.2f
-                         animations:^{
-                             [self.textfieldStackView insertArrangedSubview:self.emailField
-                                                                    atIndex:0];
-                             self.emailField.hidden = NO;
-                             self.titleLabel.text = NSLocalizedString(@"Sign Up", nil);
-                             [self.actionButton setTitle:NSLocalizedString(@"Sign Up", nil)
-                                                forState:UIControlStateNormal];
-                             self.licenseStackView.hidden = NO;
-                             self.passwordField.rightViewMode = UITextFieldViewModeNever;
-                             [self.switchContextButton setContext:LoginContextSignup];
-                         }];
+        switchContextBlock = ^{
+            [self.textfieldStackView insertArrangedSubview:self.emailField
+                                                   atIndex:0];
+            self.emailField.hidden = NO;
+            self.titleLabel.text = NSLocalizedString(@"Sign Up", nil);
+            [self.actionButton setTitle:NSLocalizedString(@"Sign Up", nil)
+                               forState:UIControlStateNormal];
+            self.licenseStackView.hidden = NO;
+            self.passwordField.rightViewMode = UITextFieldViewModeNever;
+            [self.switchContextButton setContext:LoginContextSignup];
+        };
     }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (sender) {
+            [UIView animateWithDuration:0.2f
+                             animations:switchContextBlock];
+        } else {
+            switchContextBlock();
+        }
+    });
 }
 
 
