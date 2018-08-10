@@ -100,6 +100,8 @@
             [weakSelf.tableView reloadData];
         });
     }];
+    
+    [self loadUpdates];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
