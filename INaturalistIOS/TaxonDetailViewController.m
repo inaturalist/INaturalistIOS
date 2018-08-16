@@ -80,7 +80,8 @@
     
     // does this work on iPad?
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        self.modalPresentationStyle = UIModalPresentationPopover;
+        activity.modalPresentationStyle = UIModalPresentationPopover;
+        activity.popoverPresentationController.barButtonItem = selector;
     }
     
     [self presentViewController:activity animated:YES completion:nil];
