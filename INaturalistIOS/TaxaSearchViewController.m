@@ -267,8 +267,8 @@
                                                   @"WithAncestor": self.commonAncestor ? @"Yes": @"No",
                                                   @"Ancestor": self.commonAncestor ? self.commonAncestor.scientificName : @"None",
                                                   @"AncestorRank": self.commonAncestor ? self.commonAncestor.rankName : @"None",
-                                                  @"TopTaxon": self.scores.firstObject.exploreTaxon.scientificName,
-                                                  @"TopTaxonScore": @(self.scores.firstObject.combinedScore),
+                                                  @"TopTaxon": self.scores.firstObject.exploreTaxon.scientificName ?: @"Unknown",
+                                                  @"TopTaxonScore": @(self.scores.firstObject.combinedScore ?: 0),
                                                   }];
 
                 
