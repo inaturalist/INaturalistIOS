@@ -262,7 +262,11 @@ NSInteger INatMinPasswordLength = 6;
                           usingBlock:^(RKRequest *request) {
                               
                               request.onDidFailLoadWithError = ^(NSError *error) {
-                                  NSLog(@"error fetching self: %@", error.localizedDescription);
+                                  [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
+                                                   withProperties:@{ @"from": @"iNaturalist",
+                                                                     @"error": error.localizedDescription,
+                                                                     }];
+                                  
                                   [self executeError:error];
                               };
                               
@@ -272,39 +276,53 @@ NSInteger INatMinPasswordLength = 6;
                                                                                   options:NSJSONReadingAllowFragments
                                                                                     error:&error];
                                   if (error) {
-                                      NSLog(@"error parsing json: %@", error.localizedDescription);
-                                  }
-                                  
-                                  ExploreUserRealm *me = [[ExploreUserRealm alloc] init];
-                                  me.login = [parsedData objectForKey:@"login"] ?: @"";
-                                  me.userId = [[parsedData objectForKey:@"id"] integerValue];
-                                  me.observationsCount = [[parsedData objectForKey:@"observations_count"] integerValue];
-                                  me.siteId = [[parsedData objectForKey:@"site_id"] integerValue];
-                                  me.siteId = [parsedData objectForKey:@"site_id"] ?: @(1);
-                                  
-                                  RLMRealm *realm = [RLMRealm defaultRealm];
-                                  [realm beginWriteTransaction];
-                                  [realm addOrUpdateObject:me];
-                                  [realm commitWriteTransaction];
-                                  
-                                  NSString *identifier = [NSString stringWithFormat:@"%ld", me.userId];
-                                  [[Analytics sharedClient] registerUserWithIdentifier:identifier];
-                                  
-                                  [[NSUserDefaults standardUserDefaults] setValue:@(me.userId)
-                                  										   forKey:kINatUserIdPrefKey];
-                                  [[NSUserDefaults standardUserDefaults] setValue:iNatAccessToken
-                                                                           forKey:INatTokenPrefKey];
-                                  [[NSUserDefaults standardUserDefaults] synchronize];
-                                  
-                                  [self executeSuccess:nil];
+                                      [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
+                                                       withProperties:@{ @"from": @"iNaturalist",
+                                                                         @"error": error.localizedDescription,
+                                                                         }];
 
-                                  [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
-                                                                                      object:nil];
+                                      [self executeError:error];
+                                  } else if (!parsedData) {
+                                      [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
+                                                       withProperties:@{ @"from": @"iNaturalist",
+                                                                         @"error": @"no data from server",
+                                                                         }];
+                                      
+                                      [self executeError:nil];
+                                  } else {
+                                      ExploreUserRealm *me = [[ExploreUserRealm alloc] init];
+                                      me.login = [parsedData objectForKey:@"login"] ?: @"";
+                                      me.userId = [[parsedData objectForKey:@"id"] integerValue];
+                                      me.observationsCount = [[parsedData objectForKey:@"observations_count"] integerValue];
+                                      me.siteId = [[parsedData objectForKey:@"site_id"] integerValue];
+                                      me.siteId = [parsedData objectForKey:@"site_id"] ?: @(1);
+                                      
+                                      RLMRealm *realm = [RLMRealm defaultRealm];
+                                      [realm beginWriteTransaction];
+                                      [realm addOrUpdateObject:me];
+                                      [realm commitWriteTransaction];
+                                      
+                                      NSString *identifier = [NSString stringWithFormat:@"%ld", me.userId];
+                                      [[Analytics sharedClient] registerUserWithIdentifier:identifier];
+                                      
+                                      [[NSUserDefaults standardUserDefaults] setValue:@(me.userId)
+                                                                               forKey:kINatUserIdPrefKey];
+                                      [[NSUserDefaults standardUserDefaults] setValue:iNatAccessToken
+                                                                               forKey:INatTokenPrefKey];
+                                      [[NSUserDefaults standardUserDefaults] synchronize];
+                                      
+                                      [self executeSuccess:nil];
+                                      
+                                      [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
+                                                                                          object:nil];
+                                  }
                               };
                           }];        
     } else {
         [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
-                         withProperties:@{ @"from": @"iNaturalist" }];
+                         withProperties:@{ @"from": @"iNaturalist",
+                                           @"error": @"no data in nxoauth store",
+                                           }];
         
         [self executeError:nil];
     }
