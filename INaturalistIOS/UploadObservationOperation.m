@@ -255,24 +255,28 @@
                 NSStringFromClass(child.class).underscore.pluralize];
         
         if ([child respondsToSelector:@selector(fileUploadParameter)]) {
-            // TODO: handle missing file for fileUploadParameter
-            // we'll need a body block for the multi-part post
-            void (^bodyBlock)(id <AFMultipartFormData>) = ^(id<AFMultipartFormData>  _Nonnull formData) {
-                NSString *path = [child fileUploadParameter];
-                NSURL *fileUrl = [NSURL fileURLWithPath:path];
-                [formData appendPartWithFileURL:fileUrl
-                                           name:@"file"
-                                       fileName:@"original.jpg"
-                                       mimeType:@"image/jpeg"
-                                          error:nil];
-            };
-            
-            [self.nodeSessionManager POST:path
-                               parameters:[child uploadableRepresentation]
-                constructingBodyWithBlock:bodyBlock
-                                 progress:progressBlock
-                                  success:successBlock
-                                  failure:failureBlock];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:[child fileUploadParameter]]) {
+                // we'll need a body block for the multi-part post
+                void (^bodyBlock)(id <AFMultipartFormData>) = ^(id<AFMultipartFormData>  _Nonnull formData) {
+                    NSString *path = [child fileUploadParameter];
+                    NSURL *fileUrl = [NSURL fileURLWithPath:path];
+                    [formData appendPartWithFileURL:fileUrl
+                                               name:@"file"
+                                           fileName:@"original.jpg"
+                                           mimeType:@"image/jpeg"
+                                              error:nil];
+                };
+                
+                [self.nodeSessionManager POST:path
+                                   parameters:[child uploadableRepresentation]
+                    constructingBodyWithBlock:bodyBlock
+                                     progress:progressBlock
+                                      success:successBlock
+                                      failure:failureBlock];
+            } else {
+                // fast fail - we need a file but it doesn't exist
+                [self syncObservationFinishedSuccess:NO syncError:nil];
+            }
         } else {
             // skip the progress block if there was no file upload param
             [self.nodeSessionManager POST:path
