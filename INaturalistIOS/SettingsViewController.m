@@ -245,7 +245,7 @@ static const int SettingsVersionRowCount = 1;
 
 - (void)clickedSignOut {
     NSString *title = NSLocalizedString(@"Are you sure?",nil);
-    NSString *msg = NSLocalizedString(@"This will delete all your observations on this device.  It will not affect any observations you've uploaded to iNaturalist.",
+    NSString *msg = NSLocalizedString(@"This will destroy any changes/additions you've made from this app that haven't been synced with iNaturalist.org.",
                                       nil);
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
