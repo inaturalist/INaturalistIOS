@@ -1616,7 +1616,9 @@
     
     [self configureHeaderForLoggedInUser];
     
-    self.uploadProgress[observation.uuid] = nil;
+    if (observation.uuid) {
+        self.uploadProgress[observation.uuid] = nil;
+    }
     
     NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
     if (ip) {
@@ -1646,7 +1648,9 @@
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Fatal Error %@", error.localizedDescription]];
     
     // clear progress for this upload
-    self.uploadProgress[observation.uuid] = nil;
+    if (observation.uuid) {
+        self.uploadProgress[observation.uuid] = nil;
+    }
     
     // TODO: actually stop the upload
     [self syncStopped];
