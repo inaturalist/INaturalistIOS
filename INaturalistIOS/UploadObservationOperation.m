@@ -181,7 +181,6 @@
     };
     
     void (^failureBlock)(NSURLSessionDataTask *, NSError *) = ^(NSURLSessionDataTask *task, NSError * _Nonnull error) {
-        // TODO: handle 422 validations for Project Observation Stuff
         if ([[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey]) {
             NSHTTPURLResponse *response = [[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey];
             if (response.statusCode == 422) {
