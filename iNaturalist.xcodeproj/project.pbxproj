@@ -878,6 +878,13 @@
 		FAA872CC1B13989D00366521 /* RoundedButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundedButtonCell.m; sourceTree = "<group>"; };
 		FAA872CE1B1428C200366521 /* CheckboxCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckboxCell.h; sourceTree = "<group>"; };
 		FAA872CF1B1428C200366521 /* CheckboxCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckboxCell.m; sourceTree = "<group>"; };
+		FAB1FCA621405712001CE431 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		FAB1FCA721405713001CE431 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FAB1FCA821405713001CE431 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Projects.strings; sourceTree = "<group>"; };
+		FAB1FCA921405713001CE431 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Activity.strings; sourceTree = "<group>"; };
+		FAB1FCAA21405713001CE431 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Guides.strings; sourceTree = "<group>"; };
+		FAB1FCAB21405713001CE431 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FAB1FCAC21405713001CE431 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FAB6214A1D73830E0026FDC6 /* IconAndTextControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IconAndTextControl.h; sourceTree = "<group>"; };
 		FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IconAndTextControl.m; sourceTree = "<group>"; };
 		FAB6214E1D7397A70026FDC6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Onboarding.storyboard; sourceTree = "<group>"; };
@@ -2110,6 +2117,7 @@
 				cs,
 				"pt-BR",
 				ro,
+				nl,
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -2686,6 +2694,7 @@
 				FA30C2EC2090D881006F7629 /* cs */,
 				FA68C99820C094E700B5D8AC /* pt-BR */,
 				FA68C99D20C094FF00B5D8AC /* ro */,
+				FAB1FCA621405712001CE431 /* nl */,
 			);
 			name = MainStoryboard.storyboard;
 			path = INaturalistIOS;
@@ -2716,6 +2725,7 @@
 				FAC3BDC320901BBE004B611D /* tr */,
 				FA30C2F12090D882006F7629 /* cs */,
 				FA68C9A220C0950000B5D8AC /* ro */,
+				FAB1FCAB21405713001CE431 /* nl */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2745,6 +2755,7 @@
 				FAC3BDC420901BBE004B611D /* tr */,
 				FA30C2F22090D882006F7629 /* cs */,
 				FA68C9A320C0950000B5D8AC /* ro */,
+				FAB1FCAC21405713001CE431 /* nl */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2776,6 +2787,7 @@
 				FA30C2EE2090D881006F7629 /* cs */,
 				FA68C99A20C094E800B5D8AC /* pt-BR */,
 				FA68C99F20C0950000B5D8AC /* ro */,
+				FAB1FCA821405713001CE431 /* nl */,
 			);
 			name = Projects.storyboard;
 			path = INaturalistIOS;
@@ -2808,6 +2820,7 @@
 				FA30C2EF2090D881006F7629 /* cs */,
 				FA68C99B20C094E800B5D8AC /* pt-BR */,
 				FA68C9A020C0950000B5D8AC /* ro */,
+				FAB1FCA921405713001CE431 /* nl */,
 			);
 			name = Activity.storyboard;
 			path = INaturalistIOS;
@@ -2840,6 +2853,7 @@
 				FA30C2F02090D881006F7629 /* cs */,
 				FA68C99C20C094E800B5D8AC /* pt-BR */,
 				FA68C9A120C0950000B5D8AC /* ro */,
+				FAB1FCAA21405713001CE431 /* nl */,
 			);
 			name = Guides.storyboard;
 			path = INaturalistIOS;
@@ -2872,6 +2886,7 @@
 				FA30C2ED2090D881006F7629 /* cs */,
 				FA68C99920C094E700B5D8AC /* pt-BR */,
 				FA68C99E20C094FF00B5D8AC /* ro */,
+				FAB1FCA721405713001CE431 /* nl */,
 			);
 			name = Onboarding.storyboard;
 			path = INaturalistIOS;

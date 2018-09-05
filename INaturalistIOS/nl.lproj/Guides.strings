@@ -1,44 +1,44 @@
 /* Class = "UILabel"; text = "Details"; ObjectID = "1sf-TG-XOI"; */
-"1sf-TG-XOI.text" = "Detalhes";
+"1sf-TG-XOI.text" = "Details";
 
 /* Class = "UILabel"; text = "Guide name"; ObjectID = "349-K6-4Od"; */
-"349-K6-4Od.text" = "Nome do Guia";
+"349-K6-4Od.text" = "Naam gids";
 
 /* Class = "UILabel"; text = "Title"; ObjectID = "5Yw-MQ-2n9"; */
-"5Yw-MQ-2n9.text" = "Título";
+"5Yw-MQ-2n9.text" = "Titel";
 
 /* Class = "UILabel"; text = "Label"; ObjectID = "64U-Iz-e8o"; */
-"64U-Iz-e8o.text" = "Descrição";
+"64U-Iz-e8o.text" = "Label";
 
 /* Class = "UILabel"; text = "Subtitle"; ObjectID = "7Ok-Hu-UbN"; */
-"7Ok-Hu-UbN.text" = "Subtítulo";
+"7Ok-Hu-UbN.text" = "Ondertitel";
 
 /* Class = "UITabBarItem"; title = "Item"; ObjectID = "DJO-9O-mI1"; */
 "DJO-9O-mI1.title" = "Item";
 
 /* Class = "UINavigationItem"; title = "GuideTaxon"; ObjectID = "GJa-zU-aXj"; */
-"GJa-zU-aXj.title" = "Guia de Táxon";
+"GJa-zU-aXj.title" = "GuideTaxon";
 
 /* Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "fUj-Ua-JrI"; */
-"fUj-Ua-JrI.title" = "Observar";
+"fUj-Ua-JrI.title" = "Waarnemen";
 
 /* Class = "UILabel"; text = "Taxon name"; ObjectID = "fxG-Ko-HJJ"; */
-"fxG-Ko-HJJ.text" = "Nome do táxon";
+"fxG-Ko-HJJ.text" = "Taxon naam";
 
 /* Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "gaA-yq-1wc"; */
-"gaA-yq-1wc.title" = "Observar";
+"gaA-yq-1wc.title" = "Waarnemen";
 
 /* Class = "UINavigationItem"; title = "Guides"; ObjectID = "hhs-MN-AbZ"; */
-"hhs-MN-AbZ.title" = "Guias";
+"hhs-MN-AbZ.title" = "Gidsen";
 
 /* Class = "UINavigationItem"; title = "Guide Title"; ObjectID = "lIl-fs-5kb"; */
-"lIl-fs-5kb.title" = "Título do Guia";
+"lIl-fs-5kb.title" = "Titel gids";
 
 /* Class = "UITabBarItem"; title = "Item"; ObjectID = "oD3-aX-8WV"; */
 "oD3-aX-8WV.title" = "Item";
 
 /* Class = "UILabel"; text = "Label"; ObjectID = "qtj-Qg-VZi"; */
-"qtj-Qg-VZi.text" = "Descrição";
+"qtj-Qg-VZi.text" = "Label";
 
 /* Class = "UILabel"; text = "Title"; ObjectID = "yLQ-uJ-TnX"; */
-"yLQ-uJ-TnX.text" = "Título";
+"yLQ-uJ-TnX.text" = "Titel";
