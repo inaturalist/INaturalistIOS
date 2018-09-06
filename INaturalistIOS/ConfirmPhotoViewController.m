@@ -214,29 +214,30 @@
     });
     [self.view addSubview:confirm];
     
-    NSDictionary *views = @{
-                            @"image": self.multiImageView,
-                            @"confirm": confirm,
-                            @"retake": retake,
-                            };
+    UILayoutGuide *margin = self.view.layoutMarginsGuide;
+    if (@available(iOS 11.0, *)) {
+        margin = self.view.safeAreaLayoutGuide;
+    }
+
+    // horizontal
+    [self.multiImageView.leadingAnchor constraintEqualToAnchor:margin.leadingAnchor].active = YES;
+    [self.multiImageView.trailingAnchor constraintEqualToAnchor:margin.trailingAnchor].active = YES;
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[image]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[retake]-0-[confirm(==retake)]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
+    [retake.leadingAnchor constraintEqualToAnchor:margin.leadingAnchor].active = YES;
+    [retake.trailingAnchor constraintEqualToAnchor:confirm.leadingAnchor].active = YES;
+    [confirm.trailingAnchor constraintEqualToAnchor:margin.trailingAnchor].active = YES;
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[image]-0-[confirm(==48)]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[image]-0-[retake(==48)]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
+    [retake.widthAnchor constraintEqualToAnchor:confirm.widthAnchor].active = YES;
+    
+    // vertical
+    [self.multiImageView.topAnchor constraintEqualToAnchor:margin.topAnchor].active = YES;
+    [self.multiImageView.bottomAnchor constraintEqualToAnchor:confirm.topAnchor].active = YES;
+    
+    [confirm.bottomAnchor constraintEqualToAnchor:margin.bottomAnchor].active = YES;
+    [retake.bottomAnchor constraintEqualToAnchor:margin.bottomAnchor].active = YES;
+    
+    [confirm.heightAnchor constraintEqualToConstant:48.0f].active = YES;
+    [retake.heightAnchor constraintEqualToConstant:48.0f].active = YES;
 }
 
 - (void)confirm {
