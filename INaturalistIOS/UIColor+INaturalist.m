@@ -32,4 +32,8 @@
     return [UIColor colorWithHexString:@"#7B7B7B"];
 }
 
++ (UIColor *)inatTableViewBackgroundGray {
+    return [UIColor colorWithHexString:@"#EFEFF4"];
+}
+
 @end

@@ -14,4 +14,5 @@
 + (UIColor *)inatInactiveGreyTint;
 + (UIColor *)inatDarkGray;
 + (UIColor *)inatLightGray;
++ (UIColor *)inatTableViewBackgroundGray;
 @end
