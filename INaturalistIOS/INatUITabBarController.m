@@ -289,9 +289,16 @@ static char PROJECT_ASSOCIATED_KEY;
         
         picker.cameraOverlayView = overlay;
         
-        [self presentViewController:picker animated:YES completion:^{
-            picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, 50);
-        }];
+        BOOL iPhoneX = NO;
+        if (@available(iOS 11.0, *)) {
+            UIWindow *mainWindow = [[[UIApplication sharedApplication] delegate] window];
+            if (mainWindow.safeAreaInsets.top > 0.0) {
+                iPhoneX = YES;
+            }
+        }
+
+        picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, iPhoneX ? 120 : 50);
+        [self presentViewController:picker animated:YES completion:nil];
     } else {
         
         [[Analytics sharedClient] event:kAnalyticsEventNewObservationLibraryStart];

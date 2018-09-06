@@ -507,6 +507,15 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     picker.cameraOverlayView = overlay;
     
+    BOOL iPhoneX = NO;
+    if (@available(iOS 11.0, *)) {
+        UIWindow *mainWindow = [[[UIApplication sharedApplication] delegate] window];
+        if (mainWindow.safeAreaInsets.top > 0.0) {
+            iPhoneX = YES;
+        }
+    }
+    
+    picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, iPhoneX ? 120 : 50);
     [self presentViewController:picker animated:YES completion:nil];
 }
 

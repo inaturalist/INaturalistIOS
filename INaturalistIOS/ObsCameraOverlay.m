@@ -193,76 +193,40 @@
                                 @"library": self.library,
                                 };
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[close(==50)]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[flash(==60)]-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[camera(==50)]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
+        UILayoutGuide *margin = self.layoutMarginsGuide;
+        if (@available(iOS 11.0, *)) {
+            margin = self.safeAreaLayoutGuide;
+        }
         
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.camera
-                                                         attribute:NSLayoutAttributeCenterX
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:self
-                                                         attribute:NSLayoutAttributeCenterX
-                                                        multiplier:1.0f
-                                                          constant:0.0f]];
+        // horizontal
+        [self.close.leadingAnchor constraintEqualToAnchor:margin.leadingAnchor].active = YES;
+        [self.camera.centerXAnchor constraintEqualToAnchor:margin.centerXAnchor].active = YES;
+        [self.flash.trailingAnchor constraintEqualToAnchor:margin.trailingAnchor].active = YES;
+        [self.close.widthAnchor constraintEqualToConstant:50.0f].active = YES;
+        [self.flash.widthAnchor constraintEqualToConstant:60.0f].active = YES;
+        [self.camera.widthAnchor constraintEqualToConstant:50.0f].active = YES;
         
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[noPhoto(==100)]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[library(==100)]-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[shutter(==100)]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
+        [self.noPhoto.leadingAnchor constraintEqualToAnchor:margin.leadingAnchor].active = YES;
+        [self.shutter.centerXAnchor constraintEqualToAnchor:margin.centerXAnchor].active = YES;
+        [self.library.trailingAnchor constraintEqualToAnchor:margin.trailingAnchor].active = YES;
+        [self.noPhoto.widthAnchor constraintEqualToConstant:100.0f].active = YES;
+        [self.shutter.widthAnchor constraintEqualToConstant:100.0f].active = YES;
+        [self.library.widthAnchor constraintEqualToConstant:100.0f].active = YES;
         
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.shutter
-                                                         attribute:NSLayoutAttributeCenterX
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:self
-                                                         attribute:NSLayoutAttributeCenterX
-                                                        multiplier:1.0f
-                                                          constant:0.0f]];
-        
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[close(==40)]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[flash(==40)]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[camera(==40)]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        
-        
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[noPhoto(==80)]-0-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[library(==80)]-0-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[shutter(==80)]-0-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
+        // vertical
+        [self.close.topAnchor constraintEqualToAnchor:margin.topAnchor].active = YES;
+        [self.camera.topAnchor constraintEqualToAnchor:margin.topAnchor].active = YES;
+        [self.flash.topAnchor constraintEqualToAnchor:margin.topAnchor].active = YES;
+        [self.close.heightAnchor constraintEqualToConstant:40.0f].active = YES;
+        [self.flash.heightAnchor constraintEqualToConstant:40.0f].active = YES;
+        [self.camera.heightAnchor constraintEqualToConstant:40.0f].active = YES;
 
-        
+        [self.noPhoto.bottomAnchor constraintEqualToAnchor:margin.bottomAnchor].active = YES;
+        [self.shutter.bottomAnchor constraintEqualToAnchor:margin.bottomAnchor].active = YES;
+        [self.library.bottomAnchor constraintEqualToAnchor:margin.bottomAnchor].active = YES;
+        [self.noPhoto.heightAnchor constraintEqualToConstant:80.0f].active = YES;
+        [self.shutter.heightAnchor constraintEqualToConstant:80.0f].active = YES;
+        [self.library.heightAnchor constraintEqualToConstant:80.0f].active = YES;
     }
     
     return self;
