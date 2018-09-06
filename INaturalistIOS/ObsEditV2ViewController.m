@@ -96,6 +96,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                                           target:self
                                                                                           action:@selector(cancelledNewObservation:)];
     
+    self.view.backgroundColor = [UIColor inatTableViewBackgroundGray];
+    
     self.tableView = ({
         UITableView *tv = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
         tv.translatesAutoresizingMaskIntoConstraints = NO;
@@ -146,37 +148,36 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     });
     // wait to add to self.view, since we don't always need it
     
-    NSDictionary *views = @{
-                            @"tv": self.tableView,
-                            @"save": self.saveButton,
-                            };
+    UILayoutGuide *margin = self.view.layoutMarginsGuide;
+    if (@available(iOS 11.0, *)) {
+        margin = self.view.safeAreaLayoutGuide;
+    }
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[tv]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
+    // horizontal
+    [self.tableView.leadingAnchor constraintEqualToAnchor:margin.leadingAnchor].active = YES;
+    [self.tableView.trailingAnchor constraintEqualToAnchor:margin.trailingAnchor].active = YES;
     
     if (self.isMakingNewObservation) {
         // new obs confirm has a save button
         [self.view addSubview:self.saveButton];
         
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-[save(==47)]-0-|"
-                                                                          options:0
-                                                                          metrics:0
-                                                                            views:views]];
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[save]-0-|"
-                                                                          options:0
-                                                                          metrics:0
-                                                                            views:views]];
+        // horizontal
+        [self.saveButton.leadingAnchor constraintEqualToAnchor:margin.leadingAnchor].active = YES;
+        [self.saveButton.trailingAnchor constraintEqualToAnchor:margin.trailingAnchor].active = YES;
+        
+        // vertical
+        [self.tableView.topAnchor constraintEqualToAnchor:margin.topAnchor].active = YES;
+        [self.tableView.bottomAnchor constraintEqualToAnchor:self.saveButton.topAnchor].active = YES;
+        [self.saveButton.bottomAnchor constraintEqualToAnchor:margin.bottomAnchor].active = YES;
+        [self.saveButton.heightAnchor constraintEqualToConstant:47.0f].active = YES;
         
         // new obs confirm has no Done nav bar button
         self.navigationItem.rightBarButtonItem = nil;
     } else {
         // save existing obs has no save button
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-|"
-                                                                          options:0
-                                                                          metrics:0
-                                                                            views:views]];
+        // vertical
+        [self.tableView.topAnchor constraintEqualToAnchor:margin.topAnchor].active = YES;
+        [self.tableView.bottomAnchor constraintEqualToAnchor:margin.bottomAnchor].active = YES;
         
         // save existing obs has a Done nav bar button
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
