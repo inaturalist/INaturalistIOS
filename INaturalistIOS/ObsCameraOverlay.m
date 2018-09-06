@@ -183,16 +183,7 @@
             button;
         });
         [self addSubview:self.library];
-        
-        NSDictionary *views = @{
-                                @"close": self.close,
-                                @"camera": self.camera,
-                                @"flash": self.flash,
-                                @"noPhoto": self.noPhoto,
-                                @"shutter": self.shutter,
-                                @"library": self.library,
-                                };
-        
+                
         UILayoutGuide *margin = self.layoutMarginsGuide;
         if (@available(iOS 11.0, *)) {
             margin = self.safeAreaLayoutGuide;
