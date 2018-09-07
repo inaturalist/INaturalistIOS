@@ -56,6 +56,7 @@
 #import "ObsDetailTaxonCell.h"
 #import "ExploreUpdateRealm.h"
 #import "INatReachability.h"
+#import "UIViewController+INaturalist.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -148,44 +149,44 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     });
     // wait to add to self.view, since we don't always need it
     
-    UILayoutGuide *margin = self.view.layoutMarginsGuide;
-    if (@available(iOS 11.0, *)) {
-        margin = self.view.safeAreaLayoutGuide;
-    }
+    self.title = NSLocalizedString(@"Details", @"Title for confirm new observation details view");
     
-    // horizontal
-    [self.tableView.leadingAnchor constraintEqualToAnchor:margin.leadingAnchor].active = YES;
-    [self.tableView.trailingAnchor constraintEqualToAnchor:margin.trailingAnchor].active = YES;
-    
+    // finish configuring subviews based on new obs context
     if (self.isMakingNewObservation) {
-        // new obs confirm has a save button
-        [self.view addSubview:self.saveButton];
-        
-        // horizontal
-        [self.saveButton.leadingAnchor constraintEqualToAnchor:margin.leadingAnchor].active = YES;
-        [self.saveButton.trailingAnchor constraintEqualToAnchor:margin.trailingAnchor].active = YES;
-        
-        // vertical
-        [self.tableView.topAnchor constraintEqualToAnchor:margin.topAnchor].active = YES;
-        [self.tableView.bottomAnchor constraintEqualToAnchor:self.saveButton.topAnchor].active = YES;
-        [self.saveButton.bottomAnchor constraintEqualToAnchor:margin.bottomAnchor].active = YES;
-        [self.saveButton.heightAnchor constraintEqualToConstant:47.0f].active = YES;
-        
         // new obs confirm has no Done nav bar button
         self.navigationItem.rightBarButtonItem = nil;
-    } else {
-        // save existing obs has no save button
-        // vertical
-        [self.tableView.topAnchor constraintEqualToAnchor:margin.topAnchor].active = YES;
-        [self.tableView.bottomAnchor constraintEqualToAnchor:margin.bottomAnchor].active = YES;
         
+        // new obs confirm has a save button
+        [self.view addSubview:self.saveButton];
+    } else {
         // save existing obs has a Done nav bar button
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                                                target:self
                                                                                                action:@selector(saved:)];
     }
     
-    self.title = NSLocalizedString(@"Details", @"Title for confirm new observation details view");
+    // autolayout
+    UILayoutGuide *safeGuide = [self inat_safeLayoutGuide];
+    // horizontal
+    [self.tableView.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
+    [self.tableView.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
+    
+    if (self.isMakingNewObservation) {
+        // horizontal
+        [self.saveButton.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
+        [self.saveButton.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
+        
+        // vertical
+        [self.tableView.topAnchor constraintEqualToAnchor:safeGuide.topAnchor].active = YES;
+        [self.tableView.bottomAnchor constraintEqualToAnchor:self.saveButton.topAnchor].active = YES;
+        [self.saveButton.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
+        [self.saveButton.heightAnchor constraintEqualToConstant:47.0f].active = YES;
+    } else {
+        // vertical
+        [self.tableView.topAnchor constraintEqualToAnchor:safeGuide.topAnchor].active = YES;
+        [self.tableView.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
+    }
+    
     
 }
 

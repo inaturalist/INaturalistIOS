@@ -10,6 +10,7 @@
 
 #import "ObsCameraOverlay.h"
 #import "UIColor+ExploreColors.h"
+#import "UIView+UIViewHelpers.h"
 
 @interface ObsCameraOverlay () {
     NSAttributedString *flashOn, *flashOff, *flashAuto;
@@ -184,37 +185,34 @@
         });
         [self addSubview:self.library];
                 
-        UILayoutGuide *margin = self.layoutMarginsGuide;
-        if (@available(iOS 11.0, *)) {
-            margin = self.safeAreaLayoutGuide;
-        }
-        
+        UILayoutGuide *safeGuide = [self inat_safeLayoutGuide];
+
         // horizontal
-        [self.close.leadingAnchor constraintEqualToAnchor:margin.leadingAnchor].active = YES;
-        [self.camera.centerXAnchor constraintEqualToAnchor:margin.centerXAnchor].active = YES;
-        [self.flash.trailingAnchor constraintEqualToAnchor:margin.trailingAnchor].active = YES;
+        [self.close.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
+        [self.camera.centerXAnchor constraintEqualToAnchor:safeGuide.centerXAnchor].active = YES;
+        [self.flash.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
         [self.close.widthAnchor constraintEqualToConstant:50.0f].active = YES;
         [self.flash.widthAnchor constraintEqualToConstant:60.0f].active = YES;
         [self.camera.widthAnchor constraintEqualToConstant:50.0f].active = YES;
         
-        [self.noPhoto.leadingAnchor constraintEqualToAnchor:margin.leadingAnchor].active = YES;
-        [self.shutter.centerXAnchor constraintEqualToAnchor:margin.centerXAnchor].active = YES;
-        [self.library.trailingAnchor constraintEqualToAnchor:margin.trailingAnchor].active = YES;
+        [self.noPhoto.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
+        [self.shutter.centerXAnchor constraintEqualToAnchor:safeGuide.centerXAnchor].active = YES;
+        [self.library.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
         [self.noPhoto.widthAnchor constraintEqualToConstant:100.0f].active = YES;
         [self.shutter.widthAnchor constraintEqualToConstant:100.0f].active = YES;
         [self.library.widthAnchor constraintEqualToConstant:100.0f].active = YES;
         
         // vertical
-        [self.close.topAnchor constraintEqualToAnchor:margin.topAnchor].active = YES;
-        [self.camera.topAnchor constraintEqualToAnchor:margin.topAnchor].active = YES;
-        [self.flash.topAnchor constraintEqualToAnchor:margin.topAnchor].active = YES;
+        [self.close.topAnchor constraintEqualToAnchor:safeGuide.topAnchor].active = YES;
+        [self.camera.topAnchor constraintEqualToAnchor:safeGuide.topAnchor].active = YES;
+        [self.flash.topAnchor constraintEqualToAnchor:safeGuide.topAnchor].active = YES;
         [self.close.heightAnchor constraintEqualToConstant:40.0f].active = YES;
         [self.flash.heightAnchor constraintEqualToConstant:40.0f].active = YES;
         [self.camera.heightAnchor constraintEqualToConstant:40.0f].active = YES;
 
-        [self.noPhoto.bottomAnchor constraintEqualToAnchor:margin.bottomAnchor].active = YES;
-        [self.shutter.bottomAnchor constraintEqualToAnchor:margin.bottomAnchor].active = YES;
-        [self.library.bottomAnchor constraintEqualToAnchor:margin.bottomAnchor].active = YES;
+        [self.noPhoto.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
+        [self.shutter.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
+        [self.library.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
         [self.noPhoto.heightAnchor constraintEqualToConstant:80.0f].active = YES;
         [self.shutter.heightAnchor constraintEqualToConstant:80.0f].active = YES;
         [self.library.heightAnchor constraintEqualToConstant:80.0f].active = YES;

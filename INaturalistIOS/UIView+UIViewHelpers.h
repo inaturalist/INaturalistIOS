@@ -12,4 +12,5 @@
 - (UIView *)findFirstResponder;
 - (BOOL)findAndResignFirstResponder;
 - (UIView *)descendentPassingTest:(BOOL (^)(UIView *))block;
+- (UILayoutGuide *)inat_safeLayoutGuide;
 @end

@@ -46,5 +46,20 @@
     }
     return nil;
 }
-                                   
+
+- (UILayoutGuide *)inat_safeLayoutGuide {
+    UILayoutGuide *safeLayoutGuide = nil;
+    if (@available(iOS 11.0, *)) {
+        safeLayoutGuide = self.safeAreaLayoutGuide;
+    } else {
+        safeLayoutGuide = [[UILayoutGuide alloc] init];
+        [self addLayoutGuide:safeLayoutGuide];
+        [safeLayoutGuide.leadingAnchor constraintEqualToAnchor:self.leadingAnchor].active = YES;
+        [safeLayoutGuide.trailingAnchor constraintEqualToAnchor:self.trailingAnchor].active = YES;
+        [safeLayoutGuide.topAnchor constraintEqualToAnchor:self.topAnchor].active = YES;
+        [safeLayoutGuide.bottomAnchor constraintEqualToAnchor:self.bottomAnchor].active = YES;
+    }
+    return safeLayoutGuide;
+}
+
 @end
