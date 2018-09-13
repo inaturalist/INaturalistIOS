@@ -452,13 +452,14 @@ static const int SettingsVersionRowCount = 1;
 
 - (void)sendSupportEmail
 {
-    NSString *email = [NSString stringWithFormat:@"mailto://help@inaturalist.org?cc=&subject=iNaturalist iPhone help: version %@",
+    NSString *email = [NSString stringWithFormat:@"mailto://help@inaturalist.org?cc=&subject=iNaturalist iPhone help - version: %@",
                        self.versionText];
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     
     if ([appDelegate.loginController isLoggedIn]) {
         ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
-        email = [email stringByAppendingString:[NSString stringWithFormat:@" user id %ld", (long)me.userId]];
+        email = [email stringByAppendingString:[NSString stringWithFormat:@" user id: %ld,", (long)me.userId]];
+        email = [email stringByAppendingString:[NSString stringWithFormat:@" username: %@", me.login]];
     } else {
         email = [email stringByAppendingString:@" user not logged in"];
     }
