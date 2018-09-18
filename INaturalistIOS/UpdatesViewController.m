@@ -92,8 +92,8 @@
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
     NSPredicate *myUpdates = [NSPredicate predicateWithFormat:@"resourceOwnerId == %ld", me.userId];
-    self.updates = [[ExploreUpdateRealm objectsWithPredicate:myUpdates]
-                    sortedResultsUsingProperty:@"createdAt" ascending:NO];
+    self.updates = [[ExploreUpdateRealm objectsWithPredicate:myUpdates] sortedResultsUsingKeyPath:@"createdAt"
+                                                                                        ascending:NO];
     
     self.updatesToken = [self.updates addNotificationBlock:^(RLMResults * _Nullable results, RLMCollectionChange * _Nullable change, NSError * _Nullable error) {
         dispatch_async(dispatch_get_main_queue(), ^{

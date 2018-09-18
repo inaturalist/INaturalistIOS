@@ -158,10 +158,14 @@
     // query realm
     RLMResults *results = [ExploreTaxonRealm objectsWhere:@"searchableCommonName contains[c] %@ OR searchableScientificName contains[c] %@ OR searchableLastMatchedTerm contains[c] %@", term, term, term];
     
-    self.searchResults = [results sortedResultsUsingDescriptors:@[
-                                                                  [RLMSortDescriptor sortDescriptorWithProperty:@"rankLevel" ascending:NO],
-                                                                  [RLMSortDescriptor sortDescriptorWithProperty:@"observationCount" ascending:NO],
-                                                                  ]];
+    NSArray *sorts = @[
+                       [RLMSortDescriptor sortDescriptorWithKeyPath:@"rankLevel"
+                                                          ascending:NO],
+                       [RLMSortDescriptor sortDescriptorWithKeyPath:@"observationCount"
+                                                          ascending:NO]
+                       ];
+    
+    self.searchResults = [results sortedResultsUsingDescriptors:sorts];
     [self.tableView reloadData];
 }
 
