@@ -36,9 +36,6 @@
                                                                                       action:@selector(tappedAway)];
             gesture.delegate = self;
             
-            // will be enabled in -showOptionSearch
-            gesture.enabled = NO;
-            
             gesture;
         });
         [self addGestureRecognizer:tapAwayGesture];
@@ -146,7 +143,8 @@
                                                                          constant:0.0f];
         [self addConstraint:optionsTableViewHeightConstraint];
         
-        
+        // will be enabled in -showOptionSearch
+        self.userInteractionEnabled = NO;
     }
     
     return self;
@@ -174,8 +172,7 @@
     // hide the options container
     optionsContainerView.hidden = YES;
     
-    // disable the tap away gesture
-    tapAwayGesture.enabled = NO;
+    self.userInteractionEnabled = NO;
 }
 
 - (void)showOptionSearch {
@@ -187,8 +184,7 @@
     // show the options container
     optionsContainerView.hidden = NO;
     
-    // enable the tap away gesture
-    tapAwayGesture.enabled = YES;
+    self.userInteractionEnabled = YES;
 }
 
 - (BOOL)optionSearchIsActive {
@@ -290,35 +286,6 @@
         cell.textLabel.text = item.title;
         return cell;
     }
-}
-
-#pragma mark - Hit Test magic
-
-// return the deepest view that can handle the event
-// if search is inactive, allow any views underneath to receive the event
--(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-    if (self.optionSearchIsActive && CGRectContainsPoint(optionsTableView.frame, point))
-        return optionsTableView;
-    
-    if (self.optionSearchIsActive && CGRectContainsPoint(optionsSearchBar.frame, point))
-        return optionsSearchBar;
-    
-    if (!self.optionSearchIsActive && !self.activeSearchFilterView.hidden && CGRectContainsPoint(self.activeSearchFilterView.removeActiveSearchButton.frame, point))
-        return self.activeSearchFilterView.removeActiveSearchButton;
-    
-    if ((self.optionSearchIsActive) && CGRectContainsPoint(self.frame, point))
-        return self;
-    
-    return nil;
-}
-
-#pragma mark - GestureRecognizerDelegate
-
-// make sure none of the child views can handle this touch
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    CGPoint location = [touch locationInView:self];
-    UIView *view = [self hitTest:location withEvent:nil];
-    return [view isEqual:self];
 }
 
 #pragma mark - GestureRecognizer Target
