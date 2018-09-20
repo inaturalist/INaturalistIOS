@@ -46,7 +46,7 @@
 }
 
 - (void)dealloc {
-    [self.updatesToken stop];
+    [self.updatesToken invalidate];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
