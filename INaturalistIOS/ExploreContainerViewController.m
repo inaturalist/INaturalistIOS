@@ -21,6 +21,7 @@
                                       action:@selector(segmentedControlChanged:)
                             forControlEvents:UIControlEventValueChanged];
             self.segmentedControl.tintColor = [UIColor inatGreen];
+            self.segmentedControl.translatesAutoresizingMaskIntoConstraints = NO;
             self.segmentedControl;
         });
 
