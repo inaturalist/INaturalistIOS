@@ -48,6 +48,7 @@
 @property IBOutlet UIButton *skipButton;
 @property IBOutlet UIButton *closeButton;
 
+@property IBOutlet UILabel *reasonLabel;
 @property IBOutlet UILabel *orLabel;
 @property IBOutlet IconAndTextControl *facebookButton;
 @property IBOutlet IconAndTextControl *googleButton;
@@ -136,7 +137,7 @@
                                 forState:UIControlStateNormal];
     
     self.closeButton.hidden = self.skippable;
-    
+    self.reasonLabel.text = self.reason;
     
     // terms label
     NSString *base = NSLocalizedString(@"By using iNaturalist you agree to the Terms of Service and Privacy Policy.", @"Base text for terms of service and privacy policy notice when creating an iNat account.");

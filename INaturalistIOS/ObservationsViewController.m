@@ -86,6 +86,7 @@
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;
     login.startsInLoginMode = YES;
+    login.reason = reason;
     [self presentViewController:login animated:YES completion:nil];
 }
 
@@ -96,6 +97,7 @@
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;
+    login.reason = reason;
     [self presentViewController:login animated:YES completion:nil];
 }
 
@@ -1717,7 +1719,16 @@
     
     NSString *reasonMsg = NSLocalizedString(@"You must be logged in to upload to iNaturalist.org.",
                                             @"This is an explanation for why the sync button triggers a login prompt.");
-    [self presentSignupSplashWithReason:reasonMsg];
+    
+    // trace code for login failures - include some info about the JWT
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    LoginController *login = [appDelegate loginController];
+    NSString *jwtExists = (login.jwtToken && ![login.jwtToken isEqualToString:@""]) ? @"JWT" : @"JWT DNE";
+    NSString *jwtDate = [login.jwtTokenExpiration description];
+    NSString *furtherDetails = [NSString stringWithFormat:@"%@ %@", jwtExists, jwtDate];
+    
+    NSString *fullReasonMsg = [NSString stringWithFormat:@"%@ - %@", reasonMsg, furtherDetails];
+    [self presentSignupSplashWithReason:fullReasonMsg];
 }
 
 - (void)notifyUploadErrorSuspended {

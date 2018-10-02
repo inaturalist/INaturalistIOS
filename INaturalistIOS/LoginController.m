@@ -37,7 +37,6 @@
 }
 @property (atomic, readwrite, copy) LoginSuccessBlock currentSuccessBlock;
 @property (atomic, readwrite, copy) LoginErrorBlock currentErrorBlock;
-@property NSDate *jwtTokenExpiration;
 
 @end
 

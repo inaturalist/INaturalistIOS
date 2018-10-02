@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="zUI-iq-68M">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="zUI-iq-68M">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment version="2304" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -469,16 +467,22 @@
                                 <variation key="heightClass=regular-widthClass=regular" spacing="25"/>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="LMC-dJ-pka">
-                                <rect key="frame" x="42.5" y="509" width="290" height="138"/>
+                                <rect key="frame" x="42.5" y="484.5" width="290" height="162.5"/>
                                 <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oAC-8Z-BHX">
+                                        <rect key="frame" x="0.0" y="0.0" width="290" height="14.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Or Log in with:" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bfj-77-C1k">
-                                        <rect key="frame" x="0.0" y="0.0" width="290" height="16"/>
+                                        <rect key="frame" x="0.0" y="24.5" width="290" height="16"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                         <color key="textColor" red="0.4823529411764706" green="0.4823529411764706" blue="0.4823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" spacing="23" translatesAutoresizingMaskIntoConstraints="NO" id="dfE-eN-x9k">
-                                        <rect key="frame" x="0.0" y="26" width="290" height="36"/>
+                                        <rect key="frame" x="0.0" y="50.5" width="290" height="36"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u2t-rU-mF6" customClass="IconAndTextControl">
                                                 <rect key="frame" x="0.0" y="0.0" width="133.5" height="36"/>
@@ -508,7 +512,7 @@
                                         </constraints>
                                     </stackView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Terms" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YtY-We-SSc">
-                                        <rect key="frame" x="0.0" y="72" width="290" height="16"/>
+                                        <rect key="frame" x="0.0" y="96.5" width="290" height="16"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="290" id="IcN-pM-0jv"/>
                                         </constraints>
@@ -517,7 +521,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J6N-uD-ctb">
-                                        <rect key="frame" x="124.5" y="98" width="41" height="40"/>
+                                        <rect key="frame" x="124.5" y="122.5" width="41" height="40"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="40" id="dad-GB-mXz"/>
                                         </constraints>
@@ -534,6 +538,7 @@
                                     <constraint firstItem="dfE-eN-x9k" firstAttribute="width" secondItem="LMC-dJ-pka" secondAttribute="width" id="78q-GI-5Xk"/>
                                     <constraint firstItem="Bfj-77-C1k" firstAttribute="width" secondItem="LMC-dJ-pka" secondAttribute="width" id="ShK-6A-6VA"/>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="200" id="hby-aP-vLo"/>
+                                    <constraint firstItem="oAC-8Z-BHX" firstAttribute="width" secondItem="LMC-dJ-pka" secondAttribute="width" id="j5g-XQ-daG"/>
                                 </constraints>
                                 <variation key="heightClass=regular-widthClass=regular" spacing="25"/>
                             </stackView>
@@ -576,6 +581,7 @@
                         <outlet property="licenseStackView" destination="gUI-g3-aai" id="imr-hk-uqZ"/>
                         <outlet property="orLabel" destination="Bfj-77-C1k" id="lrY-mX-q9G"/>
                         <outlet property="passwordField" destination="FZ5-km-oDo" id="ef2-u2-1UH"/>
+                        <outlet property="reasonLabel" destination="oAC-8Z-BHX" id="kvl-lS-FbH"/>
                         <outlet property="skipButton" destination="J6N-uD-ctb" id="WWs-Vr-PeJ"/>
                         <outlet property="switchContextButton" destination="082-Nj-s4i" id="GUq-FA-S8G"/>
                         <outlet property="termsLabel" destination="YtY-We-SSc" id="7f9-t0-P84"/>
