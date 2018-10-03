@@ -366,8 +366,8 @@
 "zpr-b5-V8G.title" = "Edit Location";
 
 /* Class = "IBUILabel"; text = "Categorize new observations"; ObjectID = "thU-yQ-HUV"; */
-"thU-yQ-HUV.text" = "Categorize new observations"
+"thU-yQ-HUV.text" = "Categorize new observations";
 
 /* Class = "IBUILabel"; text = "Acknowledgements"; ObjectID = "zPB-Sx-9Uh"; */
-"zPB-Sx-9Uh.text" = "Acknowledgements"
+"zPB-Sx-9Uh.text" = "Acknowledgements";
 
