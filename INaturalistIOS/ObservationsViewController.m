@@ -319,6 +319,10 @@
                 	                                    handler:nil]];
             	[weakSelf presentViewController:alert animated:YES completion:nil];
 			} else {
+                // dirty the me user to force re-fetching
+                INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate.loginController dirtyLocalMeUser];
+                
 	     		[weakSelf loadUserForHeader];	
 			}
         }];
@@ -1566,6 +1570,10 @@
 #pragma mark - Upload Notification Delegate
 
 - (void)uploadSessionFinished {
+    // dirty the me user to force re-fetching
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.loginController dirtyLocalMeUser];
+    
     // allow any pending upload animations to finish
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         // make sure any deleted records get gone
@@ -1653,7 +1661,11 @@
     if (observation.uuid) {
         self.uploadProgress[observation.uuid] = nil;
     }
-    
+
+    // dirty the me user to force re-fetching
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.loginController dirtyLocalMeUser];
+
     // TODO: actually stop the upload
     [self syncStopped];
     
@@ -1685,6 +1697,10 @@
 
 - (void)deleteSessionFinished {
     [[Analytics sharedClient] debugLog:@"Upload - Delete Session Finished"];
+    
+    // dirty the me user to force re-fetching
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.loginController dirtyLocalMeUser];
 
     [self syncStopped];
 }
@@ -1692,6 +1708,10 @@
 - (void)deleteSessionFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Delete Failed: %@", [error localizedDescription]]];
     
+    // dirty the me user to force re-fetching
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.loginController dirtyLocalMeUser];
+
     [self syncStopped];
     
     if ([error.userInfo valueForKey:AFNetworkingOperationFailingURLResponseErrorKey]) {

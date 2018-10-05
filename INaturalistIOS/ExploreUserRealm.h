@@ -20,6 +20,7 @@
 @property NSString *email;
 @property NSInteger observationsCount;
 @property NSInteger siteId;
+@property NSDate *syncedAt;
 
 @property (readonly) NSURL *userIcon;
 @property (readonly) NSURL *userIconMedium;

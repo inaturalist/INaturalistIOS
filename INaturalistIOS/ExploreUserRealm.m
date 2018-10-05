@@ -18,6 +18,7 @@
         self.userIconString = model.userIcon.absoluteString;
         self.email = model.email;
         self.observationsCount = model.observationsCount;
+        self.syncedAt = [NSDate date];
     }
     return self;
 }

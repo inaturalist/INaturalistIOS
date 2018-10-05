@@ -27,6 +27,8 @@
 #import "ExploreUserRealm.h"
 #import "ExploreTaxonRealm.h"
 
+static const NSTimeInterval LocalMeUserValidTimeInterval = 600;
+
 @interface LoginController () <GPPSignInDelegate> {
     NSString    *externalAccessToken;
     NSString    *iNatAccessToken;
@@ -296,6 +298,7 @@ NSInteger INatMinPasswordLength = 6;
                                       me.observationsCount = [[parsedData objectForKey:@"observations_count"] integerValue];
                                       me.siteId = [[parsedData objectForKey:@"site_id"] integerValue];
                                       me.siteId = [parsedData objectForKey:@"site_id"] ?: @(1);
+                                      me.syncedAt = [NSDate distantPast];
                                       
                                       RLMRealm *realm = [RLMRealm defaultRealm];
                                       [realm beginWriteTransaction];
@@ -544,7 +547,15 @@ NSInteger INatMinPasswordLength = 6;
                       }];
 }
 
-#pragma mark - Convenience method for fetching the logged in User
+#pragma mark - Convenience methods for working with the logged in User
+
+- (void)dirtyLocalMeUser {
+    ExploreUserRealm *me = [self meUserLocal];
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    me.syncedAt = [NSDate distantPast];
+    [realm commitWriteTransaction];
+}
 
 - (ExploreUserRealm *)meUserLocal {
     NSNumber *userId = nil;
@@ -581,6 +592,7 @@ NSInteger INatMinPasswordLength = 6;
         me.email = nil;
         me.observationsCount = meFromCoreData.observationsCount.integerValue;
         me.siteId = meFromCoreData.siteId.integerValue;
+        me.syncedAt = [NSDate distantPast];
         
         RLMRealm *realm = [RLMRealm defaultRealm];
         [realm beginWriteTransaction];
@@ -594,18 +606,23 @@ NSInteger INatMinPasswordLength = 6;
 }
 
 - (void)meUserRemoteCompletion:(void (^)(ExploreUserRealm *))completion {
-    [[self peopleApi] fetchMeHandler:^(NSArray *results, NSInteger count, NSError *error) {
-        RLMRealm *realm = [RLMRealm defaultRealm];
-        [realm beginWriteTransaction];
-        ExploreUserRealm *me = nil;
-        for (ExploreUser *user in results) {
-            me = [[ExploreUserRealm alloc] initWithMantleModel:user];
-            [realm addOrUpdateObject:me];
-        }
-        [realm commitWriteTransaction];
-        
+    ExploreUserRealm *me = [self meUserLocal];
+    if (me.syncedAt && [me.syncedAt timeIntervalSinceNow] > -LocalMeUserValidTimeInterval) {
         completion(me);
-    }];
+    } else {
+        [[self peopleApi] fetchMeHandler:^(NSArray *results, NSInteger count, NSError *error) {
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            [realm beginWriteTransaction];
+            ExploreUserRealm *me = nil;
+            for (ExploreUser *user in results) {
+                me = [[ExploreUserRealm alloc] initWithMantleModel:user];
+                [realm addOrUpdateObject:me];
+            }
+            [realm commitWriteTransaction];
+            
+            completion(me);
+        }];
+    }
 }
 
 - (User *)fetchMeFromCoreData {

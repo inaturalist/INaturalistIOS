@@ -239,7 +239,7 @@
 - (void)configureApplication {
     
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
-	config.schemaVersion = 10;
+	config.schemaVersion = 11;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
         if (oldSchemaVersion < 1) {
             // add searchable (ie diacritic-less) taxon names
@@ -261,6 +261,13 @@
             [migration enumerateObjects:ExploreUpdateRealm.className
                                   block:^(RLMObject * _Nullable oldObject, RLMObject * _Nullable newObject) {
                                       newObject[@"viewedLocally"] = @(YES);
+                                  }];
+        }
+        if (oldSchemaVersion < 11) {
+            // set all user syncedAt to distant past
+            [migration enumerateObjects:ExploreUserRealm.className
+                                  block:^(RLMObject * _Nullable oldObject, RLMObject * _Nullable newObject) {
+                                      newObject[@"syncedAt"] = [NSDate distantPast];
                                   }];
         }
     };
