@@ -288,6 +288,14 @@
     }
 }
 
+#pragma mark - GestureRecognizerDelegate
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    CGPoint location = [touch locationInView:self];
+    UIView *view = [self hitTest:location withEvent:nil];
+    return [view isEqual:self];
+}
+
 #pragma mark - GestureRecognizer Target
 
 - (void)tappedAway {
