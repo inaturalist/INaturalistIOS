@@ -299,4 +299,13 @@
         [self showActiveSearch];
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    if ([touch.view isDescendantOfView:optionsTableView]) {
+        return NO;
+    }
+    
+    return YES;
+
+}
+
 @end
