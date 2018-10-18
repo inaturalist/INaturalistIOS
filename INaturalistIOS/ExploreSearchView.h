@@ -14,23 +14,12 @@
 
 @interface ExploreSearchView : UIView
 
-
 @property NSArray *autocompleteItems;
 @property NSArray *shortcutItems;
-
-@property ExploreActiveSearchView *activeSearchFilterView;
-@property (nonatomic, assign) id <ActiveSearchTextDelegate> activeSearchTextDelegate;
 
 - (void)hideOptionSearch;
 - (void)showOptionSearch;
 - (BOOL)optionSearchIsActive;
 
-- (void)showActiveSearch;
-- (void)hideActiveSearch;
-
-
 @end
 
-@protocol ActiveSearchTextDelegate
-- (NSString *)activeSearchText;
-@end

@@ -79,36 +79,11 @@
         });
         [self addSubview:optionsContainerView];
         
-        self.activeSearchFilterView = ({
-            ExploreActiveSearchView *view = [[ExploreActiveSearchView alloc] initWithFrame:CGRectZero];
-            view.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            view.hidden = YES;
-            
-            view;
-        });
-        [self insertSubview:self.activeSearchFilterView aboveSubview:optionsContainerView];
-        
         NSDictionary *views = @{
                                 @"optionsContainerView": optionsContainerView,
                                 @"optionsSearchBar": optionsSearchBar,
                                 @"optionsTableView": optionsTableView,
-                                @"activeSearchFilterView": self.activeSearchFilterView,
                                 };
-        
-        
-        // Configure the Active Search UI
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[activeSearchFilterView]-0-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[activeSearchFilterView]-0-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        
-        
-        
         
         // Configure the Search Options UI
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[optionsContainerView]-0-|"
@@ -176,9 +151,6 @@
 }
 
 - (void)showOptionSearch {
-    // start by hiding active search filter view
-    [self hideActiveSearch];
-    
     [self layoutIfNeeded];
     
     // show the options container
@@ -189,19 +161,6 @@
 
 - (BOOL)optionSearchIsActive {
     return !optionsContainerView.hidden;
-}
-
-- (void)hideActiveSearch {
-    self.activeSearchFilterView.activeSearchLabel.text = @"";
-    self.activeSearchFilterView.hidden = YES;
-}
-
-- (void)showActiveSearch {
-    // hide option search
-    [self hideOptionSearch];
-    
-    self.activeSearchFilterView.activeSearchLabel.text = [self.activeSearchTextDelegate activeSearchText];
-    self.activeSearchFilterView.hidden = NO;
 }
 
 #pragma mark - tableview constraint helpers
@@ -293,10 +252,6 @@
 - (void)tappedAway {
     if ([self optionSearchIsActive])
         [self hideOptionSearch];
-    
-    if ([self.activeSearchTextDelegate activeSearchText] != nil &&
-        ![[self.activeSearchTextDelegate activeSearchText] isEqualToString:@""])
-        [self showActiveSearch];
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
