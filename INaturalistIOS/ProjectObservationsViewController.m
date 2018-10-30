@@ -32,6 +32,7 @@
 #import "ExploreTaxonRealm.h"
 #import "INatReachability.h"
 #import "ExploreUserRealm.h"
+#import "UIColor+INaturalist.h"
 
 static NSString *SimpleFieldIdentifier = @"simple";
 static NSString *LongTextFieldIdentifier = @"longtext";
@@ -49,10 +50,19 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 
 @implementation ProjectObservationsViewController
 
+- (NSArray *)joinedProjectSortDescriptors {
+    return @[
+             [NSSortDescriptor sortDescriptorWithKey:@"isNewStyleProject" ascending:YES],
+             [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES],
+             ];
+}
+
 #pragma mark - UIViewController lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.joinedProjects = [self.joinedProjects sortedArrayUsingDescriptors:[self joinedProjectSortDescriptors]];
     
     if (self.isReadOnly) {
         self.title = NSLocalizedString(@"Projects", nil);
@@ -323,21 +333,25 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     BOOL projectIsSelected = [self projectIsSelected:project];
     
     CGFloat height = [self tableView:tableView heightForHeaderInSection:section];
-    ProjectObservationHeaderView *header = [[ProjectObservationHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, height)];
+    
+    UINib *nib = [UINib nibWithNibName:@"ProjectObservationHeaderView" bundle:[NSBundle mainBundle]];
+    ProjectObservationHeaderView *header = [[nib instantiateWithOwner:nil options:nil] firstObject];
+    header.frame = CGRectMake(0, 0, tableView.bounds.size.width, height);
     header.projectTitleLabel.text = project.title;
-
+    header.projectTypeLabel.text = [project titleForTypeOfProject];
+    
     if (self.isReadOnly) {
-        // not showing this yet
-        header.infoButton.hidden = YES;
-        header.infoButton.tag = section;
-        
         header.selectedSwitch.hidden = YES;
+        header.backgroundColor = [UIColor whiteColor];
+    } else if ([project isNewStyleProject]) {
+        header.selectedSwitch.hidden = YES;
+        header.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.2];
     } else {
-        header.infoButton.hidden = YES;
         header.selectedSwitch.hidden = NO;
         [header.selectedSwitch setOn:projectIsSelected animated:NO];
         header.selectedSwitch.tag = section;
         [header.selectedSwitch addTarget:self action:@selector(selectedChanged:) forControlEvents:UIControlEventValueChanged];
+        header.backgroundColor = [UIColor whiteColor];
     }
     
     NSURL *url = [NSURL URLWithString:project.iconURL];
@@ -359,21 +373,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    Project *project = [self projectForSection:section];
-    
-    CGFloat baseHeight = 44;
-    NSDictionary *attrs = @{
-                            NSFontAttributeName: [UIFont systemFontOfSize:14],
-                            };
-    CGRect titleBoundingRect = [project.title boundingRectWithSize:CGSizeMake(199, CGFLOAT_MAX)
-                                                           options:NSStringDrawingUsesLineFragmentOrigin
-                                                        attributes:attrs
-                                                           context:nil];
-    if (titleBoundingRect.size.height > 18) {
-        baseHeight += 3;
-    }
-    
-    return baseHeight;
+    return 55;
 }
 
 
@@ -399,6 +399,10 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         return 0;
     }
     Project *project = [self projectForSection:section];
+    if ([project isNewStyleProject]) {
+        // only show new style projects in readonly mode
+        return 0;
+    }
     if ([self projectIsSelected:project]) {
         return project.projectObservationFields.count;
     } else {
@@ -421,6 +425,11 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     }
     
     Project *project = [self projectForSection:indexPath.section];
+    if ([project isNewStyleProject]) {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        return;
+    }
+    
     ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
     NSArray *values = field.observationField.allowedValuesArray;
     NSInteger initialSelection = 0;
@@ -764,10 +773,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         [projects addObject:pu.project];
     }];
     
-    self.joinedProjects = [projects sortedArrayUsingComparator:^NSComparisonResult(Project *p1, Project *p2) {
-        return [p1.title compare:p2.title];
-    }];
-    
+    self.joinedProjects = [projects sortedArrayUsingDescriptors:[self joinedProjectSortDescriptors]];
     [self.tableView reloadData];
 }
 

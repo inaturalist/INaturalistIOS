@@ -108,6 +108,7 @@
 		FA2552101D1F49A8005D2128 /* ExploreTaxonRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */; };
 		FA2552131D1F4D62005D2128 /* TaxaAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2552121D1F4D62005D2128 /* TaxaAPI.m */; };
 		FA2A07991C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2A07981C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m */; };
+		FA394EB8218909AF004AE0FE /* ProjectObservationHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA394EB7218909AF004AE0FE /* ProjectObservationHeaderView.xib */; };
 		FA399A971DDBDB3E007ABD3E /* Projects.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA399A991DDBDB3E007ABD3E /* Projects.storyboard */; };
 		FA399AAC1DDBDC73007ABD3E /* Activity.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA399AAE1DDBDC73007ABD3E /* Activity.storyboard */; };
 		FA399AC11DDBDC88007ABD3E /* Guides.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA399AC31DDBDC88007ABD3E /* Guides.storyboard */; };
@@ -524,6 +525,7 @@
 		FA30C2F22090D882006F7629 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA31E8DB1BB9CD1A0051B199 /* INaturalist2.8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.8.xcdatamodel; sourceTree = "<group>"; };
 		FA38139D1BC32CD7004DBAD0 /* INaturalist2.9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.9.xcdatamodel; sourceTree = "<group>"; };
+		FA394EB7218909AF004AE0FE /* ProjectObservationHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProjectObservationHeaderView.xib; sourceTree = "<group>"; };
 		FA399A981DDBDB3E007ABD3E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Projects.storyboard; sourceTree = "<group>"; };
 		FA399A9B1DDBDB42007ABD3E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Projects.strings; sourceTree = "<group>"; };
 		FA399A9D1DDBDB48007ABD3E /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Projects.strings; sourceTree = "<group>"; };
@@ -1357,6 +1359,7 @@
 				FAEF23421C7D0DD300208F44 /* Project Details */,
 				FA78DFBE1BC5C97B002DCCB1 /* ProjectObservationHeaderView.h */,
 				FA78DFBF1BC5C97B002DCCB1 /* ProjectObservationHeaderView.m */,
+				FA394EB7218909AF004AE0FE /* ProjectObservationHeaderView.xib */,
 				899A00D21B53AADD0079162F /* ProjectTableViewCell.h */,
 				899A00D31B53AADD0079162F /* ProjectTableViewCell.m */,
 				19F8748C15252B6000A65F9A /* ProjectTableViewCell.xib */,
@@ -2151,6 +2154,7 @@
 				FA399AAC1DDBDC73007ABD3E /* Activity.storyboard in Resources */,
 				FA399A971DDBDB3E007ABD3E /* Projects.storyboard in Resources */,
 				19ADD5AC160A3D50001D886C /* ObservationFieldValueSwitchCell.xib in Resources */,
+				FA394EB8218909AF004AE0FE /* ProjectObservationHeaderView.xib in Resources */,
 				19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */,
 				60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */,
 				FA74A6221CB4C4EE002EBD0A /* RankedUserObsSpecies.xib in Resources */,

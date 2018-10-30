@@ -10,9 +10,9 @@
 
 @interface ProjectObservationHeaderView : UIView
 
-@property UIImageView *projectThumbnailImageView;
-@property UILabel *projectTitleLabel;
-@property UISwitch *selectedSwitch;
-@property UIButton *infoButton;
+@property IBOutlet UIImageView *projectThumbnailImageView;
+@property IBOutlet UILabel *projectTitleLabel;
+@property IBOutlet UILabel *projectTypeLabel;
+@property IBOutlet UISwitch *selectedSwitch;
 
 @end
