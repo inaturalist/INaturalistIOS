@@ -13,6 +13,7 @@
 @class User;
 @class UploadManager;
 
+extern NSString *INatJWTFailureErrorDomain;
 extern NSString *kUserLoggedInNotificationName;
 extern NSInteger INatMinPasswordLength;
 

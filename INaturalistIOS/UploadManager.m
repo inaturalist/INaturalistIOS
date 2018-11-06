@@ -91,7 +91,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
         // delete operations return no data
         weakSelf.nodeSessionManager.responseSerializer = [AFHTTPResponseSerializer serializer];
         
-        // set the authorization for the rails session manager
+        // set the authorization for the node session manager
         [weakSelf.nodeSessionManager.requestSerializer setValue:appDelegate.loginController.jwtToken
                                              forHTTPHeaderField:@"Authorization"];
 
@@ -105,7 +105,10 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
             [self.deleteQueue addOperation:op];
         }
     } failure:^(NSError *error) {
-        [self.delegate deleteSessionFailedFor:nil error:error];
+        NSError *jwtFailedError = [NSError errorWithDomain:INatJWTFailureErrorDomain
+                                                      code:error.code
+                                                  userInfo:error.userInfo];
+        [self.delegate deleteSessionFailedFor:nil error:jwtFailedError];
     }];
 }
 
@@ -139,7 +142,10 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
             [weakSelf.uploadQueue addOperation:op];
         }
     } failure:^(NSError *error) {
-        [self.delegate uploadSessionFailedFor:nil error:error];
+        NSError *jwtFailedError = [NSError errorWithDomain:INatJWTFailureErrorDomain
+                                                      code:error.code
+                                                  userInfo:error.userInfo];
+        [self.delegate deleteSessionFailedFor:nil error:jwtFailedError];
     }];
 }
 

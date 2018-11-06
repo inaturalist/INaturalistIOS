@@ -1669,7 +1669,9 @@
     // TODO: actually stop the upload
     [self syncStopped];
     
-    if ([error.userInfo valueForKey:AFNetworkingOperationFailingURLResponseErrorKey]) {
+    if ([error.domain isEqualToString:INatJWTFailureErrorDomain]) {
+        [self notifyUploadErrorJWTFetchFailed];
+    } else if ([error.userInfo valueForKey:AFNetworkingOperationFailingURLResponseErrorKey]) {
         NSHTTPURLResponse *resp = [error.userInfo valueForKey:AFNetworkingOperationFailingURLResponseErrorKey];
         if (resp.statusCode == 401) {
             [self notifyUploadErrorAuthRequired];
@@ -1729,6 +1731,28 @@
 }
 
 #pragma mark - uploader delegate helpers
+
+- (void)notifyUploadErrorJWTFetchFailed {
+    [[Analytics sharedClient] debugLog:@"Upload - JWT Fetch Failed"];
+    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                     withProperties:@{
+                                      @"Via": @"JWT Fetch Failed",
+                                      }];
+    
+    NSString *reasonMsg = NSLocalizedString(@"Fetching an authentication token failed. Please contact help@inaturalist.org.",
+                                            @"This is an explanation for when auth token fetch fails during upload/sync.");
+    
+    // trace code for login failures - include some info about the JWT
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    LoginController *login = [appDelegate loginController];
+    NSString *jwtExists = (login.jwtToken && ![login.jwtToken isEqualToString:@""]) ? @"JWT" : @"JWT DNE";
+    NSString *jwtDate = [login.jwtTokenExpiration description];
+    NSString *furtherDetails = [NSString stringWithFormat:@"%@ %@", jwtExists, jwtDate];
+    
+    NSString *fullReasonMsg = [NSString stringWithFormat:@"%@ - %@", reasonMsg, furtherDetails];
+    [self presentSignupSplashWithReason:fullReasonMsg];
+
+}
 
 - (void)notifyUploadErrorAuthRequired {
     [[Analytics sharedClient] debugLog:@"Upload - Auth Required"];

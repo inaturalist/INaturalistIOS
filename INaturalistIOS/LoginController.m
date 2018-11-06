@@ -44,6 +44,7 @@ static const NSTimeInterval LocalMeUserValidTimeInterval = 600;
 
 #pragma mark - NSNotification names
 
+NSString *INatJWTFailureErrorDomain = @"org.inaturalist.jwtfailure";
 NSString *kUserLoggedInNotificationName = @"UserLoggedInNotificationName";
 NSInteger INatMinPasswordLength = 6;
 
