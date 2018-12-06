@@ -11,6 +11,8 @@
 		<string>network_logo_pt</string>
 		<key>name</key>
 		<string>Biodiversity4All</string>
+		<key>shortName</key>
+		<string>Biodiversity4All</string>
 		<key>baseUrl</key>
 		<string>https://www.biodiversity4all.org</string>
 		<key>mobileCountryCodes</key>
@@ -26,6 +28,8 @@
 		<key>logoName</key>
 		<string>network_logo_nz</string>
 		<key>name</key>
+		<string>iNaturalist NZ – Mātaki Taiao</string>
+		<key>shortName</key>
 		<string>iNaturalist NZ</string>
 		<key>baseUrl</key>
 		<string>http://inaturalist.nz</string>
@@ -43,6 +47,8 @@
 		<string>5</string>
 		<key>name</key>
 		<string>iNaturalist Canada</string>
+		<key>shortName</key>
+		<string>iNaturalist Canada</string>
 		<key>baseUrl</key>
 		<string>http://inaturalist.ca</string>
 		<key>mobileCountryCodes</key>
@@ -58,6 +64,8 @@
 		<key>identifier</key>
 		<string>6</string>
 		<key>name</key>
+		<string>NaturaLista Colombia</string>
+		<key>shortName</key>
 		<string>NaturaLista Colombia</string>
 		<key>baseUrl</key>
 		<string>http://naturalista.biodiversidad.co</string>
@@ -75,6 +83,8 @@
 		<string>2</string>
 		<key>name</key>
 		<string>Naturalista</string>
+		<key>shortName</key>
+		<string>Naturalista</string>
 		<key>baseUrl</key>
 		<string>http://www.naturalista.mx</string>
 		<key>mobileCountryCodes</key>
@@ -86,6 +96,8 @@
 		<key>identifier</key>
 		<string>1</string>
 		<key>name</key>
+		<string>iNaturalist</string>
+		<key>shortName</key>
 		<string>iNaturalist</string>
 		<key>baseUrl</key>
 		<string>https://www.inaturalist.org</string>

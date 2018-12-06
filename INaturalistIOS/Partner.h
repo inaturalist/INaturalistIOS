@@ -18,6 +18,8 @@
 @property UIImage *logo;
 @property NSString *countryName;
 
+@property NSString *shortName;
+
 - (instancetype)initWithDictionary:(NSDictionary *)dictionaryFromPlist;
 
 @end
