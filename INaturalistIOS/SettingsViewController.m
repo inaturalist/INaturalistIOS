@@ -59,9 +59,10 @@ static const int SettingsSectionCount = 4;
 typedef NS_ENUM(NSInteger, SettingsHelpCell) {
     SettingsHelpCellTutorial = 0,
     SettingsHelpCellContact,
-    SettingsHelpCellReview
+    SettingsHelpCellReview,
+    SettingsHelpCellDonate
 };
-static const int SettingsHelpRowCount = 3;
+static const int SettingsHelpRowCount = 4;
 
 typedef NS_ENUM(NSInteger, SettingsAppCell) {
     SettingsAppCellChangeUsername = 0,
@@ -476,8 +477,26 @@ static const int SettingsVersionRowCount = 1;
         [self networkUnreachableAlert];
     }
 #else
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot rate", nil)
-                                                                   message:NSLocalizedString(@"No App Store URL configured", nil)
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot rate", @"Failure message")
+                                                                   message:NSLocalizedString(@"No URL configured", nil)
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                              style:UIAlertActionStyleDefault
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+#endif
+}
+
+- (void)launchDonate {
+#ifdef INatDonateURL
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:INatDonateURL]];
+    } else {
+        [self networkUnreachableAlert];
+    }
+#else
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot donate", @"Failure message")
+                                                                   message:NSLocalizedString(@"No URL configured", nil)
                                                             preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
                                               style:UIAlertActionStyleDefault
@@ -634,8 +653,10 @@ static const int SettingsVersionRowCount = 1;
             return [self tableView:tableView tutorialCellForIndexPath:indexPath];
         } else if (indexPath.item == SettingsHelpCellContact) {
             return [self tableView:tableView contactUsCellForIndexPath:indexPath];
-        } else {
+        } else if (indexPath.item == SettingsHelpCellReview) {
             return [self tableView:tableView rateUsCellForIndexPath:indexPath];
+        } else {
+            return [self tableView:tableView donateCellForIndexPath:indexPath];
         }
     } else {
         return [self tableView:tableView versionCellForIndexPath:indexPath];
@@ -729,6 +750,8 @@ static const int SettingsVersionRowCount = 1;
             [self sendSupportEmail];
         } else if (indexPath.item == SettingsHelpCellReview) {
             [self launchRateUs];
+        } else {
+            [self launchDonate];
         }
     } else if (indexPath.section == SettingsSectionAccount) {
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -888,6 +911,13 @@ static const int SettingsVersionRowCount = 1;
     return cell;
 }
 
+- (UITableViewCell *)tableView:(UITableView *)tableView donateCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
+                                                                   forIndexPath:indexPath];
+    cell.leadingTextLabel.text = NSLocalizedString(@"Donate to iNaturalist", @"label for donate action in settings.");
+    return cell;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView versionCellForIndexPath:(NSIndexPath *)indexPath {
     SettingsVersionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"version"
                                                                 forIndexPath:indexPath];
@@ -896,7 +926,6 @@ static const int SettingsVersionRowCount = 1;
                               [[ImageStore sharedImageStore] usageStatsString]];
     cell.versionLabel.textAlignment = NSTextAlignmentNatural;
     return cell;
-
 }
 
 @end
