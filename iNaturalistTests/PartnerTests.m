@@ -70,10 +70,10 @@
 
 - (NSDictionary *)allValidUrls {
     return @{
-             @"302": [NSURL URLWithString:@"http://inaturalist.ca"],                    // ca
-             @"530": [NSURL URLWithString:@"http://naturewatch.org.nz"],                // nz
-             @"732": [NSURL URLWithString:@"http://naturalista.biodiversidad.co"],      // co
-             @"334": [NSURL URLWithString:@"http://www.naturalista.mx"],                // mx
+             @"302": [NSURL URLWithString:@"https://inaturalist.ca"],                    // ca
+             @"530": [NSURL URLWithString:@"https://inaturalist.nz"],                // nz
+             @"732": [NSURL URLWithString:@"https://colombia.inaturalist.org"],      // co
+             @"334": [NSURL URLWithString:@"https://www.naturalista.mx"],                // mx
              @"268": [NSURL URLWithString:@"https://www.biodiversity4all.org"],         // pt
              };
 }
