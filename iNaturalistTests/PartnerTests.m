@@ -25,7 +25,13 @@
         XCTAssertTrue([[partner name] isEqualToString:[self allValidNames][countryCode]],
                       @"invalid partner name for mobile country code %@", countryCode);
     }];
+}
 
+- (void)testPartnerShortNameByMCC {
+    [[self allValidPartners] enumerateKeysAndObjectsUsingBlock:^(NSString *  _Nonnull countryCode, Partner *  _Nonnull partner, BOOL * _Nonnull stop) {
+        XCTAssertTrue([[partner shortName] isEqualToString:[self allValidShortNames][countryCode]],
+                      @"invalid partner short for mobile country code %@", countryCode);
+    }];
 }
 
 
@@ -80,7 +86,16 @@
              @"334": @"Naturalista",            // mx
              @"268": @"Biodiversity4All",       // pt
              };
+}
 
+- (NSDictionary *)allValidShortNames {
+    return @{
+             @"302": @"iNaturalist Canada",     // ca
+             @"530": @"iNaturalist NZ",         // nz
+             @"732": @"NaturaLista Colombia",   // co
+             @"334": @"Naturalista",            // mx
+             @"268": @"Biodiversity4All",       // pt
+             };
 }
 
 @end
