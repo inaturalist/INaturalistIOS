@@ -20,7 +20,7 @@
     [super setUp];
 }
 
-- (void)testPartnersByMCC {
+- (void)testPartnerNamesByMCC {
     [[self allValidPartners] enumerateKeysAndObjectsUsingBlock:^(NSString *  _Nonnull countryCode, Partner *  _Nonnull partner, BOOL * _Nonnull stop) {
         XCTAssertTrue([[partner name] isEqualToString:[self allValidNames][countryCode]],
                       @"invalid partner name for mobile country code %@", countryCode);
@@ -29,21 +29,21 @@
 }
 
 
-- (void)testPartnersBaseUrl {
+- (void)testPartnersBaseUrlByMCC {
     [[self allValidPartners] enumerateKeysAndObjectsUsingBlock:^(NSString *  _Nonnull countryCode, Partner *  _Nonnull partner, BOOL * _Nonnull stop) {
         XCTAssertTrue([[partner baseURL] isEqual:[self allValidUrls][countryCode]],
                       @"invalid base url for %@ partner", countryCode);
     }];
 }
 
-- (void)testPartnersImage {
+- (void)testPartnersImageByMCC {
     [[self allValidPartners] enumerateKeysAndObjectsUsingBlock:^(NSString *  _Nonnull countryCode, Partner *  _Nonnull partner, BOOL * _Nonnull stop) {
         XCTAssertNotNil([partner logo],
                         @"invalid logo image for %@ partner", countryCode);
     }];
 }
 
-- (void)testInvalidPartner {
+- (void)testInvalidPartnerByMCC {
     PartnerController *pc = [[PartnerController alloc] init];
 
     XCTAssertNil([pc partnerForMobileCountryCode:@"-199"],
