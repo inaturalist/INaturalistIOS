@@ -73,7 +73,7 @@
 - (NSDictionary *)allValidNames {
     return @{
              @"302": @"iNaturalist Canada",     // ca
-             @"530": @"NatureWatch NZ",         // nz
+             @"530": @"iNaturalist NZ – Mātaki Taiao",         // nz
              @"732": @"NaturaLista Colombia",   // co
              @"334": @"Naturalista",            // mx
              };
