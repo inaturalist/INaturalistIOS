@@ -33,7 +33,7 @@
 
 - (void)testInitialState {
     XCTAssertNotNil(button.currentAttributedTitle.string, @"Initial title shouldn't be nil");
-    XCTAssertTrue([button.currentAttributedTitle.string containsString:@"Sign up"], @"Initial title should contain the text 'Account' - ie it should be in signup context. May fail if tests are run in non-english environment");
+    XCTAssertTrue([button.currentAttributedTitle.string containsString:@"Account"], @"Initial title should contain the text 'Account' - ie it should be in Sign Up context. May fail if tests are run in non-english environment");
 }
 
 - (void)testSetContext {
