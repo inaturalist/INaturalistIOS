@@ -38,7 +38,10 @@
     
     UIImage *square = [is find:baseKey forSize:ImageStoreSquareSize];
     XCTAssertNotNil(square, @"failed to load square size for willet size");
-    XCTAssertTrue(CGSizeEqualToSize(square.size, CGSizeMake(128, 128)),
+    
+    CGFloat testDeviceScaleFactor = [UIScreen mainScreen].scale;
+    CGSize expectedSize = CGSizeMake(128*testDeviceScaleFactor, 128*testDeviceScaleFactor);
+    XCTAssertTrue(CGSizeEqualToSize(square.size, expectedSize),
                   @"wrong size for square size of willet fixture");
     
     UIImage *small = [is find:baseKey forSize:ImageStoreSmallSize];
