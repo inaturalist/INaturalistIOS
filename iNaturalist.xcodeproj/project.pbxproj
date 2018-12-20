@@ -273,7 +273,6 @@
 		FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */; };
 		FADDA3BC1DBABA9900FB054F /* NewsPagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FADDA3BB1DBABA9900FB054F /* NewsPagerViewController.m */; };
 		FADDA3BF1DBABAD500FB054F /* UpdatesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FADDA3BE1DBABAD500FB054F /* UpdatesViewController.m */; };
-		FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */; };
 		FADE674B1FD7B2B400AB4F09 /* IdentificationsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE674A1FD7B2B400AB4F09 /* IdentificationsAPI.m */; };
 		FAEB5C0F2069A19000BA3132 /* LoginSwitchContextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEB5C0E2069A19000BA3132 /* LoginSwitchContextButton.m */; };
 		FAEB5C132069A5B400BA3132 /* LoginSwitchContextButtonTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEB5C122069A5B400BA3132 /* LoginSwitchContextButtonTests.m */; };
@@ -987,7 +986,6 @@
 		FADDA3BE1DBABAD500FB054F /* UpdatesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdatesViewController.m; sourceTree = "<group>"; };
 		FADE28B01B02D9AA00CA55FF /* iNaturalistTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iNaturalistTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FADE28B31B02D9AA00CA55FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = iNaturalistTests.m; sourceTree = "<group>"; };
 		FADE67491FD7B2B400AB4F09 /* IdentificationsAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IdentificationsAPI.h; sourceTree = "<group>"; };
 		FADE674A1FD7B2B400AB4F09 /* IdentificationsAPI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IdentificationsAPI.m; sourceTree = "<group>"; };
 		FAE9BFCB1AC1F23500478929 /* INaturalist2.6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.6.xcdatamodel; sourceTree = "<group>"; };
@@ -1944,7 +1942,6 @@
 				FAF73BE21E1B245F002456AF /* Misc */,
 				FA65133D1E04A4900059FD70 /* Model */,
 				FA6513381E04A1CA0059FD70 /* Fixtures */,
-				FADE28B41B02D9AA00CA55FF /* iNaturalistTests.m */,
 				FADE28B21B02D9AA00CA55FF /* Supporting Files */,
 			);
 			path = iNaturalistTests;
@@ -2655,7 +2652,6 @@
 			files = (
 				FA81DF0E1E6F73A9006E7132 /* ObsDetailViewModelTests.m in Sources */,
 				FAF73BE41E1B2472002456AF /* PartnerTests.m in Sources */,
-				FADE28B51B02D9AA00CA55FF /* iNaturalistTests.m in Sources */,
 				FA6513371E04A03B0059FD70 /* NewsItemTests.m in Sources */,
 				FA6F81D11E7241F000135C5E /* ExploreObservationTests.m in Sources */,
 				FAEB5C132069A5B400BA3132 /* LoginSwitchContextButtonTests.m in Sources */,
