@@ -30,7 +30,7 @@
 }
 
 // this needs to be an instance method to use XCTAssert and cousins
-- (ExploreObservation *)nodeObservationFromFixture:(NSString *)fixturePath {
+- (MTLModel *)mtlModelFromFixture:(NSString *)fixturePath classMapping:(Class)classForMapping {
     NSData *fixtureData = [NSData dataWithContentsOfFile:fixturePath];
     NSError *deserializeError = nil;
     id json = [NSJSONSerialization JSONObjectWithData:fixtureData
@@ -47,7 +47,7 @@
     NSDictionary *fixtureJson = [results firstObject];
     
     NSError *mantleError = nil;
-    MTLModel *result = [MTLJSONAdapter modelOfClass:[ExploreObservation class]
+    MTLModel *result = [MTLJSONAdapter modelOfClass:classForMapping
                                  fromJSONDictionary:fixtureJson
                                               error:&mantleError];
     XCTAssertNil(mantleError,
@@ -58,6 +58,17 @@
                   @"wrong kind of Mantle object for WilletObservationNode.json.");
     
     return result;
+}
+
+// this needs to be an instance method to use XCTAssert and cousins
+- (ExploreObservation *)nodeObservationFromFixture:(NSString *)fixturePath {
+    MTLModel *model = [self mtlModelFromFixture:fixturePath
+                                   classMapping:[ExploreObservation class]];
+    if ([model isKindOfClass:[ExploreObservation class]]) {
+        return (ExploreObservation *)model;
+    } else {
+        return nil;
+    }
 }
 
 
