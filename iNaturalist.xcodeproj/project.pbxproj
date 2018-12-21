@@ -112,6 +112,8 @@
 		FA399A971DDBDB3E007ABD3E /* Projects.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA399A991DDBDB3E007ABD3E /* Projects.storyboard */; };
 		FA399AAC1DDBDC73007ABD3E /* Activity.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA399AAE1DDBDC73007ABD3E /* Activity.storyboard */; };
 		FA399AC11DDBDC88007ABD3E /* Guides.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA399AC31DDBDC88007ABD3E /* Guides.storyboard */; };
+		FA3D1E8821CD6BB200673936 /* tpouaProjectNode.json in Resources */ = {isa = PBXBuildFile; fileRef = FA3D1E8621CD6BB100673936 /* tpouaProjectNode.json */; };
+		FA3D1E8921CD6BB200673936 /* cnc2018ProjectNode.json in Resources */ = {isa = PBXBuildFile; fileRef = FA3D1E8721CD6BB200673936 /* cnc2018ProjectNode.json */; };
 		FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */; };
 		FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90F61A95148500BAA0EC /* ExploreLeaderboardCell.m */; };
 		FA3E75E81D73A57D00C459E5 /* OnboardingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3E75E71D73A57D00C459E5 /* OnboardingViewController.m */; };
@@ -555,6 +557,8 @@
 		FA399AD11DDBDC93007ABD3E /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Guides.strings; sourceTree = "<group>"; };
 		FA399AD31DDBDC95007ABD3E /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Guides.strings; sourceTree = "<group>"; };
 		FA399AD51DDBDC96007ABD3E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Guides.strings; sourceTree = "<group>"; };
+		FA3D1E8621CD6BB100673936 /* tpouaProjectNode.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = tpouaProjectNode.json; path = Fixtures/tpouaProjectNode.json; sourceTree = "<group>"; };
+		FA3D1E8721CD6BB200673936 /* cnc2018ProjectNode.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = cnc2018ProjectNode.json; path = Fixtures/cnc2018ProjectNode.json; sourceTree = "<group>"; };
 		FA3D905C1A93FCC700BAA0EC /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		FA3D905D1A93FCC700BAA0EC /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA3D90721A93FCF100BAA0EC /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
@@ -770,7 +774,7 @@
 		FA6F81D51E72459900135C5E /* MantleHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MantleHelpers.h; sourceTree = "<group>"; };
 		FA6F81D61E72459900135C5E /* MantleHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MantleHelpers.m; sourceTree = "<group>"; };
 		FA6F81D81E733ECE00135C5E /* ImageStoreTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageStoreTests.m; sourceTree = "<group>"; };
-		FA6F81DA1E73404200135C5E /* willet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = willet.jpg; sourceTree = "<group>"; };
+		FA6F81DA1E73404200135C5E /* willet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = willet.jpg; path = Fixtures/willet.jpg; sourceTree = "<group>"; };
 		FA6F87591B0E72C60019B157 /* SplitTextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplitTextButton.h; sourceTree = "<group>"; };
 		FA6F875A1B0E72C60019B157 /* SplitTextButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplitTextButton.m; sourceTree = "<group>"; };
 		FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inaturalisticons.ttf; sourceTree = "<group>"; };
@@ -819,7 +823,7 @@
 		FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailViewModelTests.m; sourceTree = "<group>"; };
 		FA8382431E70FB2900F73E90 /* RKModelBaseTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKModelBaseTests.m; sourceTree = "<group>"; };
 		FA8382451E70FB9D00F73E90 /* RKModelBaseTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RKModelBaseTests.h; sourceTree = "<group>"; };
-		FA8382461E70FD7400F73E90 /* WilletObservationRails.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WilletObservationRails.json; sourceTree = "<group>"; };
+		FA8382461E70FD7400F73E90 /* WilletObservationRails.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = WilletObservationRails.json; path = Fixtures/WilletObservationRails.json; sourceTree = "<group>"; };
 		FA86CC361EAAE496004D6482 /* TaxonSuggestionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxonSuggestionCell.h; sourceTree = "<group>"; };
 		FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonSuggestionCell.m; sourceTree = "<group>"; };
 		FA8872551A2CFB1B00D2168E /* RestrictedCollectionHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RestrictedCollectionHeader.h; sourceTree = "<group>"; };
@@ -1651,12 +1655,14 @@
 		FA6513381E04A1CA0059FD70 /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
+				FA3D1E8721CD6BB200673936 /* cnc2018ProjectNode.json */,
 				FA9E07441E1B15B100AE7833 /* Diptera.json */,
 				FAF73BE01E1B1FF2002456AF /* Gollum.json */,
 				FA9E07421E1B158F00AE7833 /* Octopus_rubescens.json */,
 				FA6F81D21E7244B600135C5E /* PolychaeteObservationNode.json */,
 				FA65133B1E04A2090059FD70 /* ProjectBlogPost.json */,
 				FA6513391E04A1F80059FD70 /* SiteBlogPost.json */,
+				FA3D1E8621CD6BB100673936 /* tpouaProjectNode.json */,
 				FA6F81DA1E73404200135C5E /* willet.jpg */,
 				FA6F81CB1E723D2200135C5E /* WilletObservationNode.json */,
 				FA8382461E70FD7400F73E90 /* WilletObservationRails.json */,
@@ -2175,9 +2181,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA65133C1E04A2090059FD70 /* ProjectBlogPost.json in Resources */,
+				FA3D1E8821CD6BB200673936 /* tpouaProjectNode.json in Resources */,
 				FA9E07451E1B15B100AE7833 /* Diptera.json in Resources */,
 				FA6F81CC1E723D2200135C5E /* WilletObservationNode.json in Resources */,
 				FAF73BE11E1B1FF2002456AF /* Gollum.json in Resources */,
+				FA3D1E8921CD6BB200673936 /* cnc2018ProjectNode.json in Resources */,
 				FA6F81D31E7244B600135C5E /* PolychaeteObservationNode.json in Resources */,
 				FA8382471E70FD7400F73E90 /* WilletObservationRails.json in Resources */,
 				FA65133A1E04A1F80059FD70 /* SiteBlogPost.json in Resources */,
