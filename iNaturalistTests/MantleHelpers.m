@@ -10,6 +10,7 @@
 
 #import "MantleHelpers.h"
 #import "ExploreObservation.h"
+#import "ExploreProject.h"
 
 @implementation MantleHelpers
 
@@ -27,6 +28,22 @@
     
     MantleHelpers *helper = [[MantleHelpers alloc] init];
     return [helper nodeObservationFromFixture:fixturePath];
+}
+
++ (ExploreProject *)cnc2018ProjectFixture {
+    NSBundle *testBundle = [NSBundle bundleForClass:self.class];
+    NSString *fixturePath = [testBundle pathForResource:@"cnc2018ProjectNode" ofType:@"json"];
+    
+    MantleHelpers *helper = [[MantleHelpers alloc] init];
+    return [helper nodeProjectFromFixture:fixturePath];
+}
+
++ (ExploreProject *)tpouaProjectFixture {
+    NSBundle *testBundle = [NSBundle bundleForClass:self.class];
+    NSString *fixturePath = [testBundle pathForResource:@"tpouaProjectNode" ofType:@"json"];
+    
+    MantleHelpers *helper = [[MantleHelpers alloc] init];
+    return [helper nodeProjectFromFixture:fixturePath];
 }
 
 // this needs to be an instance method to use XCTAssert and cousins
@@ -66,6 +83,17 @@
                                    classMapping:[ExploreObservation class]];
     if ([model isKindOfClass:[ExploreObservation class]]) {
         return (ExploreObservation *)model;
+    } else {
+        return nil;
+    }
+}
+
+// this needs to be an instance method to use XCTAssert and cousins
+- (ExploreProject *)nodeProjectFromFixture:(NSString *)fixturePath {
+    MTLModel *model = [self mtlModelFromFixture:fixturePath
+                                   classMapping:[ExploreProject class]];
+    if ([model isKindOfClass:[ExploreProject class]]) {
+        return (ExploreProject *)model;
     } else {
         return nil;
     }

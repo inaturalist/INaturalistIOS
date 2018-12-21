@@ -10,6 +10,7 @@
 #import <XCTest/XCTest.h>
 
 @class ExploreObservation;
+@class ExploreProject;
 
 @interface MantleHelpers : XCTestCase
 
@@ -22,5 +23,12 @@
 // many comments, faves, photos and IDs, including some
 // inactive IDs.
 + (ExploreObservation *)polychaeteFixture;
+
+// this is a very popular umbrella project
++ (ExploreProject *)cnc2018ProjectFixture;
+
+// this is ken-ichi's Test Project of Unfathomable
+// Awesomeness
++ (ExploreProject *)tpouaProjectFixture;
 
 @end
