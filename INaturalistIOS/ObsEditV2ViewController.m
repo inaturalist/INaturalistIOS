@@ -452,7 +452,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     picker.delegate = self;
     picker.allowsEditing = NO;
     picker.showsCameraControls = NO;
-    picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, 50);
     
     ObsCameraOverlay *overlay = [[ObsCameraOverlay alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     overlay.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
@@ -508,15 +507,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     picker.cameraOverlayView = overlay;
     
-    BOOL iPhoneX = NO;
-    if (@available(iOS 11.0, *)) {
-        UIWindow *mainWindow = [[[UIApplication sharedApplication] delegate] window];
-        if (mainWindow.safeAreaInsets.top > 0.0) {
-            iPhoneX = YES;
-        }
-    }
+    UIScreen *screen = [UIScreen mainScreen];
+    CGFloat cameraAspectRatio = 4.0 / 3.0;
+    CGFloat cameraPreviewHeight = screen.nativeBounds.size.width * cameraAspectRatio;
+    CGFloat screenHeight = screen.nativeBounds.size.height;
+    CGFloat transformHeight = (screenHeight-cameraPreviewHeight) / screen.nativeScale / 2.0f;
     
-    picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, iPhoneX ? 120 : 50);
+    picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, transformHeight);
     [self presentViewController:picker animated:YES completion:nil];
 }
 

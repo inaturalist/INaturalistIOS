@@ -289,16 +289,15 @@ static char PROJECT_ASSOCIATED_KEY;
         
         picker.cameraOverlayView = overlay;
         
-        BOOL iPhoneX = NO;
-        if (@available(iOS 11.0, *)) {
-            UIWindow *mainWindow = [[[UIApplication sharedApplication] delegate] window];
-            if (mainWindow.safeAreaInsets.top > 0.0) {
-                iPhoneX = YES;
-            }
-        }
-
-        picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, iPhoneX ? 120 : 50);
+        UIScreen *screen = [UIScreen mainScreen];
+        CGFloat cameraAspectRatio = 4.0 / 3.0;
+        CGFloat cameraPreviewHeight = screen.nativeBounds.size.width * cameraAspectRatio;
+        CGFloat screenHeight = screen.nativeBounds.size.height;
+        CGFloat transformHeight = (screenHeight-cameraPreviewHeight) / screen.nativeScale / 2.0f;
+        
+        picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, transformHeight);
         [self presentViewController:picker animated:YES completion:nil];
+        
     } else {
         
         [[Analytics sharedClient] event:kAnalyticsEventNewObservationLibraryStart];
