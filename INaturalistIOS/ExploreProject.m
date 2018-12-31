@@ -18,11 +18,22 @@
              @"latitude": @"latitude",
              @"longitude": @"longitude",
              @"iconUrl": @"icon_url",
+             @"type": @"project_type",
              };
 }
 
 + (NSValueTransformer *)iconUrlJSONTransformer {
     return [NSValueTransformer valueTransformerForName:MTLURLValueTransformerName];
+}
+
++ (NSValueTransformer *)typeJSONTransformer {
+    NSDictionary *typeMappings = @{
+                                   @"collection": @(ExploreProjectTypeCollection),
+                                   @"umbrella": @(ExploreProjectTypeUmbrella),
+                                   @"": @(ExploreProjectTypeOldStyle),
+                                   };
+    
+    return [NSValueTransformer mtl_valueMappingTransformerWithDictionary:typeMappings];
 }
 
 
