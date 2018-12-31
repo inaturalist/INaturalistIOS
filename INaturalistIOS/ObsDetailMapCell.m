@@ -35,6 +35,8 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     self.locationNameLabel.text = nil;
     self.mapView.hidden = NO;
     self.noLocationLabel.hidden = YES;

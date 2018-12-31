@@ -20,6 +20,8 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     [self.authorImageView cancelImageDownloadTask];
     self.authorImageView.image = nil;
     self.authorNameLabel.text = nil;

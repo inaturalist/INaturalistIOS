@@ -172,6 +172,8 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     [self.newsCategoryImageView cancelImageDownloadTask];
     self.newsCategoryImageView.image = nil;
     [self.postImageView cancelImageDownloadTask];

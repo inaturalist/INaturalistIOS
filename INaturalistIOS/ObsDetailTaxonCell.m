@@ -29,6 +29,8 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     self.taxonNameLabel.text = nil;
     self.taxonNameLabel.font = [UIFont systemFontOfSize:17];
     self.taxonSecondaryNameLabel.text = nil;

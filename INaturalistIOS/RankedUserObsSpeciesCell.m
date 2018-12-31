@@ -29,6 +29,8 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     self.userImageView.image = nil;
     [self.userImageView cancelImageDownloadTask];
     

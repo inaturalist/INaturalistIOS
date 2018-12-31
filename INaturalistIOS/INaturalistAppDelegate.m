@@ -302,7 +302,7 @@
             [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
             
             ExploreUserRealm *me = self.loginController.meUserLocal;
-            NSString *identifier = [NSString stringWithFormat:@"%ld", me.userId];
+            NSString *identifier = [NSString stringWithFormat:@"%ld", (long)me.userId];
             [[Analytics sharedClient] registerUserWithIdentifier:identifier];
         });
     }

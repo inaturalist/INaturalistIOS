@@ -255,6 +255,8 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     self.casualLabel.hidden = NO;
     self.casualCheckMark.hidden = NO;
     

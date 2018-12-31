@@ -137,6 +137,8 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     self.userIcon.image = nil;
     [self.userIcon cancelImageDownloadTask];
     

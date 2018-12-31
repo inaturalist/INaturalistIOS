@@ -66,6 +66,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 @dynamic captive;
 @dynamic faves;
 @dynamic favesCount;
+@dynamic ownersIdentificationFromVision;
 
 + (NSArray *)all
 {

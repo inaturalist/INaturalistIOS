@@ -306,7 +306,7 @@ NSInteger INatMinPasswordLength = 6;
                                       [realm addOrUpdateObject:me];
                                       [realm commitWriteTransaction];
                                       
-                                      NSString *identifier = [NSString stringWithFormat:@"%ld", me.userId];
+                                      NSString *identifier = [NSString stringWithFormat:@"%ld", (long)me.userId];
                                       [[Analytics sharedClient] registerUserWithIdentifier:identifier];
                                       
                                       [[NSUserDefaults standardUserDefaults] setValue:@(me.userId)

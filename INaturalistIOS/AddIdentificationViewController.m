@@ -110,7 +110,6 @@
     }
     
     IdentificationsAPI *api = [[IdentificationsAPI alloc] init];
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     __weak typeof(self) weakSelf = self;
     
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];

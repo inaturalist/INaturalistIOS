@@ -36,6 +36,8 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     [self.profileImageView cancelImageDownloadTask];
     [self.observationImageView cancelImageDownloadTask];
     self.profileImageView.image = nil;

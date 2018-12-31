@@ -27,6 +27,8 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     self.countLabel.text = @"";
     self.taxonNameLabel.text = @"";
     self.taxonImageView.image = nil;

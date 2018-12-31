@@ -83,9 +83,9 @@
         } else if (indexPath.item == 2) {
             return [self taxonCellForTableView:tableView indexPath:indexPath];
         }
-    } else {
-        return [UITableViewCell new];
     }
+    
+    return [UITableViewCell new];
 }
 
 - (UITableViewCell *)userDateCellForTableView:(UITableView *)tableView {

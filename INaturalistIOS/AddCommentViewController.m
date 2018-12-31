@@ -54,7 +54,6 @@
     CommentsAPI *api = [[CommentsAPI alloc] init];
     __weak typeof(self) weakSelf = self;
     
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     // send the comment
     [api addComment:self.textView.text observationId:self.observation.inatRecordId handler:^(NSArray *results, NSInteger count, NSError *error) {
         // hide the hud regardless of success

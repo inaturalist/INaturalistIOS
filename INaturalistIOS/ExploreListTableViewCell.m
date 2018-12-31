@@ -335,6 +335,8 @@ static NSDateFormatter *shortFormatter;
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     observationImageView.image = nil;
     [observationImageView cancelImageDownloadTask];
     observationImageView.layer.borderColor = [UIColor clearColor].CGColor;
