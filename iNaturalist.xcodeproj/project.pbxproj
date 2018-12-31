@@ -114,6 +114,7 @@
 		FA399AC11DDBDC88007ABD3E /* Guides.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA399AC31DDBDC88007ABD3E /* Guides.storyboard */; };
 		FA3D1E8821CD6BB200673936 /* tpouaProjectNode.json in Resources */ = {isa = PBXBuildFile; fileRef = FA3D1E8621CD6BB100673936 /* tpouaProjectNode.json */; };
 		FA3D1E8921CD6BB200673936 /* cnc2018ProjectNode.json in Resources */ = {isa = PBXBuildFile; fileRef = FA3D1E8721CD6BB200673936 /* cnc2018ProjectNode.json */; };
+		FA3D1E8B21DA94AA00673936 /* ExploreProjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D1E8A21DA94AA00673936 /* ExploreProjectTests.m */; };
 		FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */; };
 		FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90F61A95148500BAA0EC /* ExploreLeaderboardCell.m */; };
 		FA3E75E81D73A57D00C459E5 /* OnboardingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3E75E71D73A57D00C459E5 /* OnboardingViewController.m */; };
@@ -559,6 +560,7 @@
 		FA399AD51DDBDC96007ABD3E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Guides.strings; sourceTree = "<group>"; };
 		FA3D1E8621CD6BB100673936 /* tpouaProjectNode.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = tpouaProjectNode.json; path = Fixtures/tpouaProjectNode.json; sourceTree = "<group>"; };
 		FA3D1E8721CD6BB200673936 /* cnc2018ProjectNode.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = cnc2018ProjectNode.json; path = Fixtures/cnc2018ProjectNode.json; sourceTree = "<group>"; };
+		FA3D1E8A21DA94AA00673936 /* ExploreProjectTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreProjectTests.m; sourceTree = "<group>"; };
 		FA3D905C1A93FCC700BAA0EC /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		FA3D905D1A93FCC700BAA0EC /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA3D90721A93FCF100BAA0EC /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
@@ -1687,6 +1689,7 @@
 			isa = PBXGroup;
 			children = (
 				FA6F81D01E7241F000135C5E /* ExploreObservationTests.m */,
+				FA3D1E8A21DA94AA00673936 /* ExploreProjectTests.m */,
 			);
 			name = Mantle;
 			sourceTree = "<group>";
@@ -2659,6 +2662,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA81DF0E1E6F73A9006E7132 /* ObsDetailViewModelTests.m in Sources */,
+				FA3D1E8B21DA94AA00673936 /* ExploreProjectTests.m in Sources */,
 				FAF73BE41E1B2472002456AF /* PartnerTests.m in Sources */,
 				FA6513371E04A03B0059FD70 /* NewsItemTests.m in Sources */,
 				FA6F81D11E7241F000135C5E /* ExploreObservationTests.m in Sources */,
