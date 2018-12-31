@@ -1664,6 +1664,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (UITableViewCell *)illegalCellForIndexPath:(NSIndexPath *)ip {
     NSLog(@"indexpath is %@", ip);
     NSAssert(NO, @"illegal cell for confirm screen");
+    return nil;
 }
 
 #pragma mark - UITableViewCell title helpers
