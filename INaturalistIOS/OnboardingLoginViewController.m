@@ -568,7 +568,7 @@
     [[Analytics sharedClient] event:kAnalyticsEventOnboardingLoginPressed
                      withProperties:@{ @"mode": @"signup" }];
     
-    NSString *license = self.licenseMyData ? @"CC-BY_NC" : @"on";
+    NSString *license = self.licenseMyData ? @"CC-BY-NC" : @"";
     NSInteger selectedPartnerId = self.selectedPartner ? self.selectedPartner.identifier : 1;
     
     UIView *hudView = self.parentViewController ? self.parentViewController.view : self.view;
