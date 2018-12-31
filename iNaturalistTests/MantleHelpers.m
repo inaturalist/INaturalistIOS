@@ -60,19 +60,26 @@
     NSLog(@"JSON: %@", json);
     
     NSArray *results = [json valueForKey:@"results"];
-    XCTAssertTrue(results.count == 1, @"too many results for WilletObservationNode.json");
+    XCTAssertTrue(results.count == 1, @"too many results for fixture %@", fixturePath);
     NSDictionary *fixtureJson = [results firstObject];
     
     NSError *mantleError = nil;
     MTLModel *result = [MTLJSONAdapter modelOfClass:classForMapping
                                  fromJSONDictionary:fixtureJson
                                               error:&mantleError];
-    XCTAssertNil(mantleError,
-                 @"failed to construct Mantle object for WilletObservationNode.json: %@",
-                 mantleError.localizedDescription);
     
-    XCTAssertTrue([result isKindOfClass:[ExploreObservation class]],
-                  @"wrong kind of Mantle object for WilletObservationNode.json.");
+    XCTAssertNil(mantleError, @"error constructing Mantle object for %@: %@",
+                 fixturePath, mantleError.localizedDescription);
+    
+    XCTAssertNotNil(result, @"failed to construct Mantle object for %@",
+                    fixturePath);
+
+    XCTAssertTrue([result isKindOfClass:classForMapping],
+                  @"wrong kind of Mantle object for fixture %@, expected %@ but got %@",
+                  fixturePath,
+                  NSStringFromClass(classForMapping),
+                  NSStringFromClass([result class])
+                  );
     
     return result;
 }
