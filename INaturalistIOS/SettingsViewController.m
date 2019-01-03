@@ -472,6 +472,7 @@ static const int SettingsVersionRowCount = 1;
 - (void)launchRateUs {
 #ifdef INatAppStoreURL
     if ([[INatReachability sharedClient] isNetworkReachable]) {
+        [[Analytics sharedClient] event:kAnalyticsEventSettingsRateUs];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:INatAppStoreURL]];
     } else {
         [self networkUnreachableAlert];
@@ -490,6 +491,7 @@ static const int SettingsVersionRowCount = 1;
 - (void)launchDonate {
 #ifdef INatDonateURL
     if ([[INatReachability sharedClient] isNetworkReachable]) {
+        [[Analytics sharedClient] event:kAnalyticsEventSettingsDonate];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:INatDonateURL]];
     } else {
         [self networkUnreachableAlert];

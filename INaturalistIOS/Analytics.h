@@ -107,6 +107,8 @@ extern NSString *kAnalyticsEventSettingsNetworkChangeCompleted;
 extern NSString *kAnalyticsEventProfilePhotoChanged;
 extern NSString *kAnalyticsEventProfilePhotoRemoved;
 extern NSString *kAnalyticsEventProfileLoginChanged;
+extern NSString *kAnalyticsEventSettingsRateUs;
+extern NSString *kAnalyticsEventSettingsDonate;
 
 // news
 extern NSString *kAnalyticsEventNewsOpenArticle;

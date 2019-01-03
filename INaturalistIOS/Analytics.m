@@ -156,6 +156,8 @@ NSString *kAnalyticsEventSettingsNetworkChangeCompleted =       @"Settings Netwo
 NSString *kAnalyticsEventProfilePhotoChanged = 					@"Profile Photo Changed";
 NSString *kAnalyticsEventProfilePhotoRemoved = 					@"Profile Photo Removed";
 NSString *kAnalyticsEventProfileLoginChanged =                  @"Profile Username Changed";
+NSString *kAnalyticsEventSettingsRateUs =                       @"Settings Rate Us";
+NSString *kAnalyticsEventSettingsDonate =                       @"Settings Donate";
 
 
 // news
