@@ -310,17 +310,16 @@ static const int ListControlIndexNearby = 2;
         self.title = NSLocalizedString(@"Projects", nil);
         
         self.tabBarItem.image = ({
-            FAKIcon *briefcaseOutline = [FAKIonIcons iosBriefcaseOutlineIconWithSize:35];
-            [briefcaseOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-            [briefcaseOutline imageWithSize:CGSizeMake(34, 45)];
+            FAKIcon *briefcaseInactive = [FAKIonIcons iosBriefcaseIconWithSize:35];
+            [briefcaseInactive addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+            [[briefcaseInactive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
         
-        self.tabBarItem.selectedImage =({
-            FAKIcon *briefcaseFilled = [FAKIonIcons iosBriefcaseIconWithSize:35];
-            [briefcaseFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-            [briefcaseFilled imageWithSize:CGSizeMake(34, 45)];
+        self.tabBarItem.selectedImage = ({
+            FAKIcon *briefcaseActive = [FAKIonIcons iosBriefcaseIconWithSize:35];
+            [briefcaseActive addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
+            [[briefcaseActive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
-        
     }
     
     return self;
