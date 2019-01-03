@@ -12,8 +12,7 @@
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
-#import <GooglePlus/GPPSignIn.h>
-#import <GoogleOpenSource/GTMOAuth2Authentication.h>
+#import <GoogleSignIn/GoogleSignIn.h>
 #import <ActionSheetPicker-3.0/ActionSheetStringPicker.h>
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
 #import <MBProgressHUD/MBProgressHUD.h>
@@ -371,8 +370,10 @@ static const int SettingsVersionRowCount = 1;
 
 - (void)localSignOut
 {
-    // clear g+
-    if ([[GPPSignIn sharedInstance] hasAuthInKeychain]) [[GPPSignIn sharedInstance] disconnect];
+    // clear google signin
+    if ([[GIDSignIn sharedInstance] hasAuthInKeychain]) {
+        [[GIDSignIn sharedInstance] disconnect];
+    }
     
     // clear preference cached signin info & preferences
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];

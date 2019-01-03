@@ -2042,7 +2042,6 @@
 				1927513114E9CCC9000ABAC4 /* Resources */,
 				FA63FA2919E4D40F007306F9 /* ShellScript */,
 				FA88B7681ABCD34A0004B4C6 /* ShellScript */,
-				F14A217966F2A44BF1E923C4 /* [CP] Embed Pods Frameworks */,
 				C110890B09E5A0D7B69DC989 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -2062,8 +2061,6 @@
 				FADE28AC1B02D9AA00CA55FF /* Sources */,
 				FADE28AD1B02D9AA00CA55FF /* Frameworks */,
 				FADE28AE1B02D9AA00CA55FF /* Resources */,
-				28BA59DA35B600064B9AA33B /* [CP] Embed Pods Frameworks */,
-				7BE926339468812387A577D7 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -2218,36 +2215,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		28BA59DA35B600064B9AA33B /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7BE926339468812387A577D7 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		C110890B09E5A0D7B69DC989 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2260,7 +2227,11 @@
 				"${PODS_ROOT}/FontAwesomeKit/FontAwesomeKit/FontAwesome.otf",
 				"${PODS_ROOT}/FontAwesomeKit/FontAwesomeKit/foundation-icons.ttf",
 				"${PODS_ROOT}/FontAwesomeKit/FontAwesomeKit/ionicons.ttf",
+				"${PODS_ROOT}/FontAwesomeKit/FontAwesomeKit/Material-Design-Iconic-Font.ttf",
+				"${PODS_ROOT}/FontAwesomeKit/FontAwesomeKit/octicons.ttf",
 				"${PODS_ROOT}/FontAwesomeKit/FontAwesomeKit/zocial-regular-webfont.ttf",
+				"${PODS_ROOT}/GTMOAuth2/Source/Touch/GTMOAuth2ViewTouch.xib",
+				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
 				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/activityMH.png",
 				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/activtyMH@2x.png",
 				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/EditControl.png",
@@ -2302,7 +2273,6 @@
 				"${PODS_ROOT}/TapkuLibrary/src/TapkuLibrary.bundle",
 				"${PODS_ROOT}/VTAcknowledgementsViewController/VTAcknowledgementsViewController.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/YLMoment/YLMoment-iOS.bundle",
-				"${PODS_ROOT}/googleplus-ios-sdk/google-plus-ios-sdk-1.7.1/GooglePlus.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
@@ -2311,7 +2281,11 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.otf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/foundation-icons.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ionicons.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Material-Design-Iconic-Font.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/octicons.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/zocial-regular-webfont.ttf",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GTMOAuth2ViewTouch.nib",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/activityMH.png",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/activtyMH@2x.png",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EditControl.png",
@@ -2353,7 +2327,6 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TapkuLibrary.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/VTAcknowledgementsViewController.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/YLMoment-iOS.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GooglePlus.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2376,21 +2349,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F14A217966F2A44BF1E923C4 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FA63FA2919E4D40F007306F9 /* ShellScript */ = {

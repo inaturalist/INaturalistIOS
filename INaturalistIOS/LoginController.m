@@ -9,7 +9,7 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <NXOAuth2Client/NXOAuth2.h>
-#import <GooglePlus/GPPSignIn.h>
+#import <GoogleSignIn/GoogleSignIn.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <JWT/JWT.h>
 
@@ -29,7 +29,7 @@
 
 static const NSTimeInterval LocalMeUserValidTimeInterval = 600;
 
-@interface LoginController () <GPPSignInDelegate> {
+@interface LoginController () <GIDSignInDelegate> {
     NSString    *externalAccessToken;
     NSString    *iNatAccessToken;
     NSString    *accountType;
@@ -343,6 +343,10 @@ NSInteger INatMinPasswordLength = 6;
 
 #pragma mark - Google methods
 
+- (void)signIn:(GIDSignIn *)signIn didSignInForUser:(GIDGoogleUser *)user withError:(NSError *)error {
+    // success
+}
+
 - (void)loginWithGoogleUsingNavController:(UINavigationController *)nav
                                   success:(LoginSuccessBlock)success
                                   failure:(LoginErrorBlock)error {
@@ -401,7 +405,7 @@ NSInteger INatMinPasswordLength = 6;
 
 
 - (NSString *)scopesForGoogleSignin {
-    GPPSignIn *signin = [GPPSignIn sharedInstance];
+    GIDSignIn *signin = [GIDSignIn sharedInstance];
     
     // GTMOAuth2VCTouch takes a different scope format than GPPSignIn
     // @"plus.login plus.me userinfo.email"
@@ -417,24 +421,22 @@ NSInteger INatMinPasswordLength = 6;
 }
 
 - (NSString *)clientIdForGoogleSignin {
-    return [[GPPSignIn sharedInstance] clientID];
+    return [[GIDSignIn sharedInstance] clientID];
 }
 
-- (GPPSignIn *)googleSignin {
-    return [GPPSignIn sharedInstance];
+- (GIDSignIn *)googleSignin {
+    return [GIDSignIn sharedInstance];
 }
 
 -(void) initGoogleLogin {
     // Google+ init
-    GPPSignIn *googleSignIn = [GPPSignIn sharedInstance];
+    GIDSignIn *googleSignIn = [GIDSignIn sharedInstance];
     googleSignIn.clientID = GoogleClientId;
     googleSignIn.scopes = @[
-                            kGTLAuthScopePlusLogin, // defined in GTLPlusConstants.h
-                            kGTLAuthScopePlusMe,
                             @"https://www.googleapis.com/auth/userinfo.email",
                             ];
     googleSignIn.delegate = self;
-    [googleSignIn trySilentAuthentication];
+    [googleSignIn signInSilently];
 }
 
 - (void)finishedWithAuth:(GTMOAuth2Authentication *)auth
@@ -448,7 +450,7 @@ NSInteger INatMinPasswordLength = 6;
         [self executeError:error];
     } else if (!auth.accessToken && !tryingGoogleReauth) {
         tryingGoogleReauth = YES;
-        [[GPPSignIn sharedInstance] signOut];
+        [[GIDSignIn sharedInstance] signOut];
         [self initGoogleLogin];
     } else {
         [[Analytics sharedClient] event:kAnalyticsEventLogin
@@ -775,5 +777,6 @@ NSInteger INatMinPasswordLength = 6;
         return nil;
     }
 }
+
 
 @end

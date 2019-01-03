@@ -226,7 +226,7 @@
     [self.facebookButton addTarget:self action:@selector(facebookPressed:) forControlEvents:UIControlEventTouchUpInside];
     
     self.googleButton.attributedIconTitle = ({
-        FAKIcon *google = [FAKIonIcons socialGoogleplusIconWithSize:22];
+        FAKIcon *google = [FAKIonIcons socialGoogleIconWithSize:22];
         [google addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#666666"]];
         [google attributedString];
     });

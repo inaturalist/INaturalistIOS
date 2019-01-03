@@ -1,5 +1,5 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, :deployment_target => '8.0'
+platform :ios, :deployment_target => '9.3'
 
 inhibit_all_warnings!
 
@@ -7,10 +7,9 @@ target :iNaturalist do
   pod 'JWT', '2.2.0'
   pod 'Fabric', '1.5.4'
   pod 'Crashlytics', '3.3.3'
-  pod 'FBSDKCoreKit', '4.36.0'
-  pod 'FBSDKLoginKit', '4.36.0'
-  pod 'Bolts', '1.8.4'
-  pod 'FontAwesomeKit', '2.2.0'
+  pod 'FBSDKLoginKit', '4.38.0'
+  pod 'Bolts', '1.9.0'
+  pod 'FontAwesomeKit', '2.2.1'
   pod 'HexColors', '2.3.0'
   pod 'BlocksKit', '2.2.5'
   pod 'GeoJSONSerialization', '0.0.4'
@@ -18,7 +17,7 @@ target :iNaturalist do
   pod 'UIColor-HTMLColors', '1.0.0'
   pod 'SVPullToRefresh', '0.4.1'
   pod 'PDKTStickySectionHeadersCollectionViewLayout', '0.1'
-  pod 'googleplus-ios-sdk', '1.7.1'
+  pod 'GoogleSignIn', '4.3.0'
   pod 'SSZipArchive', '0.3.2'
   pod 'ActionSheetPicker-3.0', '1.3.12'
   pod 'NXOAuth2Client', '1.2.8'
@@ -49,7 +48,7 @@ target :iNaturalist do
   pod 'TOCropViewController', '~> 2.3.5'
   pod 'MHVideoPhotoGallery', :git => 'https://github.com/alexshepard/MHVideoPhotoGallery', :commit => '63c1c3d3578a913c26956b1c9c9f4411a8cfe226'
   pod 'JSONKit', :git => 'https://github.com/alexshepard/JSONKit.git', :commit => '46343e0e46fa8390fed0e8fff6367adb745d7fdd'
-  pod 'FileMD5Hash', :git => 'https://github.com/JoeKun/FileMD5Hash.git', :commit => '6864c180c010ab4b0514ba5c025091e12ab01199'
+  pod 'FileMD5Hash', :git => 'https://github.com/FutureWorkshops/FileMD5Hash.git', :commit => '6864c180c010ab4b0514ba5c025091e12ab01199'
   pod 'YLMoment', :git => 'https://github.com/inaturalist/YLMoment.git', :commit => '35521e9f80c23de6f885771f97a6c1febe245c00'
 end
 

@@ -11,7 +11,7 @@
 #import <IFTTTLaunchImage/UIImage+IFTTTLaunchImage.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
-#import <GooglePlus/GPPURLHandler.h>
+#import <GoogleSignIn/GoogleSignIn.h>
 
 #import "INaturalistAppDelegate.h"
 #import "Observation.h"
@@ -58,8 +58,6 @@
 @implementation INaturalistAppDelegate
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-	[FBSDKAppEvents activateApp];
-
     [[INatReachability sharedClient] startMonitoring];
 
     [self loadUpdatesWithCompletionHandler:nil];
@@ -73,18 +71,21 @@
 
 - (BOOL)application:(UIApplication *)application
             openURL:(NSURL *)url
-  sourceApplication:(NSString *)sourceApplication
-         annotation:(id)annotation {
-         
-         return [[FBSDKApplicationDelegate sharedInstance] application:application
-                                                         openURL:url
-                                               sourceApplication:sourceApplication
-                                                      annotation:annotation] 
-          || 
-	      
-	      [GPPURLHandler handleURL:url
-	                 sourceApplication:sourceApplication
-	                        annotation:annotation];
+            options:(NSDictionary<NSString *, id> *)options {
+    
+    BOOL handled = [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                                    openURL:url
+                                                          sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
+                                                                 annotation:options[UIApplicationOpenURLOptionsAnnotationKey]
+                      ];
+    
+    if (!handled) {
+        handled = [[GIDSignIn sharedInstance] handleURL:url
+                                      sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
+                                             annotation:options[UIApplicationOpenURLOptionsAnnotationKey]];
+    }
+    
+    return handled;
 }
 
 - (void)loadUpdatesWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
@@ -186,8 +187,7 @@
     [self loadUpdatesWithCompletionHandler:completionHandler];
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [self setupAnalytics];
     
     [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];

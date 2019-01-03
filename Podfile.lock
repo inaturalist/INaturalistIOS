@@ -33,42 +33,67 @@ PODS:
   - BlocksKit/UIKit (2.2.5):
     - BlocksKit/Core
     - BlocksKit/DynamicDelegate
-  - Bolts (1.8.4):
-    - Bolts/AppLinks (= 1.8.4)
-    - Bolts/Tasks (= 1.8.4)
-  - Bolts/AppLinks (1.8.4):
+  - Bolts (1.9.0):
+    - Bolts/AppLinks (= 1.9.0)
+    - Bolts/Tasks (= 1.9.0)
+  - Bolts/AppLinks (1.9.0):
     - Bolts/Tasks
-  - Bolts/Tasks (1.8.4)
+  - Bolts/Tasks (1.9.0)
   - cocoa-oauth (0.0.1):
-    - NSData+Base64 (~> 1.0)
+    - "NSData+Base64 (~> 1.0)"
   - Crashlytics (3.3.3)
   - CustomIOSAlertView (0.9.3)
   - DCRoundSwitch (0.0.1)
   - Fabric (1.5.4):
     - Fabric/Base (= 1.5.4)
   - Fabric/Base (1.5.4)
-  - FBSDKCoreKit (4.36.0):
-    - Bolts (~> 1.7)
-  - FBSDKLoginKit (4.36.0):
+  - FBSDKCoreKit (4.38.0):
+    - Bolts (~> 1.9)
+  - FBSDKLoginKit (4.38.0):
     - FBSDKCoreKit
   - FileMD5Hash (0.0.1)
-  - FontAwesomeKit (2.2.0):
-    - FontAwesomeKit/Core (= 2.2.0)
-    - FontAwesomeKit/FontAwesome (= 2.2.0)
-    - FontAwesomeKit/FoundationIcons (= 2.2.0)
-    - FontAwesomeKit/IonIcons (= 2.2.0)
-    - FontAwesomeKit/Zocial (= 2.2.0)
-  - FontAwesomeKit/Core (2.2.0)
-  - FontAwesomeKit/FontAwesome (2.2.0):
+  - FontAwesomeKit (2.2.1):
+    - FontAwesomeKit/Core (= 2.2.1)
+    - FontAwesomeKit/FontAwesome (= 2.2.1)
+    - FontAwesomeKit/FoundationIcons (= 2.2.1)
+    - FontAwesomeKit/IonIcons (= 2.2.1)
+    - FontAwesomeKit/Material (= 2.2.1)
+    - FontAwesomeKit/Octicons (= 2.2.1)
+    - FontAwesomeKit/Zocial (= 2.2.1)
+  - FontAwesomeKit/Core (2.2.1)
+  - FontAwesomeKit/FontAwesome (2.2.1):
     - FontAwesomeKit/Core
-  - FontAwesomeKit/FoundationIcons (2.2.0):
+  - FontAwesomeKit/FoundationIcons (2.2.1):
     - FontAwesomeKit/Core
-  - FontAwesomeKit/IonIcons (2.2.0):
+  - FontAwesomeKit/IonIcons (2.2.1):
     - FontAwesomeKit/Core
-  - FontAwesomeKit/Zocial (2.2.0):
+  - FontAwesomeKit/Material (2.2.1):
+    - FontAwesomeKit/Core
+  - FontAwesomeKit/Octicons (2.2.1):
+    - FontAwesomeKit/Core
+  - FontAwesomeKit/Zocial (2.2.1):
     - FontAwesomeKit/Core
   - GeoJSONSerialization (0.0.4)
-  - googleplus-ios-sdk (1.7.1)
+  - GoogleSignIn (4.3.0):
+    - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
+    - "GoogleToolboxForMac/NSString+URLArguments (~> 2.1)"
+    - GTMOAuth2 (~> 1.0)
+    - GTMSessionFetcher/Core (~> 1.1)
+  - GoogleToolboxForMac/DebugUtils (2.1.4):
+    - GoogleToolboxForMac/Defines (= 2.1.4)
+  - GoogleToolboxForMac/Defines (2.1.4)
+  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.1.4)":
+    - GoogleToolboxForMac/DebugUtils (= 2.1.4)
+    - GoogleToolboxForMac/Defines (= 2.1.4)
+    - "GoogleToolboxForMac/NSString+URLArguments (= 2.1.4)"
+  - "GoogleToolboxForMac/NSString+URLArguments (2.1.4)"
+  - GTMOAuth2 (1.1.6):
+    - GTMSessionFetcher (~> 1.1)
+  - GTMSessionFetcher (1.2.0):
+    - GTMSessionFetcher/Full (= 1.2.0)
+  - GTMSessionFetcher/Core (1.2.0)
+  - GTMSessionFetcher/Full (1.2.0):
+    - GTMSessionFetcher/Core (= 1.2.0)
   - HexColors (2.3.0)
   - ICViewPager (1.5.1)
   - IFTTTLaunchImage (0.4.4)
@@ -91,7 +116,7 @@ PODS:
     - Masonry
     - SDWebImage
     - TTTAttributedLabel (= 1.13.3)
-  - NSData+Base64 (1.0.0)
+  - "NSData+Base64 (1.0.0)"
   - NSString_stripHtml (0.1.0)
   - NXOAuth2Client (1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (0.1)
@@ -163,17 +188,16 @@ DEPENDENCIES:
   - Amplitude-iOS (~> 3.7.0)
   - ARSafariActivity
   - BlocksKit (= 2.2.5)
-  - Bolts (= 1.8.4)
+  - Bolts (= 1.9.0)
   - Crashlytics (= 3.3.3)
   - CustomIOSAlertView (= 0.9.3)
   - DCRoundSwitch (= 0.0.1)
   - Fabric (= 1.5.4)
-  - FBSDKCoreKit (= 4.36.0)
-  - FBSDKLoginKit (= 4.36.0)
-  - FileMD5Hash (from `https://github.com/JoeKun/FileMD5Hash.git`, commit `6864c180c010ab4b0514ba5c025091e12ab01199`)
-  - FontAwesomeKit (= 2.2.0)
+  - FBSDKLoginKit (= 4.38.0)
+  - FileMD5Hash (from `https://github.com/FutureWorkshops/FileMD5Hash.git`, commit `6864c180c010ab4b0514ba5c025091e12ab01199`)
+  - FontAwesomeKit (= 2.2.1)
   - GeoJSONSerialization (= 0.0.4)
-  - googleplus-ios-sdk (= 1.7.1)
+  - GoogleSignIn (= 4.3.0)
   - HexColors (= 2.3.0)
   - ICViewPager (from `https://github.com/alexshepard/ICViewPager.git`, commit `4c45423b6a36fb38753af86a1050b6a3a1d548b8`)
   - IFTTTLaunchImage (= 0.4.4)
@@ -206,10 +230,67 @@ DEPENDENCIES:
   - YLMoment (from `https://github.com/inaturalist/YLMoment.git`, commit `35521e9f80c23de6f885771f97a6c1febe245c00`)
   - YLProgressBar (= 3.9.0)
 
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - ActionSheetPicker-3.0
+    - AFNetworking
+    - Amplitude-iOS
+    - ARSafariActivity
+    - Base64
+    - BlocksKit
+    - Bolts
+    - cocoa-oauth
+    - Crashlytics
+    - CustomIOSAlertView
+    - DCRoundSwitch
+    - Fabric
+    - FBSDKCoreKit
+    - FBSDKLoginKit
+    - FontAwesomeKit
+    - GeoJSONSerialization
+    - GoogleSignIn
+    - GoogleToolboxForMac
+    - GTMOAuth2
+    - GTMSessionFetcher
+    - HexColors
+    - IFTTTLaunchImage
+    - ISO8601DateFormatter
+    - JDFTooltips
+    - JDStatusBarNotification
+    - JWT
+    - LibComponentLogging-Core
+    - LibComponentLogging-NSLog
+    - M13ProgressSuite
+    - Mantle
+    - Masonry
+    - MBProgressHUD
+    - "NSData+Base64"
+    - NSString_stripHtml
+    - NXOAuth2Client
+    - PDKTStickySectionHeadersCollectionViewLayout
+    - QBImagePickerController
+    - RaptureXML
+    - Realm
+    - RestKit
+    - SDWebImage
+    - SOCKit
+    - SSZipArchive
+    - SVPullToRefresh
+    - SWRevealViewController
+    - TapkuLibrary
+    - Toast
+    - TOCropViewController
+    - TTTAttributedLabel
+    - UIColor-HTMLColors
+    - VICMAImageView
+    - VTAcknowledgementsViewController
+    - XMLReader
+    - YLProgressBar
+
 EXTERNAL SOURCES:
   FileMD5Hash:
     :commit: 6864c180c010ab4b0514ba5c025091e12ab01199
-    :git: https://github.com/JoeKun/FileMD5Hash.git
+    :git: https://github.com/FutureWorkshops/FileMD5Hash.git
   ICViewPager:
     :commit: 4c45423b6a36fb38753af86a1050b6a3a1d548b8
     :git: https://github.com/alexshepard/ICViewPager.git
@@ -226,7 +307,7 @@ EXTERNAL SOURCES:
 CHECKOUT OPTIONS:
   FileMD5Hash:
     :commit: 6864c180c010ab4b0514ba5c025091e12ab01199
-    :git: https://github.com/JoeKun/FileMD5Hash.git
+    :git: https://github.com/FutureWorkshops/FileMD5Hash.git
   ICViewPager:
     :commit: 4c45423b6a36fb38753af86a1050b6a3a1d548b8
     :git: https://github.com/alexshepard/ICViewPager.git
@@ -247,18 +328,21 @@ SPEC CHECKSUMS:
   ARSafariActivity: eccf8d928f242a6a290437afd27ed7178b7eadcc
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
-  Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
+  Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   cocoa-oauth: 1200a2170276a62a975f2786d505dab6e2db1fa8
   Crashlytics: 9120a5c1515655e57a65e565e2eae8dd326be2e9
   CustomIOSAlertView: 94d2401e34fcfb0ac0134679d6947f5e251b0446
   DCRoundSwitch: 86d348f35be4d6ef18dbc9331c682aab6f85e980
   Fabric: 93e3053474839d8df33a61a29c328a48c83792c8
-  FBSDKCoreKit: 3b8e6570eedb443f9fc4af196a7bf39f18e3a3d8
-  FBSDKLoginKit: 8bccb6064708ab2f4251a7fc4e3b6d8d00ad91ba
+  FBSDKCoreKit: 2ab7fdbf600dc6b628ba7a49aa29d357a7b4c74e
+  FBSDKLoginKit: 634fa27e72e33620eb6389253337342c03d4a407
   FileMD5Hash: 81918bf9f82de8bce6a2ae38584c2cc95b7b078c
-  FontAwesomeKit: 025fd4dd1017fe4e3f8d47b03e024deedbb33cd4
+  FontAwesomeKit: 3614979b3dbb0ec3f7fac1bd760b91f66c31db67
   GeoJSONSerialization: 55a3d24fe9af26508e3af76873114b39b13ba479
-  googleplus-ios-sdk: 065d9135061a5f84c07656a68ced48336408fe35
+  GoogleSignIn: 11183592dc63e105475c7305a325045ff95e02b7
+  GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
+  GTMOAuth2: c77fe325e4acd453837e72d91e3b5f13116857b2
+  GTMSessionFetcher: 0c4baf0a73acd0041bf9f71ea018deedab5ea84e
   HexColors: 6ad3947c3447a055a3aa8efa859def096351fe5f
   ICViewPager: 74e83c8bebd572b3baebac5959875d0fb5e70000
   IFTTTLaunchImage: ab84d453e2c51b3c2aa83daad99cf45f27688c96
@@ -274,7 +358,7 @@ SPEC CHECKSUMS:
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
   MHVideoPhotoGallery: aa36cdd9b75c6d5a19b48005cddb9b730c2e27e8
-  NSData+Base64: 4e84902c4db907a15673474677e57763ef3903e4
+  "NSData+Base64": 4e84902c4db907a15673474677e57763ef3903e4
   NSString_stripHtml: ba10acfb1c0f7f687055f8e4300a8a78e142f1ea
   NXOAuth2Client: 98c4d4c594edd2b289cfc34a8928653e1dab7adf
   PDKTStickySectionHeadersCollectionViewLayout: bedcfc09fa44ae3e232eab421c31286e3d2856ed
@@ -298,6 +382,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: b3864597309dc95e9148e438d7bbd9d9be204176
+PODFILE CHECKSUM: e986d3bb8e41eed7882a2bab1d587d2130166345
 
-COCOAPODS: 1.4.0.rc.1
+COCOAPODS: 1.5.3

@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <GoogleOpenSource/GoogleOpenSource.h>
+#import <GTMOAuth2/GTMOAuth2ViewControllerTouch.h>
 
 @interface GooglePlusAuthViewController : GTMOAuth2ViewControllerTouch
 
