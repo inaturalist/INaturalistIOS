@@ -13,7 +13,6 @@
 #import <TapkuLibrary/TapkuLibrary.h>
 #import <objc/runtime.h>
 #import <Photos/Photos.h>
-#import <RestKit/RestKit.h>
 
 #import "INatUITabBarController.h"
 #import "Observation.h"
@@ -58,7 +57,7 @@ static char PROJECT_ASSOCIATED_KEY;
 @end
 
 
-@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, RKObjectLoaderDelegate, RKRequestDelegate> {
+@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     INatTooltipView *makeFirstObsTooltip;
 }
 @property QBImagePickerController *imagePicker;
@@ -101,10 +100,6 @@ static char PROJECT_ASSOCIATED_KEY;
     self.customizableViewControllers = nil;
     
     [self setUpdatesBadge];
-}
-
-- (void)dealloc {
-    [[[[RKObjectManager sharedManager] client] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
@@ -581,33 +576,6 @@ static char PROJECT_ASSOCIATED_KEY;
         
         [makeFirstObsTooltip hideAnimated:NO];
     }
-}
-
-#pragma mark - RKObjectLoader & RKRequest delegates
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    // do nothing
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
-    // update timestamps on taxa objects
-    NSDate *now = [NSDate date];
-    [objects enumerateObjectsUsingBlock:^(INatModel *o,
-                                          NSUInteger idx,
-                                          BOOL *stop) {
-        [o setSyncedAt:now];
-    }];
-    
-    NSError *saveError = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-    if (saveError) {
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error saving store: %@",
-                                            saveError.localizedDescription]];
-    }
-}
-
-- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
-    // do nothing
 }
 
 @end
