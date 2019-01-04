@@ -88,6 +88,28 @@
     return handled;
 }
 
+
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    [self loadUpdatesWithCompletionHandler:completionHandler];
+}
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [self setupAnalytics];
+        
+    [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
+    
+    [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+    
+    // we need a login controller to handle google auth, can't do this in the background
+    self.loginController = [[LoginController alloc] init];
+
+    [self showLoadingScreen];
+    
+    [self configureApplication];
+    
+    return YES;
+}
+
 - (void)loadUpdatesWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
     UIApplication *application = [UIApplication sharedApplication];
     
@@ -183,26 +205,6 @@
     }
 }
 
-- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    [self loadUpdatesWithCompletionHandler:completionHandler];
-}
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [self setupAnalytics];
-    
-    [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
-    
-    [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
-    
-    // we need a login controller to handle google auth, can't do this in the background
-    self.loginController = [[LoginController alloc] init];
-
-    [self showLoadingScreen];
-    
-    [self configureApplication];
-    
-    return YES;
-}
 
 - (void)setupAnalytics {
     // setup analytics

@@ -7,11 +7,18 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 @class ExploreUserRealm;
 @class Partner;
 @class User;
 @class UploadManager;
+
+@protocol INatAuthenticationDelegate <NSObject>
+- (void)loginSuccess;
+- (void)loginFailedWithError:(NSError *)error;
+@end
+
 
 extern NSString *INatJWTFailureErrorDomain;
 extern NSString *kUserLoggedInNotificationName;
@@ -20,31 +27,17 @@ extern NSInteger INatMinPasswordLength;
 typedef void (^LoginSuccessBlock)(NSDictionary *info);
 typedef void (^LoginErrorBlock)(NSError *error);
 
-@interface LoginController : NSObject
+@interface LoginController : NSObject <FBSDKLoginButtonDelegate>
 
-- (void)loginWithFacebookViewController:(UIViewController *)vc
-	success:(LoginSuccessBlock)success
-	failure:(LoginErrorBlock)error;
-- (void)loginWithGoogleUsingNavController:(UINavigationController *)nav
-                                  success:(LoginSuccessBlock)success
-                                  failure:(LoginErrorBlock)error;
-- (void)loginWithGoogleUsingViewController:(UIViewController *)parent
-                                   success:(LoginSuccessBlock)success
-                                   failure:(LoginErrorBlock)error;
+@property (nonatomic, weak) id <INatAuthenticationDelegate> delegate;
 
 - (void)createAccountWithEmail:(NSString *)email
                       password:(NSString *)password
                       username:(NSString *)username
                           site:(NSInteger)siteId
-                       license:(NSString *)license
-                       success:(LoginSuccessBlock)successBlock
-                       failure:(LoginErrorBlock)failureBlock;
-
+                       license:(NSString *)license;
 - (void)loginWithUsername:(NSString *)username
-                 password:(NSString *)password
-                  success:(LoginSuccessBlock)successBlock
-                  failure:(LoginErrorBlock)failureBlock;
-
+                 password:(NSString *)password;
 - (void)logout;
 
 - (void)loggedInUserSelectedPartner:(Partner *)partner

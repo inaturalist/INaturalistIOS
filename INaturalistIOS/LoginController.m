@@ -12,11 +12,11 @@
 #import <GoogleSignIn/GoogleSignIn.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <JWT/JWT.h>
+#import <GTMOAuth2/GTMOAuth2ViewControllerTouch.h>
 
 #import "LoginController.h"
 #import "Analytics.h"
 #import "INaturalistAppDelegate.h"
-#import "GooglePlusAuthViewController.h"
 #import "UIColor+INaturalist.h"
 #import "Partner.h"
 #import "User.h"
@@ -35,11 +35,7 @@ static const NSTimeInterval LocalMeUserValidTimeInterval = 600;
     NSString    *accountType;
     BOOL        isLoginCompleted;
     NSInteger   lastAssertionType;
-    BOOL        tryingGoogleReauth;
 }
-@property (atomic, readwrite, copy) LoginSuccessBlock currentSuccessBlock;
-@property (atomic, readwrite, copy) LoginErrorBlock currentErrorBlock;
-
 @end
 
 #pragma mark - NSNotification names
@@ -77,37 +73,26 @@ NSInteger INatMinPasswordLength = 6;
 
 #pragma mark - Facebook
 
-- (void)loginWithFacebookViewController:(UIViewController *)vc
-	success:(LoginSuccessBlock)successBlock
-	failure:(LoginErrorBlock)errorBlock {
-
-    self.currentSuccessBlock = successBlock;
-    self.currentErrorBlock = errorBlock;
+- (void)loginButton:(FBSDKLoginButton *)loginButton didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result error:(NSError *)error {
     
-	FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
-	[login
-    logInWithReadPermissions: @[@"email"]
-          fromViewController:vc
-                     handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
-    if (error) {
+    if (error || !result.token) {
         [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
-                     withProperties:@{ @"from": @"Facebook",
-                                       @"code": @(error.code) }];
-    	errorBlock(error);
-    } else if (result.isCancelled) {
-    	errorBlock(nil);
+                         withProperties:@{ @"Via": @"Facebook" }];
+        [self.delegate loginFailedWithError:error];
     } else {
-    	externalAccessToken = [[[result token] tokenString] copy];
-		accountType = kINatAuthServiceExtToken;
         [[Analytics sharedClient] event:kAnalyticsEventLogin
                          withProperties:@{ @"Via": @"Facebook" }];
+        externalAccessToken = [[result.token tokenString] copy];
+        accountType = kINatAuthServiceExtToken;
         [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
                                                              assertionType:[NSURL URLWithString:@"http://facebook.com"]
                                                                  assertion:externalAccessToken];
     }
-  }];           
+}
 
-
+- (void)loginButtonDidLogOut:(FBSDKLoginButton *)loginButton {
+    // do nothing
+    // seem to need to
 }
 
 #pragma mark - INat OAuth Login
@@ -116,12 +101,7 @@ NSInteger INatMinPasswordLength = 6;
                       password:(NSString *)password
                       username:(NSString *)username
                           site:(NSInteger)siteId
-                       license:(NSString *)license
-                       success:(LoginSuccessBlock)successBlock
-                       failure:(LoginErrorBlock)errorBlock {
-    
-    self.currentSuccessBlock = successBlock;
-    self.currentErrorBlock = errorBlock;
+                       license:(NSString *)license {
     
     NSString *localeString = [[NSLocale currentLocale] localeIdentifier];
     // format for rails
@@ -130,7 +110,6 @@ NSInteger INatMinPasswordLength = 6;
     if (!localeString) { localeString = @"en-US"; }
     
     [[Analytics sharedClient] debugLog:@"Network - Post Users"];
-    
     [[RKClient sharedClient] post:@"/users.json"
                        usingBlock:^(RKRequest *request) {
                            request.params = @{
@@ -152,7 +131,7 @@ NSInteger INatMinPasswordLength = 6;
                                                                                error:&error];
                                
                                if (error) {
-                                   [self executeError:error];
+                                   [self.delegate loginFailedWithError:error];
                                    return;
                                }
                                
@@ -164,41 +143,31 @@ NSInteger INatMinPasswordLength = 6;
                                                                        userInfo:@{
                                                                                   NSLocalizedDescriptionKey: errors.firstObject
                                                                                   }];
-                                   [self executeError:newError];
+                                   [self.delegate loginFailedWithError:newError];
                                    return;
                                }
 
                                [[Analytics sharedClient] event:kAnalyticsEventSignup];
                                
                                [self loginWithUsername:username
-                                              password:password
-                                               success:successBlock
-                                               failure:errorBlock];
+                                              password:password];
                                
                            };
                            
                            request.onDidFailLoadWithError = ^(NSError *error) {
-                               [self executeError:error];
+                               [self.delegate loginFailedWithError:error];
                            };
-                           
                        }];
 }
 
 - (void)loginWithUsername:(NSString *)username
-                 password:(NSString *)password
-                  success:(LoginSuccessBlock)successBlock
-                  failure:(LoginErrorBlock)errorBlock {
+                 password:(NSString *)password {
     
-    self.currentSuccessBlock = successBlock;
-    self.currentErrorBlock = errorBlock;
-    
-    accountType = nil;
     accountType = kINatAuthService;
     isLoginCompleted = NO;
     [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
                                                               username:username
                                                               password:password];
-    
 }
 
 -(void)initOAuth2Service{
@@ -218,9 +187,9 @@ NSInteger INatMinPasswordLength = 6;
                                                       id err = [aNotification.userInfo objectForKey:NXOAuth2AccountStoreErrorKey];
                                                       NSLog(@"err is %@", err);
                                                       if (err && [err isKindOfClass:[NSError class]]) {
-                                                          [self executeError:err];
+                                                          [self.delegate loginFailedWithError:err];
                                                       } else {
-                                                          [self executeError:nil];
+                                                          [self.delegate loginFailedWithError:nil];
                                                       }
                                                   }];
 }
@@ -270,7 +239,7 @@ NSInteger INatMinPasswordLength = 6;
                                                                      @"error": error.localizedDescription,
                                                                      }];
                                   
-                                  [self executeError:error];
+                                  [self.delegate loginFailedWithError:error];
                               };
                               
                               request.onDidLoadResponse = ^(RKResponse *response) {
@@ -284,14 +253,14 @@ NSInteger INatMinPasswordLength = 6;
                                                                          @"error": error.localizedDescription,
                                                                          }];
 
-                                      [self executeError:error];
+                                      [self.delegate loginFailedWithError:error];
                                   } else if (!parsedData) {
                                       [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
                                                        withProperties:@{ @"from": @"iNaturalist",
                                                                          @"error": @"no data from server",
                                                                          }];
                                       
-                                      [self executeError:nil];
+                                      [self.delegate loginFailedWithError:nil];
                                   } else {
                                       ExploreUserRealm *me = [[ExploreUserRealm alloc] init];
                                       me.login = [parsedData objectForKey:@"login"] ?: @"";
@@ -315,7 +284,7 @@ NSInteger INatMinPasswordLength = 6;
                                                                                forKey:INatTokenPrefKey];
                                       [[NSUserDefaults standardUserDefaults] synchronize];
                                       
-                                      [self executeSuccess:nil];
+                                      [self.delegate loginSuccess];
                                       
                                       [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
                                                                                           object:nil];
@@ -327,8 +296,7 @@ NSInteger INatMinPasswordLength = 6;
                          withProperties:@{ @"from": @"iNaturalist",
                                            @"error": @"no data in nxoauth store",
                                            }];
-        
-        [self executeError:nil];
+        [self.delegate loginFailedWithError:nil];
     }
 }
 
@@ -343,137 +311,36 @@ NSInteger INatMinPasswordLength = 6;
 
 #pragma mark - Google methods
 
-- (void)signIn:(GIDSignIn *)signIn didSignInForUser:(GIDGoogleUser *)user withError:(NSError *)error {
-    // success
+- (void)initGoogleLogin {
+    GIDSignIn.sharedInstance.clientID = GoogleClientId;
+    GIDSignIn.sharedInstance.scopes = @[
+                                        @"https://www.googleapis.com/auth/userinfo.email",
+                                        ];
+    GIDSignIn.sharedInstance.delegate = self;
 }
 
-- (void)loginWithGoogleUsingNavController:(UINavigationController *)nav
-                                  success:(LoginSuccessBlock)success
-                                  failure:(LoginErrorBlock)error {
+- (void)signIn:(GIDSignIn *)signIn
+didSignInForUser:(GIDGoogleUser *)user
+     withError:(NSError *)error {
     
-    self.currentSuccessBlock = success;
-    self.currentErrorBlock = error;
-    
-    accountType = nil;
-    accountType = kINatAuthServiceExtToken;
-    isLoginCompleted = NO;
-
-    GooglePlusAuthViewController *vc = [GooglePlusAuthViewController controllerWithScope:self.scopesForGoogleSignin
-                                                                                clientID:self.clientIdForGoogleSignin
-                                                                            clientSecret:nil
-                                                                        keychainItemName:nil
-                                                                                delegate:self
-                                                                        finishedSelector:@selector(viewController:finishedAuth:error:)];
-    [nav pushViewController:vc animated:YES];
-    
-    // inat green button tint
-    [nav.navigationBar setTintColor:[UIColor inatTint]];
-    
-    // standard navigation bar
-    [nav.navigationBar setBackgroundImage:nil
-                            forBarMetrics:UIBarMetricsDefault];
-    [nav.navigationBar setShadowImage:nil];
-    [nav.navigationBar setTranslucent:YES];
-    [nav setNavigationBarHidden:NO];
-}
-
-- (void)loginWithGoogleUsingViewController:(UIViewController *)parent
-                                   success:(LoginSuccessBlock)success
-                                   failure:(LoginErrorBlock)error {
-    
-    self.currentSuccessBlock = success;
-    self.currentErrorBlock = error;
-    
-    accountType = nil;
-    accountType = kINatAuthServiceExtToken;
-    isLoginCompleted = NO;
-    
-    GooglePlusAuthViewController *vc = [GooglePlusAuthViewController controllerWithScope:self.scopesForGoogleSignin
-                                                                                clientID:self.clientIdForGoogleSignin
-                                                                            clientSecret:nil
-                                                                        keychainItemName:nil
-                                                                                delegate:self
-                                                                        finishedSelector:@selector(viewController:finishedAuth:error:)];
-    
-    vc.rightBarButtonItem = [[UIBarButtonItem alloc] bk_initWithBarButtonSystemItem:UIBarButtonSystemItemCancel handler:^(id sender) {
-        [parent dismissViewControllerAnimated:YES completion:nil];
-    }];
-    
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
-    [parent presentViewController:nav animated:YES completion:nil];
-}
-
-
-- (NSString *)scopesForGoogleSignin {
-    GIDSignIn *signin = [GIDSignIn sharedInstance];
-    
-    // GTMOAuth2VCTouch takes a different scope format than GPPSignIn
-    // @"plus.login plus.me userinfo.email"
-    __block NSString *scopes;
-    [signin.scopes enumerateObjectsUsingBlock:^(NSString *scope, NSUInteger idx, BOOL *stop) {
-        if (idx == 0)
-            scopes = [NSString stringWithString:scope];
-        else
-            scopes = [scopes stringByAppendingString:[NSString stringWithFormat:@" %@", scope]];
-    }];
-    
-    return scopes;
-}
-
-- (NSString *)clientIdForGoogleSignin {
-    return [[GIDSignIn sharedInstance] clientID];
-}
-
-- (GIDSignIn *)googleSignin {
-    return [GIDSignIn sharedInstance];
-}
-
--(void) initGoogleLogin {
-    // Google+ init
-    GIDSignIn *googleSignIn = [GIDSignIn sharedInstance];
-    googleSignIn.clientID = GoogleClientId;
-    googleSignIn.scopes = @[
-                            @"https://www.googleapis.com/auth/userinfo.email",
-                            ];
-    googleSignIn.delegate = self;
-    [googleSignIn signInSilently];
-}
-
-- (void)finishedWithAuth:(GTMOAuth2Authentication *)auth
-                   error:(NSError *)error {
-    
-    if (error || (!auth.accessToken && tryingGoogleReauth)) {
-        
+    if (error || !user.authentication.idToken) {
         [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
-                         withProperties:@{ @"from": @"Google" }];
-        tryingGoogleReauth = NO;
-        [self executeError:error];
-    } else if (!auth.accessToken && !tryingGoogleReauth) {
-        tryingGoogleReauth = YES;
-        [[GIDSignIn sharedInstance] signOut];
-        [self initGoogleLogin];
+                         withProperties:@{ @"Via": @"Google" }];
+        [self.delegate loginFailedWithError:error];
     } else {
         [[Analytics sharedClient] event:kAnalyticsEventLogin
-                         withProperties:@{ @"Via": @"Google+" }];
-        externalAccessToken = [[auth accessToken] copy];
-        accountType = nil;
+                         withProperties:@{ @"Via": @"Google" }];
+        externalAccessToken = [user.authentication.accessToken copy];
         accountType = kINatAuthServiceExtToken;
         [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
                                                              assertionType:[NSURL URLWithString:@"http://google.com"]
                                                                  assertion:externalAccessToken];
-        tryingGoogleReauth = NO;
-        [self executeSuccess:nil];
     }
-}
-
-- (void)viewController:(GTMOAuth2ViewControllerTouch *)vc
-          finishedAuth:(GTMOAuth2Authentication *)auth
-                 error:(NSError *)error {
-    [self finishedWithAuth:auth error:error];
 }
 
 #pragma mark - Success / Failure helpers
 
+/*
 - (void)executeSuccess:(NSDictionary *)results {
     @synchronized(self) {
         if (self.currentSuccessBlock) {
@@ -495,6 +362,7 @@ NSInteger INatMinPasswordLength = 6;
         self.currentErrorBlock = nil;
     }
 }
+ */
 
 #pragma mark - Partners
 

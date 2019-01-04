@@ -18,6 +18,7 @@
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <Realm/Realm.h>
 #import <RestKit/RestKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 #import "SettingsViewController.h"
 #import "Observation.h"
@@ -372,7 +373,12 @@ static const int SettingsVersionRowCount = 1;
 {
     // clear google signin
     if ([[GIDSignIn sharedInstance] hasAuthInKeychain]) {
-        [[GIDSignIn sharedInstance] disconnect];
+        [[GIDSignIn sharedInstance] signOut];
+    }
+    
+    if ([FBSDKAccessToken currentAccessToken]) {
+        FBSDKLoginManager *fb = [[FBSDKLoginManager alloc] init];
+        [fb logOut];
     }
     
     // clear preference cached signin info & preferences
