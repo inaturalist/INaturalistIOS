@@ -11,7 +11,6 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
-#import <RestKit/RestKit.h>
 #import <ARSafariActivity/ARSafariActivity.h>
 #import <JDFTooltips/JDFTooltips.h>
 
