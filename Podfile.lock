@@ -47,9 +47,9 @@ PODS:
   - Fabric (1.5.4):
     - Fabric/Base (= 1.5.4)
   - Fabric/Base (1.5.4)
-  - FBSDKCoreKit (4.38.0):
-    - Bolts (~> 1.9)
-  - FBSDKLoginKit (4.38.0):
+  - FBSDKCoreKit (4.37.0):
+    - Bolts (~> 1.7)
+  - FBSDKLoginKit (4.37.0):
     - FBSDKCoreKit
   - FileMD5Hash (0.0.1)
   - FontAwesomeKit (2.2.1):
@@ -193,7 +193,8 @@ DEPENDENCIES:
   - CustomIOSAlertView (= 0.9.3)
   - DCRoundSwitch (= 0.0.1)
   - Fabric (= 1.5.4)
-  - FBSDKLoginKit (= 4.38.0)
+  - FBSDKCoreKit (= 4.37.0)
+  - FBSDKLoginKit (= 4.37.0)
   - FileMD5Hash (from `https://github.com/FutureWorkshops/FileMD5Hash.git`, commit `6864c180c010ab4b0514ba5c025091e12ab01199`)
   - FontAwesomeKit (= 2.2.1)
   - GeoJSONSerialization (= 0.0.4)
@@ -334,14 +335,14 @@ SPEC CHECKSUMS:
   CustomIOSAlertView: 94d2401e34fcfb0ac0134679d6947f5e251b0446
   DCRoundSwitch: 86d348f35be4d6ef18dbc9331c682aab6f85e980
   Fabric: 93e3053474839d8df33a61a29c328a48c83792c8
-  FBSDKCoreKit: 2ab7fdbf600dc6b628ba7a49aa29d357a7b4c74e
-  FBSDKLoginKit: 634fa27e72e33620eb6389253337342c03d4a407
+  FBSDKCoreKit: fe5f3474499a81963e11e3f3a5c753d0a95ca2b4
+  FBSDKLoginKit: 2f7249686d1e30ce8a5ef5400eedf50b3e3df332
   FileMD5Hash: 81918bf9f82de8bce6a2ae38584c2cc95b7b078c
   FontAwesomeKit: 3614979b3dbb0ec3f7fac1bd760b91f66c31db67
   GeoJSONSerialization: 55a3d24fe9af26508e3af76873114b39b13ba479
   GoogleSignIn: 11183592dc63e105475c7305a325045ff95e02b7
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
-  GTMOAuth2: c77fe325e4acd453837e72d91e3b5f13116857b2
+  GTMOAuth2: e8b6512c896235149df975c41d9a36c868ab7fba
   GTMSessionFetcher: 0c4baf0a73acd0041bf9f71ea018deedab5ea84e
   HexColors: 6ad3947c3447a055a3aa8efa859def096351fe5f
   ICViewPager: 74e83c8bebd572b3baebac5959875d0fb5e70000
@@ -382,6 +383,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: e986d3bb8e41eed7882a2bab1d587d2130166345
+PODFILE CHECKSUM: d2c6973f88dd16ee76edfe8e21e6462df0fda52d
 
 COCOAPODS: 1.5.3
