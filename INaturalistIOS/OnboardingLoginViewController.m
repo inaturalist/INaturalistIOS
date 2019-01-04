@@ -31,7 +31,7 @@
 #import "INatReachability.h"
 #import "LoginSwitchContextButton.h"
 
-@interface OnboardingLoginViewController () <UITextFieldDelegate, INatWebControllerDelegate, INatAuthenticationDelegate>
+@interface OnboardingLoginViewController () <UITextFieldDelegate, INatWebControllerDelegate, INatAuthenticationDelegate, GIDSignInUIDelegate>
 
 @property IBOutlet UILabel *titleLabel;
 
@@ -214,6 +214,18 @@
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     appDelegate.loginController.delegate = self;
     self.facebookButton.delegate = appDelegate.loginController;
+    // ensure we're unauthenticated from facebook
+    if ([FBSDKAccessToken currentAccessToken]) {
+        FBSDKLoginManager *fb = [[FBSDKLoginManager alloc] init];
+        [fb logOut];
+    }
+    
+    // a ui delegate is required
+    GIDSignIn.sharedInstance.uiDelegate = self;
+    // ensure we're unauthenticated from google
+    if ([[GIDSignIn sharedInstance] hasAuthInKeychain]) {
+        [[GIDSignIn sharedInstance] signOut];
+    }
     
     // start in signup context
     [self.switchContextButton setContext:LoginContextSignup];
