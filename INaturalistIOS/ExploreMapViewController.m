@@ -9,7 +9,6 @@
 #import <MapKit/MapKit.h>
 #import <CoreLocation/CoreLocation.h>
 
-#import <RestKit/RestKit.h>
 #import <BlocksKit/BlocksKit.h>
 #import <BlocksKit/UIBarButtonItem+BlocksKit.h>
 #import <FontAwesomeKit/FAKIonIcons.h>

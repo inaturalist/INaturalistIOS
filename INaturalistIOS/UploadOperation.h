@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <AFNetworking/AFNetworking.h>
-#import <RestKit/RestKit.h>
 
 #import "UploadManagerNotificationDelegate.h"
 #import "ObservationAPI.h"
