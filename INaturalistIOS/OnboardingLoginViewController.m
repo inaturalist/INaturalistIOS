@@ -672,15 +672,4 @@
     NSLog(@"login success");
 }
 
-#pragma mark - FBSDKLoginButtonDelegate
-
-- (void)loginButtonDidLogOut:(FBSDKLoginButton *)loginButton {
-    
-}
-
-- (void)loginButton:(FBSDKLoginButton *)loginButton didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result error:(NSError *)error {
-    
-}
-
-
 @end
