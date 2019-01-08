@@ -319,7 +319,7 @@
             </objects>
             <point key="canvasLocation" x="1586" y="4551"/>
         </scene>
-        <!--GuideTaxon-->
+        <!--Guide Taxon View Controller-->
         <scene sceneID="6k0-qc-7iv">
             <objects>
                 <viewController storyboardIdentifier="GuideTaxonViewController" id="aXn-l7-rXs" customClass="GuideTaxonViewController" sceneMemberID="viewController">
@@ -339,7 +339,7 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
-                    <navigationItem key="navigationItem" title="GuideTaxon" id="GJa-zU-aXj">
+                    <navigationItem key="navigationItem" id="GJa-zU-aXj">
                         <barButtonItem key="rightBarButtonItem" title="Observe" id="gaA-yq-1wc">
                             <color key="tintColor" red="0.59951651100000003" green="0.77198666329999999" blue="0.1512871683" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <connections>
