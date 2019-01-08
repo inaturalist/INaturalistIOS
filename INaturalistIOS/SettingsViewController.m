@@ -897,7 +897,7 @@ static const int SettingsVersionRowCount = 1;
     ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
     if (me) {
         Partner *p = [self.partnerController partnerForSiteId:me.siteId];
-        cell.trailingTextLabel.text = p.name;
+        cell.trailingTextLabel.text = p.shortName;
     } else {
         cell.trailingTextLabel.text = @"iNaturalist";
     }
