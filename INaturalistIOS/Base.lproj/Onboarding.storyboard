@@ -345,7 +345,7 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MC0-kW-bph">
                                 <rect key="frame" x="329" y="28" width="30" height="30"/>
-                                <state key="normal" title="X">
+                                <state key="normal">
                                     <color key="titleColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
@@ -415,7 +415,6 @@
                                                     <constraint firstAttribute="height" constant="44" id="wV2-0P-f5Q"/>
                                                 </constraints>
                                                 <color key="tintColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <state key="normal" title="Button"/>
                                                 <connections>
                                                     <action selector="licenseTogglePressed:" destination="j80-yK-ZbF" eventType="touchUpInside" id="ZvS-sH-Z7x"/>
                                                 </connections>
