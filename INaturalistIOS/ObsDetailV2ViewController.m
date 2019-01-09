@@ -125,14 +125,6 @@
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:)
                                                  name:NSManagedObjectContextDidSaveNotification
                                                object:[Observation managedObjectContext]];
-    
-    if (self.observation.validationErrorMsg && self.observation.validationErrorMsg.length > 0) {
-        self.tableView.tableHeaderView = ({
-            ObservationValidationErrorView *view = [[ObservationValidationErrorView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, 100)];
-            view.validationError = self.observation.validationErrorMsg;
-            view;
-        });
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -149,6 +141,8 @@
         self.navigationController.navigationBar.shadowImage = nil;
         self.navigationController.navigationBar.translucent = NO;
     }];
+    
+    [self configureValidationErrorView];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -158,6 +152,23 @@
     if (!self.observation.needsUpload || self.observation.childrenNeedingUpload.count != 0) {
         [self reloadObservation];
     }
+}
+
+- (void)uploadFinished {
+    [self configureValidationErrorView];
+}
+
+- (void)configureValidationErrorView {
+    if (self.observation.validationErrorMsg && self.observation.validationErrorMsg.length > 0) {
+        self.tableView.tableHeaderView = ({
+            ObservationValidationErrorView *view = [[ObservationValidationErrorView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, 100)];
+            view.validationError = self.observation.validationErrorMsg;
+            view;
+        });
+    } else {
+        self.tableView.tableHeaderView = nil;
+    }
+
 }
 
 - (void)dealloc {

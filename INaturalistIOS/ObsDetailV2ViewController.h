@@ -17,4 +17,6 @@
 @property NSInteger observationId;
 @property BOOL shouldShowActivityOnLoad;
 
+- (void)uploadFinished;
+
 @end

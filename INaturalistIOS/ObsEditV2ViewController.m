@@ -892,7 +892,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                       @"OFVs": @(self.observation.observationFieldValues.count),
                                       @"Online Reachability": INatReachability.sharedClient.isNetworkReachable ? @"Yes": @"No"
                                       }];
-        
+    
+    // clear upload validation error message
+    self.observation.validationErrorMsg = nil;
+    
     NSError *error;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
     if (error) {

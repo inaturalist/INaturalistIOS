@@ -1586,6 +1586,12 @@
         [self loadUserForHeader];
     });
     
+    UIViewController *topVC = self.navigationController.topViewController;
+    if ([topVC isKindOfClass:[ObsDetailV2ViewController class]]) {
+        ObsDetailV2ViewController *obsDetail = (ObsDetailV2ViewController *)topVC;
+        [obsDetail uploadFinished];
+    }
+    
     // TODO: clear all upload ids
 
     [[Analytics sharedClient] debugLog:@"Upload - Session Finished"];
