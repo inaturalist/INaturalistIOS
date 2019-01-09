@@ -24,6 +24,7 @@
 #import "UploadObservationOperation.h"
 #import "DeleteRecordOperation.h"
 #import "ObservationAPI.h"
+#import "ExploreUserRealm.h"
 
 static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 
@@ -137,6 +138,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
         for (Observation *o in self.observationsToUpload) {
             UploadObservationOperation *op = [[UploadObservationOperation alloc] init];
             op.rootObjectId = o.objectID;
+            op.userSiteId = appDelegate.loginController.meUserLocal.siteId;
             op.nodeSessionManager = weakSelf.nodeSessionManager;
             op.delegate = weakSelf.delegate;
             [weakSelf.uploadQueue addOperation:op];

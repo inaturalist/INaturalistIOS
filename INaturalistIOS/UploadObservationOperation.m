@@ -136,7 +136,11 @@
                              failure:failureBlock];
     } else {
         NSString *path = [NSString stringWithFormat:@"/v1/%@",
-                          NSStringFromClass(observation.class).underscore.pluralize];        
+                          NSStringFromClass(observation.class).underscore.pluralize];
+        if (self.userSiteId != 0) {
+            path = [path stringByAppendingString:[NSString stringWithFormat:@"?inat_site_id=%ld",
+                                                  (long)self.userSiteId]];
+        }
         [self.nodeSessionManager POST:path
                            parameters:[observation uploadableRepresentation]
                              progress:nil
