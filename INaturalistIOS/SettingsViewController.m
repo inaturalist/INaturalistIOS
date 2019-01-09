@@ -348,6 +348,7 @@ static const int SettingsVersionRowCount = 1;
 - (void)signOut
 {
     [[Analytics sharedClient] event:kAnalyticsEventLogout];
+    [[Analytics sharedClient] debugLog:@"User Logout"];
     
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tabBarController.view
                                               animated:YES];
