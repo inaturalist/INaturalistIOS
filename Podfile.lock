@@ -41,12 +41,11 @@ PODS:
   - Bolts/Tasks (1.9.0)
   - cocoa-oauth (0.0.1):
     - "NSData+Base64 (~> 1.0)"
-  - Crashlytics (3.3.3)
+  - Crashlytics (3.12.0):
+    - Fabric (~> 1.9.0)
   - CustomIOSAlertView (0.9.3)
   - DCRoundSwitch (0.0.1)
-  - Fabric (1.5.4):
-    - Fabric/Base (= 1.5.4)
-  - Fabric/Base (1.5.4)
+  - Fabric (1.9.0)
   - FBSDKCoreKit (4.37.0):
     - Bolts (~> 1.7)
   - FBSDKLoginKit (4.37.0):
@@ -189,10 +188,10 @@ DEPENDENCIES:
   - ARSafariActivity
   - BlocksKit (= 2.2.5)
   - Bolts (= 1.9.0)
-  - Crashlytics (= 3.3.3)
+  - Crashlytics (= 3.12.0)
   - CustomIOSAlertView (= 0.9.3)
   - DCRoundSwitch (= 0.0.1)
-  - Fabric (= 1.5.4)
+  - Fabric (= 1.9.0)
   - FBSDKCoreKit (= 4.37.0)
   - FBSDKLoginKit (= 4.37.0)
   - FileMD5Hash (from `https://github.com/FutureWorkshops/FileMD5Hash.git`, commit `6864c180c010ab4b0514ba5c025091e12ab01199`)
@@ -331,10 +330,10 @@ SPEC CHECKSUMS:
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   cocoa-oauth: 1200a2170276a62a975f2786d505dab6e2db1fa8
-  Crashlytics: 9120a5c1515655e57a65e565e2eae8dd326be2e9
+  Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
   CustomIOSAlertView: 94d2401e34fcfb0ac0134679d6947f5e251b0446
   DCRoundSwitch: 86d348f35be4d6ef18dbc9331c682aab6f85e980
-  Fabric: 93e3053474839d8df33a61a29c328a48c83792c8
+  Fabric: f988e33c97f08930a413e08123064d2e5f68d655
   FBSDKCoreKit: fe5f3474499a81963e11e3f3a5c753d0a95ca2b4
   FBSDKLoginKit: 2f7249686d1e30ce8a5ef5400eedf50b3e3df332
   FileMD5Hash: 81918bf9f82de8bce6a2ae38584c2cc95b7b078c
@@ -383,6 +382,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: d2c6973f88dd16ee76edfe8e21e6462df0fda52d
+PODFILE CHECKSUM: 0132a0642afda4d2ef54481e15efb9cd079fd9b5
 
 COCOAPODS: 1.5.3

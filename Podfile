@@ -5,8 +5,8 @@ inhibit_all_warnings!
 
 target :iNaturalist do
   pod 'JWT', '2.2.0'
-  pod 'Fabric', '1.5.4'
-  pod 'Crashlytics', '3.3.3'
+  pod 'Fabric', '1.9.0'
+  pod 'Crashlytics', '3.12.0'
   pod 'FBSDKCoreKit', '4.37.0'
   pod 'FBSDKLoginKit', '4.37.0'
   pod 'Bolts', '1.9.0'
