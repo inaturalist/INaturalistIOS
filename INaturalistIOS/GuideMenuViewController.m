@@ -40,6 +40,10 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.tableView.estimatedRowHeight = 44;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    
     if (self.delegate && !self.guide) {
         self.guide = self.delegate.guideMenuControllerGuide;
         if (!self.tagsByPredicate) {
@@ -53,7 +57,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
         [self.guide iterateWithRootXPath:@"//GuideTaxon/tag" usingBlock:^(RXMLElement *tag) {
             NSString *predicate = [tag attribute:@"predicate"];
             if (!predicate || predicate.length == 0) {
-                predicate = NSLocalizedString(@"TAGS", nil);
+                predicate = NSLocalizedString(@"TAGS", @"Tags (kind of like categories) are applied to the species in a guide, and allow the guide editor to group and organize the species in a guide.");
             }
             NSString *value = [tag text];
             NSMutableSet *tags = [tagsByPredicate objectForKey:predicate];
@@ -124,7 +128,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell;
+    UITableViewCell *cell = nil;
     static NSString *TextCellIdentifier = @"TextCell";
     static NSString *SubtitleCellIdentifier = @"SubtitleCell";
     static NSString *ProgressCellIdentifier = @"ProgressCell";
@@ -143,28 +147,23 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                 cell = [tableView dequeueReusableCellWithIdentifier:RightDetailCellIdentifier forIndexPath:indexPath];
                 cell.selectionStyle = UITableViewCellSelectionStyleNone;
                 cell.userInteractionEnabled = NO;
-            }
-            if (indexPath.row == 0) {
-                // Adding auto layout for cell.
-                [self setupConstraintsForCell:cell];
+                
                 UILabel *textLabel = (UILabel *)[cell viewWithTag:DetailCellTextTag];
                 UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:DetailCellDetailTag];
-                textLabel.text = NSLocalizedString(@"Editor", nil);
-                detailTextLabel.text = self.guide.compiler;
-            } else if (indexPath.row == 1) {
-                // Adding auto layout for cell.
-                [self setupConstraintsForCell:cell];
-                UILabel *textLabel = (UILabel *)[cell viewWithTag:DetailCellTextTag];
-                UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:DetailCellDetailTag];
-                textLabel.text = NSLocalizedString(@"License", nil);
-                detailTextLabel.text = self.guide.license;
+                if (indexPath.row == 0) {
+                    textLabel.text = NSLocalizedString(@"Editor", @"The editor or author of the species guide");
+                    detailTextLabel.text = self.guide.compiler;
+                } else if (indexPath.row == 1) {
+                    textLabel.text = NSLocalizedString(@"License", @"The license of the species guide");
+                    detailTextLabel.text = self.guide.license;
+                }
             } else {
                 if (self.isDownloading) {
                     cell = [tableView dequeueReusableCellWithIdentifier:ProgressCellIdentifier forIndexPath:indexPath];
                     self.progress = (UIProgressView *)[cell viewWithTag:ProgressViewTag];
                     UILabel *label = (UILabel *)[cell viewWithTag:ProgressLabelTag];
                     label.textAlignment = NSTextAlignmentNatural;
-                    label.text = NSLocalizedString(@"Downloading...", nil);
+                    label.text = NSLocalizedString(@"Downloading...", @"Notice when we're downloading a species guide from the server, to be used offline");
                 } else {
                     cell = [tableView dequeueReusableCellWithIdentifier:SubtitleCellIdentifier forIndexPath:indexPath];
                     UILabel *title = (UILabel *)[cell viewWithTag:202];
@@ -174,7 +173,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                     UIImageView *imageView = (UIImageView *)[cell viewWithTag:201];
                     if (self.guide.ngzDownloadedAt) {
                         title.textColor = [UIColor blackColor];
-                        title.text = NSLocalizedString(@"Downloaded", nil);
+                        title.text = NSLocalizedString(@"Downloaded", @"notice that a species guide has been downloaded from the server and can be used while offline.");
                         NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
                         [fmt setTimeZone:[NSTimeZone localTimeZone]];
                         [fmt setDateStyle:NSDateFormatterMediumStyle];
@@ -183,7 +182,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                         imageView.image = [UIImage imageNamed:@"258-checkmark"];
                     } else if (self.guide.ngzURL) {
                         title.textColor = [UIColor blackColor];
-                        title.text = NSLocalizedString(@"Download for offline use", nil);
+                        title.text = NSLocalizedString(@"Download for offline use", @"title for button that allows a user to download a species guide and use it while offline.");
                         subtitle.text = self.guide.ngzFileSize;
                         imageView.image = [UIImage imageNamed:@"265-download-gray"];
                     } else {
@@ -204,8 +203,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 {
     UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:RightDetailCellIdentifier forIndexPath:indexPath];
     NSArray *pieces = [tag componentsSeparatedByString:@"="];
-    // Adding auto layout for cell.
-    [self setupConstraintsForCell:cell];
+
     UILabel *textLabel = (UILabel *)[cell viewWithTag:DetailCellTextTag];
     UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:DetailCellDetailTag];
     
@@ -225,32 +223,17 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     return cell;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    NSString *tag = [self tagForIndexPath:indexPath];
-    if (tag) {
-        return 44.0;
-    }
-    NSInteger i = indexPath.section - self.tagPredicates.count;
-    if (i != 0) return 44.0;
-    CGSize constraintSize = CGSizeMake(260.0f, MAXFLOAT);
-    CGSize labelSize = [self.guide.desc.stringByStrippingHTML sizeWithFont:[UIFont systemFontOfSize:15.0]
-                                                         constrainedToSize:constraintSize
-                                                             lineBreakMode:NSLineBreakByWordWrapping];
-    return labelSize.height + 20;
-}
-
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
     NSString *title;
     NSInteger i = section - self.tagPredicates.count;
     if (section < self.tagPredicates.count) {
         NSString *humanTitle = [[[[self.tagPredicates objectAtIndex:section] componentsSeparatedByString:@":"] lastObject] humanize];
-        title = [NSLocalizedString(humanTitle, nil) uppercaseString];
+        title = [humanTitle uppercaseString];
     } else if (i == 0) {
-        title = NSLocalizedString(@"DESCRIPTION", nil);
+        title = NSLocalizedString(@"DESCRIPTION", @"title for description section of the guide screen");
     } else {
-        title = NSLocalizedString(@"ABOUT", nil);
+        title = NSLocalizedString(@"ABOUT", @"title for about section of the guide screen");
     }
     
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 22)];
@@ -290,13 +273,13 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     NSInteger i = indexPath.section - self.tagPredicates.count;
     if (i == AboutSection && indexPath.row == DownloadRow) {
         if (self.guide.ngzDownloadedAt) {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Manage download", nil)
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Manage download", @"title for action sheet allowing user to delete a locally downloaded guide." )
                                                                            message:nil
                                                                     preferredStyle:UIAlertControllerStyleActionSheet];
             [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
                                                       style:UIAlertActionStyleCancel
                                                     handler:nil]];
-            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Delete download",nil)
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Delete download", @"button to  delete a locally downloaded species guide.")
                                                       style:UIAlertActionStyleDestructive
                                                     handler:^(UIAlertAction * _Nonnull action) {
                                                         [self.guide deleteNGZ];
@@ -314,11 +297,17 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                                                                                                      inSection:self.tagPredicates.count+1];
                                                         [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
                                                     }]];
-            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Re-download",nil)
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Re-download", @"action to re-download a species guide from the server")
                                                       style:UIAlertActionStyleDefault
                                                     handler:^(UIAlertAction * _Nonnull action) {
                                                         [self downloadNGZ];
                                                     }]];
+
+            UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+            
+            CGRect rect = [self.view convertRect:cell.frame fromView:tableView];
+            alert.popoverPresentationController.sourceView = cell;
+            alert.popoverPresentationController.sourceRect = rect;
 
             [self.tabBarController presentViewController:alert animated:YES completion:nil];
         } else if (self.guide.ngzURL) {
@@ -410,7 +399,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 
 - (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Failed to download guide",nil)
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Failed to download guide", @"title of alert when a guide download fails. a localized error message provided by iOS or the server follows.")
                                                                    message:error.localizedDescription
                                                             preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
@@ -441,8 +430,8 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
         }
         [self extractNGZ];
     } else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Failed to download guide", nil)
-                                                                       message:NSLocalizedString(@"Either there was an error on the server or the guide no longer exists.", nil)
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Failed to download guide", @"title of alert when a guide download fails. a localized error message provided by iOS or the server follows.")
+                                                                       message:NSLocalizedString(@"Either there was an error on the server or the guide no longer exists.", @"message for the alert when a guide download fails, if we can't extract an error message.")
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
                                                   style:UIAlertActionStyleCancel
@@ -469,39 +458,6 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     [self.tableView reloadData];
     [self stopDownloadNGZ];
 }
-
-- (void)setupConstraintsForCell:(UITableViewCell *)cell{
-    if(!cell.constraints.count){
-        UILabel *textLabel = (UILabel *)[cell viewWithTag:DetailCellTextTag];
-        textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        textLabel.textAlignment = NSTextAlignmentNatural;
-        UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:DetailCellDetailTag];
-        detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        CGFloat leftOffset;
-        CGFloat rightOffset;
-        NSLocaleLanguageDirection currentLanguageDirection = [NSLocale characterDirectionForLanguage:[[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode]];
-        if(currentLanguageDirection == kCFLocaleLanguageDirectionRightToLeft){
-            leftOffset = 8.0;
-            rightOffset = 68.0;
-        }
-        else{
-            leftOffset = 68.0;
-            rightOffset = 8.0;
-        }
-        
-        NSDictionary *metrics = @{@"leftOffset":@(leftOffset), @"rightOffset":@(rightOffset)};
-        
-        NSDictionary *views = @{@"textLabel":textLabel, @"detailTextLabel":detailTextLabel};
-        
-        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-leftOffset-[textLabel]-[detailTextLabel]-rightOffset-|" options:0 metrics:metrics views:views]];
-        
-        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[textLabel]-11-|" options:NSLayoutFormatAlignAllLeading metrics:metrics views:views]];
-        
-        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[detailTextLabel]-11-|" options:NSLayoutFormatAlignAllTrailing metrics:metrics views:views]];
-    }
-}
-
 
 @end
                                     

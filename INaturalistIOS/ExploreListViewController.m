@@ -6,7 +6,6 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <FontAwesomeKit/FAKFoundationIcons.h>

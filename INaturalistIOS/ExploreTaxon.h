@@ -22,6 +22,7 @@
 @property (nonatomic, copy) NSString *iconicTaxonName;
 @property (nonatomic, copy) NSString *matchedTerm;
 @property (nonatomic, assign) NSInteger observationCount;
+@property (nonatomic, copy) NSArray *taxonPhotos;
 
 - (BOOL)isGenusOrLower;
 

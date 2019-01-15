@@ -15,6 +15,7 @@
 @interface ConfirmPhotoViewController : UIViewController
 
 @property UIImage *image;
+@property NSDictionary *metadata;
 @property NSArray *assets;
 @property BOOL shouldContinueUpdatingLocation;
 

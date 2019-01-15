@@ -6,10 +6,11 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <YLMoment/YLMoment.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+#import <RestKit/RestKit.h>
 
 #import "ExploreUpdateRealm.h"
 #import "UpdatesViewController.h"
@@ -17,7 +18,6 @@
 #import "LoginController.h"
 #import "ObservationAPI.h"
 #import "Analytics.h"
-#import "User.h"
 #import "Observation.h"
 #import "UpdatesItemCell.h"
 #import "ObservationPhoto.h"
@@ -46,7 +46,7 @@
 }
 
 - (void)dealloc {
-    [self.updatesToken stop];
+    [self.updatesToken invalidate];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -90,16 +90,18 @@
     });
 
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    User *me = [appDelegate.loginController fetchMe];
-    NSPredicate *myUpdates = [NSPredicate predicateWithFormat:@"resourceOwnerId == %ld", me.recordID.integerValue];
-    self.updates = [[ExploreUpdateRealm objectsWithPredicate:myUpdates]
-                    sortedResultsUsingProperty:@"createdAt" ascending:NO];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+    NSPredicate *myUpdates = [NSPredicate predicateWithFormat:@"resourceOwnerId == %ld", me.userId];
+    self.updates = [[ExploreUpdateRealm objectsWithPredicate:myUpdates] sortedResultsUsingKeyPath:@"createdAt"
+                                                                                        ascending:NO];
     
     self.updatesToken = [self.updates addNotificationBlock:^(RLMResults * _Nullable results, RLMCollectionChange * _Nullable change, NSError * _Nullable error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf.tableView reloadData];
         });
     }];
+    
+    [self loadUpdates];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -153,36 +155,28 @@
         [self.tableView.pullToRefreshView startAnimating];
     }
 
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.loginController getJWTTokenSuccess:^(NSDictionary *info) {
-        [self.observationApi updatesWithHandler:^(NSArray *results, NSInteger count, NSError *error) {
-            
-            if (error) {
-                return;
-            }
-            
-            RLMRealm *realm = [RLMRealm defaultRealm];
-            [realm beginWriteTransaction];
-            for (ExploreUpdate *eu in results) {
-                ExploreUpdateRealm *eur = [[ExploreUpdateRealm alloc] initWithMantleModel:eu];
-                [realm addOrUpdateObject:eur];
-            }
-            [realm commitWriteTransaction];
-            
-            if (self.viewIfLoaded) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self markSeenObservations];
-                    [self.tableView.pullToRefreshView stopAnimating];
-                    [(INatUITabBarController *)self.tabBarController setUpdatesBadge];
-                });
-            }
-
-        }];
-    } failure:^(NSError *error) {
-        if (self.viewIfLoaded) {
-            [self.tableView.pullToRefreshView stopAnimating];
+    [self.observationApi updatesWithHandler:^(NSArray *results, NSInteger count, NSError *error) {
+        
+        if (error) {
+            return;
         }
-        return;
+        
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        for (ExploreUpdate *eu in results) {
+            ExploreUpdateRealm *eur = [[ExploreUpdateRealm alloc] initWithMantleModel:eu];
+            [realm addOrUpdateObject:eur];
+        }
+        [realm commitWriteTransaction];
+        
+        if (self.viewIfLoaded) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self markSeenObservations];
+                [self.tableView.pullToRefreshView stopAnimating];
+                [(INatUITabBarController *)self.tabBarController setUpdatesBadge];
+            });
+        }
+        
     }];
 }
 
@@ -229,14 +223,16 @@
                 [realm deleteObjects:@[ eur ]];
                 [realm commitWriteTransaction];
             } else {
-                [tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                 withRowAnimation:UITableViewRowAnimationFade];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [tableView reloadRowsAtIndexPaths:@[ indexPath ]
+                                     withRowAnimation:UITableViewRowAnimationFade];
+                });
             }
         }];
     }
     if (o.observationPhotos.count > 0) {
         ObservationPhoto *op = [o.sortedObservationPhotos firstObject];
-        [cell.observationImageView sd_setImageWithURL:op.squarePhotoUrl];
+        [cell.observationImageView setImageWithURL:op.squarePhotoUrl];
     } else {
         NSString *iconicTaxonName = o.iconicTaxonName;
         cell.observationImageView.image = [UIImage imageForIconicTaxon:iconicTaxonName];
@@ -251,23 +247,26 @@
     
     if (eur.identification) {
         if (eur.identification.identifier.userIcon) {
-            [cell.profileImageView sd_setImageWithURL:eur.identification.identifier.userIcon];
+            [cell.profileImageView setImageWithURL:eur.identification.identifier.userIcon];
         } else {
             cell.profileImageView.image = [UIImage inat_defaultUserImage];
         }
-        
-        cell.updateTextLabel.text = [NSString stringWithFormat:@"%@ suggested an ID: %@",
+        NSString *base = NSLocalizedString(@"%1$@ suggested an ID: %2$@",
+                                           @"update notice when someone suggests an ID. %1$@ is the username, %2$@ is the species.");
+        cell.updateTextLabel.text = [NSString stringWithFormat:base,
                                      eur.identification.identifier.login,
                                      eur.identification.taxon.commonName ?: eur.identification.taxon.scientificName
                                      ];
     } else if (eur.comment) {
         if (eur.comment.commenter.userIcon) {
-            [cell.profileImageView sd_setImageWithURL:eur.comment.commenter.userIcon];
+            [cell.profileImageView setImageWithURL:eur.comment.commenter.userIcon];
         } else {
             cell.profileImageView.image = [UIImage inat_defaultUserImage];
         }
 
-        cell.updateTextLabel.text = [NSString stringWithFormat:@"%@ commented: %@",
+        NSString *base = NSLocalizedString(@"%1$@ commented: %2$@",
+                                           @"update notice when someone comments. %1$@ is the commenter name, %2$@ is the comment.");
+        cell.updateTextLabel.text = [NSString stringWithFormat:base,
                                      eur.comment.commenter.login,
                                      eur.comment.commentText
                                      ];

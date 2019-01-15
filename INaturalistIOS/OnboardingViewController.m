@@ -6,6 +6,8 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+
 #import "OnboardingViewController.h"
 
 @interface OnboardingViewController ()
@@ -19,16 +21,15 @@
     [super viewDidLoad];
 
     [self.pageControl addTarget:self action:@selector(pageControlChangedIndex:) forControlEvents:UIControlEventValueChanged];
+    [self.pageControl setTransform:CGAffineTransformMakeScale(1.2, 1.2)];
     
+
     UIPageControl *pageControl = [UIPageControl appearanceWhenContainedInInstancesOfClasses:@[ [OnboardingViewController class] ]];
     pageControl.pageIndicatorTintColor = [UIColor lightGrayColor];
     pageControl.currentPageIndicatorTintColor = [UIColor blackColor];
     pageControl.tintColor = [UIColor blackColor];
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    
+    self.view.backgroundColor = [UIColor colorWithHexString:@"#EFEFEF"];
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {

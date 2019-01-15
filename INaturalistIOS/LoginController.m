@@ -9,35 +9,38 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <NXOAuth2Client/NXOAuth2.h>
-#import <GooglePlus/GPPSignIn.h>
+#import <GoogleSignIn/GoogleSignIn.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
+#import <JWT/JWT.h>
+#import <GTMOAuth2/GTMOAuth2ViewControllerTouch.h>
 
 #import "LoginController.h"
 #import "Analytics.h"
 #import "INaturalistAppDelegate.h"
-#import "GooglePlusAuthViewController.h"
 #import "UIColor+INaturalist.h"
 #import "Partner.h"
 #import "User.h"
 #import "UploadManager.h"
 #import "Taxon.h"
+#import "ExploreUser.h"
+#import "PeopleAPI.h"
+#import "ExploreUserRealm.h"
+#import "ExploreTaxonRealm.h"
 
-@interface LoginController () <GPPSignInDelegate> {
+static const NSTimeInterval LocalMeUserValidTimeInterval = 600;
+
+@interface LoginController () <GIDSignInDelegate> {
     NSString    *externalAccessToken;
     NSString    *iNatAccessToken;
     NSString    *accountType;
     BOOL        isLoginCompleted;
     NSInteger   lastAssertionType;
-    BOOL        tryingGoogleReauth;
 }
-@property (atomic, readwrite, copy) LoginSuccessBlock currentSuccessBlock;
-@property (atomic, readwrite, copy) LoginErrorBlock currentErrorBlock;
-@property NSDate *jwtTokenExpiration;
-
 @end
 
 #pragma mark - NSNotification names
 
+NSString *INatJWTFailureErrorDomain = @"org.inaturalist.jwtfailure";
 NSString *kUserLoggedInNotificationName = @"UserLoggedInNotificationName";
 NSInteger INatMinPasswordLength = 6;
 
@@ -54,6 +57,15 @@ NSInteger INatMinPasswordLength = 6;
     return self;
 }
 
+- (PeopleAPI *)peopleApi {
+    static PeopleAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[PeopleAPI alloc] init];
+    });
+    return _api;
+}
+
 - (void)logout {
     self.jwtToken = nil;
     self.jwtTokenExpiration = nil;
@@ -61,37 +73,26 @@ NSInteger INatMinPasswordLength = 6;
 
 #pragma mark - Facebook
 
-- (void)loginWithFacebookViewController:(UIViewController *)vc
-	success:(LoginSuccessBlock)successBlock
-	failure:(LoginErrorBlock)errorBlock {
-
-    self.currentSuccessBlock = successBlock;
-    self.currentErrorBlock = errorBlock;
+- (void)loginButton:(FBSDKLoginButton *)loginButton didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result error:(NSError *)error {
     
-	FBSDKLoginManager *login = [[FBSDKLoginManager alloc] init];
-	[login
-    logInWithReadPermissions: @[@"email"]
-          fromViewController:vc
-                     handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
-    if (error) {
+    if (error || !result.token) {
         [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
-                     withProperties:@{ @"from": @"Facebook",
-                                       @"code": @(error.code) }];
-    	errorBlock(error);
-    } else if (result.isCancelled) {
-    	errorBlock(nil);
+                         withProperties:@{ @"Via": @"Facebook" }];
+        [self.delegate loginFailedWithError:error];
     } else {
-    	externalAccessToken = [[[result token] tokenString] copy];
-		accountType = kINatAuthServiceExtToken;
         [[Analytics sharedClient] event:kAnalyticsEventLogin
                          withProperties:@{ @"Via": @"Facebook" }];
+        externalAccessToken = [[result.token tokenString] copy];
+        accountType = kINatAuthServiceExtToken;
         [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
                                                              assertionType:[NSURL URLWithString:@"http://facebook.com"]
                                                                  assertion:externalAccessToken];
     }
-  }];           
+}
 
-
+- (void)loginButtonDidLogOut:(FBSDKLoginButton *)loginButton {
+    // do nothing
+    // seem to need to
 }
 
 #pragma mark - INat OAuth Login
@@ -100,12 +101,7 @@ NSInteger INatMinPasswordLength = 6;
                       password:(NSString *)password
                       username:(NSString *)username
                           site:(NSInteger)siteId
-                       license:(NSString *)license
-                       success:(LoginSuccessBlock)successBlock
-                       failure:(LoginErrorBlock)errorBlock {
-    
-    self.currentSuccessBlock = successBlock;
-    self.currentErrorBlock = errorBlock;
+                       license:(NSString *)license {
     
     NSString *localeString = [[NSLocale currentLocale] localeIdentifier];
     // format for rails
@@ -114,7 +110,6 @@ NSInteger INatMinPasswordLength = 6;
     if (!localeString) { localeString = @"en-US"; }
     
     [[Analytics sharedClient] debugLog:@"Network - Post Users"];
-    
     [[RKClient sharedClient] post:@"/users.json"
                        usingBlock:^(RKRequest *request) {
                            request.params = @{
@@ -136,7 +131,7 @@ NSInteger INatMinPasswordLength = 6;
                                                                                error:&error];
                                
                                if (error) {
-                                   [self executeError:error];
+                                   [self.delegate loginFailedWithError:error];
                                    return;
                                }
                                
@@ -148,41 +143,31 @@ NSInteger INatMinPasswordLength = 6;
                                                                        userInfo:@{
                                                                                   NSLocalizedDescriptionKey: errors.firstObject
                                                                                   }];
-                                   [self executeError:newError];
+                                   [self.delegate loginFailedWithError:newError];
                                    return;
                                }
 
                                [[Analytics sharedClient] event:kAnalyticsEventSignup];
                                
                                [self loginWithUsername:username
-                                              password:password
-                                               success:successBlock
-                                               failure:errorBlock];
+                                              password:password];
                                
                            };
                            
                            request.onDidFailLoadWithError = ^(NSError *error) {
-                               [self executeError:error];
+                               [self.delegate loginFailedWithError:error];
                            };
-                           
                        }];
 }
 
 - (void)loginWithUsername:(NSString *)username
-                 password:(NSString *)password
-                  success:(LoginSuccessBlock)successBlock
-                  failure:(LoginErrorBlock)errorBlock {
+                 password:(NSString *)password {
     
-    self.currentSuccessBlock = successBlock;
-    self.currentErrorBlock = errorBlock;
-    
-    accountType = nil;
     accountType = kINatAuthService;
     isLoginCompleted = NO;
     [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
                                                               username:username
                                                               password:password];
-    
 }
 
 -(void)initOAuth2Service{
@@ -202,9 +187,9 @@ NSInteger INatMinPasswordLength = 6;
                                                       id err = [aNotification.userInfo objectForKey:NXOAuth2AccountStoreErrorKey];
                                                       NSLog(@"err is %@", err);
                                                       if (err && [err isKindOfClass:[NSError class]]) {
-                                                          [self executeError:err];
+                                                          [self.delegate loginFailedWithError:err];
                                                       } else {
-                                                          [self executeError:nil];
+                                                          [self.delegate loginFailedWithError:nil];
                                                       }
                                                   }];
 }
@@ -249,8 +234,12 @@ NSInteger INatMinPasswordLength = 6;
                           usingBlock:^(RKRequest *request) {
                               
                               request.onDidFailLoadWithError = ^(NSError *error) {
-                                  NSLog(@"error fetching self: %@", error.localizedDescription);
-                                  [self executeError:error];
+                                  [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
+                                                   withProperties:@{ @"from": @"iNaturalist",
+                                                                     @"error": error.localizedDescription,
+                                                                     }];
+                                  
+                                  [self.delegate loginFailedWithError:error];
                               };
                               
                               request.onDidLoadResponse = ^(RKResponse *response) {
@@ -259,47 +248,55 @@ NSInteger INatMinPasswordLength = 6;
                                                                                   options:NSJSONReadingAllowFragments
                                                                                     error:&error];
                                   if (error) {
-                                      NSLog(@"error parsing json: %@", error.localizedDescription);
-                                  }
-                                  
-                                  NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];
-                                  User *user = [[User alloc] initWithEntity:[User entity]
-                                             insertIntoManagedObjectContext:context];
-                                  user.login = [parsedData objectForKey:@"login"] ?: nil;
-                                  user.recordID = [parsedData objectForKey:@"id"] ?: nil;
-                                  user.observationsCount = [parsedData objectForKey:@"observations_count"] ?: @(0);
-                                  user.identificationsCount = [parsedData objectForKey:@"identifications_count"] ?: @(0);
-                                  user.siteId = [parsedData objectForKey:@"site_id"] ?: @(1);
-                                  
-                                  [[Analytics sharedClient] registerUserWithIdentifier:user.recordID.stringValue];
-                                  
-                                  NSError *saveError = nil;
-                                  [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-                                  if (saveError) {
-                                      [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving: %@",
-                                                                          saveError.localizedDescription]];
-                                      [self executeError:saveError];
-                                      return;
-                                  }
-                                  
-                                  NSNumber *userId = user.recordID;
-                                  [[NSUserDefaults standardUserDefaults] setValue:userId
-                                  										   forKey:kINatUserIdPrefKey];
-                                  [[NSUserDefaults standardUserDefaults] setValue:iNatAccessToken
-                                                                           forKey:INatTokenPrefKey];
-                                  [[NSUserDefaults standardUserDefaults] synchronize];
-                                  
-                                  [self executeSuccess:nil];
+                                      [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
+                                                       withProperties:@{ @"from": @"iNaturalist",
+                                                                         @"error": error.localizedDescription,
+                                                                         }];
 
-                                  [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
-                                                                                      object:nil];
+                                      [self.delegate loginFailedWithError:error];
+                                  } else if (!parsedData) {
+                                      [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
+                                                       withProperties:@{ @"from": @"iNaturalist",
+                                                                         @"error": @"no data from server",
+                                                                         }];
+                                      
+                                      [self.delegate loginFailedWithError:nil];
+                                  } else {
+                                      ExploreUserRealm *me = [[ExploreUserRealm alloc] init];
+                                      me.login = [parsedData objectForKey:@"login"] ?: @"";
+                                      me.userId = [[parsedData objectForKey:@"id"] integerValue];
+                                      me.observationsCount = [[parsedData objectForKey:@"observations_count"] integerValue];
+                                      me.siteId = [[parsedData objectForKey:@"site_id"] integerValue];
+                                      me.siteId = [parsedData objectForKey:@"site_id"] ?: @(1);
+                                      me.syncedAt = [NSDate distantPast];
+                                      
+                                      RLMRealm *realm = [RLMRealm defaultRealm];
+                                      [realm beginWriteTransaction];
+                                      [realm addOrUpdateObject:me];
+                                      [realm commitWriteTransaction];
+                                      
+                                      NSString *identifier = [NSString stringWithFormat:@"%ld", (long)me.userId];
+                                      [[Analytics sharedClient] registerUserWithIdentifier:identifier];
+                                      
+                                      [[NSUserDefaults standardUserDefaults] setValue:@(me.userId)
+                                                                               forKey:kINatUserIdPrefKey];
+                                      [[NSUserDefaults standardUserDefaults] setValue:iNatAccessToken
+                                                                               forKey:INatTokenPrefKey];
+                                      [[NSUserDefaults standardUserDefaults] synchronize];
+                                      
+                                      [self.delegate loginSuccess];
+                                      
+                                      [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
+                                                                                          object:nil];
+                                  }
                               };
                           }];        
     } else {
         [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
-                         withProperties:@{ @"from": @"iNaturalist" }];
-        
-        [self executeError:nil];
+                         withProperties:@{ @"from": @"iNaturalist",
+                                           @"error": @"no data in nxoauth store",
+                                           }];
+        [self.delegate loginFailedWithError:nil];
     }
 }
 
@@ -314,135 +311,36 @@ NSInteger INatMinPasswordLength = 6;
 
 #pragma mark - Google methods
 
-- (void)loginWithGoogleUsingNavController:(UINavigationController *)nav
-                                  success:(LoginSuccessBlock)success
-                                  failure:(LoginErrorBlock)error {
-    
-    self.currentSuccessBlock = success;
-    self.currentErrorBlock = error;
-    
-    accountType = nil;
-    accountType = kINatAuthServiceExtToken;
-    isLoginCompleted = NO;
-
-    GooglePlusAuthViewController *vc = [GooglePlusAuthViewController controllerWithScope:self.scopesForGoogleSignin
-                                                                                clientID:self.clientIdForGoogleSignin
-                                                                            clientSecret:nil
-                                                                        keychainItemName:nil
-                                                                                delegate:self
-                                                                        finishedSelector:@selector(viewController:finishedAuth:error:)];
-    [nav pushViewController:vc animated:YES];
-    
-    // inat green button tint
-    [nav.navigationBar setTintColor:[UIColor inatTint]];
-    
-    // standard navigation bar
-    [nav.navigationBar setBackgroundImage:nil
-                            forBarMetrics:UIBarMetricsDefault];
-    [nav.navigationBar setShadowImage:nil];
-    [nav.navigationBar setTranslucent:YES];
-    [nav setNavigationBarHidden:NO];
+- (void)initGoogleLogin {
+    GIDSignIn.sharedInstance.clientID = GoogleClientId;
+    GIDSignIn.sharedInstance.scopes = @[
+                                        @"https://www.googleapis.com/auth/userinfo.email",
+                                        ];
+    GIDSignIn.sharedInstance.delegate = self;
 }
 
-- (void)loginWithGoogleUsingViewController:(UIViewController *)parent
-                                   success:(LoginSuccessBlock)success
-                                   failure:(LoginErrorBlock)error {
+- (void)signIn:(GIDSignIn *)signIn
+didSignInForUser:(GIDGoogleUser *)user
+     withError:(NSError *)error {
     
-    self.currentSuccessBlock = success;
-    self.currentErrorBlock = error;
-    
-    accountType = nil;
-    accountType = kINatAuthServiceExtToken;
-    isLoginCompleted = NO;
-    
-    GooglePlusAuthViewController *vc = [GooglePlusAuthViewController controllerWithScope:self.scopesForGoogleSignin
-                                                                                clientID:self.clientIdForGoogleSignin
-                                                                            clientSecret:nil
-                                                                        keychainItemName:nil
-                                                                                delegate:self
-                                                                        finishedSelector:@selector(viewController:finishedAuth:error:)];
-    
-    vc.rightBarButtonItem = [[UIBarButtonItem alloc] bk_initWithBarButtonSystemItem:UIBarButtonSystemItemCancel handler:^(id sender) {
-        [parent dismissViewControllerAnimated:YES completion:nil];
-    }];
-    
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
-    [parent presentViewController:nav animated:YES completion:nil];
-}
-
-
-- (NSString *)scopesForGoogleSignin {
-    GPPSignIn *signin = [GPPSignIn sharedInstance];
-    
-    // GTMOAuth2VCTouch takes a different scope format than GPPSignIn
-    // @"plus.login plus.me userinfo.email"
-    __block NSString *scopes;
-    [signin.scopes enumerateObjectsUsingBlock:^(NSString *scope, NSUInteger idx, BOOL *stop) {
-        if (idx == 0)
-            scopes = [NSString stringWithString:scope];
-        else
-            scopes = [scopes stringByAppendingString:[NSString stringWithFormat:@" %@", scope]];
-    }];
-    
-    return scopes;
-}
-
-- (NSString *)clientIdForGoogleSignin {
-    return [[GPPSignIn sharedInstance] clientID];
-}
-
-- (GPPSignIn *)googleSignin {
-    return [GPPSignIn sharedInstance];
-}
-
--(void) initGoogleLogin {
-    // Google+ init
-    GPPSignIn *googleSignIn = [GPPSignIn sharedInstance];
-    googleSignIn.clientID = GoogleClientId;
-    googleSignIn.scopes = @[
-                            kGTLAuthScopePlusLogin, // defined in GTLPlusConstants.h
-                            kGTLAuthScopePlusMe,
-                            @"https://www.googleapis.com/auth/userinfo.email",
-                            ];
-    googleSignIn.delegate = self;
-    [googleSignIn trySilentAuthentication];
-}
-
-- (void)finishedWithAuth:(GTMOAuth2Authentication *)auth
-                   error:(NSError *)error {
-    
-    if (error || (!auth.accessToken && tryingGoogleReauth)) {
-        
+    if (error || !user.authentication.idToken) {
         [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
-                         withProperties:@{ @"from": @"Google" }];
-        tryingGoogleReauth = NO;
-        [self executeError:error];
-    } else if (!auth.accessToken && !tryingGoogleReauth) {
-        tryingGoogleReauth = YES;
-        [[GPPSignIn sharedInstance] signOut];
-        [self initGoogleLogin];
+                         withProperties:@{ @"Via": @"Google" }];
+        [self.delegate loginFailedWithError:error];
     } else {
         [[Analytics sharedClient] event:kAnalyticsEventLogin
-                         withProperties:@{ @"Via": @"Google+" }];
-        externalAccessToken = [[auth accessToken] copy];
-        accountType = nil;
+                         withProperties:@{ @"Via": @"Google" }];
+        externalAccessToken = [user.authentication.accessToken copy];
         accountType = kINatAuthServiceExtToken;
         [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
                                                              assertionType:[NSURL URLWithString:@"http://google.com"]
                                                                  assertion:externalAccessToken];
-        tryingGoogleReauth = NO;
-        [self executeSuccess:nil];
     }
-}
-
-- (void)viewController:(GTMOAuth2ViewControllerTouch *)vc
-          finishedAuth:(GTMOAuth2Authentication *)auth
-                 error:(NSError *)error {
-    [self finishedWithAuth:auth error:error];
 }
 
 #pragma mark - Success / Failure helpers
 
+/*
 - (void)executeSuccess:(NSDictionary *)results {
     @synchronized(self) {
         if (self.currentSuccessBlock) {
@@ -464,6 +362,7 @@ NSInteger INatMinPasswordLength = 6;
         self.currentErrorBlock = nil;
     }
 }
+ */
 
 #pragma mark - Partners
 
@@ -478,11 +377,14 @@ NSInteger INatMinPasswordLength = 6;
     [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) reconfigureForNewBaseUrl];
     
     // put user object changing site id
-    User *me = [self fetchMe];
+    ExploreUserRealm *me = [self meUserLocal];
     if (!me) { return; }
-    me.siteId = @(partner.identifier);
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    me.siteId = partner.identifier;
+    [realm commitWriteTransaction];
     
-    // delete any stashed taxa
+    // delete any stashed taxa from core data
     [Taxon deleteAll];
     
     NSError *saveError = nil;
@@ -490,36 +392,17 @@ NSInteger INatMinPasswordLength = 6;
     if (saveError) {
         [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving: %@",
                                             saveError.localizedDescription]];
-        return;
     }
     
-    [[Analytics sharedClient] debugLog:@"Network - Re-fetch Taxa after login"];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:@"/taxa"
-                                                    usingBlock:^(RKObjectLoader *loader) {
-                                                        
-                                                        loader.objectMapping = [Taxon mapping];
-                                                        
-                                                        loader.onDidLoadObjects = ^(NSArray *objects) {
-                                                            
-                                                            // update timestamps on taxa objects
-                                                            NSDate *now = [NSDate date];
-                                                            [objects enumerateObjectsUsingBlock:^(INatModel *o,
-                                                                                                  NSUInteger idx,
-                                                                                                  BOOL *stop) {
-                                                                [o setSyncedAt:now];
-                                                            }];
-                                                            
-                                                            NSError *saveError = nil;
-                                                            [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-                                                            if (saveError) {
-                                                                [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error saving store: %@",
-                                                                                                    saveError.localizedDescription]];
-                                                            }
-                                                        };
-                                                    }];
+    // delete any stashed taxa from realm
+    RLMResults *allExploreTaxa = [ExploreTaxonRealm allObjects];
+    [realm beginWriteTransaction];
+    [realm deleteObjects:allExploreTaxa];
+    [realm commitWriteTransaction];
     
+    // can't do this in node yet
     [[Analytics sharedClient] debugLog:@"Network - Put Me User"];
-    [[RKClient sharedClient] put:[NSString stringWithFormat:@"/users/%ld", (long)me.recordID.integerValue]
+    [[RKClient sharedClient] put:[NSString stringWithFormat:@"/users/%ld", (long)me.userId]
                       usingBlock:^(RKRequest *request) {
                           request.params = @{
                                              @"user[site_id]": @(partner.identifier),
@@ -535,10 +418,85 @@ NSInteger INatMinPasswordLength = 6;
                       }];
 }
 
-#pragma mark - Convenience method for fetching the logged in User
+#pragma mark - Convenience methods for working with the logged in User
 
-- (User *)fetchMe {
-	
+- (void)dirtyLocalMeUser {
+    ExploreUserRealm *me = [self meUserLocal];
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    me.syncedAt = [NSDate distantPast];
+    [realm commitWriteTransaction];
+}
+
+- (ExploreUserRealm *)meUserLocal {
+    NSNumber *userId = nil;
+    NSString *username = nil;
+    if ([[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey]) {
+        userId = [[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey];
+    } else {
+        username = [[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey];
+    }
+    
+    if (userId) {
+        ExploreUserRealm *me = [ExploreUserRealm objectForPrimaryKey:userId];
+        if (me) {
+            return me;
+        }
+    } else if (username) {
+        ExploreUserRealm *me = [[ExploreUserRealm objectsWhere:@"login == %@", username] firstObject];
+        if (me) {
+            [[NSUserDefaults standardUserDefaults] setValue:@(me.userId) forKey:kINatUserIdPrefKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            return me;
+        }
+    }
+    
+    // if we can't find the me user in realm,
+    // try to fetch from core data
+    User *meFromCoreData = [self fetchMeFromCoreData];
+    if (meFromCoreData) {
+        ExploreUserRealm *me = [[ExploreUserRealm alloc] init];
+        me.login = meFromCoreData.login;
+        me.userId = meFromCoreData.recordID.integerValue;
+        me.name = meFromCoreData.name;
+        me.userIconString = meFromCoreData.userIconURL;
+        me.email = nil;
+        me.observationsCount = meFromCoreData.observationsCount.integerValue;
+        me.siteId = meFromCoreData.siteId.integerValue;
+        me.syncedAt = [NSDate distantPast];
+        
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        [realm addOrUpdateObject:me];
+        [realm commitWriteTransaction];
+        
+        return me;
+    }
+    
+    return nil;
+}
+
+- (void)meUserRemoteCompletion:(void (^)(ExploreUserRealm *))completion {
+    ExploreUserRealm *me = [self meUserLocal];
+    if (me.syncedAt && [me.syncedAt timeIntervalSinceNow] > -LocalMeUserValidTimeInterval) {
+        completion(me);
+    } else {
+        [[self peopleApi] fetchMeHandler:^(NSArray *results, NSInteger count, NSError *error) {
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            [realm beginWriteTransaction];
+            ExploreUserRealm *me = nil;
+            for (ExploreUser *user in results) {
+                me = [[ExploreUserRealm alloc] initWithMantleModel:user];
+                [realm addOrUpdateObject:me];
+            }
+            [realm commitWriteTransaction];
+            
+            completion(me);
+        }];
+    }
+}
+
+- (User *)fetchMeFromCoreData {
 	NSNumber *userId = nil;
 	NSString *username = nil;
 	if ([[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey]) {
@@ -582,17 +540,19 @@ NSInteger INatMinPasswordLength = 6;
 }
 
 - (void)getJWTTokenSuccess:(LoginSuccessBlock)success failure:(LoginErrorBlock)failure {
+    static NSString *tokenKey = @"token";
+    
     // jwt tokens expire after 30 minutes
     // if the token is more than 25 minutes old, fetch a new one
     // in case the request we're making takes a looooong time
     if (([self.jwtTokenExpiration timeIntervalSinceNow] < (25 * 60)) && self.jwtToken) {
         if (success) {
-            success(nil);
+            success(@{ tokenKey: self.jwtToken });
             return;
         }
     }
     
-    NSURL *url = [NSURL URLWithString:@"http://www.inaturalist.org/users/api_token.json"];
+    NSURL *url = [NSURL URLWithString:@"https://www.inaturalist.org/users/api_token.json"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.HTTPMethod = @"GET";
     
@@ -607,13 +567,33 @@ NSInteger INatMinPasswordLength = 6;
         
         if (error) {
             if (failure) {
-                failure(nil);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    failure(error);
+                });
             }
             strongSelf.jwtToken = nil;
         } else if ([httpResponse statusCode] != 200) {
             strongSelf.jwtToken = nil;
             if (failure) {
-                failure(nil);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSString *errorDesc = nil;
+                    if ([httpResponse statusCode] == 401) {
+                        errorDesc = NSLocalizedString(@"You need to login to do that.",
+                                                      @"401 unauthorized message");
+                    } else if ([httpResponse statusCode] == 403) {
+                        errorDesc = NSLocalizedString(@"You don't have permission to do that. Your account may have been suspended. Please contact help@inaturalist.org",
+                                                      @"403 forbidden message");
+                    } else {
+                        errorDesc = NSLocalizedString(@"Unknown error", nil);
+                    }
+                    NSDictionary *info = @{
+                                           NSLocalizedDescriptionKey: errorDesc
+                                           };
+                    NSError *error = [NSError errorWithDomain:@"org.inaturalist.ios"
+                                                         code:[httpResponse statusCode]
+                                                     userInfo:info];
+                    failure(error);
+                });
             }
         } else {
             NSError *jsonError = nil;
@@ -621,24 +601,49 @@ NSInteger INatMinPasswordLength = 6;
             if (jsonError) {
                 strongSelf.jwtToken = nil;
                 if (failure) {
-                    failure(jsonError);
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        failure(jsonError);
+                    });
                 }
             } else {
                 if ([json valueForKey:@"api_token"]) {
                     strongSelf.jwtToken = [json valueForKey:@"api_token"];
                     strongSelf.jwtTokenExpiration = [NSDate date];
                     if (success) {
-                        success(nil);
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            success(@{ tokenKey: strongSelf.jwtToken });
+                        });
                     }
                 } else {
                     strongSelf.jwtToken = nil;
                     if (failure) {
-                        failure(nil);
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            failure(nil);
+                        });
                     }
                 }
             }
         }
     }] resume];
+}
+
+- (NSString *)anonymousJWT {
+    if (INatAnonymousAPISecret) {
+        JWTClaimsSet *claimsSet = [[JWTClaimsSet alloc] init];
+        claimsSet.expirationDate = [[NSDate date] dateByAddingTimeInterval:300];
+        NSDate *expiration = [[NSDate date] dateByAddingTimeInterval:300];
+        NSTimeInterval expirationStamp = [expiration timeIntervalSince1970];
+        
+        NSDictionary *payload = @{
+                                  @"application" : @"ios",
+                                  @"exp": @((NSInteger)expirationStamp),
+                                  };
+        id<JWTAlgorithm> algorithm = [JWTAlgorithmFactory algorithmByName:@"HS512"];
+        NSString *encoded = [JWTBuilder encodePayload:payload].secret(INatAnonymousAPISecret).algorithm(algorithm).encode;
+        return encoded;
+    } else {
+        return nil;
+    }
 }
 
 

@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 #import "ExploreDisambiguator.h"
 #import "DisambiguationCell.h"
@@ -99,19 +99,17 @@
     else if ([searchOption respondsToSelector:@selector(searchResult_SubTitle)])
         cell.resultSubtitle.text = [searchOption searchResult_SubTitle];
     
-    NSURL *thumbnailUrl;
+    NSURL *thumbnailUrl = nil;
     if ([searchOption respondsToSelector:@selector(searchResult_ThumbnailUrl)])
         thumbnailUrl = [searchOption searchResult_ThumbnailUrl];
     
-    UIImage *placeholderImage;
+    UIImage *placeholderImage = nil;
     if ([searchOption respondsToSelector:@selector(searchResult_PlaceholderImage)])
         placeholderImage = [searchOption searchResult_PlaceholderImage];
     
-    if (thumbnailUrl && placeholderImage) {
-        [cell.resultImageView sd_setImageWithURL:thumbnailUrl
-                                placeholderImage:placeholderImage];
-    } else if (thumbnailUrl) {
-        [cell.resultImageView sd_setImageWithURL:thumbnailUrl];
+    if (thumbnailUrl) {
+        [cell.resultImageView setImageWithURL:thumbnailUrl
+                             placeholderImage:placeholderImage];
     }
     
     return cell;

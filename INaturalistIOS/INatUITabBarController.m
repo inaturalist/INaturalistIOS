@@ -18,7 +18,6 @@
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "INatWebController.h"
-#import "ObservationDetailViewController.h"
 #import "ConfirmPhotoViewController.h"
 #import "UIColor+INaturalist.h"
 #import "ObsCameraOverlay.h"
@@ -31,10 +30,11 @@
 #import "ObsEditV2ViewController.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
-#import "User.h"
 #import "NSFileManager+INaturalist.h"
 #import "ExploreUpdateRealm.h"
 #import "NewsPagerViewController.h"
+#import "ImageStore.h"
+#import "ExploreUserRealm.h"
 
 #define EXPLORE_TAB_INDEX   0
 #define NEWS_TAB_INDEX      1
@@ -57,7 +57,7 @@ static char PROJECT_ASSOCIATED_KEY;
 @end
 
 
-@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ObservationDetailViewControllerDelegate, RKObjectLoaderDelegate, RKRequestDelegate> {
+@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     INatTooltipView *makeFirstObsTooltip;
 }
 @property QBImagePickerController *imagePicker;
@@ -84,9 +84,9 @@ static char PROJECT_ASSOCIATED_KEY;
     self.delegate = self;
     
     // configure camera VC
-    FAKIcon *cameraOutline = [FAKIonIcons iosCameraOutlineIconWithSize:45];
-    [cameraOutline addAttribute:NSForegroundColorAttributeName value:[UIColor inatInactiveGreyTint]];
-    UIImage *cameraImg = [[cameraOutline imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    FAKIcon *camera = [FAKIonIcons iosCameraIconWithSize:45];
+    [camera addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+    UIImage *cameraImg = [[camera imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     ((UIViewController *)[self.viewControllers objectAtIndex:OBSERVE_TAB_INDEX]).tabBarItem.image = cameraImg;
     ((UIViewController *)[self.viewControllers objectAtIndex:OBSERVE_TAB_INDEX]).tabBarItem.title = NSLocalizedString(@"Observe", @"Title for New Observation Tab Bar Button");
     
@@ -100,10 +100,6 @@ static char PROJECT_ASSOCIATED_KEY;
     self.customizableViewControllers = nil;
     
     [self setUpdatesBadge];
-}
-
-- (void)dealloc {
-    [[[[RKObjectManager sharedManager] client] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
@@ -130,30 +126,36 @@ static char PROJECT_ASSOCIATED_KEY;
         return;
     }
     
-    PHAuthorizationStatus phAuthStatus = [PHPhotoLibrary authorizationStatus];
-    switch (phAuthStatus) {
-        case PHAuthorizationStatusRestricted:
-        case PHAuthorizationStatusDenied:
-            [self presentAuthAlertForSource:INatPhotoSourcePhotos];
+    // check for access to camera
+    switch ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo]) {
+        case AVAuthorizationStatusAuthorized:
+            [self newObservationForTaxon:taxon project:project];
             break;
-        case PHAuthorizationStatusNotDetermined:
-        case PHAuthorizationStatusAuthorized:
-            // continue;
+        case AVAuthorizationStatusDenied:
+        case AVAuthorizationStatusRestricted:
+            [self presentAuthAlertForSource:INatPhotoSourceCamera];
+            break;
+        case AVAuthorizationStatusNotDetermined:
+        default:
+            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
+                [[Analytics sharedClient] event:kAnalyticsEventCameraPermissionsChanged
+                                 withProperties:@{
+                                                  @"Via": NSStringFromClass(self.class),
+                                                  @"NewValue": @(granted),
+                                                  }];
+                if (granted) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self newObservationForTaxon:taxon project:project];
+                    });
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self presentAuthAlertForSource:INatPhotoSourceCamera];
+                    });
+                }
+
+            }];
             break;
     }
-    
-    // check for access to camera
-    [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
-        if (granted) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self newObservationForTaxon:taxon project:project];
-            });
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self presentAuthAlertForSource:INatPhotoSourceCamera];
-            });
-        }
-    }];
 }
 
 - (void)presentAuthAlertForSource:(INatPhotoSource)source {
@@ -189,8 +191,12 @@ static char PROJECT_ASSOCIATED_KEY;
                                                     [[UIApplication sharedApplication] openURL:url];
                                                 }]];
     }
-
-    [self presentViewController:alert animated:YES completion:nil];
+    
+    if (self.presentedViewController) {
+        [self.presentedViewController presentViewController:alert animated:YES completion:nil];
+    } else {
+        [self presentViewController:alert animated:YES completion:nil];
+    }
 }
 
 - (void)newObservationForTaxon:(Taxon *)taxon project:(Project *)project {
@@ -278,9 +284,15 @@ static char PROJECT_ASSOCIATED_KEY;
         
         picker.cameraOverlayView = overlay;
         
-        [self presentViewController:picker animated:YES completion:^{
-            picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, 50);
-        }];
+        UIScreen *screen = [UIScreen mainScreen];
+        CGFloat cameraAspectRatio = 4.0 / 3.0;
+        CGFloat cameraPreviewHeight = screen.nativeBounds.size.width * cameraAspectRatio;
+        CGFloat screenHeight = screen.nativeBounds.size.height;
+        CGFloat transformHeight = (screenHeight-cameraPreviewHeight) / screen.nativeScale / 2.0f;
+        
+        picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, transformHeight);
+        [self presentViewController:picker animated:YES completion:nil];
+        
     } else {
         
         [[Analytics sharedClient] event:kAnalyticsEventNewObservationLibraryStart];
@@ -290,6 +302,8 @@ static char PROJECT_ASSOCIATED_KEY;
         imagePickerController.delegate = self;
         imagePickerController.allowsMultipleSelection = YES;
         imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
+        imagePickerController.mediaType = QBImagePickerMediaTypeImage;
+        imagePickerController.assetCollectionSubtypes = [ImageStore assetCollectionSubtypes];
         
         if (taxon) {
             objc_setAssociatedObject(imagePickerController, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
@@ -317,7 +331,7 @@ static char PROJECT_ASSOCIATED_KEY;
         return NO;
     } else if ([tabBarController.viewControllers indexOfObject:viewController] == ME_TAB_INDEX) {
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-        if (appDelegate.loginController.fetchMe.observationsCount.integerValue == 0) {
+        if (appDelegate.loginController.meUserLocal.observationsCount == 0) {
             if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey] && ![Observation hasAtLeastOneEntity]) {
                 // show the "make your first" tooltip
                 [self makeAndShowFirstObsTooltip];
@@ -371,6 +385,7 @@ static char PROJECT_ASSOCIATED_KEY;
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
     confirm.image = [info valueForKey:UIImagePickerControllerOriginalImage];
+    confirm.metadata = [info valueForKey:UIImagePickerControllerMediaMetadata];
     confirm.shouldContinueUpdatingLocation = YES;
     
     Taxon *taxon = objc_getAssociatedObject(picker, &TAXON_ASSOCIATED_KEY);
@@ -392,12 +407,45 @@ static char PROJECT_ASSOCIATED_KEY;
 #pragma mark - Add New Observation methods
 
 - (void)openLibraryTaxon:(Taxon *)taxon project:(Project *)project {
+    PHAuthorizationStatus phAuthStatus = [PHPhotoLibrary authorizationStatus];
+    switch (phAuthStatus) {
+        case PHAuthorizationStatusRestricted:
+        case PHAuthorizationStatusDenied:
+            [self presentAuthAlertForSource:INatPhotoSourcePhotos];
+            return;
+            break;
+        case PHAuthorizationStatusNotDetermined: {
+            __weak typeof(self)weakSelf = self;
+            [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+                [[Analytics sharedClient] event:kAnalyticsEventPhotoLibraryPermissionsChanged
+                                 withProperties:@{
+                                                  @"Via": NSStringFromClass(weakSelf.class),
+                                                  @"NewValue": @(status),
+                                                  }];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (status == PHAuthorizationStatusAuthorized) {
+                        [weakSelf openLibraryTaxon:taxon project:project];
+                    } else {
+                        [weakSelf presentAuthAlertForSource:INatPhotoSourcePhotos];
+                    }
+                });
+            }];
+            return;
+            break;
+        }
+        case PHAuthorizationStatusAuthorized:
+            // continue;
+            break;
+    }
+
     // qbimagepicker for library multi-select
     self.imagePicker = [[QBImagePickerController alloc] init];
     self.imagePicker.delegate = self;
     self.imagePicker.allowsMultipleSelection = YES;
     self.imagePicker.maximumNumberOfSelection = 4;     // arbitrary
-    
+    self.imagePicker.mediaType = QBImagePickerMediaTypeImage;
+    self.imagePicker.assetCollectionSubtypes = [ImageStore assetCollectionSubtypes];
+
     if (taxon) {
         objc_setAssociatedObject(self.imagePicker, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
     }
@@ -444,40 +492,6 @@ static char PROJECT_ASSOCIATED_KEY;
     [nav pushViewController:confirmObs animated:YES];
 }
 
-#pragma mark - ObservationDetailViewController delegate
-
-- (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller {
-    [[Analytics sharedClient] event:kAnalyticsEventNewObservationSaveObservation];
-    NSError *saveError;
-    [[Observation managedObjectContext] save:&saveError];
-    if (saveError) {
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error saving new obs: %@",
-                                            saveError.localizedDescription]];
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Save Error", nil)
-                                                                       message:saveError.localizedDescription
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller {
-    [controller.navigationController setToolbarHidden:YES animated:NO];
-    
-    @try {
-        [controller.observation destroy];
-    } @catch (NSException *exception) {
-        if ([exception.name isEqualToString:NSObjectInaccessibleException]) {
-            // if observation has been deleted or is otherwise inaccessible, do nothing
-            return;
-        }
-    }
-}
-
 #pragma mark - QBImagePicker delegate
 
 - (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
@@ -512,10 +526,10 @@ static char PROJECT_ASSOCIATED_KEY;
 
 - (void)setUpdatesBadge {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    User *me = [appDelegate.loginController fetchMe];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
     if (me) {
         NSPredicate *myNewPredicate = [NSPredicate predicateWithFormat:@"viewed == false and resourceOwnerId == %ld",
-                                       (unsigned long)me.recordID.integerValue];
+                                       me.userId];
         
         RLMResults *myNewResults = [ExploreUpdateRealm objectsWithPredicate:myNewPredicate];
         UINavigationController *activity = [self.viewControllers objectAtIndex:1];
@@ -535,7 +549,7 @@ static char PROJECT_ASSOCIATED_KEY;
     return [self.selectedViewController shouldAutorotateToInterfaceOrientation:toInterfaceOrientation];
 }
 
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     if ([self.selectedViewController isKindOfClass:UINavigationController.class]) {
         UINavigationController *nc = (UINavigationController *)self.selectedViewController;
@@ -554,41 +568,14 @@ static char PROJECT_ASSOCIATED_KEY;
         [self dismissViewControllerAnimated:YES completion:nil];
     }
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    User *user = appDelegate.loginController.fetchMe;
-    if (user.observationsCount.integerValue > 0) {
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+    if (me.observationsCount > 0) {
         // user has made an observation
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:HasMadeAnObservationKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
         [makeFirstObsTooltip hideAnimated:NO];
     }
-}
-
-#pragma mark - RKObjectLoader & RKRequest delegates
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    // do nothing
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
-    // update timestamps on taxa objects
-    NSDate *now = [NSDate date];
-    [objects enumerateObjectsUsingBlock:^(INatModel *o,
-                                          NSUInteger idx,
-                                          BOOL *stop) {
-        [o setSyncedAt:now];
-    }];
-    
-    NSError *saveError = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-    if (saveError) {
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Error saving store: %@",
-                                            saveError.localizedDescription]];
-    }
-}
-
-- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
-    // do nothing
 }
 
 @end

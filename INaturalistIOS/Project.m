@@ -88,4 +88,24 @@ static RKManagedObjectMapping *defaultMapping = nil;
     }];
 }
 
+- (BOOL)isNewStyleProject {
+    if ([self.projectType isEqualToString:@"collection"]) {
+        return YES;
+    } else if ([self.projectType isEqualToString:@"umbrella"]) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+- (NSString *)titleForTypeOfProject {
+    if ([self.projectType isEqualToString:@"collection"]) {
+        return NSLocalizedString(@"Collection Project", @"Collection type of project, which automatically collects observations into it.");
+    } else if ([self.projectType isEqualToString:@"umbrella"]) {
+        return NSLocalizedString(@"Umbrella Project", @"Umbrella type of project, which contains other projects within it.");
+    } else {
+        return NSLocalizedString(@"Traditional Project", @"Traditional inat type of project, where users have to manually add observations to the project.");
+    }
+}
+
 @end

@@ -27,7 +27,8 @@
                                       attributes:@{ NSFontAttributeName: font }
                                          context:nil];
     
-    return MAX(44, textRect.size.height + 32); // 32 for padding... 16 seemed to be truncating some longer text
+    // 32 for padding... 16 seemed to be truncating some longer text
+    return MAX(44, textRect.size.height + 32);
 }
 
 + (CGFloat)heightForRowWithInfoAttributedText:(NSAttributedString *)attributedText inTableView:(UITableView *)tableView {
@@ -39,7 +40,8 @@
                                                    options:NSStringDrawingUsesLineFragmentOrigin
                                                    context:nil];
 
-    return MAX(44, textRect.size.height + 16); // 16 for top and bottom padding around the label
+    // 32 for padding... 16 seemed to be truncating some longer text
+    return MAX(44, textRect.size.height + 32);
 }
 
 

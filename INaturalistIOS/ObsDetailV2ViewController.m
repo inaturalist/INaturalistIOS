@@ -11,6 +11,7 @@
 #import <Toast/UIView+Toast.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <ARSafariActivity/ARSafariActivity.h>
+#import <RestKit/RestKit.h>
 
 #import "ObsDetailV2ViewController.h"
 #import "Observation.h"
@@ -51,29 +52,25 @@
 
 @implementation ObsDetailV2ViewController
 
+- (ObservationAPI *)observationApi {
+    static ObservationAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[ObservationAPI alloc] init];
+    });
+    return _api;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     if ([self.observation hasUnviewedActivityBool] || self.shouldShowActivityOnLoad) {
         self.viewModel = [[ObsDetailActivityViewModel alloc] init];
         self.viewModel.observation = self.observation;
-
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            NSInteger numberOfSections = [self.viewModel numberOfSectionsInTableView:self.tableView];
-            NSInteger lastSection = numberOfSections > 0 ? numberOfSections-1 : -1;
-            NSInteger numberOfRowsInLastSection = [self.viewModel tableView:self.tableView
-                                                      numberOfRowsInSection:lastSection];
-            NSInteger lastRow = numberOfRowsInLastSection > 0 ? numberOfRowsInLastSection-1 : -1;
-            if (lastSection >= 0 && lastRow >= 0) {
-                NSIndexPath *lastIp = [NSIndexPath indexPathForRow:lastRow
-                                                         inSection:lastSection];
-                
-                [self.tableView scrollToRowAtIndexPath:lastIp
-                                      atScrollPosition:UITableViewScrollPositionMiddle
-                                              animated:YES];
-                // mark updates as seen
-                [((ObsDetailActivityViewModel *)self.viewModel) markActivityAsSeen];
-            }
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            CGPoint offset = CGPointMake(0, self.tableView.contentSize.height - self.tableView.frame.size.height);
+            [self.tableView setContentOffset:offset animated:YES];
         });
     } else {
         self.viewModel = [[ObsDetailInfoViewModel alloc] init];
@@ -128,19 +125,14 @@
                                              selector:@selector(handleNSManagedObjectContextDidSaveNotification:)
                                                  name:NSManagedObjectContextDidSaveNotification
                                                object:[Observation managedObjectContext]];
-    
-    if (self.observation.validationErrorMsg && self.observation.validationErrorMsg.length > 0) {
-        self.tableView.tableHeaderView = ({
-            ObservationValidationErrorView *view = [[ObservationValidationErrorView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, 100)];
-            view.validationError = self.observation.validationErrorMsg;
-            view;
-        });
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    // reload the tableview in case we've just come from editing view
+    [self.tableView reloadData];
+
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     
     [UIView animateWithDuration:0.3 animations:^{
@@ -149,14 +141,34 @@
         self.navigationController.navigationBar.shadowImage = nil;
         self.navigationController.navigationBar.translucent = NO;
     }];
+    
+    [self configureValidationErrorView];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    if (!self.observation.needsUpload) {
+    // don't clobber any un-uploaded edits to this observation or its children
+    if (!self.observation.needsUpload || self.observation.childrenNeedingUpload.count != 0) {
         [self reloadObservation];
     }
+}
+
+- (void)uploadFinished {
+    [self configureValidationErrorView];
+}
+
+- (void)configureValidationErrorView {
+    if (self.observation.validationErrorMsg && self.observation.validationErrorMsg.length > 0) {
+        self.tableView.tableHeaderView = ({
+            ObservationValidationErrorView *view = [[ObservationValidationErrorView alloc] initWithFrame:CGRectMake(0, 0, self.tableView.bounds.size.width, 100)];
+            view.validationError = self.observation.validationErrorMsg;
+            view;
+        });
+    } else {
+        self.tableView.tableHeaderView = nil;
+    }
+
 }
 
 - (void)dealloc {
@@ -177,6 +189,7 @@
     } else if ([segue.identifier isEqualToString:@"taxon"]) {
         TaxonDetailViewController *vc = [segue destinationViewController];
         vc.taxon = sender;
+        vc.observationCoordinate = [self.observation visibleLocation];
     } else if ([segue.identifier isEqualToString:@"map"]) {
         LocationViewController *location = [segue destinationViewController];
         location.observation = self.observation;
@@ -194,8 +207,8 @@
 }
 
 - (void)reloadObservation {
-    if (self.observation.needsUpload) {
-        // don't clobber any local edits to this observation
+    if (self.observation.needsUpload || self.observation.childrenNeedingUpload.count != 0) {
+        // don't clobber any un-uploaded edits to this observation or its children
         return;
     }
     
@@ -212,9 +225,8 @@
                                                      objectMapping:[Observation mapping]
                                                           delegate:self];
     } else if ([self.observation isKindOfClass:[ExploreObservation class]]) {
-        ObservationAPI *api = [[ObservationAPI alloc] init];
         __weak typeof(self) weakSelf = self;
-        [api observationWithId:self.observation.inatRecordId
+        [[self observationApi] observationWithId:self.observation.inatRecordId
                        handler:^(NSArray *results, NSInteger count, NSError *error) {
                            __strong typeof(weakSelf) strongSelf = weakSelf;
                            if (strongSelf && results && results.count == 1) {
@@ -250,7 +262,21 @@
 #pragma mark - notifications
 
 - (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification {
-    [self.tableView reloadData];
+    BOOL updatedMe = NO;
+    for (id object in [notification.userInfo valueForKey:@"updated"]) {
+        if ([object isKindOfClass:[Observation class]]) {
+            Observation *update = (Observation *)object;
+            if ([update inatRecordId] == [self.observation inatRecordId]) {
+                updatedMe = YES;
+            }
+        }
+    }
+    
+    if (updatedMe) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    }
 }
 
 #pragma mark - obs detail view model delegate
@@ -307,7 +333,8 @@
         
         __weak MHGalleryController *blockGallery = gallery;
         
-        gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
+        gallery.finishedCallback = ^(NSInteger currentIndex, UIImage *image, MHTransitionDismissMHGallery *interactiveTransition, MHGalleryViewMode viewMode) {
+            
             __strong typeof(blockGallery)strongGallery = blockGallery;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [strongGallery dismissViewControllerAnimated:YES completion:nil];
@@ -421,8 +448,10 @@
     if (objects.count == 0) return;
     
     NSError *error = nil;
-    // save will trigger a tableview reload
     [[[RKObjectManager sharedManager] objectStore] save:&error];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+    });
     
     if (self.observation.hasUnviewedActivityBool && self.activeSection == ObsDetailSectionActivity) {
         

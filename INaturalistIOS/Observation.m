@@ -66,6 +66,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 @dynamic captive;
 @dynamic faves;
 @dynamic favesCount;
+@dynamic ownersIdentificationFromVision;
 
 + (NSArray *)all
 {
@@ -97,7 +98,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     o.latitude = [NSNumber numberWithInt:rand() % 89];
     o.longitude = [NSNumber numberWithInt:rand() % 179];
     o.positionalAccuracy = [NSNumber numberWithInt:rand() % 500];
-    o.inatDescription = @"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+    o.inatDescription = @"";
     return o;
 }
 
@@ -134,7 +135,8 @@ static RKObjectMapping *defaultSerializationMapping = nil;
          @"geoprivacy", @"geoprivacy",
          @"user_id", @"userID",
          @"quality_grade", @"qualityGrade",
-         @"captive", @"captive",
+         @"captive_flag", @"captive",
+         @"owners_identification_from_vision", @"ownersIdentificationFromVision",
          nil];
         [defaultMapping mapKeyPath:@"taxon" 
                     toRelationship:@"taxon" 
@@ -188,6 +190,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
          @"geoprivacy", @"observation[geoprivacy]",
          @"uuid", @"observation[uuid]",
          @"captive", @"observation[captive_flag]",
+         @"ownersIdentificationFromVision", @"observation[owners_identification_from_vision]",
          nil];
     }
     return defaultSerializationMapping;
@@ -375,7 +378,8 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     [super willSave];
     
     if (!self.uuid && !self.recordID) {
-        [self setPrimitiveValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [self setPrimitiveValue:[[[NSUUID UUID] UUIDString] lowercaseString]
+                         forKey:@"uuid"];
     }
 }
 
@@ -386,79 +390,6 @@ static RKObjectMapping *defaultSerializationMapping = nil;
         dr.recordID = self.recordID;
         dr.modelName = NSStringFromClass(self.class);
     }
-}
-
-+ (NSArray *)needingUpload {
-    // all observations that need sync are upload candidates
-    NSMutableSet *needingUpload = [[NSMutableSet alloc] init];
-    [needingUpload addObjectsFromArray:[self needingSync]];
-    
-    // also, all observations whose uploadable children need sync
-    
-    for (ObservationPhoto *op in [ObservationPhoto needingSync]) {
-        if (op.observation) {
-            [needingUpload addObject:op.observation];
-        } else {
-            [op destroy];
-        }
-    }
-    
-    for (ObservationFieldValue *ofv in [ObservationFieldValue needingSync]) {
-        if (ofv.observation) {
-            [needingUpload addObject:ofv.observation];
-        } else {
-            [ofv destroy];
-        }
-    }
-    
-    for (ProjectObservation *po in [ProjectObservation needingSync]) {
-        if (po.observation) {
-            [needingUpload addObject:po.observation];
-        } else {
-            [po destroy];
-        }
-    }
-    
-    return [[needingUpload allObjects] sortedArrayUsingComparator:^NSComparisonResult(INatModel *o1, INatModel *o2) {
-        return [o1.localCreatedAt compare:o2.localCreatedAt];
-    }];
-}
-
-- (BOOL)needsUpload {
-    // needs upload if this obs needs sync, or any children need sync
-    if (self.needsSync) { return YES; }
-    for (ObservationPhoto *op in self.observationPhotos) {
-        if (op.needsSync) { return YES; }
-    }
-    for (ObservationFieldValue *ofv in self.observationFieldValues) {
-        if (ofv.needsSync) { return YES; }
-    }
-    for (ProjectObservation *po in self.projectObservations) {
-        if (po.needsSync) { return YES; }
-    }
-    return NO;
-}
-
-- (NSArray *)childrenNeedingUpload {
-    NSMutableArray *recordsToUpload = [NSMutableArray array];
-    
-    for (ObservationPhoto *op in self.observationPhotos) {
-        if (op.needsSync) {
-            [recordsToUpload addObject:op];
-        }
-    }
-    for (ObservationFieldValue *ofv in self.observationFieldValues) {
-        if (ofv.needsSync) {
-            [recordsToUpload addObject:ofv];
-        }
-    }
-    for (ProjectObservation *po in self.projectObservations) {
-        if (po.needsSync) {
-            [recordsToUpload addObject:po];
-        }
-    }
-    
-    return [NSArray arrayWithArray:recordsToUpload];
 }
 
 - (NSString *)presentableGeoprivacy {
@@ -500,6 +431,127 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     }
 }
 
+- (ObservationFieldValue *)valueWithObservationFieldId:(NSInteger)fieldId {
+    // candidates will be only a single value at most because we stop when
+    // we find a candidate
+    NSSet *candidates = [self.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL * _Nonnull stop) {
+        if (ofv.observationFieldID.integerValue == fieldId) {
+            *stop = YES;
+            return YES;
+        } else {
+            return NO;
+        }
+    }];
+    return [candidates anyObject];
+}
+
+#pragma mark - Uploadable protocol
+
++ (NSArray *)needingUpload {
+    // all observations that need sync are upload candidates
+    NSMutableSet *needingUpload = [[NSMutableSet alloc] init];
+    [needingUpload addObjectsFromArray:[self needingSync]];
+    
+    // also, all observations whose uploadable children need sync
+    
+    for (ObservationPhoto *op in [ObservationPhoto needingSync]) {
+        if (op.observation) {
+            [needingUpload addObject:op.observation];
+        } else {
+            [op destroy];
+        }
+    }
+    
+    for (ObservationFieldValue *ofv in [ObservationFieldValue needingSync]) {
+        if (ofv.observation) {
+            [needingUpload addObject:ofv.observation];
+        } else {
+            [ofv destroy];
+        }
+    }
+    
+    for (ProjectObservation *po in [ProjectObservation needingSync]) {
+        if (po.observation) {
+            [needingUpload addObject:po.observation];
+        } else {
+            [po destroy];
+        }
+    }
+    
+    return [[needingUpload allObjects] sortedArrayUsingComparator:^NSComparisonResult(INatModel *o1, INatModel *o2) {
+        return [o1.localCreatedAt compare:o2.localCreatedAt];
+    }];
+}
+
+- (BOOL)needsUpload {
+    // needs upload if this obs needs sync
+    if (self.needsSync) { return YES; }
+    return NO;
+}
+
+- (NSArray *)childrenNeedingUpload {
+    NSMutableArray *recordsToUpload = [NSMutableArray array];
+    
+    for (ObservationPhoto *op in self.observationPhotos) {
+        if (op.needsSync) {
+            [recordsToUpload addObject:op];
+        }
+    }
+    for (ObservationFieldValue *ofv in self.observationFieldValues) {
+        if (ofv.needsSync) {
+            [recordsToUpload addObject:ofv];
+        }
+    }
+    for (ProjectObservation *po in self.projectObservations) {
+        if (po.needsSync) {
+            [recordsToUpload addObject:po];
+        }
+    }
+    
+    return [NSArray arrayWithArray:recordsToUpload];
+}
+
+
+- (NSDictionary *)uploadableRepresentation {
+    NSDictionary *mapping = @{
+                              @"speciesGuess": @"species_guess",
+                              @"inatDescription": @"description",
+                              @"observedOnString": @"observed_on_string",
+                              @"placeGuess": @"place_guess",
+                              @"latitude": @"latitude",
+                              @"longitude": @"longitude",
+                              @"positionalAccuracy": @"positional_accuracy",
+                              @"taxonID": @"taxon_id",
+                              @"iconicTaxonID": @"iconic_taxon_id",
+                              @"idPlease": @"id_please",
+                              @"geoprivacy": @"geoprivacy",
+                              @"uuid": @"uuid",
+                              @"captive": @"captive_flag",
+                              @"ownersIdentificationFromVision": @"owners_identification_from_vision",
+                              };
+    
+    NSMutableDictionary *mutableParams = [NSMutableDictionary dictionary];
+    for (NSString *key in mapping) {
+        if ([self valueForKey:key]) {
+            NSString *mappedName = mapping[key];
+            NSAttributeDescription *attribute = self.entity.attributesByName[key];
+            if (attribute.attributeType == NSBooleanAttributeType) {
+                mutableParams[mappedName] = @([[self valueForKey:key] boolValue]);
+            } else {
+                mutableParams[mappedName] = [self valueForKey:key];
+            }
+        }
+    }
+    
+    // return an immutable copy
+    // ignore_photos is required to avoid clobbering obs photos
+    // when updating an observation via the node endpoint
+    return @{
+             @"observation": [NSDictionary dictionaryWithDictionary:mutableParams],
+             @"ignore_photos": @(YES)
+             };
+}
+
 #pragma mark - ObservationVisualization
 
 - (BOOL)isCaptive {
@@ -519,9 +571,9 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     return user.login;
 }
 
-- (NSString *)userThumbUrl {
+- (NSURL *)userThumbUrl {
     User *user = [[User objectsWithPredicate:[NSPredicate predicateWithFormat:@"recordID == %d", self.userID.integerValue]] firstObject];
-    return user.userIconURL;
+    return [NSURL URLWithString:user.userIconURL];
 }
 
 - (BOOL)isEditable {

@@ -6,8 +6,6 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <RestKit/RestKit.h>
-
 #import "ExploreSearchController.h"
 #import "NSLocale+INaturalist.h"
 #import "Analytics.h"

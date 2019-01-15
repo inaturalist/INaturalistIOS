@@ -7,7 +7,7 @@
 //
 
 #import <FontAwesomeKit/FAKIonIcons.h>
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 #import "PhotoScrollViewCell.h"
 #import "PhotoChicletCell.h"
@@ -78,6 +78,8 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     self.photos = nil;
     [self.collectionView reloadData];
 }
@@ -142,11 +144,12 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
         ObservationPhoto *obsPhoto = (ObservationPhoto *)self.photos[indexPath.item - 1];
         if (obsPhoto.photoKey) {
             cell.photoImageView.image = [[ImageStore sharedImageStore] find:obsPhoto.photoKey
-                                                                    forSize:ImageStoreSmallSize];
-        } else if (obsPhoto.squareURL) {
+                                                                    forSize:ImageStoreSquareSize];
+        }
+        if (!cell.photoImageView.image) {
             NSURL *squarePhotoUrl = [NSURL URLWithString:obsPhoto.squareURL];
             if (squarePhotoUrl) {
-                [cell.photoImageView sd_setImageWithURL:squarePhotoUrl];
+                [cell.photoImageView setImageWithURL:squarePhotoUrl];
             }
         }
         

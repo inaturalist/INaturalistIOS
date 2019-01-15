@@ -9,35 +9,20 @@
 #import <XCTest/XCTest.h>
 #import <RestKit/Testing.h>
 
+#import "RKModelBaseTests.h"
 #import "NewsItem.h"
 
-@interface NewsItemTests : XCTestCase
-@property RKManagedObjectStore *objectStore;
+@interface NewsItemTests : RKModelBaseTests
 @end
 
 @implementation NewsItemTests
 
 - (void)setUp {
     [super setUp];
-
-    NSBundle *testTargetBundle = [NSBundle bundleForClass:self.class];
-    [RKTestFixture setFixtureBundle:testTargetBundle];
-    [RKTestFactory setUp];
-        
-    [RKTestFactory defineFactory:RKTestFactoryDefaultNamesManagedObjectStore withBlock:^id{
-        NSManagedObjectModel *managedObjectModel = [NSManagedObjectModel mergedModelFromBundles:@[[NSBundle mainBundle]]];
-        RKManagedObjectStore *managedObjectStore = [RKManagedObjectStore objectStoreWithStoreFilename:@"inaturalistTests.sqlite"
-                                                                                usingSeedDatabaseName:nil
-                                                                                   managedObjectModel:managedObjectModel
-                                                                                             delegate:nil];
-        return managedObjectStore;
-    }];
-    self.objectStore = [RKTestFactory managedObjectStore];
 }
 
 - (void)tearDown {
     [super tearDown];
-    [RKTestFactory tearDown];
 }
 
 - (void)testProjectBlogUrlConstruction {

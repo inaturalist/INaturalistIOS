@@ -14,6 +14,8 @@
 #import <NXOAuth2Client/NXOAuth2.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <objc/runtime.h>
+#import <GoogleSignIn/GoogleSignIn.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 #import "OnboardingLoginViewController.h"
 #import "UIColor+INaturalist.h"
@@ -26,10 +28,10 @@
 #import "PartnerController.h"
 #import "Partner.h"
 #import "INatWebController.h"
+#import "INatReachability.h"
+#import "LoginSwitchContextButton.h"
 
-static char PARTNER_ASSOCIATED_KEY;
-
-@interface OnboardingLoginViewController () <UITextFieldDelegate, INatWebControllerDelegate>
+@interface OnboardingLoginViewController () <UITextFieldDelegate, INatWebControllerDelegate, INatAuthenticationDelegate, GIDSignInUIDelegate>
 
 @property IBOutlet UILabel *titleLabel;
 
@@ -42,14 +44,15 @@ static char PARTNER_ASSOCIATED_KEY;
 @property IBOutlet UIButton *licenseMyDataButton;
 
 @property IBOutlet UIButton *actionButton;
-@property IBOutlet UIButton *switchContextButton;
+@property IBOutlet LoginSwitchContextButton *switchContextButton;
 
 @property IBOutlet UIButton *skipButton;
 @property IBOutlet UIButton *closeButton;
 
+@property IBOutlet UILabel *reasonLabel;
 @property IBOutlet UILabel *orLabel;
-@property IBOutlet IconAndTextControl *facebookButton;
-@property IBOutlet IconAndTextControl *googleButton;
+@property IBOutlet FBSDKLoginButton *facebookButton;
+@property IBOutlet GIDSignInButton *googleButton;
 
 @property IBOutlet UILabel *termsLabel;
 @property IBOutlet UILabel *licenseMyDataLabel;
@@ -135,7 +138,7 @@ static char PARTNER_ASSOCIATED_KEY;
                                 forState:UIControlStateNormal];
     
     self.closeButton.hidden = self.skippable;
-    
+    self.reasonLabel.text = self.reason;
     
     // terms label
     NSString *base = NSLocalizedString(@"By using iNaturalist you agree to the Terms of Service and Privacy Policy.", @"Base text for terms of service and privacy policy notice when creating an iNat account.");
@@ -164,10 +167,10 @@ static char PARTNER_ASSOCIATED_KEY;
         
         UITapGestureRecognizer *tapSender = (UITapGestureRecognizer *)sender;
         if ([tapSender didTapAttributedTextInLabel:self.termsLabel inRange:termsRange]) {
-            NSURL *termsURL = [NSURL URLWithString:@"http://www.inaturalist.org/pages/terms"];
+            NSURL *termsURL = [NSURL URLWithString:@"https://www.inaturalist.org/pages/terms"];
             [[UIApplication sharedApplication] openURL:termsURL];
         } else if ([tapSender didTapAttributedTextInLabel:self.termsLabel inRange:privacyRange]) {
-            NSURL *privacyURL = [NSURL URLWithString:@"http://www.inaturalist.org/pages/privacy"];
+            NSURL *privacyURL = [NSURL URLWithString:@"https://www.inaturalist.org/pages/privacy"];
             [[UIApplication sharedApplication] openURL:privacyURL];
         }
     }];
@@ -176,7 +179,6 @@ static char PARTNER_ASSOCIATED_KEY;
     
     
     // license my content label
-    
     base = NSLocalizedString(@"Yes, license my content so scientists can use my data. Learn More", @"Base text for the license my content checkbox during account creation");
     NSString *emphasis = NSLocalizedString(@"Learn More", @"Emphasis text for the license my content checkbox. Must be a substring of the base string.");
     
@@ -209,32 +211,25 @@ static char PARTNER_ASSOCIATED_KEY;
     }
     self.licenseMyDataLabel.attributedText = attr;
     
-    [@[self.facebookButton, self.googleButton] enumerateObjectsUsingBlock:^(IconAndTextControl *btn, NSUInteger idx, BOOL * _Nonnull stop) {
-        btn.layer.cornerRadius = 2.0f;
-        btn.backgroundColor = [UIColor colorWithHexString:@"#dddddd"];
-        btn.separatorColor = [UIColor colorWithHexString:@"#cccccc"];
-        btn.textColor = [UIColor colorWithHexString:@"#4a4a4a"];
-    }];
-    self.facebookButton.attributedIconTitle = ({
-        FAKIcon *facebook = [FAKIonIcons socialFacebookIconWithSize:22];
-        [facebook addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#666666"]];
-        [facebook attributedString];
-    });
-    self.facebookButton.textTitle = @"Facebook";
-    [self.facebookButton addTarget:self action:@selector(facebookPressed:) forControlEvents:UIControlEventTouchUpInside];
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    appDelegate.loginController.delegate = self;
+    self.facebookButton.delegate = appDelegate.loginController;
+    // ensure we're unauthenticated from facebook
+    if ([FBSDKAccessToken currentAccessToken]) {
+        FBSDKLoginManager *fb = [[FBSDKLoginManager alloc] init];
+        [fb logOut];
+    }
     
-    self.googleButton.attributedIconTitle = ({
-        FAKIcon *google = [FAKIonIcons socialGoogleplusIconWithSize:22];
-        [google addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#666666"]];
-        [google attributedString];
-    });
-    self.googleButton.textTitle = @"Google";
-    [self.googleButton addTarget:self action:@selector(googlePressed:) forControlEvents:UIControlEventTouchUpInside];
+    // a ui delegate is required
+    GIDSignIn.sharedInstance.uiDelegate = self;
+    // ensure we're unauthenticated from google
+    if ([[GIDSignIn sharedInstance] hasAuthInKeychain]) {
+        [[GIDSignIn sharedInstance] signOut];
+    }
     
-    
-    self.switchContextButton.backgroundColor = [UIColor colorWithHexString:@"#dddddd"];
-    self.switchContextButton.tintColor = [UIColor colorWithHexString:@"#4a4a4a"];
-    
+    // start in signup context
+    [self.switchContextButton setContext:LoginContextSignup];
+
     self.passwordField.rightView = ({
         UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
         button.frame = CGRectMake(0, 0, 65, 44);
@@ -248,7 +243,7 @@ static char PARTNER_ASSOCIATED_KEY;
         __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
             __strong typeof(weakSelf)strongSelf = weakSelf;
-            if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+            if (![[INatReachability sharedClient] isNetworkReachable]) {
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
                                                                                message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
                                                                         preferredStyle:UIAlertControllerStyleAlert];
@@ -278,6 +273,9 @@ static char PARTNER_ASSOCIATED_KEY;
         button;
     });
     
+    if (self.startsInLoginMode && self.textfieldStackView.arrangedSubviews.count == 3) {
+        [self switchAuthContext:nil];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -294,10 +292,6 @@ static char PARTNER_ASSOCIATED_KEY;
                 [self showPartnerAlertForPartner:p];
             }
         }
-    }
-    
-    if (self.startsInLoginMode && self.textfieldStackView.arrangedSubviews.count == 3) {
-        [self switchAuthContext:nil];
     }
 }
 
@@ -345,147 +339,41 @@ static char PARTNER_ASSOCIATED_KEY;
 }
 
 - (IBAction)switchAuthContext:(id)sender {
+    void (^switchContextBlock)() = nil;
     if (self.textfieldStackView.arrangedSubviews.count == 3) {
-        // switch to login mode
-        [UIView animateWithDuration:0.2f
-                         animations:^{
-                             [self.textfieldStackView removeArrangedSubview:self.emailField];
-                             self.emailField.hidden = YES;
-                             self.titleLabel.text = NSLocalizedString(@"Log In", nil);
-                             [self.actionButton setTitle:NSLocalizedString(@"Log In", nil)
-                                                forState:UIControlStateNormal];
-                             self.licenseStackView.hidden = YES;
-                             [self.switchContextButton setTitle:NSLocalizedString(@"New to iNaturalist? Sign up now!", nil)
-                                                       forState:UIControlStateNormal];
-                             self.passwordField.rightViewMode = UITextFieldViewModeUnlessEditing;
-                         }];
+        switchContextBlock = ^{
+            [self.textfieldStackView removeArrangedSubview:self.emailField];
+            self.emailField.hidden = YES;
+            self.titleLabel.text = NSLocalizedString(@"Log In", nil);
+            [self.actionButton setTitle:NSLocalizedString(@"Log In", nil)
+                               forState:UIControlStateNormal];
+            self.licenseStackView.hidden = YES;
+            self.passwordField.rightViewMode = UITextFieldViewModeUnlessEditing;
+            [self.switchContextButton setContext:LoginContextLogin];
+        };
     } else {
-        // switch to signup mode
-        [UIView animateWithDuration:0.2f
-                         animations:^{
-                             [self.textfieldStackView insertArrangedSubview:self.emailField
-                                                                    atIndex:0];
-                             self.emailField.hidden = NO;
-                             self.titleLabel.text = NSLocalizedString(@"Sign Up", nil);
-                             [self.actionButton setTitle:NSLocalizedString(@"Sign Up", nil)
-                                                forState:UIControlStateNormal];
-                             self.licenseStackView.hidden = NO;
-                             [self.switchContextButton setTitle:NSLocalizedString(@"Already have an account?", nil)
-                                                       forState:UIControlStateNormal];
-                             self.passwordField.rightViewMode = UITextFieldViewModeNever;
-                         }];
-    }
-}
-
-
-- (IBAction)facebookPressed:(id)sender {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
-                                                                       message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
-        return;
+        switchContextBlock = ^{
+            [self.textfieldStackView insertArrangedSubview:self.emailField
+                                                   atIndex:0];
+            self.emailField.hidden = NO;
+            self.titleLabel.text = NSLocalizedString(@"Sign Up", nil);
+            [self.actionButton setTitle:NSLocalizedString(@"Sign Up", nil)
+                               forState:UIControlStateNormal];
+            self.licenseStackView.hidden = NO;
+            self.passwordField.rightViewMode = UITextFieldViewModeNever;
+            [self.switchContextButton setContext:LoginContextSignup];
+        };
     }
     
-    [[Analytics sharedClient] event:kAnalyticsEventOnboardingLoginPressed
-                     withProperties:@{ @"mode": @"facebook" }];
-    
-    __weak typeof(self)weakSelf = self;
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    [appDelegate.loginController loginWithFacebookViewController:self
-                                                         success:^(NSDictionary *info) {
-                                                             __strong typeof(weakSelf)strongSelf = weakSelf;
-                                                             
-                                                             if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingViewController class]]) {
-                                                                 [appDelegate showMainUI];
-                                                             } else {
-                                                                 [strongSelf dismissViewControllerAnimated:YES completion:nil];
-                                                             }
-                                                             if (strongSelf.selectedPartner) {
-                                                                 [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
-                                                                                                               completion:nil];
-                                                             }
-                                                             [[NSNotificationCenter defaultCenter] postNotificationName:kINatLoggedInNotificationKey
-                                                                                                                 object:nil];
-                                                             
-                                                         } failure:^(NSError *error) {
-                                                             NSString *alertTitle = NSLocalizedString(@"Log In Problem", @"Title for login problem alert");
-                                                             NSString *alertMsg;
-                                                             if (error) {
-                                                                 alertMsg = error.localizedDescription;
-                                                             } else {
-                                                                 alertMsg = NSLocalizedString(@"Failed to login to Facebook. Please try again later.",
-                                                                                              @"Unknown facebook login error");
-                                                             }
-                                                             
-                                                             UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
-                                                                                                                            message:alertMsg
-                                                                                                                     preferredStyle:UIAlertControllerStyleAlert];
-                                                             [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                                                                       style:UIAlertActionStyleCancel
-                                                                                                     handler:nil]];
-                                                             [weakSelf presentViewController:alert animated:YES completion:nil];
-                                                         }];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (sender) {
+            [UIView animateWithDuration:0.2f
+                             animations:switchContextBlock];
+        } else {
+            switchContextBlock();
+        }
+    });
 }
-
-- (IBAction)googlePressed:(id)sender {    
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
-                                                                       message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
-        return;
-    }
-    
-    [[Analytics sharedClient] event:kAnalyticsEventOnboardingLoginPressed
-                     withProperties:@{ @"mode": @"google" }];
-    
-    __weak typeof(self)weakSelf = self;
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    
-    [appDelegate.loginController loginWithGoogleUsingViewController:self
-                                                            success:^(NSDictionary *info) {
-                                                                __strong typeof(weakSelf)strongSelf = weakSelf;
-                                                                
-                                                                if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingViewController class]]) {
-                                                                    [appDelegate showMainUI];
-                                                                } else {
-                                                                    [strongSelf dismissViewControllerAnimated:YES completion:nil];
-                                                                }
-                                                                
-                                                                if (strongSelf.selectedPartner) {
-                                                                    [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
-                                                                                                                  completion:nil];
-                                                                }
-                                                                [[NSNotificationCenter defaultCenter] postNotificationName:kINatLoggedInNotificationKey
-                                                                                                                    object:nil];
-                                                                
-                                                            } failure:^(NSError *error) {
-                                                                NSString *alertTitle = NSLocalizedString(@"Log In Problem",
-                                                                                                         @"Title for login problem alert");
-                                                                NSString *alertMsg;
-                                                                if (error) {
-                                                                    alertMsg = error.localizedDescription;
-                                                                } else {
-                                                                    alertMsg = NSLocalizedString(@"Failed to login to Google Plus. Please try again later.",
-                                                                                                 @"Unknown google login error");
-                                                                }
-                                                                UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
-                                                                                                                               message:alertMsg
-                                                                                                                        preferredStyle:UIAlertControllerStyleAlert];
-                                                                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                                                                          style:UIAlertActionStyleCancel
-                                                                                                        handler:nil]];
-                                                                [weakSelf presentViewController:alert animated:YES completion:nil];
-                                                            }];
-}
-
 
 - (IBAction)licenseTogglePressed:(id)sender {
     self.licenseMyData = !self.licenseMyData;
@@ -521,7 +409,7 @@ static char PARTNER_ASSOCIATED_KEY;
 #pragma mark - Actions
 
 - (void)signup {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
                                                                        message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -564,7 +452,7 @@ static char PARTNER_ASSOCIATED_KEY;
     [[Analytics sharedClient] event:kAnalyticsEventOnboardingLoginPressed
                      withProperties:@{ @"mode": @"signup" }];
     
-    NSString *license = self.licenseMyData ? @"CC-BY_NC" : @"on";
+    NSString *license = self.licenseMyData ? @"CC-BY-NC" : @"";
     NSInteger selectedPartnerId = self.selectedPartner ? self.selectedPartner.identifier : 1;
     
     UIView *hudView = self.parentViewController ? self.parentViewController.view : self.view;
@@ -580,56 +468,12 @@ static char PARTNER_ASSOCIATED_KEY;
                                                password:self.passwordField.text
                                                username:self.usernameField.text
                                                    site:selectedPartnerId
-                                                license:license
-                                                success:^(NSDictionary *info) {
-                                                    __strong typeof(weakSelf)strongSelf = weakSelf;
-                                                    
-                                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                                        [MBProgressHUD hideAllHUDsForView:hudView animated:YES];
-                                                        if (strongSelf.selectedPartner) {
-                                                            [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
-                                                                                                          completion:nil];
-                                                        }
-                                                        
-                                                        if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingViewController class]]) {
-                                                            [appDelegate showMainUI];
-                                                        } else {
-                                                            [strongSelf dismissViewControllerAnimated:YES completion:nil];
-                                                        }
-                                                        [[NSNotificationCenter defaultCenter] postNotificationName:kINatLoggedInNotificationKey
-                                                                                                            object:nil];
-                                                    });
-                                                }
-     
-     
-                                                failure:^(NSError *error) {
-                                                    
-                                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                                        [MBProgressHUD hideAllHUDsForView:hudView animated:YES];
-                                                    });
-                                                    
-                                                    NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
-                                                    NSString *alertMsg;
-                                                    if (error) {
-                                                        alertMsg = error.localizedDescription;
-                                                    } else {
-                                                        alertMsg = NSLocalizedString(@"Failed to create an iNaturalist account. Please try again.",
-                                                                                     @"Unknown iNaturalist create account error");
-                                                    }
-                                                    
-                                                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
-                                                                                                                   message:alertMsg
-                                                                                                            preferredStyle:UIAlertControllerStyleAlert];
-                                                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                                                              style:UIAlertActionStyleCancel
-                                                                                            handler:nil]];
-                                                    [weakSelf presentViewController:alert animated:YES completion:nil];
-                                                }];
+                                                license:license];
 }
 
 
 - (void)login {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
                                                                        message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -646,7 +490,7 @@ static char PARTNER_ASSOCIATED_KEY;
     if (!self.usernameField.text) {
         isValid = NO;
         alertMsg = NSLocalizedString(@"Invalid Username",
-                                     @"Error for bad username hwne making account.");
+                                     @"Error for bad username when making account.");
     }
     if (!self.passwordField.text || self.passwordField.text.length < INatMinPasswordLength) {
         isValid = NO;
@@ -676,54 +520,9 @@ static char PARTNER_ASSOCIATED_KEY;
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
     
-    __weak typeof(self)weakSelf = self;
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     [appDelegate.loginController loginWithUsername:self.usernameField.text
-                                          password:self.passwordField.text
-                                           success:^(NSDictionary *info) {
-                                               __strong typeof(weakSelf)strongSelf = weakSelf;
-                                               dispatch_async(dispatch_get_main_queue(), ^{
-                                                   [MBProgressHUD hideAllHUDsForView:hudView animated:YES];
-                                                   if (strongSelf.selectedPartner) {
-                                                       [appDelegate.loginController loggedInUserSelectedPartner:strongSelf.selectedPartner
-                                                                                                     completion:nil];
-                                                   }
-                                                   if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingViewController class]]) {
-                                                       [appDelegate showMainUI];
-                                                   } else {
-                                                       [strongSelf dismissViewControllerAnimated:YES completion:nil];
-                                                   }
-                                                   [[NSNotificationCenter defaultCenter] postNotificationName:kINatLoggedInNotificationKey
-                                                                                                       object:nil];
-                                               });
-                                           } failure:^(NSError *error) {
-                                               __strong typeof(weakSelf)strongSelf = weakSelf;
-                                               dispatch_async(dispatch_get_main_queue(), ^{
-                                                   [MBProgressHUD hideAllHUDsForView:hudView animated:YES];
-                                               });
-                                               
-                                               NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
-                                               NSString *alertMsg;
-                                               if (error) {
-                                                   if ([error.domain isEqualToString:NXOAuth2HTTPErrorDomain] && error.code == 401) {
-                                                       alertMsg = NSLocalizedString(@"Incorrect username or password.",
-                                                                                    @"Error msg when we get a 401 from the server");
-                                                   } else {
-                                                       alertMsg = error.localizedDescription;
-                                                   }
-                                               } else {
-                                                   alertMsg = NSLocalizedString(@"Failed to login to iNaturalist. Please try again.",
-                                                                                @"Unknown iNat login error");
-                                               }
-                                               UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
-                                                                                                              message:alertMsg
-                                                                                                       preferredStyle:UIAlertControllerStyleAlert];
-                                               [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                                                         style:UIAlertActionStyleCancel
-                                                                                       handler:nil]];
-                                               [weakSelf presentViewController:alert animated:YES completion:nil];                                               
-                                           }];
-    
+                                          password:self.passwordField.text];
 }
 
 #pragma mark - Partner alert helper
@@ -736,7 +535,7 @@ static char PARTNER_ASSOCIATED_KEY;
     
     NSString *alertTitle = [NSString stringWithFormat:NSLocalizedString(@"Use %@?",
                                                                         @"join iNat network partner alert title"),
-                            partner.name];
+                            partner.shortName];
     NSString *alertMsgFmt = NSLocalizedString(@"Would you like to use %@, a member of the iNaturalist Network in %@? Clicking OK will localize your experience and share data accordingly.",
                                               @"join iNat network partner alert message");
     NSString *alertMsg = [NSString stringWithFormat:alertMsgFmt, partner.name, partner.countryName];
@@ -821,6 +620,56 @@ static char PARTNER_ASSOCIATED_KEY;
     return YES;
 }
 
+#pragma mark - INatAuthenticationDelegate
 
+- (void)loginFailedWithError:(NSError *)error {
+    UIView *hudView = self.parentViewController ? self.parentViewController.view : self.view;
+    [MBProgressHUD hideAllHUDsForView:hudView animated:YES];
+
+    NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
+    NSString *alertMsg;
+    if (error) {
+        if ([error.domain isEqualToString:NXOAuth2HTTPErrorDomain] && error.code == 401) {
+            alertMsg = NSLocalizedString(@"Incorrect username or password.",
+                                         @"Error msg when we get a 401 from the server");
+        } else if ([error.domain isEqualToString:NXOAuth2HTTPErrorDomain] && error.code == 403) {
+            alertMsg = NSLocalizedString(@"You don't have permission to do that. Your account may have been suspended. Please contact help@inaturalist.org.",
+                                         @"403 forbidden message");
+        } else {
+            alertMsg = error.localizedDescription;
+        }
+    } else {
+        alertMsg = NSLocalizedString(@"Failed to login to iNaturalist. Please try again.",
+                                     @"Unknown iNat login error");
+    }
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                   message:alertMsg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+    [self.passwordField setText:@""];
+}
+
+- (void)loginSuccess {
+    UIView *hudView = self.parentViewController ? self.parentViewController.view : self.view;
+    [MBProgressHUD hideAllHUDsForView:hudView animated:YES];
+
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.selectedPartner) {
+            [appDelegate.loginController loggedInUserSelectedPartner:self.selectedPartner
+                                                          completion:nil];
+        }
+        if ([appDelegate.window.rootViewController isKindOfClass:[OnboardingViewController class]]) {
+            [appDelegate showMainUI];
+        } else {
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }
+    });
+    
+    NSLog(@"login success");
+}
 
 @end

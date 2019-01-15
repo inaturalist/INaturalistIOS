@@ -6,7 +6,7 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 #import "ProjectObsPhotoCell.h"
 
@@ -14,7 +14,7 @@
 
 - (void)prepareForReuse {
     self.photoImageView.image = nil;
-    [self.photoImageView sd_cancelCurrentImageLoad];
+    [self.photoImageView cancelImageDownloadTask];
     self.obsText.text = @"";
 }
 

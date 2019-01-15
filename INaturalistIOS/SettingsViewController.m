@@ -12,12 +12,13 @@
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
-#import <GooglePlus/GPPSignIn.h>
-#import <GoogleOpenSource/GTMOAuth2Authentication.h>
+#import <GoogleSignIn/GoogleSignIn.h>
 #import <ActionSheetPicker-3.0/ActionSheetStringPicker.h>
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <Realm/Realm.h>
+#import <RestKit/RestKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 #import "SettingsViewController.h"
 #import "Observation.h"
@@ -26,7 +27,6 @@
 #import "ProjectObservation.h"
 #import "Comment.h"
 #import "Identification.h"
-#import "User.h"
 #import "DeletedRecord.h"
 #import "INatUITabBarController.h"
 #import "NXOAuth2.h"
@@ -39,16 +39,51 @@
 #import "UIColor+INaturalist.h"
 #import "PeopleAPI.h"
 #import "OnboardingLoginViewController.h"
+#import "ImageStore.h"
+#import "INatReachability.h"
+#import "AboutViewController.h"
+#import "SettingsActionCell.h"
+#import "SettingsSwitchCell.h"
+#import "SettingsDetailTextCell.h"
+#import "SettingsVersionCell.h"
+#import "ExploreUserRealm.h"
 
-static const int CreditsSection = 3;
+typedef NS_ENUM(NSInteger, SettingsSection) {
+    SettingsSectionAccount = 0,
+    SettingsSectionApp,
+    SettingsSectionHelp,
+    SettingsSectionVersion
+};
+static const int SettingsSectionCount = 4;
 
-static const int NetworkDetailLabelTag = 14;
-static const int NetworkTextLabelTag = 15;
+typedef NS_ENUM(NSInteger, SettingsHelpCell) {
+    SettingsHelpCellTutorial = 0,
+    SettingsHelpCellContact,
+    SettingsHelpCellReview,
+    SettingsHelpCellDonate
+};
+static const int SettingsHelpRowCount = 4;
 
-static const int AutocompleteNamesLabelTag = 51;
-static const int AutouploadLabelTag = 52;
-static const int AutocompleteNamesSwitchTag = 101;
-static const int AutouploadSwitchTag = 102;
+typedef NS_ENUM(NSInteger, SettingsAppCell) {
+    SettingsAppCellChangeUsername = 0,
+    SettingsAppCellChangeEmail,
+    SettingsAppCellAutocompleteNames,
+    SettingsAppCellAutomaticUpload,
+    SettingsAppCellSuggestSpecies,
+    SettingsAppCellNetwork
+};
+static const int SettingsAppRowCount = 6;
+
+typedef NS_ENUM(NSInteger, SettingsAccountCell) {
+    SettingsAccountCellUsername,
+    SettingsAccountCellEmail,
+    SettingsAccountCellAction
+};
+static const int SettingsAccountRowCountLoggedIn = 3;
+static const int SettingsAccountRowCountLoggedOut = 1;
+
+static const int SettingsVersionRowCount = 1;
+
 
 @interface SettingsViewController () {
     UITapGestureRecognizer *tapAway;
@@ -69,20 +104,114 @@ static const int AutouploadSwitchTag = 102;
     return _api;
 }
 
-- (void)initUI
+#pragma mark - UI helpers
+
+- (void)presentSignup {
+    [[Analytics sharedClient] event:kAnalyticsEventNavigateOnboardingScreenLogin
+                     withProperties:@{ @"via": @"settings" }];
+    
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+    OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
+    login.skippable = NO;
+    [self presentViewController:login animated:YES completion:nil];
+}
+
+- (void)networkUnreachableAlert
 {
-    self.navigationController.navigationBar.translucent = NO;
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                                                   message:NSLocalizedString(@"Try again next time you're connected to the Internet.",nil)
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                             style:UIAlertActionStyleDefault
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+#pragma mark - lifecycle
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
     
     NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
     self.versionText = [NSString stringWithFormat:NSLocalizedString(@"%@, build %@",nil),
-                        [info objectForKey:@"CFBundleShortVersionString"],
-                        [info objectForKey:@"CFBundleVersion"]];
+                        [info objectForKey:@"CFBundleShortVersionString"] ?: @"unknown version",
+                        [info objectForKey:@"CFBundleVersion"] ?: @"unknown version"];
     
+    self.partnerController = [[PartnerController alloc] init];
+    
+    self.title = NSLocalizedString(@"Settings", @"Title for the settings screen.");
+    
+    NSString *aboutTitle = NSLocalizedString(@"About", @"About button title in Settings");
+    UIBarButtonItem *aboutButton = [[UIBarButtonItem alloc] initWithTitle:aboutTitle
+                                                                    style:UIBarButtonItemStylePlain
+                                                                   target:self
+                                                                   action:@selector(launchCredits)];
+    self.navigationItem.rightBarButtonItem = aboutButton;
+    
+    // fetch the me user from the server to populate login and email address fields
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    LoginController *login = appDelegate.loginController;
+    if (login.isLoggedIn) {
+        __weak typeof(self)weakSelf = self;
+        [login meUserRemoteCompletion:^(ExploreUserRealm *me) {
+            [weakSelf.tableView reloadData];
+        }];
+    }
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
     [self.tableView reloadData];
+    
+    // don't show a toolbar in Settings
+    [self.navigationController setToolbarHidden:YES];
+}
+
+
+#pragma mark - Settings Event Actions target
+
+- (void)tappedEmail {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
+        NSString *title = NSLocalizedString(@"Change email address?",nil);
+        NSString *msg = NSLocalizedString(@"Are you really sure?",
+                                          nil);
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:msg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+            textField.text = me.email;
+        }];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Change Email", nil)
+                                                  style:UIAlertActionStyleDefault
+                                                handler:^(UIAlertAction * _Nonnull action) {
+                                                    UITextField *field = [alert.textFields firstObject];
+                                                    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+                                                    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+                                                    if (![me.login isEqualToString:field.text]) {
+                                                        [self changeEmailTo:(NSString *)field.text];
+                                                    }
+                                                }]];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+    } else {
+        [self networkUnreachableAlert];
+    }
+
 }
 
 - (void)tappedUsername {
-    if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
         NSString *title = NSLocalizedString(@"Change username?",nil);
         NSString *msg = NSLocalizedString(@"Are you really sure?",
                                           nil);
@@ -92,7 +221,7 @@ static const int AutouploadSwitchTag = 102;
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
             INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-            User *me = [appDelegate.loginController fetchMe];
+            ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
             textField.text = me.login;
         }];
         [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",nil)
@@ -103,7 +232,7 @@ static const int AutouploadSwitchTag = 102;
                                                 handler:^(UIAlertAction * _Nonnull action) {
                                                     UITextField *field = [alert.textFields firstObject];
                                                     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-                                                    User *me = [appDelegate.loginController fetchMe];
+                                                    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
                                                     if (![me.login isEqualToString:field.text]) {
                                                         [self changeUsernameTo:(NSString *)field.text];
                                                     }
@@ -117,7 +246,7 @@ static const int AutouploadSwitchTag = 102;
 
 - (void)clickedSignOut {
     NSString *title = NSLocalizedString(@"Are you sure?",nil);
-    NSString *msg = NSLocalizedString(@"This will delete all your observations on this device.  It will not affect any observations you've uploaded to iNaturalist.",
+    NSString *msg = NSLocalizedString(@"This will destroy any changes/additions you've made from this app that haven't been synced with iNaturalist.org.",
                                       nil);
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
@@ -135,26 +264,67 @@ static const int AutouploadSwitchTag = 102;
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)changeUsernameTo:(NSString *)newUsername {
+- (void)changeEmailTo:(NSString *)newEmail {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    User *me = [appDelegate.loginController fetchMe];
-    
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
     
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tabBarController.view animated:YES];
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
     hud.labelText = NSLocalizedString(@"Updating...", nil);
-
+    
     // the server validates the new username (since it might be a duplicate or something)
     // so don't change it locally
-
+    
     __weak typeof(self) weakSelf = self;
-    [[self peopleApi] setUsername:newUsername forUser:me handler:^(NSArray *results, NSInteger count, NSError *error) {
+    [[self peopleApi] setEmailAddress:newEmail forUserId:me.userId handler:^(NSArray *results, NSInteger count, NSError *error) {
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [hud hide:YES];
+        });
+        
+        if (error) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Whoops", nil)
+                                                                           message:error.localizedDescription
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:nil]];
+            [weakSelf presentViewController:alert animated:YES completion:nil];
+        } else {
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            
+            ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+            if (me) {
+                RLMRealm *realm = [RLMRealm defaultRealm];
+                [realm beginWriteTransaction];
+                me.email = newEmail;
+                [realm commitWriteTransaction];
+                [weakSelf.tableView reloadData];
+            }
+        }
+    }];
+}
+
+- (void)changeUsernameTo:(NSString *)newUsername {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tabBarController.view animated:YES];
+    hud.removeFromSuperViewOnHide = YES;
+    hud.dimBackground = YES;
+    hud.labelText = NSLocalizedString(@"Updating...", nil);
+    
+    // the server validates the new username (since it might be a duplicate or something)
+    // so don't change it locally
+    
+    __weak typeof(self) weakSelf = self;
+    [[self peopleApi] setUsername:newUsername forUserId:me.userId handler:^(NSArray *results, NSInteger count, NSError *error) {
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [hud hide:YES];
         });
-
+        
         if (error) {
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Whoops", nil)
                                                                            message:error.localizedDescription
@@ -166,17 +336,11 @@ static const int AutouploadSwitchTag = 102;
         } else {
             [[Analytics sharedClient] event:kAnalyticsEventProfileLoginChanged];
             
-            RKObjectManager *manager = [RKObjectManager sharedManager];
-            
-            [manager loadObjectsAtResourcePath:[NSString stringWithFormat:@"/users/%ld.json", (long)me.recordID.integerValue ]
-                                                               usingBlock:^(RKObjectLoader *loader) {
-                                                                   loader.objectMapping = [User mapping];
-                                                                   loader.onDidLoadObject = ^(id object) {
-                                                                       NSError *error = nil;
-                                                                       [[User managedObjectContext] save:&error];
-                                                                       [[weakSelf tableView] reloadData];
-                                                                   };
-                                                               }];
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            [realm beginWriteTransaction];
+            me.login = newUsername;
+            [realm commitWriteTransaction];
+            [[weakSelf tableView] reloadData];
         }
     }];
 }
@@ -184,7 +348,8 @@ static const int AutouploadSwitchTag = 102;
 - (void)signOut
 {
     [[Analytics sharedClient] event:kAnalyticsEventLogout];
-
+    [[Analytics sharedClient] debugLog:@"User Logout"];
+    
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tabBarController.view
                                               animated:YES];
     hud.mode = MBProgressHUDModeIndeterminate;
@@ -207,9 +372,22 @@ static const int AutouploadSwitchTag = 102;
 
 - (void)localSignOut
 {
-    // clear g+
-    if ([[GPPSignIn sharedInstance] hasAuthInKeychain]) [[GPPSignIn sharedInstance] disconnect];
-
+    // clear google signin
+    if ([[GIDSignIn sharedInstance] hasAuthInKeychain]) {
+        [[GIDSignIn sharedInstance] signOut];
+    }
+    
+    // clear facebook login
+    if ([FBSDKAccessToken currentAccessToken]) {
+        FBSDKLoginManager *fb = [[FBSDKLoginManager alloc] init];
+        [fb logOut];
+    }
+    
+    // clear any oauth login info
+    for (NXOAuth2Account *account in [[NXOAuth2AccountStore sharedStore] accounts]) {
+        [[NXOAuth2AccountStore sharedStore] removeAccount:account];
+    }
+    
     // clear preference cached signin info & preferences
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults removeObjectForKey:INatUsernamePrefKey];
@@ -243,8 +421,11 @@ static const int AutouploadSwitchTag = 102;
     // clear anything stashed in login
     [appDelegate.loginController logout];
     
+    // clear the imagestore
+    [[ImageStore sharedImageStore] clearEntireStore];
+    
     // update UI
-    [self initUI];
+    [self.tableView reloadData];
 }
 
 - (void)launchTutorial
@@ -276,7 +457,7 @@ static const int AutouploadSwitchTag = 102;
     
     __weak MHGalleryController *blockGallery = gallery;
     
-    gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
+    gallery.finishedCallback = ^(NSInteger currentIndex, UIImage *image, MHTransitionDismissMHGallery *interactiveTransition, MHGalleryViewMode viewMode) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [blockGallery dismissViewControllerAnimated:YES completion:nil];
         });
@@ -286,30 +467,52 @@ static const int AutouploadSwitchTag = 102;
 
 - (void)sendSupportEmail
 {
-    NSString *email = [NSString stringWithFormat:@"mailto://help@inaturalist.org?cc=&subject=iNaturalist iPhone help: version %@",
+    NSString *email = [NSString stringWithFormat:@"mailto://help@inaturalist.org?cc=&subject=iNaturalist iPhone help - version: %@",
                        self.versionText];
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    
     if ([appDelegate.loginController isLoggedIn]) {
-        User *me = [appDelegate.loginController fetchMe];
-        email = [email stringByAppendingString:[NSString stringWithFormat:@" user id %ld", (long)me.recordID.integerValue]];
+        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+        email = [email stringByAppendingString:[NSString stringWithFormat:@" user id: %ld,", (long)me.userId]];
+        email = [email stringByAppendingString:[NSString stringWithFormat:@" username: %@", me.login]];
     } else {
         email = [email stringByAppendingString:@" user not logged in"];
     }
     
-    email = [email stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    email = [email stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:email]];
 }
 
 - (void)launchRateUs {
 #ifdef INatAppStoreURL
-    if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
+        [[Analytics sharedClient] event:kAnalyticsEventSettingsRateUs];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:INatAppStoreURL]];
     } else {
         [self networkUnreachableAlert];
     }
 #else
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot rate", nil)
-                                                                   message:NSLocalizedString(@"No App Store URL configured", nil)
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot rate", @"Failure message")
+                                                                   message:NSLocalizedString(@"No URL configured", nil)
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                              style:UIAlertActionStyleDefault
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+#endif
+}
+
+- (void)launchDonate {
+#ifdef INatDonateURL
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
+        [[Analytics sharedClient] event:kAnalyticsEventSettingsDonate];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:INatDonateURL]];
+    } else {
+        [self networkUnreachableAlert];
+    }
+#else
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot donate", @"Failure message")
+                                                                   message:NSLocalizedString(@"No URL configured", nil)
                                                             preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
                                               style:UIAlertActionStyleDefault
@@ -319,59 +522,9 @@ static const int AutouploadSwitchTag = 102;
 }
 
 - (void)launchCredits {
-    VTAcknowledgementsViewController *creditsVC = [VTAcknowledgementsViewController acknowledgementsViewController];
-    
-    NSString *credits = [NSString stringWithFormat:@"%@\n\n%@\n\n%@\n\n%@\n\n%@",
-                         NSLocalizedString(@"Designed and built by iNaturalist at the California Academy of Sciences, with support from the Encyclopedia of Life. ", @"funding thank yous"),
-                         NSLocalizedString(@"iNaturalist is made by every single person who participates in our community. The people who build the software, maintain our infrastructure, and foster collaborations are Joelle Belmonte, Patrick Leary, Scott Loarie, Alex Shepard, and Ken-ichi Ueda.", @"inat core team, alphabetically"),
-                         NSLocalizedString(@"iNaturalist uses Glyphish icons by Joseph Wain, ionicons by Ben Sperry, and icons by Luis Prado and Roman Shlyakov from the Noun Project. iNaturalist is also deeply grateful to the Cocoapods community, and to the contributions of our own open source community. See https://github.com/inaturalist/INaturalistIOS.", @"open source contributions"),
-                         NSLocalizedString(@"We are grateful for the translation assistance provided by the following members of the crowdin.com community: Carlos Alonso, Gabriel Fabiano Benzoni, cgalindo, Cecilia Juryung Chung, Claudine Cyr, eldadzz, jacquesboivin, harum koh, MinYoung Jang, Donggeun Lee, Angelo Loula, myerssusan, nagatowell, natleclaire, James Page, Juliana Gatti Pereira, sgravel8596, sudachi, T.O, testamorta, tiwamura, vilseskog, and vonmatter. To join the iNaturalist iOS translation team, please visit https://crowdin.com/project/inaturalistios.", @"inat ios translation team, alphabetically"),
-                         @"IUCN category II places provided by IUCN and UNEP-WCMC (2015), The World Database on Protected Areas (WDPA) [On-line], [11/2014], Cambridge, UK: UNEP-WCMC. Available at: www.protectedplanet.net."];
-
-    creditsVC.headerText = credits;
-    UILabel *label = creditsVC.tableView.tableHeaderView.subviews.firstObject;
-    label.textAlignment = NSTextAlignmentLeft;
-    
-    [self.navigationController pushViewController:creditsVC animated:YES];
-}
-
-- (void)networkUnreachableAlert
-{
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
-                                                                   message:NSLocalizedString(@"Try again next time you're connected to the Internet.",nil)
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                             style:UIAlertActionStyleDefault
-                                            handler:nil]];
-    [self presentViewController:alert animated:YES completion:nil];
-}
-
-#pragma mark - lifecycle
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(initUI)
-                                                 name:kUserLoggedInNotificationName
-                                               object:nil];
-
-    self.partnerController = [[PartnerController alloc] init];
-    
-    self.title = NSLocalizedString(@"Settings", @"Title for the settings screen.");
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    [self initUI];
-    
-    // don't show a toolbar in Settings
-    [self.navigationController setToolbarHidden:YES];
+    AboutViewController *about = [AboutViewController acknowledgementsViewController];
+    [self.navigationController pushViewController:about animated:YES];
+    return;
 }
 
 - (void)selectedPartner:(Partner *)partner {
@@ -384,173 +537,16 @@ static const int AutouploadSwitchTag = 102;
                                                   }];
 }
 
-#pragma mark - UISwitch target
-
-- (void)settingSwitched:(UISwitch *)switcher {
-    NSString *key;
-    
-    if (switcher.tag == AutocompleteNamesSwitchTag)
-        key = kINatAutocompleteNamesPrefKey;
-    else if (switcher.tag == AutouploadSwitchTag)
-        key = kInatAutouploadPrefKey;
-    
-    if (key) {
-        NSString *analyticsEvent;
-        
-        if (switcher.isOn) {
-            analyticsEvent = kAnalyticsEventSettingEnabled;
-        } else {
-            analyticsEvent = kAnalyticsEventSettingDisabled;
-        }
-        
-        [[Analytics sharedClient] event:analyticsEvent
-                         withProperties:@{ @"setting": key }];
-        
-        [[NSUserDefaults standardUserDefaults] setBool:switcher.isOn forKey:key];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        if ([key isEqualToString:kInatAutouploadPrefKey]) {
-            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-            UploadManager *uploadManager = appDelegate.loginController.uploadManager;
-            if (switcher.isOn) {
-                // start autouploading right away
-                if ([uploadManager shouldAutoupload]) {
-                    if (uploadManager.isNetworkAvailableForUpload) {
-                        [uploadManager autouploadPendingContent];
-                    } else {
-                        if (uploadManager.shouldNotifyAboutNetworkState) {
-                            [JDStatusBarNotification showWithStatus:NSLocalizedString(@"Network Unavailable", nil)
-                                                       dismissAfter:4];
-                        }
-                    }
-                }
-            } else {
-                // cancel autoupload if it's currently running
-                if (uploadManager.isUploading) {
-                    [uploadManager cancelSyncsAndUploads];
-                }
-            }
-        }
-    }
-}
-
-#pragma mark - UITableView
-- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (indexPath.section == 4 && indexPath.row == 0) {
-        cell.textLabel.text = self.versionText;
-        cell.textLabel.textAlignment = NSTextAlignmentNatural;
-        cell.backgroundView = nil;
-    } else if (indexPath.section == 0) {
-        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-
-        if (indexPath.row == 0) {
-            // username cell
-            cell.textLabel.text = NSLocalizedString(@"Username", nil);
-            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-            if (appDelegate.loginController.isLoggedIn) {
-                cell.detailTextLabel.text = appDelegate.loginController.fetchMe.login;
-            } else {
-                cell.detailTextLabel.text = NSLocalizedString(@"Not Logged In", nil);
-            }
-        } else {
-            // account action (sign in / sign out) cell
-            cell.textLabel.textColor = [UIColor inatTint];
-            if (appDelegate.loginController.isLoggedIn) {
-                cell.textLabel.text = NSLocalizedString(@"Sign out",nil);
-            } else {
-                cell.textLabel.text = NSLocalizedString(@"Log In / Sign Up",nil);
-            }
-        }
-    }
-    else if (indexPath.section == 1) {
-        cell.userInteractionEnabled = YES;
-        
-        if (indexPath.item == 0) {
-            // do nothing
-        } else if (indexPath.item < 3) {
-            cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            
-            UILabel *autoNameLabel = (UILabel *)[cell.contentView viewWithTag:AutocompleteNamesLabelTag];
-            if (autoNameLabel) {
-                autoNameLabel.textAlignment = NSTextAlignmentNatural;
-            }
-            UILabel *autouploadLabel = (UILabel *)[cell.contentView viewWithTag:AutouploadLabelTag];
-            if (autouploadLabel) {
-                autouploadLabel.textAlignment = NSTextAlignmentNatural;
-            }
-            
-            UISwitch *switcher;
-            if (![cell viewWithTag:100 + indexPath.item]) {
-                
-                switcher = [[UISwitch alloc] initWithFrame:CGRectZero];
-                switcher.translatesAutoresizingMaskIntoConstraints = NO;
-                switcher.tag = 100 + indexPath.item;
-                switcher.enabled = YES;
-                [switcher addTarget:self
-                             action:@selector(settingSwitched:)
-                   forControlEvents:UIControlEventValueChanged];
-                
-                [cell.contentView addSubview:switcher];
-                
-                [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[switcher]-15-|"
-                                                                             options:0
-                                                                             metrics:0
-                                                                               views:@{ @"switcher": switcher }]];
-                [cell addConstraint:[NSLayoutConstraint constraintWithItem:switcher
-                                                                 attribute:NSLayoutAttributeCenterY
-                                                                 relatedBy:NSLayoutRelationEqual
-                                                                    toItem:cell.contentView
-                                                                 attribute:NSLayoutAttributeCenterY
-                                                                multiplier:1.0f
-                                                                  constant:0.0f]];
-            } else {
-                switcher = (UISwitch *)[cell viewWithTag:100 + indexPath.item];
-            }
-            
-            if (switcher.tag == AutocompleteNamesSwitchTag)
-                switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey];
-            else if (switcher.tag == AutouploadSwitchTag)
-                switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey];
-
-        } else {
-            // iNaturalist Network setting
-            
-            // main text in black
-            cell.textLabel.enabled = YES;
-            
-            // put user object changing site id
-            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-            User *me = [appDelegate.loginController fetchMe];
-            UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:NetworkDetailLabelTag];
-            [self setupConstraintsForNetworkCell:cell];
-            if (me) {
-                Partner *p = [self.partnerController partnerForSiteId:me.siteId.integerValue];
-                detailTextLabel.text = p.name;
-            } else {
-                detailTextLabel.text = @"iNaturalist";
-            }
-            
-        }
-    }
-    else if (indexPath.section == 2) {  // Handles help section
-        cell.textLabel.textAlignment = NSTextAlignmentNatural;
-    }
-    else if (indexPath.section == 3) {  // Handles Acknowledgements section
-        cell.textLabel.textAlignment = NSTextAlignmentNatural;
-    }
-}
-
 - (void)choseToChangeNetworkPartner {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-    User *me = [appDelegate.loginController fetchMe];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
     if (!me) { return; }
     
     NSArray *partnerNames = [self.partnerController.partners bk_map:^id(Partner *p) {
         return p.name;
     }];
     
-    Partner *currentPartner = [self.partnerController partnerForSiteId:me.siteId.integerValue];
+    Partner *currentPartner = [self.partnerController partnerForSiteId:me.siteId];
     
     __weak typeof(self) weakSelf = self;
     [[[ActionSheetStringPicker alloc] initWithTitle:NSLocalizedString(@"Choose iNat Network", "title of inat network picker")
@@ -568,15 +564,140 @@ static const int AutouploadSwitchTag = 102;
                                              origin:self.view] showActionSheetPicker];
 }
 
+- (void)settingChanged:(NSString *)key newValue:(BOOL)newValue {
+    NSString *analyticsEvent = newValue ? kAnalyticsEventSettingEnabled : kAnalyticsEventSettingDisabled;
+    [[Analytics sharedClient] event:analyticsEvent
+                     withProperties:@{ @"setting": key }];
+    [[NSUserDefaults standardUserDefaults] setBool:newValue forKey:key];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    // kick off autouploads if necessary
+    
+    if ([key isEqualToString:kInatAutouploadPrefKey]) {
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        UploadManager *uploadManager = appDelegate.loginController.uploadManager;
+        if (newValue) {
+            // start autouploading right away
+            if ([uploadManager shouldAutoupload]) {
+                if (uploadManager.isNetworkAvailableForUpload) {
+                    [uploadManager autouploadPendingContent];
+                } else {
+                    if (uploadManager.shouldNotifyAboutNetworkState) {
+                        [JDStatusBarNotification showWithStatus:NSLocalizedString(@"Network Unavailable", nil)
+                                                   dismissAfter:4];
+                    }
+                }
+            }
+        } else {
+            // cancel autoupload if it's currently running
+            if (uploadManager.state == UploadManagerStateUploading) {
+                [uploadManager cancelSyncsAndUploads];
+            }
+        }
+    }
+}
+
+#pragma mark - UITableView
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (section == SettingsSectionAccount) {
+        return NSLocalizedString(@"Your Account", @"Title for account section of settings.");
+    } else if (section == SettingsSectionApp) {
+        return NSLocalizedString(@"App Settings", @"Title for app section of settings.");
+    } else if (section == SettingsSectionHelp) {
+        return NSLocalizedString(@"Help", @"Title for help section of settings.");
+    } else if (section == SettingsSectionVersion) {
+        return NSLocalizedString(@"Version", @"Title for version section of settings.");
+    } else {
+        return nil;
+    }
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return SettingsSectionCount;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (section == SettingsSectionAccount) {
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if (appDelegate.loginController.isLoggedIn) {
+            return SettingsAccountRowCountLoggedIn;
+        } else {
+            return SettingsAccountRowCountLoggedOut;
+        }
+    } else if (section == SettingsSectionApp) {
+        return SettingsAppRowCount;
+    } else if (section == SettingsSectionHelp) {
+        return SettingsHelpRowCount;
+    } else if (section == SettingsSectionVersion) {
+        return SettingsVersionRowCount;
+    } else {
+        return 0;
+    }
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == SettingsSectionAccount) {
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if (appDelegate.loginController.isLoggedIn) {
+            if (indexPath.item == SettingsAccountCellUsername) {
+                return [self tableView:tableView accountUsernameCellForIndexPath:indexPath];
+            } else if (indexPath.item == SettingsAccountCellEmail) {
+                return [self tableView:tableView accountEmailCellForIndexPath:indexPath];
+            } else {
+                return [self tableView:tableView accountActionCellForIndexPath:indexPath];
+            }
+        } else {
+            return [self tableView:tableView accountActionCellForIndexPath:indexPath];
+        }
+    } else if (indexPath.section == SettingsSectionApp) {
+        if (indexPath.item == SettingsAppCellChangeUsername) {
+            return [self tableView:tableView appChangeUsernameCellForIndexPath:indexPath];
+        } else if (indexPath.item == SettingsAppCellChangeEmail) {
+            return [self tableView:tableView appChangeEmailCellForIndexPath:indexPath];
+        } else if (indexPath.item == SettingsAppCellAutocompleteNames) {
+            return [self tableView:tableView appAutocompleteNamesCellForIndexPath:indexPath];
+        } else if (indexPath.item == SettingsAppCellAutomaticUpload) {
+            return [self tableView:tableView appAutoUploadCellForIndexPath:indexPath];
+        } else if (indexPath.item == SettingsAppCellSuggestSpecies) {
+            return [self tableView:tableView appSuggestSpeciesCellForIndexPath:indexPath];
+        } else {
+            return [self tableView:tableView appInaturalistNetworkCellForIndexPath:indexPath];
+        }
+    } else if (indexPath.section == SettingsSectionHelp) {
+        if (indexPath.item == SettingsHelpCellTutorial) {
+            return [self tableView:tableView tutorialCellForIndexPath:indexPath];
+        } else if (indexPath.item == SettingsHelpCellContact) {
+            return [self tableView:tableView contactUsCellForIndexPath:indexPath];
+        } else if (indexPath.item == SettingsHelpCellReview) {
+            return [self tableView:tableView rateUsCellForIndexPath:indexPath];
+        } else {
+            return [self tableView:tableView donateCellForIndexPath:indexPath];
+        }
+    } else {
+        return [self tableView:tableView versionCellForIndexPath:indexPath];
+    }
+}
+
 #pragma mark - UITableViewDataSource
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    if (indexPath.section == 1) {
-        if (indexPath.item == 0) {
-            [self tappedUsername];
-        } else if (indexPath.item == 3) {
-			INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (indexPath.section == SettingsSectionApp) {
+        if (indexPath.item == SettingsAppCellChangeUsername) {
+            if (![appDelegate.loginController isLoggedIn]) {
+                [self presentSignup];
+            } else {
+                [self tappedUsername];
+            }
+        } else if (indexPath.item == SettingsAppCellChangeEmail) {
+            if (![appDelegate.loginController isLoggedIn]) {
+                [self presentSignup];
+            } else {
+                [self tappedEmail];
+            }
+        } else if (indexPath.item == SettingsAppCellNetwork) {
 			if (![appDelegate.loginController isLoggedIn]) {
 				[self presentSignup];
             } else {
@@ -589,7 +710,7 @@ static const int AutouploadSwitchTag = 102;
                 
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Warning", nil)
                                                                                message:alertMsg
-                                                                        preferredStyle:UIAlertControllerStyleActionSheet];
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
                 [alert addAction:[UIAlertAction actionWithTitle:cancelBtnMsg
                                                           style:UIAlertActionStyleCancel
                                                         handler:nil]];
@@ -605,13 +726,16 @@ static const int AutouploadSwitchTag = 102;
         } else {
             // show popover
             NSString *tooltipText;
-            if (indexPath.item == 1) {
+            if (indexPath.item == SettingsAppCellAutocompleteNames) {
                 // autocorrect
                 tooltipText = NSLocalizedString(@"Enable to allow iOS to auto-correct and spell-check Species names.", @"tooltip text for autocorrect settings option.");
-            } else if (indexPath.item == 2) {
+            } else if (indexPath.item == SettingsAppCellAutomaticUpload) {
                 // automatically upload
                 tooltipText = NSLocalizedString(@"Automatically upload new or edited content to iNaturalist.org",
                                                 @"tooltip text for automatically upload option.");
+            } else if (indexPath.item == SettingsAppCellSuggestSpecies) {
+                // suggestions
+                tooltipText = NSLocalizedString(@"Show species suggestions for observations or identifications", nil);
             }
             
             tooltip = [[JDFTooltipView alloc] initWithTargetView:[[tableView cellForRowAtIndexPath:indexPath] viewWithTag:100+indexPath.item]
@@ -635,34 +759,43 @@ static const int AutouploadSwitchTag = 102;
             
             return;
         }
-    } else if (indexPath.section == CreditsSection) {
-        [self launchCredits];
-        return;
-    } else if (indexPath.section == 2) {
-        if (indexPath.item == 0) {
+    } else if (indexPath.section == SettingsSectionHelp) {
+        if (indexPath.item == SettingsHelpCellTutorial) {
             [self launchTutorial];
-        } else if (indexPath.item == 1) {
+        } else if (indexPath.item == SettingsHelpCellContact) {
             [self sendSupportEmail];
-        } else if (indexPath.item == 2) {
+        } else if (indexPath.item == SettingsHelpCellReview) {
             [self launchRateUs];
+        } else {
+            [self launchDonate];
         }
-    } else if (indexPath.section == 0) {
+    } else if (indexPath.section == SettingsSectionAccount) {
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-        if (indexPath.item == 0) {
+        if (indexPath.item == SettingsAccountCellUsername) {
             if ([appDelegate.loginController isLoggedIn]) {
                 [self tappedUsername];
             } else {
-                if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+                if ([[INatReachability sharedClient] isNetworkReachable]) {
                     [self presentSignup];
                 } else {
                     [self networkUnreachableAlert];
                 }
             }
-        } else if (indexPath.item == 1) {
+        } else if (indexPath.item == SettingsAccountCellEmail) {
+            if ([appDelegate.loginController isLoggedIn]) {
+                [self tappedEmail];
+            } else {
+                if ([[INatReachability sharedClient] isNetworkReachable]) {
+                    [self presentSignup];
+                } else {
+                    [self networkUnreachableAlert];
+                }
+            }
+        } else if (indexPath.item == SettingsAccountCellAction) {
             if ([appDelegate.loginController isLoggedIn]) {
                 [self clickedSignOut];
             } else {
-                if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+                if ([[INatReachability sharedClient] isNetworkReachable]) {
                     [self presentSignup];
                 } else {
                     [self networkUnreachableAlert];
@@ -672,47 +805,144 @@ static const int AutouploadSwitchTag = 102;
     }
 }
 
-- (void)presentSignup {
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateOnboardingScreenLogin
-                     withProperties:@{ @"via": @"settings" }];
+#pragma mark - TableView Helpers
 
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
-    OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
-    login.skippable = NO;
-    [self presentViewController:login animated:YES completion:nil];
+- (UITableViewCell *)tableView:(UITableView *)tableView accountUsernameCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
+                                                                   forIndexPath:indexPath];
+    cell.leadingTextLabel.text = NSLocalizedString(@"Username", @"label for username field in settings");
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    cell.trailingTextLabel.text = appDelegate.loginController.meUserLocal.login;
+    return cell;
 }
 
-- (void)setupConstraintsForNetworkCell:(UITableViewCell *)cell{
-    if(!cell.constraints.count){
-        UILabel *detailTextLabel = (UILabel *)[cell viewWithTag:NetworkDetailLabelTag];
-        detailTextLabel.textAlignment = NSTextAlignmentNatural;
-        detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        
-        UILabel *textLabel = (UILabel *)[cell viewWithTag:NetworkTextLabelTag];
-        textLabel.translatesAutoresizingMaskIntoConstraints = NO;
-        textLabel.textAlignment = NSTextAlignmentNatural;
-        
-        NSDictionary *views = @{@"textLabel":textLabel, @"detailTextLabel":detailTextLabel};
-        
-        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[textLabel]-[detailTextLabel]-|" options:0 metrics:0 views:views]];
-        
-        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[textLabel]-11-|" options:NSLayoutFormatAlignAllLeading metrics:0 views:views]];
-        
-        [cell addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-11-[detailTextLabel]-11-|" options:NSLayoutFormatAlignAllTrailing metrics:0 views:views]];
+- (UITableViewCell *)tableView:(UITableView *)tableView accountEmailCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
+                                                                   forIndexPath:indexPath];
+    cell.leadingTextLabel.text = NSLocalizedString(@"Email", @"label for email field in settings");
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    cell.trailingTextLabel.text = appDelegate.loginController.meUserLocal.email;
+    return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView accountActionCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsActionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"action"
+                                                               forIndexPath:indexPath];
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (appDelegate.loggedIn) {
+        cell.actionLabel.text = NSLocalizedString(@"Sign out",nil);
+    } else {
+        cell.actionLabel.text = NSLocalizedString(@"Log In / Sign Up",nil);
     }
+    return cell;
 }
 
+- (UITableViewCell *)tableView:(UITableView *)tableView appChangeUsernameCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
+                                                                   forIndexPath:indexPath];
+    cell.leadingTextLabel.text = NSLocalizedString(@"Change username", @"label for change username action in settings");
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView appChangeEmailCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
+                                                                   forIndexPath:indexPath];
+    cell.leadingTextLabel.text = NSLocalizedString(@"Change email", @"label for change email address action in settings");
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView appAutocompleteNamesCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsSwitchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switch"
+                                                               forIndexPath:indexPath];
+    cell.switchLabel.text = NSLocalizedString(@"Autocomplete names", @"label for autocomplete names switch in settings");
+    cell.switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey];
+    __weak typeof(self)weakSelf = self;
+    [cell.switcher bk_addEventHandler:^(UISwitch *sender) {
+        [weakSelf settingChanged:kINatAutocompleteNamesPrefKey newValue:sender.isOn];
+    } forControlEvents:UIControlEventValueChanged];
+    return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView appAutoUploadCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsSwitchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switch"
+                                                               forIndexPath:indexPath];
+    cell.switchLabel.text = NSLocalizedString(@"Automatic upload", @"label for auto upload switch in settings");
+    cell.switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey];
+    __weak typeof(self)weakSelf = self;
+    [cell.switcher bk_addEventHandler:^(UISwitch *sender) {
+        [weakSelf settingChanged:kInatAutouploadPrefKey newValue:sender.isOn];
+    } forControlEvents:UIControlEventValueChanged];
+    return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView appSuggestSpeciesCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsSwitchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switch"
+                                                               forIndexPath:indexPath];
+    cell.switchLabel.text = NSLocalizedString(@"Suggest species", @"label for suggest species switch in settings");
+    cell.switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatSuggestionsPrefKey];
+    __weak typeof(self)weakSelf = self;
+    [cell.switcher bk_addEventHandler:^(UISwitch *sender) {
+        [weakSelf settingChanged:kINatSuggestionsPrefKey newValue:sender.isOn];
+    } forControlEvents:UIControlEventValueChanged];
+    return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView appInaturalistNetworkCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
+                                                                   forIndexPath:indexPath];
+    cell.leadingTextLabel.text = NSLocalizedString(@"iNaturalist Network", @"label for inaturalist network action in settings");
+    
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+    if (me) {
+        Partner *p = [self.partnerController partnerForSiteId:me.siteId];
+        cell.trailingTextLabel.text = p.shortName;
+    } else {
+        cell.trailingTextLabel.text = @"iNaturalist";
+    }
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView tutorialCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
+                                                                   forIndexPath:indexPath];
+    cell.leadingTextLabel.text = NSLocalizedString(@"Tutorial", @"label for start tutorial action in settings.");
+    return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView contactUsCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
+                                                                   forIndexPath:indexPath];
+    cell.leadingTextLabel.text = NSLocalizedString(@"Contact support", @"label for contact support action in settings.");
+    return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView rateUsCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
+                                                                   forIndexPath:indexPath];
+    cell.leadingTextLabel.text = NSLocalizedString(@"Love iNat? Rate us", @"label for app store rating action in settings.");
+    return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView donateCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
+                                                                   forIndexPath:indexPath];
+    cell.leadingTextLabel.text = NSLocalizedString(@"Donate to iNaturalist", @"label for donate action in settings.");
+    return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView versionCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsVersionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"version"
+                                                                forIndexPath:indexPath];
+    cell.versionLabel.text = [NSString stringWithFormat:@"%@ - %@",
+                              self.versionText,
+                              [[ImageStore sharedImageStore] usageStatsString]];
+    cell.versionLabel.textAlignment = NSTextAlignmentNatural;
+    return cell;
+}
 
 @end
-
-
-
-
-
-
-
-
-
-
-
 

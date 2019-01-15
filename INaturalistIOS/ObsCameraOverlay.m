@@ -10,6 +10,7 @@
 
 #import "ObsCameraOverlay.h"
 #import "UIColor+ExploreColors.h"
+#import "UIView+UIViewHelpers.h"
 
 @interface ObsCameraOverlay () {
     NSAttributedString *flashOn, *flashOff, *flashAuto;
@@ -19,12 +20,19 @@
 @implementation ObsCameraOverlay
 
 - (void)configureFlashForMode:(UIImagePickerControllerCameraFlashMode)mode {
-    if (mode == UIImagePickerControllerCameraFlashModeAuto)
+    if (mode == UIImagePickerControllerCameraFlashModeAuto) {
         [self.flash setAttributedTitle:flashAuto forState:UIControlStateNormal];
-    else if (mode == UIImagePickerControllerCameraFlashModeOff)
+        self.flash.accessibilityLabel = NSLocalizedString(@"Change Flash Toggle. Current state is Auto",
+                                                          @"accessibility label for flash button when mode is auto");
+    } else if (mode == UIImagePickerControllerCameraFlashModeOff) {
         [self.flash setAttributedTitle:flashOff forState:UIControlStateNormal];
-    else if (mode == UIImagePickerControllerCameraFlashModeOn)
+        self.flash.accessibilityLabel = NSLocalizedString(@"Change Flash Toggle. Current state is Off",
+                                                          @"accessibility label for flash button when mode is off");
+    } else if (mode == UIImagePickerControllerCameraFlashModeOn) {
         [self.flash setAttributedTitle:flashOn forState:UIControlStateNormal];
+        self.flash.accessibilityLabel = NSLocalizedString(@"Change Flash Toggle. Current state is On",
+                                                          @"accessibility label for flash button when mode is on");
+    }
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -83,6 +91,8 @@
         
         self.close = ({
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            button.accessibilityLabel = NSLocalizedString(@"Close Camera",
+                                                          @"accessibility label for close camera button");
             button.translatesAutoresizingMaskIntoConstraints = NO;
             button.frame = CGRectZero;
             button.backgroundColor = [UIColor blackColor];
@@ -97,6 +107,8 @@
         
         self.camera = ({
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            button.accessibilityLabel = NSLocalizedString(@"Reverse Camera",
+                                                          @"accessibility label for reverse/switch camera button");
             button.translatesAutoresizingMaskIntoConstraints = NO;
             button.frame = CGRectZero;
             button.backgroundColor = [UIColor blackColor];
@@ -112,6 +124,8 @@
         
         self.flash = ({
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            button.accessibilityLabel = NSLocalizedString(@"Change Flash",
+                                                          @"accessibility label for change flash button");
             button.translatesAutoresizingMaskIntoConstraints = NO;
             button.frame = CGRectZero;
             button.backgroundColor = [UIColor blackColor];
@@ -124,6 +138,8 @@
         
         self.noPhoto = ({
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            button.accessibilityLabel = NSLocalizedString(@"No Photo",
+                                                          @"accessibility label for no photo button");
             button.translatesAutoresizingMaskIntoConstraints = NO;
             button.frame = CGRectZero;
             button.backgroundColor = [UIColor blackColor];
@@ -138,6 +154,8 @@
         
         self.shutter = ({
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            button.accessibilityLabel = NSLocalizedString(@"Camera Shutter",
+                                                          @"accessibility label for camera shutter button");
             button.translatesAutoresizingMaskIntoConstraints = NO;
             button.frame = CGRectZero;
             button.backgroundColor = [UIColor blackColor];
@@ -155,6 +173,8 @@
         
         self.library = ({
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+            button.accessibilityLabel = NSLocalizedString(@"Pick from Library",
+                                                          @"accessibility label for pick from library button");
             button.translatesAutoresizingMaskIntoConstraints = NO;
             button.frame = CGRectZero;
             button.tintColor = [UIColor whiteColor];
@@ -164,86 +184,38 @@
             button;
         });
         [self addSubview:self.library];
-        
-        NSDictionary *views = @{
-                                @"close": self.close,
-                                @"camera": self.camera,
-                                @"flash": self.flash,
-                                @"noPhoto": self.noPhoto,
-                                @"shutter": self.shutter,
-                                @"library": self.library,
-                                };
-        
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[close(==50)]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[flash(==60)]-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[camera(==50)]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.camera
-                                                         attribute:NSLayoutAttributeCenterX
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:self
-                                                         attribute:NSLayoutAttributeCenterX
-                                                        multiplier:1.0f
-                                                          constant:0.0f]];
-        
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[noPhoto(==100)]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[library(==100)]-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"[shutter(==100)]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:self.shutter
-                                                         attribute:NSLayoutAttributeCenterX
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:self
-                                                         attribute:NSLayoutAttributeCenterX
-                                                        multiplier:1.0f
-                                                          constant:0.0f]];
-        
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[close(==40)]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[flash(==40)]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[camera(==40)]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        
-        
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[noPhoto(==80)]-0-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[library(==80)]-0-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[shutter(==80)]-0-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
+                
+        UILayoutGuide *safeGuide = [self inat_safeLayoutGuide];
 
+        // horizontal
+        [self.close.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
+        [self.camera.centerXAnchor constraintEqualToAnchor:safeGuide.centerXAnchor].active = YES;
+        [self.flash.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
+        [self.close.widthAnchor constraintEqualToConstant:50.0f].active = YES;
+        [self.flash.widthAnchor constraintEqualToConstant:60.0f].active = YES;
+        [self.camera.widthAnchor constraintEqualToConstant:50.0f].active = YES;
         
+        [self.noPhoto.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
+        [self.shutter.centerXAnchor constraintEqualToAnchor:safeGuide.centerXAnchor].active = YES;
+        [self.library.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
+        [self.noPhoto.widthAnchor constraintEqualToConstant:100.0f].active = YES;
+        [self.shutter.widthAnchor constraintEqualToConstant:100.0f].active = YES;
+        [self.library.widthAnchor constraintEqualToConstant:100.0f].active = YES;
+        
+        // vertical
+        [self.close.topAnchor constraintEqualToAnchor:safeGuide.topAnchor].active = YES;
+        [self.camera.topAnchor constraintEqualToAnchor:safeGuide.topAnchor].active = YES;
+        [self.flash.topAnchor constraintEqualToAnchor:safeGuide.topAnchor].active = YES;
+        [self.close.heightAnchor constraintEqualToConstant:40.0f].active = YES;
+        [self.flash.heightAnchor constraintEqualToConstant:40.0f].active = YES;
+        [self.camera.heightAnchor constraintEqualToConstant:40.0f].active = YES;
+
+        [self.noPhoto.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
+        [self.shutter.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
+        [self.library.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
+        [self.noPhoto.heightAnchor constraintEqualToConstant:80.0f].active = YES;
+        [self.shutter.heightAnchor constraintEqualToConstant:80.0f].active = YES;
+        [self.library.heightAnchor constraintEqualToConstant:80.0f].active = YES;
     }
     
     return self;

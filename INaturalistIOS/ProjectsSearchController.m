@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 #import "ProjectsSearchController.h"
 #import "Project.h"
@@ -38,9 +38,9 @@ static NSString *CellIdentifier = @"ProjectCell";
     }
     Project *p = [self.searchResults objectAtIndex:indexPath.row];
     cell.titleLabel.text = p.title;
-    [cell.projectImage sd_cancelCurrentImageLoad];
-    [cell.projectImage sd_setImageWithURL:[NSURL URLWithString:p.iconURL]
-                 placeholderImage:[UIImage inat_defaultProjectImage]];
+    [cell.projectImage cancelImageDownloadTask];
+    [cell.projectImage setImageWithURL:[NSURL URLWithString:p.iconURL]
+                      placeholderImage:[UIImage inat_defaultProjectImage]];
     return cell;
 }
 

@@ -38,4 +38,7 @@
 - (BOOL)observationsRestrictedToList;
 - (NSArray *)sortedProjectObservationFields;
 
+- (BOOL)isNewStyleProject;
+- (NSString *)titleForTypeOfProject;
+
 @end

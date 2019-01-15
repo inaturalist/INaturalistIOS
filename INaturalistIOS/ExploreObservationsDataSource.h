@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
+#import <RestKit/RestKit.h>
 
 #import "ExploreSearchPredicate.h"
 #import "ExploreRegion.h"
@@ -64,9 +65,6 @@ typedef void(^PostCompletionHandler)(RKResponse *response, NSError *error);
 - (BOOL)activeSearchLimitedBySearchedLocation;
 - (BOOL)activeSearchLimitedByCurrentMapRegion;
 - (void)expandActiveSearchToNextPageOfResults;
-
-- (void)addComment:(NSString *)commentBody forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler;
-- (void)addIdentificationTaxonId:(NSInteger)taxonId forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler;
 
 - (void)loadLeaderboardCompletion:(FetchCompletionHandler)handler;
 

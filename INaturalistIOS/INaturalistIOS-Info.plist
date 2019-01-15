@@ -21,7 +21,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.6.22</string>
+	<string>2.7.16</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -42,9 +42,17 @@
 				<string>org.inaturalist.inaturalist</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.796686868523-tmpdvng95lo48ljhcrmmj68qljivfptn</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>403</string>
+	<string>519</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -68,9 +76,9 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
-		<string>fb-messenger-api</string>
-		<string>fbshareextension</string>
+		<string>fb-messenger-share-api</string>
 		<string>fbauth2</string>
+		<string>fbshareextension</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -82,9 +90,9 @@
 	<key>NSCameraUsageDescription</key>
 	<string>${PRODUCT_NAME} uses the camera to add photos to your observations of nature.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>${PRODUCT_NAME} uses this information to automatically add location to your observations of nature.</string>
+	<string>Add GPS coordinates to observations, show your location on maps, and more.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>${PRODUCT_NAME} uses the photo library to add photos to your observations of nature.</string>
+	<string>Export and import ${PRODUCT_NAME} photos to and from your library.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

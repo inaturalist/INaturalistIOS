@@ -11,7 +11,7 @@
 #import <IFTTTLaunchImage/UIImage+IFTTTLaunchImage.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
-#import <GooglePlus/GPPURLHandler.h>
+#import <GoogleSignIn/GoogleSignIn.h>
 
 #import "INaturalistAppDelegate.h"
 #import "Observation.h"
@@ -43,6 +43,7 @@
 #import "ExploreUpdateRealm.h"
 #import "NewsPagerViewController.h"
 #import "UpdatesViewController.h"
+#import "INatReachability.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -56,27 +57,57 @@
 
 @implementation INaturalistAppDelegate
 
-
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-	[FBSDKAppEvents activateApp];
-    
+    [[INatReachability sharedClient] startMonitoring];
+
     [self loadUpdatesWithCompletionHandler:nil];
+    
+    [self clearOutdatedCaches];
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application {
+    [[INatReachability sharedClient] stopMonitoring];
 }
 
 - (BOOL)application:(UIApplication *)application
             openURL:(NSURL *)url
-  sourceApplication:(NSString *)sourceApplication
-         annotation:(id)annotation {
-         
-         return [[FBSDKApplicationDelegate sharedInstance] application:application
-                                                         openURL:url
-                                               sourceApplication:sourceApplication
-                                                      annotation:annotation] 
-          || 
-	      
-	      [GPPURLHandler handleURL:url
-	                 sourceApplication:sourceApplication
-	                        annotation:annotation];
+            options:(NSDictionary<NSString *, id> *)options {
+    
+    BOOL handled = [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                                    openURL:url
+                                                          sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
+                                                                 annotation:options[UIApplicationOpenURLOptionsAnnotationKey]
+                      ];
+    
+    if (!handled) {
+        handled = [[GIDSignIn sharedInstance] handleURL:url
+                                      sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
+                                             annotation:options[UIApplicationOpenURLOptionsAnnotationKey]];
+    }
+    
+    return handled;
+}
+
+
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    [self loadUpdatesWithCompletionHandler:completionHandler];
+}
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [self setupAnalytics];
+        
+    [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
+    
+    [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+    
+    // we need a login controller to handle google auth, can't do this in the background
+    self.loginController = [[LoginController alloc] init];
+
+    [self showLoadingScreen];
+    
+    [self configureApplication];
+    
+    return YES;
 }
 
 - (void)loadUpdatesWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
@@ -109,62 +140,48 @@
             }];
             
             __weak typeof(self)weakSelf = self;
-            [self.loginController getJWTTokenSuccess:^(NSDictionary *info) {
-                ObservationAPI *api = [[ObservationAPI alloc] init];
-                [api updatesWithHandler:^(NSArray *results, NSInteger count, NSError *error) {
-                    
-                    if (error) {
-                        if (completionHandler) {
-                            [[Analytics sharedClient] event:kAnalyticsEventBackgroundFetchFailed
-                                             withProperties:@{
-                                                              @"reason": error.localizedDescription,
-                                                              }];
-                            completionHandler(UIBackgroundFetchResultFailed);
-                        }
-                        [application endBackgroundTask:weakSelf.backgroundFetchTask];
-                        weakSelf.backgroundFetchTask = UIBackgroundTaskInvalid;
-                        return;
-                    }
-                    
-                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"resourceOwnerId == %d", userId];
-                    NSArray *myResults = [results filteredArrayUsingPredicate:predicate];
-                    
-                    NSMutableSet *obsIds = [NSMutableSet set];
-                    for (ExploreUpdate *eu in myResults) {
-                        [obsIds addObject:@(eu.resourceId)];
-                    }
-                    [weakSelf loadObservationsForIds:[obsIds allObjects]];
-                    
-                    RLMRealm *realm = [RLMRealm defaultRealm];
-                    [realm beginWriteTransaction];
-                    // all results get written to Realm
-                    for (ExploreUpdate *eu in results) {
-                        ExploreUpdateRealm *eur = [[ExploreUpdateRealm alloc] initWithMantleModel:eu];
-                        [realm addOrUpdateObject:eur];
-                    }
-                    [realm commitWriteTransaction];
-                    UIViewController *rootVC = [[[UIApplication sharedApplication] keyWindow] rootViewController];
-                    if ([rootVC isKindOfClass:[INatUITabBarController class]]) {
-                        [((INatUITabBarController *)rootVC) setUpdatesBadge];
-                    }
-                    
+            ObservationAPI *api = [[ObservationAPI alloc] init];
+            [api updatesWithHandler:^(NSArray *results, NSInteger count, NSError *error) {
+                
+                if (error) {
                     if (completionHandler) {
-                        completionHandler(UIBackgroundFetchResultNewData);
+                        [[Analytics sharedClient] event:kAnalyticsEventBackgroundFetchFailed
+                                         withProperties:@{
+                                                          @"reason": error.localizedDescription,
+                                                          }];
+                        completionHandler(UIBackgroundFetchResultFailed);
                     }
-                    
                     [application endBackgroundTask:weakSelf.backgroundFetchTask];
                     weakSelf.backgroundFetchTask = UIBackgroundTaskInvalid;
-                }];
-                
-            } failure:^(NSError *error) {
-                if (completionHandler) {
-                    NSString *errorMsg = error.localizedDescription ?: @"Unknown error";
-                    [[Analytics sharedClient] event:kAnalyticsEventBackgroundFetchFailed
-                                     withProperties:@{
-                                                      @"reason": errorMsg,
-                                                      }];
-                    completionHandler(UIBackgroundFetchResultFailed);
+                    return;
                 }
+                
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"resourceOwnerId == %d", userId];
+                NSArray *myResults = [results filteredArrayUsingPredicate:predicate];
+                
+                NSMutableSet *obsIds = [NSMutableSet set];
+                for (ExploreUpdate *eu in myResults) {
+                    [obsIds addObject:@(eu.resourceId)];
+                }
+                [weakSelf loadObservationsForIds:[obsIds allObjects]];
+                
+                RLMRealm *realm = [RLMRealm defaultRealm];
+                [realm beginWriteTransaction];
+                // all results get written to Realm
+                for (ExploreUpdate *eu in results) {
+                    ExploreUpdateRealm *eur = [[ExploreUpdateRealm alloc] initWithMantleModel:eu];
+                    [realm addOrUpdateObject:eur];
+                }
+                [realm commitWriteTransaction];
+                UIViewController *rootVC = [[[UIApplication sharedApplication] keyWindow] rootViewController];
+                if ([rootVC isKindOfClass:[INatUITabBarController class]]) {
+                    [((INatUITabBarController *)rootVC) setUpdatesBadge];
+                }
+                
+                if (completionHandler) {
+                    completionHandler(UIBackgroundFetchResultNewData);
+                }
+                
                 [application endBackgroundTask:weakSelf.backgroundFetchTask];
                 weakSelf.backgroundFetchTask = UIBackgroundTaskInvalid;
             }];
@@ -188,34 +205,10 @@
     }
 }
 
-- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    [self loadUpdatesWithCompletionHandler:completionHandler];
-}
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-    [self setupAnalytics];
-    
-    [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
-    
-    [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
-    
-    // we need a login controller to handle google auth, can't do this in the background
-    self.loginController = [[LoginController alloc] init];
-
-    [self showLoadingScreen];
-    
-    [self configureApplication];
-    
-    return YES;
-}
 
 - (void)setupAnalytics {
     // setup analytics
-    [[Analytics sharedClient] event:kAnalyticsEventAppLaunch];
-    
-    // log all page views for the tab bar controller
-    [[Analytics sharedClient] logAllPageViewForTarget:self.window.rootViewController];
+    [[Analytics sharedClient] event:kAnalyticsEventAppLaunch];    
 }
 
 - (void)showLoadingScreen {
@@ -248,7 +241,7 @@
 - (void)configureApplication {
     
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
-	config.schemaVersion = 8;
+	config.schemaVersion = 11;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
         if (oldSchemaVersion < 1) {
             // add searchable (ie diacritic-less) taxon names
@@ -270,6 +263,13 @@
             [migration enumerateObjects:ExploreUpdateRealm.className
                                   block:^(RLMObject * _Nullable oldObject, RLMObject * _Nullable newObject) {
                                       newObject[@"viewedLocally"] = @(YES);
+                                  }];
+        }
+        if (oldSchemaVersion < 11) {
+            // set all user syncedAt to distant past
+            [migration enumerateObjects:ExploreUserRealm.className
+                                  block:^(RLMObject * _Nullable oldObject, RLMObject * _Nullable newObject) {
+                                      newObject[@"syncedAt"] = [NSDate distantPast];
                                   }];
         }
     };
@@ -303,8 +303,9 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
             
-            User *me = self.loginController.fetchMe;
-            [[Analytics sharedClient] registerUserWithIdentifier:me.recordID.stringValue];
+            ExploreUserRealm *me = self.loginController.meUserLocal;
+            NSString *identifier = [NSString stringWithFormat:@"%ld", (long)me.userId];
+            [[Analytics sharedClient] registerUserWithIdentifier:identifier];
         });
     }
 }
@@ -566,6 +567,14 @@
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     UIViewController *onboardingVC = [storyboard instantiateInitialViewController];
     self.window.rootViewController = onboardingVC;
+}
+
+- (void)clearOutdatedCaches {
+    for (ObservationPhoto *op in [ObservationPhoto allObjects]) {
+        if ([op needsSync]) {
+            continue;
+        }
+    }
 }
 
 @end

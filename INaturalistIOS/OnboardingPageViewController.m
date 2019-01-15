@@ -32,8 +32,8 @@
     
     NSArray *identifiers = @[@"onboarding-logo",
                              @"onboarding-observe",
-                             @"onboarding-share",
-                             @"onboarding-learn",
+                             @"onboarding-identify",
+                             @"onboarding-discuss",
                              @"onboarding-contribute",
                              @"onboarding-login"];
     
@@ -46,6 +46,7 @@
             vc.skipAction = ^{
                 [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
             };
+            vc.startsInLoginMode = YES;
             return vc;
         } else {
             return [onboarding instantiateViewControllerWithIdentifier:identifier];

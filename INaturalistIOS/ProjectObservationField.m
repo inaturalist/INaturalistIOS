@@ -50,4 +50,8 @@ static RKManagedObjectMapping *defaultMapping = nil;
     return defaultMapping;
 }
 
++ (NSArray *)textFieldDataTypes {
+    return @[ @"text", @"dna" ];
+}
+
 @end

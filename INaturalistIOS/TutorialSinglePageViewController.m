@@ -8,6 +8,7 @@
 
 #import "TutorialSinglePageViewController.h"
 #import "UIColor+ExploreColors.h"
+#import "UIViewController+INaturalist.h"
 
 @interface TutorialLabel : UILabel
 @property UIEdgeInsets textInsets;
@@ -141,43 +142,36 @@
     });
     [self.view addSubview:neverAgainButton];
     
-    NSDictionary *views = @{
-                            @"title": titleLabel,
-                            @"neverAgain": neverAgainButton,
-                            @"ok": okButton,
-                            @"image": tutorialImageView,
-                            @"subtitleOne": subtitleOneLabel,
-                            @"subtitleTwo": subtitleTwoLabel,
-                            };
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-22-[title(==88)]-[subtitleOne]-[image]-[subtitleTwo(==subtitleOne)]-[ok(==44)]-0-[neverAgain(==44)]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[title]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[image]-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[subtitleOne]-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-[subtitleTwo]-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[ok]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[neverAgain]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-
+    // autolayout
+    UILayoutGuide *safeGuide = [self inat_safeLayoutGuide];
+    
+    // horizontal
+    [titleLabel.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
+    [titleLabel.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
+    [tutorialImageView.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
+    [tutorialImageView.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
+    [subtitleOneLabel.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
+    [subtitleOneLabel.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
+    [subtitleTwoLabel.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
+    [subtitleTwoLabel.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
+    [okButton.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
+    [okButton.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
+    [neverAgainButton.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
+    [neverAgainButton.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
+    
+    // vertical
+    [titleLabel.topAnchor constraintEqualToAnchor:safeGuide.topAnchor constant:22.0f].active = YES;
+    [titleLabel.bottomAnchor constraintEqualToAnchor:subtitleOneLabel.topAnchor].active = YES;
+    [subtitleOneLabel.bottomAnchor constraintEqualToAnchor:tutorialImageView.topAnchor].active = YES;
+    [tutorialImageView.bottomAnchor constraintEqualToAnchor:subtitleTwoLabel.topAnchor].active = YES;
+    [subtitleTwoLabel.bottomAnchor constraintEqualToAnchor:okButton.topAnchor].active = YES;
+    [okButton.bottomAnchor constraintEqualToAnchor:neverAgainButton.topAnchor].active = YES;
+    [neverAgainButton.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
+    
+    [titleLabel.heightAnchor constraintEqualToConstant:88.0f].active = YES;
+    [subtitleTwoLabel.heightAnchor constraintEqualToAnchor:subtitleOneLabel.heightAnchor].active = YES;
+    [okButton.heightAnchor constraintEqualToConstant:44.0f].active = YES;
+    [neverAgainButton.heightAnchor constraintEqualToConstant:44.0f].active = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated {

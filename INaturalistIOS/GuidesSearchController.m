@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 #import "GuidesSearchController.h"
 #import "Guide.h"
@@ -39,12 +39,12 @@ static NSString *CellIdentifier = @"GuideCell";
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:GuideCellImageTag];
-    [imageView sd_cancelCurrentImageLoad];
+    [imageView cancelImageDownloadTask];
     UILabel *title = (UILabel *)[cell viewWithTag:GuideCellTitleTag];
     title.text = g.title;
     
-    [imageView sd_setImageWithURL:[NSURL URLWithString:g.iconURL]
-                 placeholderImage:[UIImage inat_defaultGuideImage]];
+    [imageView setImageWithURL:[NSURL URLWithString:g.iconURL]
+              placeholderImage:[UIImage inat_defaultGuideImage]];
     return cell;
 }
 

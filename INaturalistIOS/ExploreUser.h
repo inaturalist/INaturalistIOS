@@ -9,11 +9,18 @@
 #import <Foundation/Foundation.h>
 #import <Mantle/Mantle.h>
 
-@interface ExploreUser : MTLModel <MTLJSONSerializing>
+#import "UserVisualization.h"
+
+@interface ExploreUser : MTLModel <MTLJSONSerializing, UserVisualization>
 
 @property (assign) NSInteger userId;
 @property (copy) NSString *login;
 @property (copy) NSString *name;
 @property (copy) NSURL *userIcon;
+@property (copy) NSString *email;
+@property (assign) NSInteger observationsCount;
+@property (assign) NSInteger siteId;
+
+@property (readonly) NSURL *userIconMedium;
 
 @end

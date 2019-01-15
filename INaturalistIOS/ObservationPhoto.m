@@ -171,8 +171,45 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     [super willSave];
     
     if (!self.uuid && !self.recordID) {
-        [self setPrimitiveValue:[[NSUUID UUID] UUIDString] forKey:@"uuid"];
+        [self setPrimitiveValue:[[[NSUUID UUID] UUIDString] lowercaseString]
+                         forKey:@"uuid"];
     }
+}
+
+
+#pragma mark - Uploadable
+
++ (NSArray *)needingUpload {
+    // observations (the parent object) take care of this
+    return @[];
+}
+
+- (BOOL)needsUpload {
+    return self.needsSync;
+}
+
+- (NSArray *)childrenNeedingUpload {
+    return @[];
+}
+
+
+- (NSDictionary *)uploadableRepresentation {
+    NSDictionary *mapping = @{
+                              @"observationID": @"observation_photo[observation_id]",
+                              @"position": @"observation_photo[position]",
+                              @"uuid": @"observation_photo[uuid]",
+                              };
+    
+    NSMutableDictionary *mutableParams = [NSMutableDictionary dictionary];
+    for (NSString *key in mapping) {
+        if ([self valueForKey:key]) {
+            NSString *mappedName = mapping[key];
+            mutableParams[mappedName] = [self valueForKey:key];
+        }
+    }
+    
+    // return an immutable copy
+    return [NSDictionary dictionaryWithDictionary:mutableParams];
 }
 
 // should take an error
@@ -193,7 +230,7 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     } else {
         return path;
     }
-
 }
+
 
 @end

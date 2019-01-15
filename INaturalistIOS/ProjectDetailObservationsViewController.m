@@ -6,8 +6,9 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+#import <RestKit/RestKit.h>
 
 #import "ProjectDetailObservationsViewController.h"
 #import "ExploreObservation.h"
@@ -15,7 +16,8 @@
 #import "ExploreTaxon.h"
 #import "ProjectObsPhotoCell.h"
 #import "ImageStore.h"
-#import "FAKInaturalist.h"
+#import "FAKINaturalist.h"
+#import "INatReachability.h"
 
 @interface ProjectDetailObservationsViewController () <UICollectionViewDelegateFlowLayout>
 @end
@@ -32,7 +34,7 @@
 
         label.attributedText = ({
             NSString *emptyTitle;
-            if ([[RKClient sharedClient] isNetworkReachable]) {
+            if ([[INatReachability sharedClient] isNetworkReachable]) {
                 emptyTitle = NSLocalizedString(@"There are no observations for this project yet. Check back soon!", nil);
             } else {
                 emptyTitle = NSLocalizedString(@"No network connection. :(", nil);
@@ -73,7 +75,7 @@
     if (photo) {
         NSString *mediumUrlString = [photo.url stringByReplacingOccurrencesOfString:@"square"
                                                                          withString:@"small"];
-        [cell.photoImageView sd_setImageWithURL:[NSURL URLWithString:mediumUrlString]];
+        [cell.photoImageView setImageWithURL:[NSURL URLWithString:mediumUrlString]];
     } else {
         // show iconic taxon image
         FAKIcon *taxonIcon = [FAKINaturalist iconForIconicTaxon:obs.iconicTaxonName

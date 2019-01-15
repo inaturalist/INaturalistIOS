@@ -9,11 +9,12 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "INatModel.h"
+#import "Uploadable.h"
 
 @class Project;
 @class Observation;
 
-@interface ProjectObservation : INatModel
+@interface ProjectObservation : INatModel <Uploadable>
 
 @property (nonatomic, retain) NSDate * localCreatedAt;
 @property (nonatomic, retain) NSDate * localUpdatedAt;

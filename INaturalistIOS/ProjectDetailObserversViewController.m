@@ -6,14 +6,16 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+#import <RestKit/RestKit.h>
 
 #import "ProjectDetailObserversViewController.h"
 #import "ObserverCount.h"
 #import "ExploreUser.h"
 #import "RankedUserObsSpeciesCell.h"
 #import "UIImage+INaturalist.h"
+#import "INatReachability.h"
 
 // both the nib name and the reuse identifier
 static NSString *rankedUserObsSpeciesName = @"RankedUserObsSpecies";
@@ -33,7 +35,7 @@ static NSString *rankedUserObsSpeciesName = @"RankedUserObsSpecies";
 
         label.attributedText = ({
             NSString *emptyTitle;
-            if ([[RKClient sharedClient] isNetworkReachable]) {
+            if ([[INatReachability sharedClient] isNetworkReachable]) {
                 emptyTitle = NSLocalizedString(@"There are no observations for this project yet. Check back soon!", nil);
             } else {
                 emptyTitle = NSLocalizedString(@"No network connection. :(", nil);
@@ -77,7 +79,7 @@ static NSString *rankedUserObsSpeciesName = @"RankedUserObsSpecies";
     cell.rankLabel.text = [NSString stringWithFormat:@"%ld", (long)[self.observerCounts indexOfObject:count] + 1];
     
     if (count.observer.userIcon) {
-        [cell.userImageView sd_setImageWithURL:count.observer.userIcon];
+        [cell.userImageView setImageWithURL:count.observer.userIcon];
     } else {
         cell.userImageView.image = [UIImage inat_defaultUserImage];
     }

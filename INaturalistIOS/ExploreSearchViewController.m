@@ -10,7 +10,6 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <BlocksKit/BlocksKit.h>
 #import <MBProgressHUD/MBProgressHUD.h>
-#import <SDWebImage/UIImageView+WebCache.h>
 #import <CoreLocation/CoreLocation.h>
 
 #import "ExploreSearchViewController.h"
@@ -37,14 +36,16 @@
 #import "OnboardingLoginViewController.h"
 #import "UIColor+INaturalist.h"
 #import "LoginController.h"
-#import "User.h"
 #import "INaturalistAppDelegate.h"
-
+#import "INatReachability.h"
+#import "ExploreUserRealm.h"
+#import "ExploreActiveSearchView.h"
 
 @interface ExploreSearchViewController () <CLLocationManagerDelegate, ActiveSearchTextDelegate> {
     ExploreObservationsController *observationsController;
     
     ExploreSearchView *searchMenu;
+    ExploreActiveSearchView *activeSearchView;
     
     CLLocationManager *locationManager;
     
@@ -73,15 +74,15 @@
     if (self = [super initWithCoder:aDecoder]) {
         
         self.navigationController.tabBarItem.image = ({
-            FAKIcon *worldOutline = [FAKIonIcons iosWorldOutlineIconWithSize:35];
-            [worldOutline addAttribute:NSForegroundColorAttributeName value:[UIColor inatInactiveGreyTint]];
-            [[worldOutline imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            FAKIcon *compassInactive = [FAKIonIcons androidCompassIconWithSize:30];
+            [compassInactive addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+            [[compassInactive imageWithSize:CGSizeMake(30, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
         
         self.navigationController.tabBarItem.selectedImage =({
-            FAKIcon *worldFilled = [FAKIonIcons iosWorldIconWithSize:35];
-            [worldFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-            [worldFilled imageWithSize:CGSizeMake(34, 45)];
+            FAKIcon *compassInactive = [FAKIonIcons androidCompassIconWithSize:30];
+            [compassInactive addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
+            [[compassInactive imageWithSize:CGSizeMake(30, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
         
         self.navigationController.tabBarItem.title = NSLocalizedString(@"Explore", nil);
@@ -112,51 +113,66 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    activeSearchView = ({
+        ExploreActiveSearchView *view = [ExploreActiveSearchView new];
+        view.backgroundColor = [UIColor redColor];
+        view.translatesAutoresizingMaskIntoConstraints = NO;
+        
+        [view.removeActiveSearchButton addTarget:self
+                                          action:@selector(removeSearchPressed)
+                                forControlEvents:UIControlEventTouchUpInside];
+        view.activeSearchTextDelegate = self;
+        view.hidden = YES;        
+        
+        view;
+    });
+    [self.view addSubview:activeSearchView];
+    
     searchMenu = ({
         ExploreSearchView *view = [[ExploreSearchView alloc] initWithFrame:CGRectZero];
         view.translatesAutoresizingMaskIntoConstraints = NO;
         
+        __weak typeof(self) weakSelf = self;
         // autocomplete items
         AutocompleteSearchItem *critters = [AutocompleteSearchItem itemWithPredicate:NSLocalizedString(@"organisms", nil)
                                                                               action:^(NSString *searchText) {
-                                                                                  [self searchForTaxon:searchText];
+                                                                                  [weakSelf searchForTaxon:searchText];
                                                                                   [searchMenu hideOptionSearch];
                                                                                   if (observationsController.activeSearchPredicates.count > 0)
-                                                                                      [searchMenu showActiveSearch];
+                                                                                      [weakSelf showActiveSearch];
                                                                               }];
         AutocompleteSearchItem *people = [AutocompleteSearchItem itemWithPredicate:NSLocalizedString(@"people", nil)
                                                                             action:^(NSString *searchText) {
-                                                                                [self searchForPerson:searchText];
+                                                                                [weakSelf searchForPerson:searchText];
                                                                                 [searchMenu hideOptionSearch];
                                                                                 if (observationsController.activeSearchPredicates.count > 0)
-                                                                                    [searchMenu showActiveSearch];
+                                                                                    [weakSelf showActiveSearch];
                                                                             }];
         AutocompleteSearchItem *locations = [AutocompleteSearchItem itemWithPredicate:NSLocalizedString(@"locations", nil)
                                                                                action:^(NSString *searchText) {
-                                                                                   [self searchForLocation:searchText];
+                                                                                   [weakSelf searchForLocation:searchText];
                                                                                    [searchMenu hideOptionSearch];
                                                                                    if (observationsController.activeSearchPredicates.count > 0)
-                                                                                       [searchMenu showActiveSearch];
+                                                                                       [weakSelf showActiveSearch];
                                                                                }];
         AutocompleteSearchItem *projects = [AutocompleteSearchItem itemWithPredicate:NSLocalizedString(@"projects", nil)
                                                                               action:^(NSString *searchText) {
-                                                                                  [self searchForProject:searchText];
+                                                                                  [weakSelf searchForProject:searchText];
                                                                                   [searchMenu hideOptionSearch];
                                                                                   if (observationsController.activeSearchPredicates.count > 0)
-                                                                                      [searchMenu showActiveSearch];
+                                                                                      [weakSelf showActiveSearch];
                                                                               }];
         view.autocompleteItems = @[critters, people, locations, projects];
         
         // non-autocomplete shortcut items
         ShortcutSearchItem *nearMe = [ShortcutSearchItem itemWithTitle:NSLocalizedString(@"Find observations near me", nil)
                                                                 action:^{
-                                                                    [self searchForNearbyObservations];
+                                                                    [weakSelf searchForNearbyObservations];
                                                                     [searchMenu hideOptionSearch];
                                                                     if (observationsController.activeSearchPredicates.count > 0)
-                                                                        [searchMenu showActiveSearch];
+                                                                        [weakSelf showActiveSearch];
                                                                 }];
         
-        __weak typeof(self)weakSelf = self;
         ShortcutSearchItem *mine = [ShortcutSearchItem itemWithTitle:NSLocalizedString(@"Find my observations", nil)
                                                               action:^{
                                                                   [searchMenu hideOptionSearch];
@@ -165,7 +181,7 @@
                                                                   if ([appDelegate.loginController isLoggedIn]) {
                                                                       [strongSelf searchForMyObservations];
                                                                       if (observationsController.activeSearchPredicates.count > 0)
-                                                                          [searchMenu showActiveSearch];
+                                                                          [strongSelf showActiveSearch];
                                                                   } else {
                                                                       [strongSelf presentSignupPrompt:NSLocalizedString(@"You must be logged in to do that.",
                                                                                                                         @"Unspecific signup prompt reason.")];
@@ -173,18 +189,14 @@
                                                               }];
         view.shortcutItems = @[nearMe, mine];
         
-        view.activeSearchFilterView.userInteractionEnabled = NO;
-        [view.activeSearchFilterView.removeActiveSearchButton addTarget:self
-                                                                 action:@selector(removeSearchPressed)
-                                                       forControlEvents:UIControlEventTouchUpInside];
-        view.activeSearchTextDelegate = self;
         
         view;
     });
     [self.view addSubview:searchMenu];
     
-    // the search view overlays on top of all of the stuff in the container view
-    self.overlayView = searchMenu;
+    // the active search view overlays on top
+    // of all of the stuff in the container view
+    self.overlayView = activeSearchView;
     
     if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
         self.edgesForExtendedLayout = UIRectEdgeNone;
@@ -216,12 +228,22 @@
     
     NSDictionary *views = @{
                             @"searchMenu": searchMenu,
+                            @"activeSearch": activeSearchView,
                             @"topLayoutGuide": self.topLayoutGuide,
                             @"bottomLayoutGuide": self.bottomLayoutGuide,
                             };
     
     
     // Configure the Active Search UI
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[activeSearch]-0-|"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:views]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[topLayoutGuide]-0-[activeSearch(==50)]"
+                                                                      options:0
+                                                                      metrics:0
+                                                                        views:views]];
+
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[searchMenu]-0-|"
                                                                       options:0
                                                                       metrics:0
@@ -235,7 +257,18 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [self startLookingForCurrentLocationNotify:NO];
+    switch ([CLLocationManager authorizationStatus]) {
+        case kCLAuthorizationStatusRestricted:
+        case kCLAuthorizationStatusDenied:
+            // do nothing
+            break;
+        case kCLAuthorizationStatusAuthorizedAlways:
+        case kCLAuthorizationStatusAuthorizedWhenInUse:
+        case kCLAuthorizationStatusNotDetermined:
+        default:
+            [self startLookingForCurrentLocationNotify:NO];
+            break;
+    }
 }
 
 - (void)presentSignupPrompt:(NSString *)reason {
@@ -243,6 +276,16 @@
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;
     [self presentViewController:login animated:YES completion:nil];
+}
+
+- (void)showActiveSearch {
+    activeSearchView.activeSearchLabel.text = self.activeSearchText;
+    activeSearchView.hidden = NO;
+}
+
+- (void)hideActiveSearch {
+    activeSearchView.activeSearchLabel.text = nil;
+    activeSearchView.hidden = YES;
 }
 
 #pragma mark - UIControl targets
@@ -255,7 +298,7 @@
 }
 
 - (void)removeSearchPressed {
-    [searchMenu hideActiveSearch];
+    [self hideActiveSearch];
     
     [observationsController removeAllSearchPredicates];
 }
@@ -263,7 +306,7 @@
 - (void)searchPressed {
     if ([searchMenu optionSearchIsActive]) {
         if (observationsController.activeSearchPredicates.count > 0) {
-            [searchMenu showActiveSearch]; // implicitly hides option search
+            [self showActiveSearch]; // implicitly hides option search
         } else {
             [searchMenu hideOptionSearch];
         }
@@ -276,7 +319,7 @@
 
 - (void)searchForMyObservations {
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
                                                                        message:NSLocalizedString(@"Network unavailable", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -293,16 +336,16 @@
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = [appDelegate loginController];
-    User *me = [login fetchMe];
+    ExploreUserRealm *me = [login meUserLocal];
     if (me) {
         ExploreUser *exploreMe = [[ExploreUser alloc] init];
-        exploreMe.userId = me.recordID.integerValue;
+        exploreMe.userId = me.userId;
         exploreMe.login = me.login;
         exploreMe.name = me.name;
-        exploreMe.userIcon = [NSURL URLWithString:me.userIconURL];
+        exploreMe.userIcon = me.userIcon;
         
        	[observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:exploreMe]];
-        [searchMenu showActiveSearch];
+        [self showActiveSearch];
     } else {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Oops", nil)
                                                                        message:NSLocalizedString(@"Can't find search for your observations right now. Please try later.", nil)
@@ -316,7 +359,7 @@
 
 - (void)searchForNearbyObservations {
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
                                                                        message:NSLocalizedString(@"Network unavailable", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -336,7 +379,7 @@
     [observationsController removeAllSearchPredicatesUpdatingObservations:NO];
     
     // no predicates, so hide the active search UI
-    [searchMenu hideActiveSearch];
+    [self hideActiveSearch];
     
     // get observations near current location
     switch ([CLLocationManager authorizationStatus]) {
@@ -365,7 +408,7 @@
 
 - (void)searchForTaxon:(NSString *)text {
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
                                                                        message:NSLocalizedString(@"Network unavailable", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -410,7 +453,7 @@
                 // observations controller will fetch observations using this predicate
                 [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForTaxon:results.firstObject]];
                 
-                [searchMenu showActiveSearch];
+                [self showActiveSearch];
                 
             } else {
                 // allow the user to disambiguate the search results
@@ -424,7 +467,7 @@
                     [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForTaxon:(Taxon *)choice]];
                     
                     __strong typeof(weakSelf)strongSelf = weakSelf;
-                    [strongSelf->searchMenu showActiveSearch];
+                    [strongSelf showActiveSearch];
                 };
                 
                 // dispatch after a bit to allow the hud to finish animating dismissal
@@ -439,7 +482,7 @@
 
 - (void)searchForPerson:(NSString *)text {
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
                                                                        message:NSLocalizedString(@"Network unavailable", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -484,7 +527,7 @@
                 // observations controller will fetch observations using this predicate
                 [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:results.firstObject]];
                 
-                [searchMenu showActiveSearch];
+                [self showActiveSearch];
                 
             } else {
                 ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
@@ -498,7 +541,7 @@
                     // observations controller will fetch observations using this predicate
                     [strongSelf->observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:(ExploreUser *)choice]];
                     
-                    [strongSelf->searchMenu showActiveSearch];
+                    [strongSelf showActiveSearch];
                 };
                 // dispatch after a bit to allow the hud to finish animating dismissal
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -511,7 +554,7 @@
 
 - (void)searchForLocation:(NSString *)text {
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
                                                                        message:NSLocalizedString(@"Network unavailable", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -586,7 +629,7 @@
                 // observations controller will fetch observations using this predicate
                 [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForLocation:(ExploreLocation *)validPlaces.firstObject]];
                 
-                [searchMenu showActiveSearch];
+                [self showActiveSearch];
                 
             } else {
                 ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
@@ -600,7 +643,7 @@
                     // observations controller will fetch observations using this predicate
                     [strongSelf->observationsController addSearchPredicate:[ExploreSearchPredicate predicateForLocation:(ExploreLocation *)choice]];
                     
-                    [strongSelf->searchMenu showActiveSearch];
+                    [strongSelf showActiveSearch];
                 };
                 // dispatch after a bit to allow the hud to finish animating dismissal
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -614,7 +657,7 @@
 
 - (void)searchForProject:(NSString *)text {
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
                                                                        message:NSLocalizedString(@"Network unavailable", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -658,7 +701,7 @@
                 // observations controller will fetch observations using this predicate
                 [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForProject:results.firstObject]];
                 
-                [searchMenu showActiveSearch];
+                [self showActiveSearch];
                 
             } else {
                 ExploreDisambiguator *disambiguator = [[ExploreDisambiguator alloc] init];
@@ -672,7 +715,7 @@
                     // observations controller will fetch observations using this predicate
                     [strongSelf->observationsController addSearchPredicate:[ExploreSearchPredicate predicateForProject:(ExploreProject *)choice]];
                     
-                    [strongSelf->searchMenu showActiveSearch];
+                    [strongSelf showActiveSearch];
                 };
                 // dispatch after a bit to allow the hud to finish animating dismissal
                 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -725,6 +768,12 @@
 }
 
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    [[Analytics sharedClient] event:kAnalyticsEventLocationPermissionsChanged
+                     withProperties:@{
+                                      @"Via": NSStringFromClass(self.class),
+                                      @"NewValue": @(status),
+                                      }];
+    
     if (hasFulfilledLocationFetch)
         return;
     

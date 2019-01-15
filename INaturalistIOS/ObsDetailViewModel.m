@@ -6,14 +6,13 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
-#import <SDWebImage/SDImageCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
+#import <RestKit/RestKit.h>
 
 #import "ObsDetailViewModel.h"
 #import "Observation.h"
-#import "User.h"
 #import "Taxon.h"
 #import "TaxaAPI.h"
 #import "ExploreTaxonRealm.h"
@@ -38,6 +37,7 @@
 #import "INatPhoto.h"
 #import "UIImage+INaturalist.h"
 #import "NSLocale+INaturalist.h"
+#import "ExploreUserRealm.h"
 
 @interface ObsDetailViewModel ()
 
@@ -83,9 +83,9 @@
         } else if (indexPath.item == 2) {
             return [self taxonCellForTableView:tableView indexPath:indexPath];
         }
-    } else {
-        return nil;
     }
+    
+    return [UITableViewCell new];
 }
 
 - (UITableViewCell *)userDateCellForTableView:(UITableView *)tableView {
@@ -97,7 +97,7 @@
 
     if (self.observation.inatRecordId) {
         if ([self.observation userThumbUrl]) {
-            [cell.cellImageView sd_setImageWithURL:self.observation.userThumbUrl];
+            [cell.cellImageView setImageWithURL:self.observation.userThumbUrl];
         } else {
             cell.cellImageView.image = [UIImage inat_defaultUserImage];
         }
@@ -106,15 +106,14 @@
         // me
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         if (appDelegate.loginController.isLoggedIn) {
-            User *user = [appDelegate.loginController fetchMe];
-            if (user.userIconURL) {
-                [cell.cellImageView sd_setImageWithURL:[NSURL URLWithString:user.userIconURL]
-                                        placeholderImage:[UIImage inat_defaultUserImage]
-                                                 options:SDWebImageRefreshCached];
+            ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+            if (me.userIcon) {
+                [cell.cellImageView setImageWithURL:me.userIcon
+                                   placeholderImage:[UIImage inat_defaultUserImage]];
             } else {
                 cell.cellImageView.image = [UIImage inat_defaultUserImage];
             }
-            cell.titleLabel.text = user.login;
+            cell.titleLabel.text = me.login;
         } else {
             cell.titleLabel.text = @"Me";            
             cell.cellImageView.image = [UIImage inat_defaultUserImage];
@@ -153,38 +152,27 @@
             cell.iv.image = localImage;
         } else {
             cell.spinner.hidden = NO;
+            cell.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
             [cell.spinner startAnimating];
-            [cell.iv sd_setImageWithURL:[op thumbPhotoUrl] placeholderImage:nil completed:^(UIImage *thumb, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                if (error && [[RKClient sharedClient] isNetworkReachable]) {
-                    [cell.spinner stopAnimating];
-                    [[Analytics sharedClient] event:kAnalyticsEventObservationPhotoFailedToLoad
-                                     withProperties:@{
-                                                      @"Error": error.localizedDescription,
-                                                      @"Size": @"Thumb",
-                                                      }];
-                }
-                
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [cell.iv sd_setImageWithURL:[op mediumPhotoUrl] placeholderImage:thumb completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                        [cell.spinner stopAnimating];
-                        if (error && [[RKClient sharedClient] isNetworkReachable]) {
-                            [[Analytics sharedClient] event:kAnalyticsEventObservationPhotoFailedToLoad
-                                             withProperties:@{
-                                                              @"Error": error.localizedDescription,
-                                                              @"Size": @"Medium",
-                                                              }];
-                        }
-                    }];
-                });
-            }];
+            
+            __weak typeof(cell.spinner)weakSpinner = cell.spinner;
+            __weak typeof(cell.iv)weakIv = cell.iv;
+            [cell.iv setImageWithURLRequest:[NSURLRequest requestWithURL:op.mediumPhotoUrl]
+                           placeholderImage:nil
+                                    success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+                                        weakIv.image = image;
+                                        [weakSpinner stopAnimating];
+                                    } failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+                                        [weakSpinner stopAnimating];
+                                    }];
         }
     } else {
         // show iconic taxon image
         FAKIcon *taxonIcon = [FAKINaturalist iconForIconicTaxon:self.observation.iconicTaxonName
                                                        withSize:200];
-
+        
         [taxonIcon addAttribute:NSForegroundColorAttributeName
-                           value:[UIColor lightGrayColor]];
+                          value:[UIColor lightGrayColor]];
         
         cell.iv.image = [taxonIcon imageWithSize:CGSizeMake(200, 200)];
         cell.iv.contentMode = UIViewContentModeCenter;  // don't scale
@@ -292,7 +280,7 @@
         if ([etr.iconicTaxonName isEqualToString:etr.commonName]) {
             cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
         } else if (etr.photoUrl) {
-            [cell.taxonImageView sd_setImageWithURL:etr.photoUrl];
+            [cell.taxonImageView setImageWithURL:etr.photoUrl];
         } else {
             cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
         }
@@ -358,27 +346,6 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     return nil;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
-        if (indexPath.item == 0) {
-            // user
-            return 44;
-        } else if (indexPath.item == 1) {
-            // wider tableview shows more photo,
-            if (tableView.bounds.size.width > 369) {
-            	return MAX(tableView.bounds.size.height * 0.6, 253);
-            } else {
-                return 200;
-            }
-        } else if (indexPath.item == 2) {
-            // taxon
-            return 60;
-        }
-    }
-    
-    return CGFLOAT_MIN;
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {

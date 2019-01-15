@@ -54,7 +54,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
          @"conservation_status", @"conservationStatusCode",
          @"conservation_status_name", @"conservationStatusName",
          @"conservation_status_source.title", @"conservationStatusSourceName",
-         @"default_name.name", @"defaultName",
+         @"common_name.name", @"defaultName",
          @"iconic_taxon_name", @"iconicTaxonName",
          @"iconic_taxon_id", @"iconicTaxonID",
          @"is_iconic", @"isIconic",
@@ -163,14 +163,6 @@ static RKManagedObjectMapping *defaultMapping = nil;
     return self.defaultName.length > 0 && self.rank.length > 0;
 }
 
-- (NSString *)rankName {
-    return self.rank;
-}
-
-- (NSInteger)taxonId {
-    return [self.recordID integerValue];
-}
-
 - (NSURL *)wikipediaUrl {
     NSString *langLocale = [[NSLocale preferredLanguages] firstObject];
     NSString *lang = [[langLocale componentsSeparatedByString:@"-"] firstObject];
@@ -186,6 +178,33 @@ static RKManagedObjectMapping *defaultMapping = nil;
     }
     NSString *urlString = [NSString stringWithFormat:@"https://%@.wikipedia.org/wiki/%@", lang, articleTitle];
     return [NSURL URLWithString:urlString];
+}
+
+#pragma mark - TaxonVisualization
+
+- (NSString *)rankName {
+    return self.rank;
+}
+
+- (NSInteger)taxonId {
+    return [self.recordID integerValue];
+}
+
+- (NSString *)scientificName {
+    return self.name;
+}
+
+- (NSString *)commonName {
+    return self.defaultName;
+}
+
+- (NSURL *)photoUrl {
+    TaxonPhoto *tp = self.sortedTaxonPhotos.firstObject;
+    if (tp && tp.smallURL) {
+        return [NSURL URLWithString:tp.smallURL];
+    } else {
+        return nil;
+    }
 }
 
 @end

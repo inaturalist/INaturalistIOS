@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "DisclosureCell.h"
@@ -100,7 +100,9 @@
 }
 
 - (void)prepareForReuse {
-    [self.cellImageView sd_cancelCurrentImageLoad];
+    [super prepareForReuse];
+    
+    [self.cellImageView cancelImageDownloadTask];
     self.cellImageView.layer.borderWidth = 0.0f;
     self.cellImageView.layer.borderColor = nil;
     self.cellImageView.layer.cornerRadius = 0.0f;

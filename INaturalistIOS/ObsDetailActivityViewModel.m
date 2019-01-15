@@ -1,4 +1,4 @@
-//
+ //
 //  ObsDetailActivityViewModel.m
 //  iNaturalist
 //
@@ -6,15 +6,15 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <YLMoment/YLMoment.h>
+#import <RestKit/RestKit.h>
 
 #import "ObsDetailActivityViewModel.h"
 #import "Observation.h"
 #import "DisclosureCell.h"
-#import "User.h"
 #import "Taxon.h"
 #import "ExploreTaxon.h"
 #import "ExploreTaxonRealm.h"
@@ -36,8 +36,11 @@
 #import "ActivityVisualization.h"
 #import "ExploreComment.h"
 #import "UIImage+INaturalist.h"
-#import "TAxaAPI.h"
+#import "TaxaAPI.h"
 #import "ExploreUpdateRealm.h"
+#import "INatReachability.h"
+#import "IdentificationsAPI.h"
+#import "ObservationAPI.h"
 
 @interface ObsDetailActivityViewModel () <RKRequestDelegate> {
     BOOL hasSeenNewActivity;
@@ -79,9 +82,9 @@
             
             NSInteger baseRows = 3;
             
-            Taxon *myIdTaxon = [self taxonForIdentificationByLoggedInUser];
+            NSInteger myTaxonId = [self taxonIdForIdentificationByLoggedInUser];
             // can't agree with my ID, can't agree with an ID that matches my own
-            if ([self loggedInUserProducedActivity:activity] || (myIdTaxon && [myIdTaxon.recordID isEqual:@([identification taxonId])])) {
+            if ([self loggedInUserProducedActivity:activity] || (myTaxonId == [identification taxonId])) {
                 // can't agree with your own identification
                 // so don't show row with agree button
                 baseRows--;
@@ -153,57 +156,6 @@
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section < 2) {
-        return [super tableView:tableView heightForRowAtIndexPath:indexPath];
-    } else {
-        id <ActivityVisualization> activity = [self activityForSection:indexPath.section];
-        if ([activity conformsToProtocol:@protocol(CommentVisualization)]) {
-            if (indexPath.item == 0) {
-                // size for user/date
-                return 44;
-            } else {
-                // body row
-                return [self heightForRowInTableView:tableView withBodyText:activity.body];
-            }
-        } else {
-            // identification
-            if (indexPath.item == 1) {
-                // taxon
-                return 60;
-            }
-            if ([self tableView:tableView numberOfRowsInSection:indexPath.section] == 4) {
-                // contains body
-                if (indexPath.item == 2) {
-                    // body row
-                    return [self heightForRowInTableView:tableView withBodyText:activity.body];
-                } else {
-                    // user/date, agree/action
-                    return 44;
-                }
-            } else {
-                // no body row, everything else 44
-                return 44;
-            }
-        }
-    }
-}
-
-- (CGFloat)heightForRowInTableView:(UITableView *)tableView withBodyText:(NSString *)text {
-    // 22 for some padding on the left/right
-    CGFloat usableWidth = tableView.bounds.size.width - 22;
-    CGSize maxSize = CGSizeMake(usableWidth, CGFLOAT_MAX);
-    UIFont *font = [UIFont systemFontOfSize:14.0f];
-    
-    CGRect textRect = [text boundingRectWithSize:maxSize
-                                         options:NSStringDrawingUsesLineFragmentOrigin
-                                      attributes:@{ NSFontAttributeName: font }
-                                         context:nil];
-    
-    // 20 for padding above/below
-    return MAX(44, textRect.size.height + 20);
-}
-
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     if (section < 2) {
@@ -266,6 +218,9 @@
             return cell;
         }
     }
+    
+    // avoid the warning
+    return [UITableViewCell new];
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -311,8 +266,21 @@
 #pragma mark - section helpers
 
 - (id <ActivityVisualization>)activityForSection:(NSInteger)section {
-    // first 2 sections are for observation metadata
-    return self.observation.sortedActivity[section - 2];
+    id activity = nil;
+    
+    @try {
+        // first 2 sections are for observation metadata
+        activity = self.observation.sortedActivity[section - 2];
+    } @catch (NSException *exception) {
+        if (exception.name == NSRangeException) {
+            // if the observation is being reloaded, sortedActivity might be empty
+            // do nothing
+        } else {
+            @throw;
+        }
+    } @finally {
+        return activity;
+    }
 }
 
 - (ObsDetailSection)sectionType {
@@ -357,9 +325,8 @@
     if (activity) {
         NSURL *userIconUrl = [activity userIconUrl];
         if (userIconUrl) {
-            [cell.authorImageView sd_setImageWithURL:userIconUrl
-                                    placeholderImage:[UIImage inat_defaultUserImage]
-                                             options:SDWebImageRefreshCached];
+            [cell.authorImageView setImageWithURL:userIconUrl
+                                 placeholderImage:[UIImage inat_defaultUserImage]];
             cell.authorImageView.layer.cornerRadius = 27.0 / 2;
             cell.authorImageView.clipsToBounds = YES;
         } else {
@@ -395,10 +362,10 @@
         // can't agree with your identification
         cell.agreeButton.enabled = ![self loggedInUserProducedActivity:activity];
         
-        Taxon *t = [self taxonForIdentificationByLoggedInUser];
-        if (t) {
+        NSInteger myTaxonId = [self taxonIdForIdentificationByLoggedInUser];
+        if (myTaxonId != 0) {
             // can't agree with an identification that matches your own
-            if ([t.recordID isEqual:@([identification taxonId])]) {
+            if (myTaxonId == [identification taxonId]) {
                 cell.agreeButton.enabled = NO;
             }
         }
@@ -468,7 +435,7 @@
     
     
     if ([identification taxonIconUrl]) {
-        [cell.taxonImageView sd_setImageWithURL:[identification taxonIconUrl]];
+        [cell.taxonImageView setImageWithURL:[identification taxonIconUrl]];
     } else {
         cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:[identification taxonIconicName]];
     }
@@ -481,7 +448,7 @@
 #pragma mark - uibutton targets
 
 - (void)addComment {
-    if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         [self.delegate noticeWithTitle:NSLocalizedString(@"Can't Comment", nil)
                                message:NSLocalizedString(@"Network is required.", @"Network is required error message")];
         return;
@@ -498,7 +465,7 @@
 }
 
 - (void)addIdentification {
-    if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         [self.delegate noticeWithTitle:NSLocalizedString(@"Can't Add ID", nil)
                                message:NSLocalizedString(@"Network is required.", @"Network is required error message")];
         return;
@@ -515,7 +482,7 @@
 }
 
 - (void)agree:(UIButton *)button {
-    if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         [self.delegate noticeWithTitle:NSLocalizedString(@"Couldn't Agree", nil)
                                message:NSLocalizedString(@"Network is required.", @"Network is required error message")];
         return;
@@ -529,37 +496,36 @@
     }
     
     // add an identification
-    [[Analytics sharedClient] debugLog:@"Network - Obs Detail Add Comment"];
     [[Analytics sharedClient] event:kAnalyticsEventObservationAddIdentification
                      withProperties:@{ @"Via": @"View Obs Agree" }];
-    
-    NSDictionary *params = @{
-                             @"identification[observation_id]": @(self.observation.inatRecordId),
-                             @"identification[taxon_id]": @(button.tag),
-                             };
-    
+        
     [self.delegate showProgressHud];
     
-    [[RKClient sharedClient] post:@"/identifications"
-                           params:params
-                         delegate:self];
+    __weak typeof(self)weakSelf = self;
+    IdentificationsAPI *api = [[IdentificationsAPI alloc] init];
+    [api addIdentificationTaxonId:button.tag observationId:self.observation.inatRecordId body:nil vision:NO handler:^(NSArray *results, NSInteger count, NSError *error) {
+        [weakSelf.delegate hideProgressHud];
+        if (error) {
+            [weakSelf.delegate noticeWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                       message:error.localizedDescription];
+        } else {
+            [weakSelf.delegate reloadObservation];
+        }
+    }];
 }
 
 #pragma mark - misc helpers
 
 - (void)markActivityAsSeen {
-    // check for network
     if (self.observation.inatRecordId && self.observation.hasUnviewedActivityBool && [self.observation isKindOfClass:[Observation class]]) {
         Observation *obs = (Observation *)self.observation;
-        
-        [[Analytics sharedClient] debugLog:@"Network - Viewed Updates"];
-        
-        [[RKClient sharedClient] put:[NSString stringWithFormat:@"/observations/%ld/viewed_updates", (long)self.observation.inatRecordId]
-                              params:nil
-                            delegate:self];
         obs.hasUnviewedActivity = [NSNumber numberWithBool:NO];
         NSError *error = nil;
         [[[RKObjectManager sharedManager] objectStore] save:&error];
+
+        ObservationAPI *api = [[ObservationAPI alloc] init];
+        // the API won't take a nil callback at this point
+        [api seenUpdatesForObservationId:self.observation.inatRecordId handler:^(NSArray *results, NSInteger count, NSError *error) { }];
     }
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"resourceId == %ld", [self.observation inatRecordId]];
@@ -575,31 +541,32 @@
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = appDelegate.loginController;
     if (login.isLoggedIn) {
-        User *loggedInUser = [login fetchMe];
-        if ([loggedInUser.login isEqualToString:[activity userName]]) {
+        ExploreUserRealm *me = [login meUserLocal];
+        if ([me.login isEqualToString:[activity userName]]) {
             return YES;
         }
     }
     return NO;
 }
 
-- (Taxon *)taxonForIdentificationByLoggedInUser {
+- (NSInteger)taxonIdForIdentificationByLoggedInUser {
     // get "my" current identification
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = appDelegate.loginController;
     if (login.isLoggedIn) {
-        User *loggedInUser = [login fetchMe];
+        ExploreUserRealm *loggedInUser = [login meUserLocal];
         for (id <IdentificationVisualization> eachId in self.observation.identifications) {
             if ([[eachId userName] isEqualToString:loggedInUser.login] && [eachId isCurrent]) {
                 
                 NSPredicate *taxonPredicate = [NSPredicate predicateWithFormat:@"recordID == %ld", [eachId taxonId]];
                 Taxon *taxon = [[Taxon objectsWithPredicate:taxonPredicate] firstObject];
                 
-                return taxon;
+                return [[taxon recordID] integerValue];
             }
         }
     }
-    return nil;
+    return 0;
+
 }
 
 #pragma mark - RKRequestDelegate
@@ -615,8 +582,10 @@
     
     // set "seen" call returns 204 on success, add ID returns 200
     if (response.statusCode == 200 || response.statusCode == 204) {
-        // either id or refresh activity, reload the UI for the obs if the request succeeded
-        [self.delegate reloadObservation];
+        if ([response.URL.absoluteString rangeOfString:@"/identifications"].location != NSNotFound) {
+            // reload the observation after the user has agreed (thus made a new ID)
+            [self.delegate reloadObservation];
+        }
     } else {
         if ([response.URL.absoluteString rangeOfString:@"/identifications"].location != NSNotFound) {
             // identification

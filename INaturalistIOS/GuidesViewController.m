@@ -6,8 +6,9 @@
 //  Copyright (c) 2013 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
+#import <RestKit/RestKit.h>
 
 #import "GuidesViewController.h"
 #import "Guide.h"
@@ -21,8 +22,9 @@
 #import "UIImage+INaturalist.h"
 #import "NSURL+INaturalist.h"
 #import "UIColor+INaturalist.h"
-#import "User.h"
 #import "OnboardingLoginViewController.h"
+#import "INatReachability.h"
+#import "ExploreUserRealm.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -56,10 +58,7 @@ static const int ListControlIndexNearby = 2;
     [self checkEmpty];
     [self.tableView reloadData];
     
-    if (syncNeeded &&
-        [RKClient sharedClient].reachabilityObserver.isReachabilityDetermined &&
-        [RKClient sharedClient].reachabilityObserver.isNetworkReachable) {
-        
+    if (syncNeeded && [[INatReachability sharedClient] isNetworkReachable]) {
         [self sync:NO];
     } else {
         [self syncFinished];
@@ -76,7 +75,7 @@ static const int ListControlIndexNearby = 2;
 - (void)loadUserGuides
 {
 	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-	User *me = [appDelegate.loginController fetchMe];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
 	if (me) {
 		NSMutableArray *unsortedGuides = [NSMutableArray arrayWithArray:[Guide objectsWithPredicate:[NSPredicate predicateWithFormat:@"userLogin = %@ OR ngzDownloadedAt != nil", me.login]]];
 		self.guides = [unsortedGuides sortedArrayUsingComparator:^NSComparisonResult(Guide *g1, Guide *g2) {
@@ -115,9 +114,8 @@ static const int ListControlIndexNearby = 2;
 }
 
 - (IBAction)clickedSync:(id)sender {
-    if ([RKClient sharedClient].reachabilityObserver.isReachabilityDetermined &&
-        [RKClient sharedClient].reachabilityObserver.isNetworkReachable) {
-        
+
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
         [self sync:YES];
     } else {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Network unreachable",nil)
@@ -232,7 +230,7 @@ static const int ListControlIndexNearby = 2;
 - (void)syncUserGuides
 {
 	INaturalistAppDelegate *delegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-	User *me = [delegate.loginController fetchMe];
+    ExploreUserRealm *me = [delegate.loginController meUserLocal];
 	if (me) {
     	NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     	NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
@@ -343,17 +341,16 @@ static const int ListControlIndexNearby = 2;
         self.title = NSLocalizedString(@"Guides", nil);
 
         self.tabBarItem.image = ({
-            FAKIcon *bookOutline = [FAKIonIcons iosBookOutlineIconWithSize:35];
-            [bookOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-            [bookOutline imageWithSize:CGSizeMake(34, 45)];
+            FAKIcon *bookInactive = [FAKIonIcons iosBookIconWithSize:35];
+            [bookInactive addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+            [[bookInactive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
         
-        self.tabBarItem.selectedImage =({
-            FAKIcon *bookFilled = [FAKIonIcons iosBookIconWithSize:35];
-            [bookFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-            [bookFilled imageWithSize:CGSizeMake(34, 45)];
-        });
-        
+        self.tabBarItem.selectedImage = ({
+            FAKIcon *bookActive = [FAKIonIcons iosBookIconWithSize:35];
+            [bookActive addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
+            [[bookActive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        });        
     }
     
     return self;
@@ -458,12 +455,12 @@ static const int ListControlIndexNearby = 2;
     
     Guide *p = [self.guides objectAtIndex:[indexPath row]];
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:GuideCellImageTag];
-    [imageView sd_cancelCurrentImageLoad];
+    [imageView cancelImageDownloadTask];
     UILabel *title = (UILabel *)[cell viewWithTag:GuideCellTitleTag];
     title.text = p.title;
     title.textAlignment = NSTextAlignmentNatural;
-    [imageView sd_setImageWithURL:[NSURL URLWithString:p.iconURL]
-                 placeholderImage:[UIImage inat_defaultGuideImage]];
+    [imageView setImageWithURL:[NSURL URLWithString:p.iconURL]
+              placeholderImage:[UIImage inat_defaultGuideImage]];
     
     return cell;
 }
@@ -477,10 +474,7 @@ static const int ListControlIndexNearby = 2;
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
     self.lastLocation = newLocation;
-    if (!self.nearbyGuidesSyncedAt &&
-        [RKClient sharedClient].reachabilityObserver.isReachabilityDetermined &&
-        [RKClient sharedClient].reachabilityObserver.isNetworkReachable) {
-        
+    if (!self.nearbyGuidesSyncedAt && [[INatReachability sharedClient] isNetworkReachable]) {
         [self syncNearbyGuides];
     }
 }

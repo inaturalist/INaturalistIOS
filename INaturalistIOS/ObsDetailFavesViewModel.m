@@ -6,13 +6,13 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <MBProgressHUD/MBProgressHUD.h>
+#import <RestKit/RestKit.h>
 
 #import "ObsDetailFavesViewModel.h"
 #import "Observation.h"
 #import "FaveVisualization.h"
-#import "User.h"
 #import "DisclosureCell.h"
 #import "ObsDetailAddFaveHeader.h"
 #import "INaturalistAppDelegate.h"
@@ -23,6 +23,8 @@
 #import "ObsDetailNoInteractionHeaderFooter.h"
 #import "Analytics.h"
 #import "UIImage+INaturalist.h"
+#import "INatReachability.h"
+#import "ExploreUserRealm.h"
 
 @implementation ObsDetailFavesViewModel
 
@@ -111,14 +113,6 @@
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section < 2) {
-        return [super tableView:tableView heightForRowAtIndexPath:indexPath];
-    } else {
-        return 44;
-    }
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section < 2) {
         return [super tableView:tableView cellForRowAtIndexPath:indexPath];
@@ -128,7 +122,7 @@
         
         id <FaveVisualization> fave = [self.observation.sortedFaves objectAtIndex:indexPath.item];
         if ([fave userIconUrl]) {
-            [cell.authorImageView sd_setImageWithURL:[fave userIconUrl]];
+            [cell.authorImageView setImageWithURL:[fave userIconUrl]];
             cell.authorImageView.layer.cornerRadius = 27.0 / 2;
             cell.authorImageView.clipsToBounds = YES;
         } else {
@@ -155,8 +149,7 @@
 }
 
 - (void)tappedFave:(UIControl *)control {
-    
-    if (![[RKClient sharedClient] reachabilityObserver].isNetworkReachable) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         [self.delegate noticeWithTitle:NSLocalizedString(@"Can't Fave", nil)
                                message:NSLocalizedString(@"Network is required.", @"Network is required error message")];
         return;
@@ -231,7 +224,7 @@
     LoginController *login = appDelegate.loginController;
     if (login.isLoggedIn) {
         for (id <FaveVisualization> fave in self.observation.faves) {
-            if ([[fave userName] isEqualToString:[[login fetchMe] login]]) {
+            if ([[fave userName] isEqualToString:[[login meUserLocal] login]]) {
                 return YES;
             }
         }

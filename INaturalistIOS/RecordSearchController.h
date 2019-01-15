@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <RestKit/RestKit.h>
 
 @protocol RecordSearchControllerDelegate <NSObject>
 @optional

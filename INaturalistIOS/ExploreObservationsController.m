@@ -20,6 +20,7 @@
 #import "Analytics.h"
 #import "INatAPI.h"
 #import "ObserverCount.h"
+#import "INatReachability.h"
 
 @interface ExploreObservationsController () {
 	NSInteger lastPagedFetched;
@@ -52,7 +53,7 @@
 }
 
 - (void)reload {
-	if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
 		[self fetchObservationsShouldNotify:YES];
 	} else {
 		NSError *error = [NSError errorWithDomain:@"org.inaturalist"
@@ -79,7 +80,7 @@
 		}];
 	}
 
-	if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
 		[self fetchObservationsShouldNotify:NO];
 	} else {
 		NSError *error = [NSError errorWithDomain:@"org.inaturalist"
@@ -111,7 +112,7 @@
 	// add our new predicate to the active group
 	self.activeSearchPredicates = [selected arrayByAddingObject:newPredicate];
 	
-	if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
 		// fetch using new search predicate(s)
 		[self fetchObservationsShouldNotify:YES];
 	} else {
@@ -137,7 +138,7 @@
 	// clear any stashed objects
 	self.observations = [NSOrderedSet orderedSet];
 	
-	if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
 		// fetch using new search predicate(s)
 		[self fetchObservationsShouldNotify:YES];
 	} else {
@@ -165,7 +166,7 @@
 	self.observations = [NSOrderedSet orderedSet];
 	
 	if (update) {
-		if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+        if ([[INatReachability sharedClient] isNetworkReachable]) {
 			[self fetchObservationsShouldNotify:YES];
 		} else {
 			NSError *error = [NSError errorWithDomain:@"org.inaturalist"
@@ -181,7 +182,7 @@
 }
 
 - (void)expandActiveSearchToNextPageOfResults {
-	if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
 		[self fetchObservationsPage:++lastPagedFetched];
 	} else {
 		NSError *error = [NSError errorWithDomain:@"org.inaturalist"
@@ -214,7 +215,7 @@
 - (NSString *)pathForFetchWithSearchPredicates:(NSArray *)predicates {
 	NSString *pathPattern = @"observations";
 	// for iOS, we treat "mappable" as "exploreable"
-	NSString *query = @"?per_page=100&mappable=true";
+	NSString *query = @"?per_page=100&mappable=true&verifiable=true";
 	
 	NSString *localeString = [NSLocale inat_serverFormattedLocale];
 	if (localeString && ![localeString isEqualToString:@""]) {
@@ -277,6 +278,11 @@
 	
 	[[Analytics sharedClient] debugLog:@"Network - Explore fetch observations"];
 	[self.api fetch:path classMapping:ExploreObservation.class handler:^(NSArray *results, NSInteger count, NSError *error) {
+        if (error) {
+            [self.notificationDelegate failedObservationFetch:error];
+            return;
+        }
+        
 		NSSet *trimmedObservations;
 		NSSet *unorderedObservations;
 		if (self.limitingRegion) {
@@ -301,9 +307,14 @@
 				});
 			else {
 				dispatch_async(dispatch_get_main_queue(), ^{
+                    NSString *description = NSLocalizedString(@"No observations found.", @"Error notice when exploring observations when no observations were found.");
+                    if ([path containsString:@"nelat"]) {
+                        description = NSLocalizedString(@"No observations found in map area.", "Error notice when exploring observations, when no obserations were found within a map area.");
+                    }
+                    
 					NSError *error = [[NSError alloc] initWithDomain:@"org.inaturalist"
 																code:-1014
-															userInfo:@{ NSLocalizedDescriptionKey: @"No observations found." }];
+															userInfo:@{ NSLocalizedDescriptionKey: description }];
 					[self.notificationDelegate failedObservationFetch:error];
 				});
 			}
@@ -358,38 +369,6 @@
 - (BOOL)hasActiveLocationSearchPredicate {
 	return [self.activeSearchPredicates bk_any:^BOOL(ExploreSearchPredicate *p) {
 		return p.type == ExploreSearchPredicateTypeLocation;
-	}];
-}
-
-- (void)addIdentificationTaxonId:(NSInteger)taxonId forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler {
-	[[Analytics sharedClient] debugLog:@"Network - Explore Add Comment"];
-	[self postToPath:@"/identifications"
-			  params:@{ @"identification[observation_id]": @(observation.observationId),
-						@"identification[taxon_id]": @(taxonId) }
-		  completion:handler];
-}
-
-- (void)addComment:(NSString *)commentBody forObservation:(ExploreObservation *)observation completionHandler:(PostCompletionHandler)handler {
-	[[Analytics sharedClient] debugLog:@"Network - Explore Add Comment"];
-	[self postToPath:@"/comments"
-			  params:@{ @"comment[body]": commentBody,
-						@"comment[parent_id]": @(observation.observationId),
-						@"comment[parent_type]": @"Observation" }
-		  completion:handler];
-}
-
-- (void)postToPath:(NSString *)path params:(NSDictionary *)params completion:(PostCompletionHandler)handler {
-	
-	[[RKClient sharedClient] post:path usingBlock:^(RKRequest *request) {
-		request.params = params;
-		
-		request.onDidLoadResponse = ^(RKResponse *response) {
-			handler(response, nil);
-		};
-		
-		request.onDidFailLoadWithError = ^(NSError *err) {
-			handler(nil, err);
-		};
 	}];
 }
 

@@ -97,6 +97,8 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     [self.commentButton removeTarget:nil action:nil forControlEvents:UIControlEventAllEvents];
     [self.suggestIDButton removeTarget:nil action:nil forControlEvents:UIControlEventAllEvents];
 }

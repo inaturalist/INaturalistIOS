@@ -11,12 +11,9 @@
 @implementation TaxonPhotoCell
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     [self.creditsButton removeTarget:nil action:nil forControlEvents:UIControlEventAllEvents];
-}
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
 }
 
 @end

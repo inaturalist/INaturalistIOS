@@ -7,8 +7,9 @@
 //
 
 #import <MBProgressHUD/MBProgressHUD.h>
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
+#import <RestKit/RestKit.h>
 
 #import "ProjectChooserViewController.h"
 #import "Project.h"
@@ -18,8 +19,9 @@
 #import "ProjectTableViewCell.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
-#import "User.h"
 #import "OnboardingLoginViewController.h"
+#import "INatReachability.h"
+#import "ExploreUserRealm.h"
 
 @implementation ProjectChooserViewController
 
@@ -92,6 +94,8 @@
 
 #pragma mark - lifecycle
 - (void)viewDidLoad {
+    [super viewDidLoad];
+    
     if (!self.projectUsers) [self loadData];
     if (!self.chosenProjects) self.chosenProjects = [[NSMutableArray alloc] init];
 }
@@ -120,10 +124,10 @@
         }
     }
     
-    if ((!self.projectUsers || self.projectUsers.count == 0) && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ((!self.projectUsers || self.projectUsers.count == 0) && [[INatReachability sharedClient] isNetworkReachable]) {
     	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     	if ([appDelegate.loginController isLoggedIn]) {
-    		User *me = [appDelegate.loginController fetchMe];
+            ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
 	        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
 	        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
 	        NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
@@ -163,9 +167,9 @@
     
     ProjectUser *pu = [self.projectUsers objectAtIndex:[indexPath row]];
     cell.titleLabel.text = pu.project.title;
-    [cell.projectImage sd_cancelCurrentImageLoad];
-    [cell.projectImage sd_setImageWithURL:[NSURL URLWithString:pu.project.iconURL]
-                 placeholderImage:[UIImage inat_defaultProjectImage]];
+    [cell.projectImage cancelImageDownloadTask];
+    [cell.projectImage setImageWithURL:[NSURL URLWithString:pu.project.iconURL]
+                      placeholderImage:[UIImage inat_defaultProjectImage]];
     if ([self.chosenProjects containsObject:pu.project]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     } else {

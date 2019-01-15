@@ -14,7 +14,6 @@
 
 - (void)event:(NSString *)name;
 - (void)event:(NSString *)name withProperties:(NSDictionary *)properties;
-- (void)logAllPageViewForTarget:(UIViewController *)target;
 - (void)registerUserWithIdentifier:(NSString *)userIdentifier;
 
 - (void)debugLog:(NSString *)logMessage;
@@ -108,6 +107,8 @@ extern NSString *kAnalyticsEventSettingsNetworkChangeCompleted;
 extern NSString *kAnalyticsEventProfilePhotoChanged;
 extern NSString *kAnalyticsEventProfilePhotoRemoved;
 extern NSString *kAnalyticsEventProfileLoginChanged;
+extern NSString *kAnalyticsEventSettingsRateUs;
+extern NSString *kAnalyticsEventSettingsDonate;
 
 // news
 extern NSString *kAnalyticsEventNewsOpenArticle;
@@ -134,4 +135,19 @@ extern NSString *kAnalyticsEventNavigateOnboardingScreenLogin;
 extern NSString *kAnalyticsEventOnboardingLoginSkip;
 extern NSString *kAnalyticsEventOnboardingLoginCancel;
 extern NSString *kAnalyticsEventOnboardingLoginPressed;
+
+// permissions
+extern NSString *kAnalyticsEventLocationPermissionsChanged;
+extern NSString *kAnalyticsEventCameraPermissionsChanged;
+extern NSString *kAnalyticsEventPhotoLibraryPermissionsChanged;
+
+
+// suggestions
+extern NSString *kAnalyticsEventLoadTaxaSearch;
+extern NSString *kAnalyticsEventSuggestionsLoaded;
+extern NSString *kAnalyticsEventSuggestionsFailed;
+extern NSString *kAnalyticsEventChoseTaxon;
+extern NSString *kAnalyticsEventShowTaxonDetails;
+extern NSString *kAnalyticsEventSuggestionsImageGauge;
+extern NSString *kAnalyticsEventSuggestionsObservationGauge;
 

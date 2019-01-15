@@ -8,9 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol ActiveSearchTextDelegate
+- (NSString *)activeSearchText;
+@end
+
 @interface ExploreActiveSearchView : UIView
 
 @property UILabel *activeSearchLabel;
 @property UIButton *removeActiveSearchButton;
+@property (nonatomic, assign) id <ActiveSearchTextDelegate> activeSearchTextDelegate;
 
 @end
+

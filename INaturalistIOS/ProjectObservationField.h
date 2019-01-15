@@ -27,4 +27,7 @@
 @property (nonatomic, retain) Project *project;
 @property (nonatomic, retain) ObservationField *observationField;
 
+// datatypes that can just be treated as text
++ (NSArray *)textFieldDataTypes;
+
 @end

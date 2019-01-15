@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ExploreListTableViewCell.h"
@@ -335,8 +335,10 @@ static NSDateFormatter *shortFormatter;
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     observationImageView.image = nil;
-    [observationImageView sd_cancelCurrentImageLoad];
+    [observationImageView cancelImageDownloadTask];
     observationImageView.layer.borderColor = [UIColor clearColor].CGColor;
     observationImageView.layer.borderWidth = 0.0f;
     commonNameLabel.text = nil;
@@ -356,10 +358,7 @@ static NSDateFormatter *shortFormatter;
         NSString *mediumUrlString = [photo.url stringByReplacingOccurrencesOfString:@"square"
                                                                          withString:@"medium"];
         
-        [observationImageView sd_setImageWithURL:[NSURL URLWithString:mediumUrlString]
-                                       completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                                           [observationImageView setNeedsDisplay];
-                                       }];
+        [observationImageView setImageWithURL:[NSURL URLWithString:mediumUrlString]];
     }
     
     NSString *commonName = nil;

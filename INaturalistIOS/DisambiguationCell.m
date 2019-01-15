@@ -77,6 +77,8 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     self.resultImageView.image = nil;
     self.resultTitle.text = nil;
     self.resultSubtitle.text = nil;

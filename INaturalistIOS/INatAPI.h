@@ -15,7 +15,11 @@ typedef void(^INatAPIFetchCompletionCountHandler)(NSArray *results, NSInteger co
 
 @interface INatAPI : NSObject
 
+- (void)put:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)post:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)fetch:(NSString *)path classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)delete:(NSString *)path handler:(INatAPIFetchCompletionCountHandler)done;
+
 - (NSString *)apiBaseUrl;
 
 @end

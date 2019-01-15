@@ -6,9 +6,14 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
+#import <RestKit/RestKit.h>
+
 #import "ObservationAPI.h"
 #import "ExploreObservation.h"
 #import "ExploreUpdate.h"
+#import "IdentifierCount.h"
+#import "ObserverCount.h"
+#import "IdentifierCount.h"
 #import "Analytics.h"
 #import "Observation.h"
 
@@ -45,22 +50,31 @@
 }
 
 - (void)seenUpdatesForObservationId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
-    NSString *path = [NSString stringWithFormat:@"/observations/%ld/viewed_updates", (long)identifier];
-    [[RKClient sharedClient] put:path
-                      usingBlock:^(RKRequest *request) {
-                          request.onDidLoadResponse = ^(RKResponse *response) {
-                              dispatch_async(dispatch_get_main_queue(), ^{
-                                  done(@[], 0, nil);
-                              });
-                          };
-                          
-                          request.onDidFailLoadWithError = ^(NSError *error) {
-                              dispatch_async(dispatch_get_main_queue(), ^{
-                                  done(nil, 0, error);
-                              });
-                          };
-                      }];
+    [[Analytics sharedClient] debugLog:@"Network - mark seen updates via node"];
+    NSString *path = [NSString stringWithFormat:@"observations/%ld/viewed_updates", (long)identifier];
+    [self put:path params:nil classMapping:nil handler:done];
 }
+
+- (void)topObserversForTaxaIds:(NSArray *)taxaIds handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - fetch top observers from node"];
+    NSString *path = [NSString stringWithFormat:@"observations/observers?per_page=3&taxon_id=%@",
+                      [taxaIds componentsJoinedByString:@","]];
+    [self fetch:path classMapping:ObserverCount.class handler:done];
+}
+
+- (void)topIdentifiersForTaxaIds:(NSArray *)taxaIds handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - fetch top identifiers from node"];
+    NSString *path = [NSString stringWithFormat:@"observations/identifiers?per_page=3&taxon_id=%@",
+                      [taxaIds componentsJoinedByString:@","]];
+    [self fetch:path classMapping:IdentifierCount.class handler:done];
+}
+
+- (void)postObservation:(Observation *)observation handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - post observation to node"];
+    NSString *path = @"observations";
+    [self post:path params:[observation uploadableRepresentation] classMapping:[ExploreObservation class] handler:done];
+}
+
 
 - (void)dealloc {
     [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:(id <RKRequestDelegate>)self];

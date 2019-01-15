@@ -7,7 +7,6 @@
 //
 
 #import <MBProgressHUD/MBProgressHUD.h>
-#import <SDWebImage/UIImageView+WebCache.h>
 #import <CoreLocation/CoreLocation.h>
 #import <BlocksKit/BlocksKit.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
@@ -22,7 +21,6 @@
 #import "Observation.h"
 #import "ObservationPhoto.h"
 #import "MultiImageView.h"
-#import "ObservationDetailViewController.h"
 #import "TaxaSearchViewController.h"
 #import "UIColor+ExploreColors.h"
 #import "Observation.h"
@@ -32,17 +30,20 @@
 #import "ObsEditV2ViewController.h"
 #import "UIColor+INaturalist.h"
 #import "INaturalistAppDelegate.h"
+#import "CLLocation+EXIFGPSDictionary.h"
+#import "UIImage+INaturalist.h"
+#import "NSData+INaturalist.h"
+#import "UIViewController+INaturalist.h"
 
 #define CHICLETWIDTH 100.0f
 #define CHICLETHEIGHT 98.0f
 #define CHICLETPADDING 2.0
 
-@interface ConfirmPhotoViewController () <ObservationDetailViewControllerDelegate, TaxaSearchViewControllerDelegate> {
+@interface ConfirmPhotoViewController () {
     PHPhotoLibrary *phLib;
     UIButton *retake, *confirm;
 }
 @property NSArray *iconicTaxa;
-@property RKObjectLoader *taxaLoader;
 @property NSMutableArray *downloadedImages;
 @property (copy) CLLocation *obsLocation;
 @property (copy) NSDate *obsDate;
@@ -54,10 +55,9 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    if (self.shouldContinueUpdatingLocation) {
-        self.locationManager = [[CLLocationManager alloc] init];
-        [self.locationManager startUpdatingLocation];
-    }
+    // fetch location to insert into image exif when we save it
+    self.locationManager = [[CLLocationManager alloc] init];
+    [self.locationManager startUpdatingLocation];
     
     self.downloadedImages = [NSMutableArray array];
     
@@ -74,6 +74,7 @@
             if (strongSelf.obsLocation) {
                 o.latitude = @(strongSelf.obsLocation.coordinate.latitude);
                 o.longitude = @(strongSelf.obsLocation.coordinate.longitude);
+                o.positionalAccuracy = @(strongSelf.obsLocation.horizontalAccuracy);
             }
             
             if (strongSelf.obsDate) {
@@ -214,32 +215,105 @@
     });
     [self.view addSubview:confirm];
     
-    NSDictionary *views = @{
-                            @"image": self.multiImageView,
-                            @"confirm": confirm,
-                            @"retake": retake,
-                            };
+    UILayoutGuide *safeGuide = [self inat_safeLayoutGuide];
+
+    // horizontal
+    [self.multiImageView.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
+    [self.multiImageView.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[image]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[retake]-0-[confirm(==retake)]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
+    [retake.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
+    [retake.trailingAnchor constraintEqualToAnchor:confirm.leadingAnchor].active = YES;
+    [confirm.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[image]-0-[confirm(==48)]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[image]-0-[retake(==48)]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
+    [retake.widthAnchor constraintEqualToAnchor:confirm.widthAnchor].active = YES;
+    
+    // vertical
+    [self.multiImageView.topAnchor constraintEqualToAnchor:safeGuide.topAnchor].active = YES;
+    [self.multiImageView.bottomAnchor constraintEqualToAnchor:confirm.topAnchor].active = YES;
+    
+    [confirm.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
+    [retake.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
+    
+    [confirm.heightAnchor constraintEqualToConstant:48.0f].active = YES;
+    [retake.heightAnchor constraintEqualToConstant:48.0f].active = YES;
 }
 
 - (void)confirm {
+    // make sure we have permission to the photo library
+    switch ([PHPhotoLibrary authorizationStatus]) {
+        case PHAuthorizationStatusDenied:
+        case PHAuthorizationStatusRestricted: {
+            // don't notify, don't try to save photo
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self moveOnToSaveNewObservation];
+            });
+            break;
+        }
+        case PHAuthorizationStatusNotDetermined:
+            // ask permission
+            [self requestPhotoLibraryPermission];
+            break;
+        case PHAuthorizationStatusAuthorized: {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self savePhotoAndMoveOn];
+            });
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+- (void)requestPhotoLibraryPermission {
+    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+        [[Analytics sharedClient] event:kAnalyticsEventPhotoLibraryPermissionsChanged
+                         withProperties:@{
+                                          @"Via": NSStringFromClass(self.class),
+                                          @"NewValue": @(status),
+                                          }];
+        switch (status) {
+            case PHAuthorizationStatusDenied:
+            case PHAuthorizationStatusRestricted:
+            case PHAuthorizationStatusNotDetermined: {
+                // don't notify, don't try to save photo
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self moveOnToSaveNewObservation];
+                });
+                break;
+            }
+            case PHAuthorizationStatusAuthorized: {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self savePhotoAndMoveOn];
+                });
+                break;
+            }
+            default:
+                break;
+        }
+    }];
+    
+}
+
+- (void)moveOnToSaveNewObservation {
+    if (self.image) {
+        // embed geo
+        if (self.locationManager.location) {
+            self.obsLocation = self.locationManager.location;
+        }
+        // embed photo date
+        self.obsDate = [NSDate date];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.confirmFollowUpAction(@[ self.image ]);
+        });
+    } else if (self.downloadedImages) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.confirmFollowUpAction(self.downloadedImages);
+        });
+    }
+}
+
+- (void)savePhotoAndMoveOn {
     [[Analytics sharedClient] event:kAnalyticsEventNewObservationConfirmPhotos];
     
     // this can take a moment, so hide the retake/confirm buttons
@@ -253,15 +327,28 @@
         hud.removeFromSuperViewOnHide = YES;
         hud.dimBackground = YES;
         
-        // embed geo
-        if (self.locationManager.location) {
-            self.obsLocation = self.locationManager.location;
+        // build the metadata dictionary, with GPS if available
+        NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
+        if (self.locationManager && self.locationManager.location) {
+            // update the provided GPSDictionary with values from the location manager
+            NSMutableDictionary *gpsDictionary = [[mutableMetadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] mutableCopy];
+            if (!gpsDictionary) {
+                gpsDictionary = [NSMutableDictionary dictionary];
+            }
+            [gpsDictionary setValuesForKeysWithDictionary:[self.locationManager.location inat_GPSDictionary]];
+            mutableMetadata[(NSString *)kCGImagePropertyGPSDictionary] = gpsDictionary;
         }
-        self.obsDate = [NSDate date];
+        
+        // convert the UIImage into an NSData object, with the metadata included
+        // including GPS if we added it in the previous step
+        NSData *imageData = [self.image inat_JPEGDataRepresentationWithMetadata:[NSDictionary dictionaryWithDictionary:mutableMetadata]];
         
         [phLib performChanges:^{
-            PHAssetChangeRequest *request = [PHAssetChangeRequest creationRequestForAssetFromImage:self.image];
-            if (self.locationManager.location) {
+            PHAssetCreationRequest *request = [PHAssetCreationRequest creationRequestForAsset];
+            [request addResourceWithType:PHAssetResourceTypePhoto data:imageData options:nil];
+            
+            // this updates the iOS photos database but not EXIF
+            if (self.locationManager) {
                 request.location = self.locationManager.location;
             }
             request.creationDate = [NSDate date];
@@ -281,14 +368,16 @@
                     [self presentViewController:alert animated:YES completion:nil];
                 } else {
                     if (success) {
-                        self.confirmFollowUpAction( @[ self.image ]);
+                        [self moveOnToSaveNewObservation];
                     }
                 }
             });
+
         }];
+        
     } else if (self.downloadedImages) {
         // can proceed directly to followup
-        self.confirmFollowUpAction(self.downloadedImages);
+        [self moveOnToSaveNewObservation];
     }
 }
 
@@ -339,42 +428,52 @@
                 }
             };
             
-            [[PHImageManager defaultManager] requestImageForAsset:asset
-                                                       targetSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
-                                                      contentMode:PHImageContentModeAspectFit
-                                                          options:options
-                                                    resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-                                                        __strong typeof(weakSelf) strongSelf = weakSelf;
-                                                        NSNumber *isDegraded = [info valueForKey:PHImageResultIsDegradedKey];
-                                                        NSError *error = [info valueForKey:PHImageErrorKey];
-                                                        if (result) {
-                                                            [iv setImage:result];
-                                                            if ([isDegraded boolValue]) {
-                                                                pie.hidden = NO;
-                                                            } else {
-                                                                pie.hidden = YES;
-                                                                [self.downloadedImages addObject:result];
-                                                                [self configureNextButton];
-                                                            }
-                                                        } else if (error) {
-                                                            pie.hidden = YES;
-                                                            alertDecoration.hidden = NO;
+            [[PHImageManager defaultManager] requestImageDataForAsset:asset
+                                                              options:options
+                                                        resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+                                                            __strong typeof(weakSelf)strongSelf = weakSelf;
                                                             
-                                                            NSError *underlyingError = [[error userInfo] valueForKey:NSUnderlyingErrorKey];
-                                                            if (underlyingError) {
-                                                                error = underlyingError;
-                                                            }
+                                                            BOOL isDegraded = [[info valueForKey:PHImageResultIsDegradedKey] boolValue];
+                                                            NSError *error = [info valueForKey:PHImageErrorKey];
+                                                            
+                                                            if (imageData) {
+                                                                UIImage *image = [UIImage imageWithData:imageData];
+                                                                [iv setImage:image];
+                                                                
+                                                                if (isDegraded) {
+                                                                    pie.hidden = NO;
+                                                                } else {
+                                                                    pie.hidden = YES;
+                                                                    [strongSelf.downloadedImages addObject:image];
+                                                                    
+                                                                    // look for horizontal positioning error in exif gps
+                                                                    NSDictionary *gps = [imageData inat_gpsDictFromImageData];
+                                                                    if (gps && [gps valueForKey:inat_GPSHPositioningError]) {
+                                                                        CLLocationDistance accuracy = [[gps valueForKey:inat_GPSHPositioningError] doubleValue];
+                                                                        strongSelf.obsLocation = [strongSelf.obsLocation inat_locationByAddingAccuracy:accuracy];
+                                                                    }
 
-                                                            NSString *alertTitle = NSLocalizedString(@"Image Load Failed", nil);
-                                                            UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
-                                                                                                                           message:error.localizedDescription
-                                                                                                                    preferredStyle:UIAlertControllerStyleAlert];
-                                                            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                                                                      style:UIAlertActionStyleDefault
-                                                                                                    handler:nil]];
-                                                            [strongSelf presentViewController:alert animated:YES completion:nil];
-                                                        }
-                                                    }];
+                                                                    [self configureNextButton];
+                                                                }
+                                                            } else if (error) {
+                                                                pie.hidden = YES;
+                                                                alertDecoration.hidden = NO;
+                                                                
+                                                                NSError *underlyingError = [[error userInfo] valueForKey:NSUnderlyingErrorKey];
+                                                                if (underlyingError) {
+                                                                    error = underlyingError;
+                                                                }
+                                                                
+                                                                NSString *alertTitle = NSLocalizedString(@"Image Load Failed", nil);
+                                                                UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                                                                               message:error.localizedDescription
+                                                                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                                                                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                                                                          style:UIAlertActionStyleDefault
+                                                                                                        handler:nil]];
+                                                                [strongSelf presentViewController:alert animated:YES completion:nil];
+                                                            }
+                                                        }];
         }
         self.multiImageView.hidden = NO;
     }
@@ -386,10 +485,6 @@
     
 }
 
-- (void)dealloc {
-    [[RKClient sharedClient].requestQueue cancelRequest:self.taxaLoader];
-}
-
 - (void)configureNextButton {
     if (self.downloadedImages.count == self.assets.count) {
         confirm.enabled = YES;
@@ -397,31 +492,6 @@
         confirm.enabled = YES;
     } else {
         confirm.enabled = NO;
-    }
-}
-
-#pragma mark - ObservationDetailViewController delegate
-
-- (void)observationDetailViewControllerDidSave:(ObservationDetailViewController *)controller {
-    [[Analytics sharedClient] event:kAnalyticsEventNewObservationSaveObservation];
-    NSError *saveError;
-    [[Observation managedObjectContext] save:&saveError];
-    if (saveError) {
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving observation: %@",
-                                            saveError.localizedDescription]];
-    }
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)observationDetailViewControllerDidCancel:(ObservationDetailViewController *)controller {
-    @try {
-        [controller.observation destroy];
-    } @catch (NSException *exception) {
-        if ([exception.name isEqualToString:NSObjectInaccessibleException]) {
-            // if observation has been deleted or is otherwise inaccessible, do nothing
-            return;
-        }
     }
 }
 

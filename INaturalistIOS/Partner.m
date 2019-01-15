@@ -21,6 +21,7 @@
             return nil;
         self.mobileCountryCodes = [plistDict valueForKey:@"mobileCountryCodes"];
         self.name = [plistDict valueForKey:@"name"];
+        self.shortName = [plistDict valueForKey:@"shortName"];
         self.identifier = [[plistDict valueForKey:@"identifier"] integerValue];
         
         NSString *logoName = [plistDict valueForKey:@"logoName"];

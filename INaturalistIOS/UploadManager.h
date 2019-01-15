@@ -11,11 +11,15 @@
 
 @class INatModel;
 
+typedef NS_ENUM(NSInteger, UploadManagerState) {
+    UploadManagerStateIdle,
+    UploadManagerStateUploading,
+    UploadManagerStateCancelling
+};
+
 @interface UploadManager : NSObject
 
-@property (assign, getter=isCancelled) BOOL cancelled;
-@property (assign, getter=isUploading) BOOL uploading;
-@property (assign, getter=isSyncingDeletes) BOOL syncingDeletes;
+@property (readonly) UploadManagerState state;
 
 @property (assign, readonly) BOOL shouldNotifyAboutNetworkState;
 - (void)notifiedAboutNetworkState;
@@ -24,19 +28,11 @@
 @property (assign, readonly) BOOL shouldAutoupload;
 @property (assign, readonly) BOOL isAutouploadEnabled;
 
-@property Observation *currentlyUploadingObservation;
-
-// index counting from zero
-@property (readonly) NSInteger indexOfCurrentlyUploadingObservation;
-
-@property (readonly) NSInteger currentUploadSessionTotalObservations;
-
 @property (nonatomic, weak) id <UploadManagerNotificationDelegate> delegate;
 
 - (void)syncDeletedRecords:(NSArray *)deletedRecords thenUploadObservations:(NSArray *)recordsToUpload;
 - (void)uploadObservations:(NSArray *)observations;
 - (void)cancelSyncsAndUploads;
 - (void)autouploadPendingContent;
-- (BOOL)currentUploadWorkContainsObservation:(Observation *)observation;
 
 @end

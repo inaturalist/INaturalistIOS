@@ -39,6 +39,8 @@
 @implementation ProjectDetailPageViewController
 
 -(void)viewDidLoad {
+    [super viewDidLoad];
+    
     self.dataSource = self;
     self.delegate = self;
     

@@ -6,8 +6,9 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
+#import <RestKit/RestKit.h>
 
 #import "ProjectsViewController.h"
 #import "Project.h"
@@ -21,8 +22,9 @@
 #import "UIColor+INaturalist.h"
 #import "NSURL+INaturalist.h"
 #import "ProjectDetailV2ViewController.h"
-#import "User.h"
 #import "OnboardingLoginViewController.h"
+#import "INatReachability.h"
+#import "ExploreUserRealm.h"
 
 static const int ListControlIndexFeatured = 1;
 static const int ListControlIndexNearby = 2;
@@ -53,7 +55,7 @@ static const int ListControlIndexNearby = 2;
     }
     [self checkEmpty];
     
-    if (syncNeeded && [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (syncNeeded && [[INatReachability sharedClient] isNetworkReachable]) {
         [self sync];
     }
 }
@@ -203,7 +205,7 @@ static const int ListControlIndexNearby = 2;
 - (void)syncUserProjects {
 	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 	if ([appDelegate.loginController isLoggedIn]) {
-		User *me = [appDelegate.loginController fetchMe];
+        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
         NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
         NSString *language = [[NSLocale preferredLanguages] firstObject];
         NSString *path = [NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
@@ -308,17 +310,16 @@ static const int ListControlIndexNearby = 2;
         self.title = NSLocalizedString(@"Projects", nil);
         
         self.tabBarItem.image = ({
-            FAKIcon *briefcaseOutline = [FAKIonIcons iosBriefcaseOutlineIconWithSize:35];
-            [briefcaseOutline addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-            [briefcaseOutline imageWithSize:CGSizeMake(34, 45)];
+            FAKIcon *briefcaseInactive = [FAKIonIcons iosBriefcaseIconWithSize:35];
+            [briefcaseInactive addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+            [[briefcaseInactive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
         
-        self.tabBarItem.selectedImage =({
-            FAKIcon *briefcaseFilled = [FAKIonIcons iosBriefcaseIconWithSize:35];
-            [briefcaseFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-            [briefcaseFilled imageWithSize:CGSizeMake(34, 45)];
+        self.tabBarItem.selectedImage = ({
+            FAKIcon *briefcaseActive = [FAKIonIcons iosBriefcaseIconWithSize:35];
+            [briefcaseActive addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
+            [[briefcaseActive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
-        
     }
     
     return self;
@@ -343,9 +344,7 @@ static const int ListControlIndexNearby = 2;
     }
     
     // try to sync "featured" projects automatically
-    if ([RKClient sharedClient].reachabilityObserver.isReachabilityDetermined &&
-        [RKClient sharedClient].reachabilityObserver.isNetworkReachable) {
-        
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
         self.navigationItem.rightBarButtonItem = self.syncActivityItem;
         [self syncFeaturedProjects];
     }
@@ -436,9 +435,9 @@ static const int ListControlIndexNearby = 2;
     
     Project *p = [self.projects objectAtIndex:[indexPath row]];
     cell.titleLabel.text = p.title;
-    [cell.projectImage sd_cancelCurrentImageLoad];
-    [cell.projectImage sd_setImageWithURL:[NSURL URLWithString:p.iconURL]
-                 placeholderImage:[UIImage inat_defaultProjectImage]];
+    [cell.projectImage cancelImageDownloadTask];
+    [cell.projectImage setImageWithURL:[NSURL URLWithString:p.iconURL]
+                      placeholderImage:[UIImage inat_defaultProjectImage]];
     
     return cell;
 }
@@ -506,8 +505,7 @@ static const int ListControlIndexNearby = 2;
         shouldSync = YES;
     }
     
-    
-    if (shouldSync) {
+    if (shouldSync && [[INatReachability sharedClient] isNetworkReachable]) {
         [self syncFeaturedProjects];
         [self syncNearbyProjects];
     }

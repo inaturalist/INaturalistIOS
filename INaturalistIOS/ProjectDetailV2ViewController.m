@@ -6,10 +6,11 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+#import <RestKit/RestKit.h>
 
 #import "ProjectDetailV2ViewController.h"
 #import "Project.h"
@@ -26,6 +27,7 @@
 #import "UIImage+INaturalist.h"
 #import "ProjectNewsButton.h"
 #import "OnboardingLoginViewController.h"
+#import "INatReachability.h"
 
 // At this offset the Header stops its transformations
 // 200 is the height of the header
@@ -87,8 +89,8 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     
     NSURL *projectThumbUrl = [NSURL URLWithString:self.project.iconURL];
     if (projectThumbUrl) {
-        [self.projectThumbnail sd_setImageWithURL:projectThumbUrl];
-        [self.projectHeaderBackground sd_setImageWithURL:projectThumbUrl];
+        [self.projectThumbnail setImageWithURL:projectThumbUrl];
+        [self.projectHeaderBackground setImageWithURL:projectThumbUrl];
     } else {
         self.projectThumbnail.image = [UIImage inat_defaultProjectImage];
         self.projectThumbnail.backgroundColor = [UIColor whiteColor];
@@ -303,7 +305,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 #pragma mark - UIButton targets
 
 - (void)joinTapped:(UIButton *)button {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet required", nil)
                                                                        message:NSLocalizedString(@"You must be connected to the Internet to do this.", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -356,7 +358,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 
 - (void)configureNewsButton {
     self.newsButton.countLabel.text = [NSString stringWithFormat:@"%ld", (long)self.project.newsItemCount.integerValue];
-    self.newsButton.enabled = (self.project.newsItemCount > 0);
+    self.newsButton.enabled = (self.project.newsItemCount.integerValue > 0);
 }
 
 - (void)presentSignupPrompt:(NSString *)reason {

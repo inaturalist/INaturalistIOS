@@ -8,11 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+
 #import "INatModel.h"
+#import "Uploadable.h"
 
 @class Observation, ObservationField;
 
-@interface ObservationFieldValue : INatModel
+@interface ObservationFieldValue : INatModel <Uploadable>
 
 @property (nonatomic, retain) NSNumber * recordID;
 @property (nonatomic, retain) NSNumber * observationID;

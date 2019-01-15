@@ -1,0 +1,65 @@
+/* Class = "UILabel"; text = "Observe"; ObjectID = "0HC-89-zFL"; */
+"0HC-89-zFL.text" = "观察";
+
+/* Class = "UITextField"; placeholder = "Email"; ObjectID = "2e2-wM-KPk"; */
+"2e2-wM-KPk.placeholder" = "电子邮件";
+
+/* Class = "UILabel"; text = "Discuss"; ObjectID = "2hB-WM-pN1"; */
+"2hB-WM-pN1.text" = "讨论";
+
+/* Class = "UILabel"; text = "Or Log in with:"; ObjectID = "Bfj-77-C1k"; */
+"Bfj-77-C1k.text" = "或透过以下方式登入:";
+
+/* Class = "UITextField"; placeholder = "Password"; ObjectID = "FZ5-km-oDo"; */
+"FZ5-km-oDo.placeholder" = "密码";
+
+/* Class = "UIButton"; normalTitle = "Skip >"; ObjectID = "J6N-uD-ctb"; */
+"J6N-uD-ctb.normalTitle" = "略过 >";
+
+/* Class = "UIButton"; normalTitle = "Sign Up"; ObjectID = "LVz-7N-QYA"; */
+"LVz-7N-QYA.normalTitle" = "注册";
+
+/* Class = "UIButton"; normalTitle = "X"; ObjectID = "MC0-kW-bph"; */
+"MC0-kW-bph.normalTitle" = "X";
+
+/* Class = "UILabel"; text = "iNaturalist will automatically generate suggestions based on your photo and location."; ObjectID = "Nb8-x2-D2v"; */
+"Nb8-x2-D2v.text" = "iNaturalist 将会对您发布的相片及定位自动作出建议。";
+
+/* Class = "UILabel"; text = "Explore and Connect with Nature"; ObjectID = "RqF-E7-mYe"; */
+"RqF-E7-mYe.text" = "探索和与大自然联结";
+
+/* Class = "UILabel"; text = "Swipe >"; ObjectID = "L6Y-1o-yPc"; */
+"L6Y-1o-yPc.text" = "滑动手势";
+
+/* Class = "UILabel"; text = "Get outside and observe an individual organism. Pick something wild, and take a clear, full frame photo."; ObjectID = "XWS-dF-hpb"; */
+"XWS-dF-hpb.text" = "走去户外并观察一种生物。选择一些野生的生物做为对象，并拍摄一张清楚完整的照片。";
+
+/* Class = "UILabel"; text = "By using iNaturalist you agree to the Terms of Service and Privacy Policy"; ObjectID = "YtY-We-SSc"; */
+"YtY-We-SSc.text" = "使用 iNaturalist 您须同意服务条款以及隐私权政策";
+
+/* Class = "UITextField"; placeholder = "Username"; ObjectID = "dSw-gs-zGG"; */
+"dSw-gs-zGG.placeholder" = "使用者名称";
+
+/* Class = "UILabel"; text = "Share your observation with the community to discuss and confirm your findings."; ObjectID = "ixn-0U-lJ7"; */
+"ixn-0U-lJ7.text" = "将您的观察与社群讨论并确认您的观察记录";
+
+/* Class = "UILabel"; text = "Your observation may be vetted as Research Grade and shared with scientists working to better understand and protect nature. "; ObjectID = "oro-uB-RY1"; */
+"oro-uB-RY1.text" = "您的观察记录可能会被列为研究级并与科学家分享成果，以致于让大众更加了解及保护大自然。 ";
+
+/* Class = "UILabel"; text = "Sign Up"; ObjectID = "pbQ-o3-5Xy"; */
+"pbQ-o3-5Xy.text" = "注册";
+
+/* Class = "UILabel"; text = "Contribute"; ObjectID = "sBd-1Y-eNL"; */
+"sBd-1Y-eNL.text" = "贡献";
+
+/* Class = "UIButton"; normalTitle = "Already have an account?"; ObjectID = "uop-S8-3lF"; */
+"uop-S8-3lF.normalTitle" = "已经有帐户了吗？";
+
+/* Class = "UILabel"; text = "Identify"; ObjectID = "vCH-CP-6hM"; */
+"vCH-CP-6hM.text" = "鉴定";
+
+/* Class = "UILabel"; text = "Yes, license my content so scientists can use my data! Learn More"; ObjectID = "xUc-8o-XIN"; */
+"xUc-8o-XIN.text" = "好的，授权我的内容让科学家使用我的资料！ 了解更多资讯";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "yxB-jO-b09"; */
+"yxB-jO-b09.normalTitle" = "按钮";

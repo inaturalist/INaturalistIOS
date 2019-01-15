@@ -11,7 +11,6 @@
 
 #import "NewsItemViewController.h"
 #import "NewsItem.h"
-#import "User.h"
 #import "Analytics.h"
 
 @interface NewsItemViewController ()

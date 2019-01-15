@@ -36,9 +36,6 @@
                                                                                       action:@selector(tappedAway)];
             gesture.delegate = self;
             
-            // will be enabled in -showOptionSearch
-            gesture.enabled = NO;
-            
             gesture;
         });
         [self addGestureRecognizer:tapAwayGesture];
@@ -82,36 +79,11 @@
         });
         [self addSubview:optionsContainerView];
         
-        self.activeSearchFilterView = ({
-            ExploreActiveSearchView *view = [[ExploreActiveSearchView alloc] initWithFrame:CGRectZero];
-            view.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            view.hidden = YES;
-            
-            view;
-        });
-        [self insertSubview:self.activeSearchFilterView aboveSubview:optionsContainerView];
-        
         NSDictionary *views = @{
                                 @"optionsContainerView": optionsContainerView,
                                 @"optionsSearchBar": optionsSearchBar,
                                 @"optionsTableView": optionsTableView,
-                                @"activeSearchFilterView": self.activeSearchFilterView,
                                 };
-        
-        
-        // Configure the Active Search UI
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[activeSearchFilterView]-0-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[activeSearchFilterView]-0-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        
-        
-        
         
         // Configure the Search Options UI
         [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[optionsContainerView]-0-|"
@@ -146,7 +118,8 @@
                                                                          constant:0.0f];
         [self addConstraint:optionsTableViewHeightConstraint];
         
-        
+        // will be enabled in -showOptionSearch
+        self.userInteractionEnabled = NO;
     }
     
     return self;
@@ -174,38 +147,20 @@
     // hide the options container
     optionsContainerView.hidden = YES;
     
-    // disable the tap away gesture
-    tapAwayGesture.enabled = NO;
+    self.userInteractionEnabled = NO;
 }
 
 - (void)showOptionSearch {
-    // start by hiding active search filter view
-    [self hideActiveSearch];
-    
     [self layoutIfNeeded];
     
     // show the options container
     optionsContainerView.hidden = NO;
     
-    // enable the tap away gesture
-    tapAwayGesture.enabled = YES;
+    self.userInteractionEnabled = YES;
 }
 
 - (BOOL)optionSearchIsActive {
     return !optionsContainerView.hidden;
-}
-
-- (void)hideActiveSearch {
-    self.activeSearchFilterView.activeSearchLabel.text = @"";
-    self.activeSearchFilterView.hidden = YES;
-}
-
-- (void)showActiveSearch {
-    // hide option search
-    [self hideOptionSearch];
-    
-    self.activeSearchFilterView.activeSearchLabel.text = [self.activeSearchTextDelegate activeSearchText];
-    self.activeSearchFilterView.hidden = NO;
 }
 
 #pragma mark - tableview constraint helpers
@@ -292,44 +247,20 @@
     }
 }
 
-#pragma mark - Hit Test magic
-
-// return the deepest view that can handle the event
-// if search is inactive, allow any views underneath to receive the event
--(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-    if (self.optionSearchIsActive && CGRectContainsPoint(optionsTableView.frame, point))
-        return optionsTableView;
-    
-    if (self.optionSearchIsActive && CGRectContainsPoint(optionsSearchBar.frame, point))
-        return optionsSearchBar;
-    
-    if (!self.optionSearchIsActive && !self.activeSearchFilterView.hidden && CGRectContainsPoint(self.activeSearchFilterView.removeActiveSearchButton.frame, point))
-        return self.activeSearchFilterView.removeActiveSearchButton;
-    
-    if ((self.optionSearchIsActive) && CGRectContainsPoint(self.frame, point))
-        return self;
-    
-    return nil;
-}
-
-#pragma mark - GestureRecognizerDelegate
-
-// make sure none of the child views can handle this touch
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    CGPoint location = [touch locationInView:self];
-    UIView *view = [self hitTest:location withEvent:nil];
-    return [view isEqual:self];
-}
-
 #pragma mark - GestureRecognizer Target
 
 - (void)tappedAway {
     if ([self optionSearchIsActive])
         [self hideOptionSearch];
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    if ([touch.view isDescendantOfView:optionsTableView]) {
+        return NO;
+    }
     
-    if ([self.activeSearchTextDelegate activeSearchText] != nil &&
-        ![[self.activeSearchTextDelegate activeSearchText] isEqualToString:@""])
-        [self showActiveSearch];
+    return YES;
+
 }
 
 @end

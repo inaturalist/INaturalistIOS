@@ -7,7 +7,7 @@
 //
 
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 #import "ObsDetailTaxonCell.h"
 
@@ -29,12 +29,14 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     self.taxonNameLabel.text = nil;
     self.taxonNameLabel.font = [UIFont systemFontOfSize:17];
     self.taxonSecondaryNameLabel.text = nil;
     self.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
     
-    [self.taxonImageView sd_cancelCurrentImageLoad];
+    [self.taxonImageView cancelImageDownloadTask];
     self.taxonImageView.image = nil;
 }
 

@@ -11,18 +11,18 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <CustomIOSAlertView/CustomIOSAlertView.h>
-#import <SDWebImage/UIButton+WebCache.h>
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
 #import <YLMoment/YLMoment.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <AFNetworking/AFNetworking.h>
 #import <MBProgressHUD/MBProgressHUD.h> 
+#import <AFNetworking/UIButton+AFNetworking.h>
+#import <RestKit/RestKit.h>
 
 #import "ObservationsViewController.h"
 #import "LoginController.h"
 #import "Observation.h"
 #import "ObservationFieldValue.h"
-#import "ObservationPageViewController.h"
 #import "ObservationPhoto.h"
 #import "ProjectObservation.h"
 #import "Project.h"
@@ -30,11 +30,9 @@
 #import "INatUITabBarController.h"
 #import "INaturalistAppDelegate.h"
 #import "RefreshControl.h"
-#import "ObservationActivityViewController.h"
 #import "UIImageView+WebCache.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
-#import "User.h"
 #import "MeHeaderView.h"
 #import "AnonHeaderView.h"
 #import "INatWebController.h"
@@ -44,7 +42,6 @@
 #import "ObservationViewUploadingCell.h"
 #import "ObservationViewWaitingUploadCell.h"
 #import "ObservationViewErrorCell.h"
-#import "ObservationDetailViewController.h"
 #import "DeletedRecord.h"
 #import "UploadManager.h"
 #import "ObsDetailV2ViewController.h"
@@ -53,8 +50,11 @@
 #import "PeopleAPI.h"
 #import "OnboardingLoginViewController.h"
 #import "ExploreUpdateRealm.h"
+#import "Taxon.h"
+#import "INatReachability.h"
+#import "NSLocale+INaturalist.h"
 
-@interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, ObservationDetailViewControllerDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
+@interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     
     
 
@@ -86,6 +86,7 @@
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;
     login.startsInLoginMode = YES;
+    login.reason = reason;
     [self presentViewController:login animated:YES completion:nil];
 }
 
@@ -96,6 +97,7 @@
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;
+    login.reason = reason;
     [self presentViewController:login animated:YES completion:nil];
 }
 
@@ -105,7 +107,7 @@
         return;
     }
     
-    [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setBackgroundColor:[UIColor inatTint]];
+    [[UIView appearanceWhenContainedInInstancesOfClasses:@[ [UIAlertController class] ]] setBackgroundColor:[UIColor inatTint]];
     
     // existing users see a one-time autoupload notice
     NSString *alertTitle = NSLocalizedString(@"Introducing Auto Upload!", @"title of autoupload introduction alert view");
@@ -161,7 +163,7 @@
                                                 [self.navigationController dismissViewControllerAnimated:YES completion:nil];
                                             }]];
     [self.navigationController presentViewController:alert animated:YES completion:^{
-        [[UIView appearanceWhenContainedIn:[UIAlertController class], nil] setBackgroundColor:nil];
+        [[UIView appearanceWhenContainedInInstancesOfClasses:@[ [UIAlertController class] ]] setBackgroundColor:nil];
     }];
 
 }
@@ -204,8 +206,8 @@
                                                                     preferredStyle:UIAlertControllerStyleActionSheet];
             
             INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-            User *me = [appDelegate.loginController fetchMe];
-            if (me.userIconURL && ![me.userIconURL isEqualToString:@""]) {
+            ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+            if (me.userIcon) {
 	            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Remove my profile photo", nil)
 	                                                      style:UIAlertActionStyleDefault
 	                                                    handler:^(UIAlertAction * _Nonnull action) {
@@ -236,12 +238,12 @@
 }
 
 - (void)deleteProfilePhoto {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         return;
     }
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    User *me = [appDelegate.loginController fetchMe];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
     if (me) {
         [[Analytics sharedClient] event:kAnalyticsEventProfilePhotoRemoved];
 
@@ -251,7 +253,7 @@
         hud.labelText = NSLocalizedString(@"Removing...", nil);
 
         __weak typeof(self) weakSelf = self;
-        [self.peopleApi removeProfilePhotoForUser:me handler:^(NSArray *results, NSInteger count, NSError *error) {
+        [self.peopleApi removeProfilePhotoForUserId:me.userId handler:^(NSArray *results, NSInteger count, NSError *error) {
         	[hud hide:YES];
             if (error) {
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Delete Error", nil)
@@ -273,7 +275,7 @@
         return;
     }
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         return;
     }
     
@@ -294,9 +296,9 @@
     UIImage *image = [info valueForKey:UIImagePickerControllerEditedImage];
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    User *me = [appDelegate.loginController fetchMe];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
 	if (me) {
-        BOOL alreadyHadPhoto = [me userIconURL] && ![[me userIconURL] isEqualToString:@""];
+        BOOL alreadyHadPhoto = me.userIcon != nil;
         [[Analytics sharedClient] event:kAnalyticsEventProfilePhotoChanged
                          withProperties:@{ @"AlreadyHadPhoto": alreadyHadPhoto ? @"Yes" : @"No" }];
 
@@ -306,7 +308,7 @@
         hud.labelText = NSLocalizedString(@"Uploading...", nil);
 
 		__weak typeof(self) weakSelf = self;
-		[self.peopleApi uploadProfilePhoto:image forUser:me handler:^(NSArray *results, NSInteger count, NSError *error) {
+        [self.peopleApi uploadProfilePhoto:image forUserId:me.userId handler:^(NSArray *results, NSInteger count, NSError *error) {
 			[hud hide:YES];
 			if (error) {
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Upload Error", nil)
@@ -317,6 +319,10 @@
                 	                                    handler:nil]];
             	[weakSelf presentViewController:alert animated:YES completion:nil];
 			} else {
+                // dirty the me user to force re-fetching
+                INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate.loginController dirtyLocalMeUser];
+                
 	     		[weakSelf loadUserForHeader];	
 			}
         }];
@@ -356,7 +362,7 @@
         return;
     }
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required", nil)
                                                                        message:NSLocalizedString(@"You must be connected to the Internet to upload to iNaturalist.org", nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -406,8 +412,7 @@
 
 - (BOOL)isSyncing {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    return appDelegate.loginController.uploadManager.isUploading;
-    return [UIApplication sharedApplication].isIdleTimerDisabled;
+    return appDelegate.loginController.uploadManager.state != UploadManagerStateIdle;
 }
 
 /**
@@ -419,13 +424,12 @@
  */
 - (void)pullToRefresh {
     [self refreshRequestedNotify:YES];
+    [self checkForDeleted];
 }
 
 - (void)refreshRequestedNotify:(BOOL)notify {
     
-    if (![[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] ||
-        ![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {\
-        
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         if (notify) {
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Network unavailable", nil)
                                                                            message:NSLocalizedString(@"You must be connected to the Internet to upload to iNaturalist.org", nil)
@@ -460,15 +464,27 @@
 {
 	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 	if ([appDelegate.loginController isLoggedIn]) {
-		User *me = [appDelegate.loginController fetchMe];
+        
+        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
         [[Analytics sharedClient] debugLog:@"Network - Refresh 10 recent observations"];
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields&per_page=10", me.login]
+        
+        NSString *obsFetchPath = [NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields",
+                                      me.login];
+        NSString *localeString = [NSLocale inat_serverFormattedLocale];
+        if (localeString && ![localeString isEqualToString:@""]) {
+            obsFetchPath = [obsFetchPath stringByAppendingString:[NSString stringWithFormat:@"&locale=%@", localeString]];
+        }
+
+        
+        // fetch the most recent 10
+        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[obsFetchPath stringByAppendingString:@"&per_page=10"]
                                                      objectMapping:[Observation mapping]
                                                           delegate:self];
         
+        // then fetch the most recent 200
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [[Analytics sharedClient] debugLog:@"Network - Refresh 200 recent observations"];
-            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields", me.login]
+            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[obsFetchPath stringByAppendingString:@"&per_page=200"]
                                                          objectMapping:[Observation mapping]
                                                               delegate:self];
         });
@@ -479,41 +495,39 @@
 }
 
 - (void)checkForDeleted {
-	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-	if ([appDelegate.loginController isLoggedIn]) {
-		User *me = [appDelegate.loginController fetchMe];
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if ([appDelegate.loginController isLoggedIn]) {
+        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
 
-		NSDate *lastSyncDate = [[NSUserDefaults standardUserDefaults] objectForKey:INatLastDeletedSync];
-		if (!lastSyncDate) {
-			// have never synced; use unix timestamp date of 0
-			lastSyncDate = [NSDate dateWithTimeIntervalSince1970:0];
-		}
-		
-		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-		NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-		[dateFormatter setLocale:enUSPOSIXLocale];
-		[dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
-
-		NSString *iso8601String = [dateFormatter stringFromDate:lastSyncDate];
-		
+        NSDate *lastSyncDate = [[NSUserDefaults standardUserDefaults] objectForKey:INatLastDeletedSync];
+        if (!lastSyncDate) {
+            // have never synced; use unix timestamp date of 0
+            lastSyncDate = [NSDate dateWithTimeIntervalSince1970:0];
+        } else {
+            // move last sync date back by a day
+            [lastSyncDate dateByAddingTimeInterval:-(60*60*24)];
+        }
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+        [dateFormatter setLocale:enUSPOSIXLocale];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
+        
+        NSString *iso8601String = [dateFormatter stringFromDate:lastSyncDate];
+        
         [[Analytics sharedClient] debugLog:@"Network - Get My Recent Observations"];
-		[[RKClient sharedClient] get:[NSString stringWithFormat:@"/observations/%@?updated_since=%@", me.login, iso8601String] delegate:self];
-	}
+        
+        [[RKClient sharedClient] get:[NSString stringWithFormat:@"/observations/%@?updated_since=%@", me.login, iso8601String] delegate:self];
+    }
 }
 
 - (void)checkNewActivity
 {
-    RKReachabilityObserver *reachability = [[RKClient sharedClient] reachabilityObserver];
-    if ([reachability isReachabilityDetermined] && [reachability isNetworkReachable] ) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
         [[Analytics sharedClient] debugLog:@"Network - Get My Updates Activity"];
         [[RKClient sharedClient] get:@"/users/new_updates.json?notifier_types=Identification,Comment&skip_view=true&resource_type=Observation"
                             delegate:self];
     }
-}
-
-- (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification {
-    // reload me
-    [self configureHeaderForLoggedInUser];
 }
 
 - (BOOL)autoLaunchNewFeatures
@@ -601,18 +615,6 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)viewActivity:(UIButton *)sender {
-	
-	UITableViewCell *cell = (UITableViewCell *)sender.superview.superview;
-	NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    Observation *observation = [self.fetchedResultsController objectAtIndexPath:indexPath];
-	
-	ObservationActivityViewController *vc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:NULL]
-											 instantiateViewControllerWithIdentifier:@"ObservationActivityViewController"];
-	vc.observation = observation;
-    [self.navigationController pushViewController:vc animated:YES];
-}
-
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
@@ -653,14 +655,16 @@
 
     Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-
-    if (o.validationErrorMsg && o.validationErrorMsg > 0 && ![appDelegate.loginController.uploadManager currentUploadWorkContainsObservation:o]) {
+    UploadManager *uploader = appDelegate.loginController.uploadManager;
+    
+    
+    if (o.validationErrorMsg && o.validationErrorMsg.length > 0 && uploader.state == UploadManagerStateIdle) {
         // only show validation error status if this obs has a validation error, and it's not being retried
         ObservationViewErrorCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationErrorCell"];
         [self configureErrorCell:cell forIndexPath:indexPath];
         return cell;
-    } else if (o.needsUpload) {
-        if (appDelegate.loginController.uploadManager.isUploading && [appDelegate.loginController.uploadManager.currentlyUploadingObservation isEqual:o]) {
+    } else if (o.needsUpload || o.childrenNeedingUpload.count > 0) {
+        if ([self.uploadProgress valueForKey:o.uuid]) {
             // actively uploading this observation
             ObservationViewUploadingCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationUploadingCell"];
             [self configureUploadingCell:cell forIndexPath:indexPath];
@@ -726,8 +730,9 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    UploadManager *uploader = appDelegate.loginController.uploadManager;
     Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    if ([appDelegate.loginController.uploadManager isUploading] && o.needsUpload) {
+    if (uploader.state != UploadManagerStateIdle && (o.needsUpload || o.childrenNeedingUpload.count > 0)) {
         return;
     } else {
         [self performSegueWithIdentifier:@"obsDetailV2" sender:o];
@@ -757,6 +762,8 @@
     // configure the title
     if ([o exploreTaxonRealm]) {
     	[cell.titleLabel setText:o.exploreTaxonRealm.commonName ?: o.exploreTaxonRealm.scientificName];
+    } else if ([o taxon]) {
+        [cell.titleLabel setText:o.taxon.defaultName ?: o.taxon.name];
     } else if (o.speciesGuess && o.speciesGuess.length > 0) {
         [cell.titleLabel setText:o.speciesGuess];
     } else if (o.inatDescription && o.inatDescription.length > 0) {
@@ -801,20 +808,21 @@
                 forControlEvents:UIControlEventTouchUpInside];
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    if (appDelegate.loginController.uploadManager.isUploading) {
-        // waiting upload, with uploads happening
-        cell.uploadButton.enabled = NO;
-        cell.backgroundColor = [UIColor colorWithHex:0xeaeaea];
-        cell.titleLabel.textColor = [UIColor colorWithHex:0x969696];
-        cell.subtitleLabel.textColor = [UIColor colorWithHex:0x969696];
-        cell.observationImage.alpha = 0.5f;
-    } else {
+    UploadManager *uploader = appDelegate.loginController.uploadManager;
+    if (uploader.state == UploadManagerStateIdle) {
         // waiting upload, with uploads not happening
         cell.uploadButton.enabled = YES;
         cell.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.2f];
-        cell.subtitleLabel.textColor = [UIColor colorWithHex:0x787878];
+        cell.subtitleLabel.textColor = [UIColor colorWithHexString:@"#787878"];
         cell.titleLabel.textColor = [UIColor blackColor];
         cell.observationImage.alpha = 1.0f;
+    } else {
+        // waiting upload, with uploads happening
+        cell.uploadButton.enabled = NO;
+        cell.backgroundColor = [UIColor colorWithHexString:@"#eaeaea"];
+        cell.titleLabel.textColor = [UIColor colorWithHexString:@"#969696"];
+        cell.subtitleLabel.textColor = [UIColor colorWithHexString:@"#969696"];
+        cell.observationImage.alpha = 0.5f;
     }
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -859,18 +867,31 @@
 #pragma mark - Header helpers
 
 - (void)configureHeaderForLoggedInUser {
-	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-	if ([appDelegate.loginController isLoggedIn]) {
-		User *me = [appDelegate.loginController fetchMe];
-		if (me) {
-            self.navigationItem.title = me.login;
-            [self configureHeaderView:self.meHeader forUser:me];
-        }
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if ([appDelegate.loginController isLoggedIn]) {
+        // initially configure header for the cached user...
+        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+        self.navigationItem.title = me.login;
+        [self configureHeaderView:self.meHeader forUser:me];
+
+        // and try to fetch the user from the server just in case
+        __weak typeof(self)weakSelf = self;
+        [appDelegate.loginController meUserRemoteCompletion:^(ExploreUserRealm *me) {
+            if (me) {
+                weakSelf.navigationItem.title = me.login;
+                [weakSelf configureHeaderView:self.meHeader forUser:me];
+            }
+        }];
     }
 }
 
+- (void)configureHeaderForCancelled:(MeHeaderView *)view {
+    view.obsCountLabel.text = NSLocalizedString(@"Cancelling...", @"Title of me header while cancellling an upload session.");
+    [view startAnimatingUpload];
+}
+
 - (void)configureHeaderForActiveUploading:(MeHeaderView *)view {
-    [view.iconButton sd_cancelImageLoadForState:UIControlStateNormal];
+    [view.iconButton cancelImageDownloadTaskForState:UIControlStateNormal];
     [view.iconButton setImage:nil forState:UIControlStateNormal];
     [view.iconButton setTintColor:[UIColor whiteColor]];
     view.iconButton.backgroundColor = [UIColor inatTint];
@@ -880,37 +901,14 @@
     [view.iconButton setAttributedTitle:stopIcon.attributedString
                                forState:UIControlStateNormal];
     view.iconButton.enabled = YES;
-    
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    UploadManager *uploadManager = appDelegate.loginController.uploadManager;
-    if (uploadManager.isSyncingDeletes) {
-        self.meHeader.obsCountLabel.text = NSLocalizedString(@"Syncing...", @"Title of me header when syncing deletions.");
-    } else {
-        NSInteger current = uploadManager.indexOfCurrentlyUploadingObservation + 1;
-        NSInteger total = uploadManager.currentUploadSessionTotalObservations;
-        if (total > 1) {
-            NSString *baseUploadingStatusStr  = NSLocalizedString(@"Uploading %d of %d",
-                                                                  @"Title of me header while uploading observations. First number is the index of the obs being uploaded, second is the count in the current upload 'session'.");
-            self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, current, total];
-        } else {
-            NSString *baseUploadingStatusStr = NSLocalizedString(@"Uploading '%@'", @"Title of me header while uploading one observation. Text is observation species.");
-            NSString *speciesName = NSLocalizedString(@"Unknown", @"unknown taxon");
-            Observation *cuo = uploadManager.currentlyUploadingObservation;
-            if (cuo.exploreTaxonRealm) {
-            	speciesName = cuo.exploreTaxonRealm.commonName ?: cuo.exploreTaxonRealm.scientificName;
-            } else if (cuo.speciesGuess) {
-                speciesName = cuo.speciesGuess;
-            } else if (cuo.inatDescription) {
-                speciesName = cuo.inatDescription;
-            }
-            self.meHeader.obsCountLabel.text = [NSString stringWithFormat:baseUploadingStatusStr, speciesName];
-        }
-    }
+    view.iconButton.accessibilityLabel = NSLocalizedString(@"Stop Uploading",
+                                                           @"accessibility label for stop uploading button");
+    view.obsCountLabel.text = NSLocalizedString(@"Syncing...", @"Title of me header when syncing.");
     
     [view startAnimatingUpload];
 }
 
-- (void)configureHeaderView:(MeHeaderView *)view forUser:(User *)user {
+- (void)configureHeaderView:(MeHeaderView *)view forUser:(id <UserVisualization>)user {
     NSUInteger needingUploadCount = [[Observation needingUpload] count];
     NSUInteger needingDeleteCount = [Observation deletedRecordCount] + [ObservationPhoto deletedRecordCount] + [ProjectObservation deletedRecordCount] + [ObservationFieldValue deletedRecordCount];
     
@@ -919,10 +917,11 @@
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         UploadManager *uploadManager = appDelegate.loginController.uploadManager;
         
-        if (uploadManager.isUploading) {
+        if (uploadManager.state == UploadManagerStateUploading) {
             [self configureHeaderForActiveUploading:view];
+        } else if (uploadManager.state == UploadManagerStateCancelling) {
+            [self configureHeaderForCancelled:view];
         } else {
-            
             // cancel any existing upload animations
             [view stopAnimatingUpload];
             
@@ -945,8 +944,10 @@
                                      range:NSMakeRange(2, uploadIconString.length - 2)];
             
             // image seems to override title text, so clear it
-            [view.iconButton sd_cancelImageLoadForState:UIControlStateNormal];
+            [view.iconButton cancelImageDownloadTaskForState:UIControlStateNormal];
             [view.iconButton setImage:nil forState:UIControlStateNormal];
+            view.iconButton.accessibilityLabel = NSLocalizedString(@"Upload",
+                                                                   @"accessibility labelf for upload button");
             
             view.iconButton.backgroundColor = [UIColor inatTint];
             view.iconButton.tintColor = [UIColor whiteColor];
@@ -968,17 +969,24 @@
                 }
                 
                 [UIView animateWithDuration:0.2f
+                                      delay:0.0f
+                                    options:UIViewAnimationOptionAllowUserInteraction
                                  animations:^{
                                      view.iconButton.transform = CGAffineTransformMakeScale(1.1f, 1.1f);
                                  } completion:^(BOOL finished) {
                                      [UIView animateWithDuration:0.2f
+                                                           delay:0.0f
+                                                         options:UIViewAnimationOptionAllowUserInteraction
                                                       animations:^{
                                                           view.iconButton.transform = CGAffineTransformMakeScale(0.95f, 0.95f);
                                                       } completion:^(BOOL finished) {
                                                           [UIView animateWithDuration:0.2f
+                                                                                delay:0.0f
+                                                                              options:UIViewAnimationOptionAllowUserInteraction
                                                                            animations:^{
                                                                                view.iconButton.transform = CGAffineTransformIdentity;
-                                                                           }];
+                                                                           }
+                                                                           completion:nil];
                                                       }];
                                  }];
             });
@@ -1005,26 +1013,32 @@
         [view.iconButton setAttributedTitle:nil forState:UIControlStateNormal];
         view.iconButton.backgroundColor = [UIColor clearColor];
         view.iconButton.enabled = YES;
+        view.iconButton.accessibilityLabel = NSLocalizedString(@"Set Profile Photo",
+                                                               @"accessibility label for choose profile photo button");
         
         // icon
-        if (user.mediumUserIconURL && ![user.mediumUserIconURL isEqualToString:@""]) {
-            // render the user icon as an image, not a mask,
-            // which sdwebimage doesn't seem to be able to do directly
-            [view.iconButton sd_setImageWithURL:[NSURL URLWithString:user.mediumUserIconURL]
-                                       forState:UIControlStateNormal
-                                      completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                                          [view.iconButton setImage:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+        if (user.userIconMedium) {
+            // render the user icon as an image, not a mask
+            NSURLRequest *request = [NSURLRequest requestWithURL:user.userIconMedium];
+            __weak typeof(view)weakView = view;
+            [view.iconButton setImageForState:UIControlStateNormal
+                               withURLRequest:request
+                             placeholderImage:nil
+                                      success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+                                          [weakView.iconButton setImage:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                                                            forState:UIControlStateNormal];
-                                      }];
-        } else if (user.userIconURL && ![user.userIconURL isEqualToString:@""]) {
-            // render the user icon as an image, not a mask,
-            // which sdwebimage doesn't seem to be able to do directly
-            [view.iconButton sd_setImageWithURL:[NSURL URLWithString:user.userIconURL]
-                                       forState:UIControlStateNormal
-                                      completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                                          [view.iconButton setImage:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-                                                           forState:UIControlStateNormal];
-                                      }];
+                                      } failure:nil];
+        } else if (user.userIcon) {
+            // render the user icon as an image, not a mask
+            NSURLRequest *request = [NSURLRequest requestWithURL:user.userIcon];
+            __weak typeof(view)weakView = view;
+            [view.iconButton setImageForState:UIControlStateNormal
+                               withURLRequest:request
+                             placeholderImage:nil
+                                      success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+                                          [weakView.iconButton setImage:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+                                                               forState:UIControlStateNormal];
+                                      } failure:nil];
         } else {
             FAKIcon *person = [FAKIonIcons iosPersonIconWithSize:80.0f];
             [person addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
@@ -1033,14 +1047,15 @@
         }
         
         // observation count
-        if (user.observationsCount.integerValue > 0) {
+        NSInteger observationCount = MAX(user.observationsCount, [[Observation allObjects] count]);
+        if (observationCount > 0) {
             NSString *baseObsCountStr;
-            if (user.observationsCount.integerValue == 1) {
+            if (observationCount == 1) {
                 baseObsCountStr = NSLocalizedString(@"%d Observation", @"Count of observations by this user, singular.");
             } else {
                 baseObsCountStr = NSLocalizedString(@"%d Observations", @"Count of observations by this user, plural.");
             }
-            view.obsCountLabel.text = [NSString stringWithFormat:baseObsCountStr, user.observationsCount.integerValue];
+            view.obsCountLabel.text = [NSString stringWithFormat:baseObsCountStr, observationCount];
         } else {
             view.obsCountLabel.text = NSLocalizedString(@"No Observations", @"Header observation count title when there are none.");
         }
@@ -1050,19 +1065,14 @@
 - (void)loadUserForHeader {
 	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 	if ([appDelegate.loginController isLoggedIn]) {
-		User *me = [appDelegate.loginController fetchMe];        
+        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
         self.navigationItem.title = me.login;
         
-        if ([[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] && [[RKClient sharedClient]  isNetworkReachable]) {
-            
-            NSString *path = [NSString stringWithFormat:@"/people/%ld.json", (long)me.recordID.integerValue];
-            
-            [[Analytics sharedClient] debugLog:@"Network - Load me for header"];
-            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
-                                                            usingBlock:^(RKObjectLoader *loader) {
-                                                                loader.objectMapping = [User mapping];
-                                                                loader.delegate = self;
-                                                            }];
+        if ([[INatReachability sharedClient] isNetworkReachable]) {
+            __weak typeof(self)weakSelf = self;
+            [appDelegate.loginController meUserRemoteCompletion:^(ExploreUserRealm *me) {
+                [weakSelf.tableView reloadData];
+            }];
         }
     } else {
         self.navigationItem.title = NSLocalizedString(@"Me", @"Placeholder text for not logged title on me tab.");
@@ -1131,15 +1141,15 @@
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
         self.navigationController.tabBarItem.image = ({
-            FAKIcon *meOutline = [FAKIonIcons iosPersonOutlineIconWithSize:35];
-            [meOutline addAttribute:NSForegroundColorAttributeName value:[UIColor inatInactiveGreyTint]];
-            [[meOutline imageWithSize:CGSizeMake(25, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            FAKIcon *meInactive = [FAKIonIcons iosPersonIconWithSize:40];
+            [meInactive addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+            [[meInactive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
         
         self.navigationController.tabBarItem.selectedImage = ({
-            FAKIcon *meFilled = [FAKIonIcons iosPersonIconWithSize:35];
-            [meFilled addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-            [meFilled imageWithSize:CGSizeMake(25, 45)];
+            FAKIcon *meActive = [FAKIonIcons iosPersonIconWithSize:40];
+            [meActive addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
+            [[meActive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         });
 
         self.navigationController.tabBarItem.title = NSLocalizedString(@"Me", nil);
@@ -1232,6 +1242,7 @@
     
     static NSString *FirstSignInKey = @"firstSignInSeen";
     static NSString *SeenV262Key = @"seenVersion262";
+    static NSString *SeenV27Key = @"seenVersion27";
     
     // re-using 'firstSignInSeen' BOOL, which used to be set during the initial launch
     // when the user saw the login prompt for the first time.
@@ -1266,6 +1277,17 @@
         [self presentAutouploadAlert];
     }
     
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:SeenV27Key]) {
+        // existing users default to suggestions on
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:kINatSuggestionsPrefKey];
+        
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:SeenV27Key];
+        
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(userSignedIn)
                                                  name:kUserLoggedInNotificationName
@@ -1298,17 +1320,13 @@
     settings.iconFontSize = 20;
     UIImage *settingsLandscapeImage = [settings imageWithSize:CGSizeMake(20, 20)];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:settingsImage
-                                                                landscapeImagePhone:settingsLandscapeImage
-                                                                              style:UIBarButtonItemStylePlain
-                                                                             target:self
-                                                                             action:@selector(settings)];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(handleNSManagedObjectContextDidSaveNotification:) 
-                                                 name:NSManagedObjectContextDidSaveNotification 
-                                               object:[Observation managedObjectContext]];
-    
+    UIBarButtonItem *settingsBarButton = [[UIBarButtonItem alloc] initWithImage:settingsImage
+                                                            landscapeImagePhone:settingsLandscapeImage
+                                                                          style:UIBarButtonItemStylePlain
+                                                                         target:self
+                                                                         action:@selector(settings)];
+    settingsBarButton.accessibilityLabel = NSLocalizedString(@"Settings", @"accessibility label for settings button");
+    self.navigationItem.rightBarButtonItem = settingsBarButton;
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.loginController.uploadManager setDelegate:self];
@@ -1358,8 +1376,7 @@
 
 	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 	if ([appDelegate.loginController isLoggedIn] &&
-        [[[RKClient sharedClient] reachabilityObserver] isReachabilityDetermined] &&
-        [[[RKClient sharedClient] reachabilityObserver] isNetworkReachable] &&
+        [[INatReachability sharedClient] isNetworkReachable] &&
         (!self.lastRefreshAt || [self.lastRefreshAt timeIntervalSinceNow] < -1*seconds)) {
         [self refreshRequestedNotify:NO];
         [self checkForDeleted];
@@ -1380,17 +1397,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"observationDetail"]) {
-        ObservationDetailViewController *ovc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil] instantiateViewControllerWithIdentifier:@"ObservationDetailViewController"];
-        ObservationPageViewController *pvc = [segue destinationViewController];
-        [ovc setDelegate:self];
-        Observation *o = (Observation *)sender;
-        [ovc setObservation:o];
-        [pvc setViewControllers:[NSArray arrayWithObject:ovc]
-                       direction:UIPageViewControllerNavigationDirectionForward
-                        animated:YES
-                      completion:nil];
-    } else if ([segue.identifier isEqualToString:@"obsDetailV2"]) {
+    if ([segue.identifier isEqualToString:@"obsDetailV2"]) {
         ObsDetailV2ViewController *ovc = [segue destinationViewController];
         ovc.observation = (Observation *)sender;
         [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
@@ -1405,31 +1412,7 @@
 
 #pragma mark - RKObjectLoaderDelegate
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
-{
-    if ([objectLoader.URL.absoluteString rangeOfString:@"/people/"].location != NSNotFound) {
-        // got me object
-        
-        NSError *saveError;
-        [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-        if (saveError) {
-            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"save error: %@",
-                                                saveError.localizedDescription]];
-            
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Save Error", nil)
-                                                                           message:saveError.localizedDescription
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                      style:UIAlertActionStyleCancel
-                                                    handler:nil]];
-            [self presentViewController:alert animated:YES completion:nil];
-        }
-        
-        // triggers reconfiguration of the header
-        [self.tableView reloadData];
-
-        return;
-    }
-    
+{    
 	[self.refreshControl endRefreshing];
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
@@ -1586,22 +1569,11 @@
 
 #pragma mark - Upload Notification Delegate
 
-- (void)uploadManagerUploadSessionAuthRequired:(UploadManager *)uploadManager {
-
-    [self syncStopped];
+- (void)uploadSessionFinished {
+    // dirty the me user to force re-fetching
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.loginController dirtyLocalMeUser];
     
-    [[Analytics sharedClient] debugLog:@"Upload - Auth Required"];
-    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
-                     withProperties:@{
-                                      @"Via": @"Auth Required",
-                                      }];
-    
-    NSString *reasonMsg = NSLocalizedString(@"You must be logged in to upload to iNaturalist.org.",
-                                            @"This is an explanation for why the sync button triggers a login prompt.");
-    [self presentSignupSplashWithReason:reasonMsg];
-}
-
-- (void)uploadManagerUploadSessionFinished:(UploadManager *)uploadManager {
     // allow any pending upload animations to finish
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         // make sure any deleted records get gone
@@ -1613,6 +1585,14 @@
         // reload the Me user from the server
         [self loadUserForHeader];
     });
+    
+    UIViewController *topVC = self.navigationController.topViewController;
+    if ([topVC isKindOfClass:[ObsDetailV2ViewController class]]) {
+        ObsDetailV2ViewController *obsDetail = (ObsDetailV2ViewController *)topVC;
+        [obsDetail uploadFinished];
+    }
+    
+    // TODO: clear all upload ids
 
     [[Analytics sharedClient] debugLog:@"Upload - Session Finished"];
     [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
@@ -1621,21 +1601,20 @@
                                       }];
 }
 
-- (void)uploadManager:(UploadManager *)uploadManager cancelledFor:(INatModel *)object {
+- (void)uploadSessionCancelledFor:(Observation *)observation {
     [[Analytics sharedClient] debugLog:@"Upload - Upload Cancelled"];
-
+    
     self.meHeader.obsCountLabel.text = NSLocalizedString(@"Cancelling...", @"Title of me header while cancellling an upload session.");
     [self syncStopped];
 }
 
-- (void)uploadManager:(UploadManager *)uploadManager uploadStartedFor:(Observation *)observation number:(NSInteger)current of:(NSInteger)total {
-    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Started %ld of %ld uploads", (long)current, (long)total]];
+- (void)uploadSessionStarted:(Observation *)observation {
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
     if (observation.uuid) {
         self.uploadProgress[observation.uuid] = @(0);
     }
-
+    
     [self configureHeaderForLoggedInUser];
     [self.meHeader startAnimatingUpload];
     
@@ -1648,11 +1627,15 @@
     }
 }
 
-- (void)uploadManager:(UploadManager *)uploadManager uploadSuccessFor:(Observation *)observation {
+- (void)uploadSessionSuccessFor:(Observation *)observation {
     [[Analytics sharedClient] debugLog:@"Upload - Success"];
-
+    
     [self configureHeaderForLoggedInUser];
-
+    
+    if (observation.uuid) {
+        self.uploadProgress[observation.uuid] = nil;
+    }
+    
     NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
     if (ip) {
         [self.tableView beginUpdates];
@@ -1662,9 +1645,7 @@
     }
 }
 
-
-- (void)uploadManager:(UploadManager *)uploadManager uploadProgress:(float)progress for:(Observation *)observation {
-    
+- (void)uploadSessionProgress:(float)progress for:(Observation *)observation {
     if (observation.uuid) {
         self.uploadProgress[observation.uuid] = @(progress);
     }
@@ -1678,24 +1659,149 @@
     }
 }
 
-- (void)uploadManager:(UploadManager *)uploadManager nonFatalErrorForObservation:(Observation *)observation {
-    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Non-Fatal Error for %@", observation]];
+
+- (void)uploadSessionFailedFor:(Observation *)observation error:(NSError *)error {
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Fatal Error %@", error.localizedDescription]];
     
-    NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
-    if (ip) {
-        [self.tableView beginUpdates];
-        [self.tableView reloadRowsAtIndexPaths:@[ ip ]
-                              withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView endUpdates];
+    // clear progress for this upload
+    if (observation.uuid) {
+        self.uploadProgress[observation.uuid] = nil;
+    }
+
+    // dirty the me user to force re-fetching
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.loginController dirtyLocalMeUser];
+
+    // TODO: actually stop the upload
+    [self syncStopped];
+    
+    if ([error.domain isEqualToString:INatJWTFailureErrorDomain]) {
+        [self notifyUploadErrorJWTFetchFailed];
+    } else if ([error.userInfo valueForKey:AFNetworkingOperationFailingURLResponseErrorKey]) {
+        NSHTTPURLResponse *resp = [error.userInfo valueForKey:AFNetworkingOperationFailingURLResponseErrorKey];
+        if (resp.statusCode == 401) {
+            [self notifyUploadErrorAuthRequired];
+        } else if (resp.statusCode == 403) {
+            [self notifyUploadErrorSuspended];
+        } else {
+            [self notifyUploadErrorOtherError:error];
+        }
+    } else {
+        [self notifyUploadErrorOtherError:error];
+    }
+    
+    [self.tableView reloadData];
+}
+
+
+- (void)deleteSessionStarted:(DeletedRecord *)deletedRecord {
+    [[Analytics sharedClient] debugLog:@"Upload - Delete Started"];
+
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    
+    [self configureHeaderForLoggedInUser];
+    [self.meHeader startAnimatingUpload];
+}
+
+- (void)deleteSessionFinished {
+    [[Analytics sharedClient] debugLog:@"Upload - Delete Session Finished"];
+    
+    // dirty the me user to force re-fetching
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.loginController dirtyLocalMeUser];
+
+    [self syncStopped];
+}
+
+- (void)deleteSessionFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error {
+    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Delete Failed: %@", [error localizedDescription]]];
+    
+    // dirty the me user to force re-fetching
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.loginController dirtyLocalMeUser];
+
+    [self syncStopped];
+    
+    if ([error.userInfo valueForKey:AFNetworkingOperationFailingURLResponseErrorKey]) {
+        NSHTTPURLResponse *resp = [error.userInfo valueForKey:AFNetworkingOperationFailingURLResponseErrorKey];
+        if (resp.statusCode == 401) {
+            [self notifyUploadErrorAuthRequired];
+        } else if (resp.statusCode == 403) {
+            [self notifyUploadErrorSuspended];
+        } else {
+            [self notifyUploadErrorOtherError:error];
+        }
+    } else {
+        [self notifyUploadErrorOtherError:error];
     }
 }
 
-- (void)uploadManager:(UploadManager *)uploadManager uploadFailedFor:(INatModel *)object error:(NSError *)error {
-    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Fatal Error %@", error.localizedDescription]];
+#pragma mark - uploader delegate helpers
+
+- (void)notifyUploadErrorJWTFetchFailed {
+    [[Analytics sharedClient] debugLog:@"Upload - JWT Fetch Failed"];
+    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                     withProperties:@{
+                                      @"Via": @"JWT Fetch Failed",
+                                      }];
     
-    // stop uploading
-    [self syncStopped];
+    NSString *reasonMsg = NSLocalizedString(@"Fetching an authentication token failed. Please contact help@inaturalist.org.",
+                                            @"This is an explanation for when auth token fetch fails during upload/sync.");
     
+    // trace code for login failures - include some info about the JWT
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    LoginController *login = [appDelegate loginController];
+    NSString *jwtExists = (login.jwtToken && ![login.jwtToken isEqualToString:@""]) ? @"JWT" : @"JWT DNE";
+    NSString *jwtDate = [login.jwtTokenExpiration description];
+    NSString *furtherDetails = [NSString stringWithFormat:@"%@ %@", jwtExists, jwtDate];
+    
+    NSString *fullReasonMsg = [NSString stringWithFormat:@"%@ - %@", reasonMsg, furtherDetails];
+    [self presentSignupSplashWithReason:fullReasonMsg];
+
+}
+
+- (void)notifyUploadErrorAuthRequired {
+    [[Analytics sharedClient] debugLog:@"Upload - Auth Required"];
+    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                     withProperties:@{
+                                      @"Via": @"Auth Required",
+                                      }];
+    
+    NSString *reasonMsg = NSLocalizedString(@"You must be logged in to upload to iNaturalist.org.",
+                                            @"This is an explanation for why the sync button triggers a login prompt.");
+    
+    // trace code for login failures - include some info about the JWT
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    LoginController *login = [appDelegate loginController];
+    NSString *jwtExists = (login.jwtToken && ![login.jwtToken isEqualToString:@""]) ? @"JWT" : @"JWT DNE";
+    NSString *jwtDate = [login.jwtTokenExpiration description];
+    NSString *furtherDetails = [NSString stringWithFormat:@"%@ %@", jwtExists, jwtDate];
+    
+    NSString *fullReasonMsg = [NSString stringWithFormat:@"%@ - %@", reasonMsg, furtherDetails];
+    [self presentSignupSplashWithReason:fullReasonMsg];
+}
+
+- (void)notifyUploadErrorSuspended {
+    [[Analytics sharedClient] debugLog:@"Upload - Forbidden"];
+    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
+                     withProperties:@{
+                                      @"Via": @"Auth Forbidden",
+                                      }];
+    
+    NSString *alertTitle = NSLocalizedString(@"Not Authorized", @"403 unauthorized title");
+    NSString *alertMessage = NSLocalizedString(@"You don't have permission to do that. Your account may have been suspended. Please contact help@inaturalist.org.",
+                                               @"403 forbidden message");
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                   message:alertMessage
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)notifyUploadErrorOtherError:(NSError *)error {
     NSString *alertTitle = NSLocalizedString(@"Whoops!", @"Default upload failure alert title.");
     NSString *alertMessage;
     
@@ -1725,45 +1831,5 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)uploadManager:(UploadManager *)uploadManager deleteStartedFor:(DeletedRecord *)deletedRecord {
-    [[Analytics sharedClient] debugLog:@"Upload - Delete Started"];
-
-    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-    
-    [self configureHeaderForLoggedInUser];
-    [self.meHeader startAnimatingUpload];
-}
-
-- (void)uploadManager:(UploadManager *)uploadManager deleteSuccessFor:(DeletedRecord *)deletedRecord {
-    [[Analytics sharedClient] debugLog:@"Upload - Delete Success"];
-}
-
-- (void)uploadManagerDeleteSessionFinished:(UploadManager *)uploadManager {
-    [[Analytics sharedClient] debugLog:@"Upload - Delete Session Finished"];
-
-    [self syncStopped];
-}
-
-- (void)uploadManager:(UploadManager *)uploadManager deleteFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error {
-    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Delete Failed: %@", [error localizedDescription]]];
-
-    [self syncStopped];
-    
-    NSString *alertTitle = NSLocalizedString(@"Deleted Failed", @"Delete failed message");
-    NSString *alertMsg;
-    if (error) {
-        alertMsg = error.localizedDescription;
-    } else {
-        alertMsg = NSLocalizedString(@"Unknown error while attempting to delete.", @"unknown delete error");
-    }
-    
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
-                                                                   message:alertMsg
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                              style:UIAlertActionStyleCancel
-                                            handler:nil]];
-    [self presentViewController:alert animated:YES completion:nil];
-}
 
 @end

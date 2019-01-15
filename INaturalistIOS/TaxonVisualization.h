@@ -11,7 +11,6 @@
 @protocol TaxonVisualization <NSObject>
 
 - (NSInteger)taxonId;
-- (NSString *)webContent;
 - (NSString *)commonName;
 - (NSString *)scientificName;
 - (NSURL *)photoUrl;

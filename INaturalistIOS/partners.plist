@@ -4,15 +4,35 @@
 <array>
 	<dict>
 		<key>countryName</key>
+		<string>Portugal</string>
+		<key>identifier</key>
+		<string>8</string>
+		<key>logoName</key>
+		<string>network_logo_pt</string>
+		<key>name</key>
+		<string>Biodiversity4All</string>
+		<key>shortName</key>
+		<string>Biodiversity4All</string>
+		<key>baseUrl</key>
+		<string>https://www.biodiversity4all.org</string>
+		<key>mobileCountryCodes</key>
+		<array>
+			<string>268</string>
+		</array>
+	</dict>
+	<dict>
+		<key>countryName</key>
 		<string>New Zealand</string>
 		<key>identifier</key>
 		<string>3</string>
 		<key>logoName</key>
 		<string>network_logo_nz</string>
 		<key>name</key>
-		<string>NatureWatch NZ</string>
+		<string>iNaturalist NZ – Mātaki Taiao</string>
+		<key>shortName</key>
+		<string>iNaturalist NZ</string>
 		<key>baseUrl</key>
-		<string>http://naturewatch.org.nz</string>
+		<string>https://inaturalist.nz</string>
 		<key>mobileCountryCodes</key>
 		<array>
 			<string>530</string>
@@ -27,8 +47,10 @@
 		<string>5</string>
 		<key>name</key>
 		<string>iNaturalist Canada</string>
+		<key>shortName</key>
+		<string>iNaturalist Canada</string>
 		<key>baseUrl</key>
-		<string>http://inaturalist.ca</string>
+		<string>https://inaturalist.ca</string>
 		<key>mobileCountryCodes</key>
 		<array>
 			<string>302</string>
@@ -43,8 +65,10 @@
 		<string>6</string>
 		<key>name</key>
 		<string>NaturaLista Colombia</string>
+		<key>shortName</key>
+		<string>NaturaLista Colombia</string>
 		<key>baseUrl</key>
-		<string>http://naturalista.biodiversidad.co</string>
+		<string>https://colombia.inaturalist.org</string>
 		<key>mobileCountryCodes</key>
 		<array>
 			<string>732</string>
@@ -59,8 +83,10 @@
 		<string>2</string>
 		<key>name</key>
 		<string>Naturalista</string>
+		<key>shortName</key>
+		<string>Naturalista</string>
 		<key>baseUrl</key>
-		<string>http://www.naturalista.mx</string>
+		<string>https://www.naturalista.mx</string>
 		<key>mobileCountryCodes</key>
 		<array>
 			<string>334</string>
@@ -70,6 +96,8 @@
 		<key>identifier</key>
 		<string>1</string>
 		<key>name</key>
+		<string>iNaturalist</string>
+		<key>shortName</key>
 		<string>iNaturalist</string>
 		<key>baseUrl</key>
 		<string>https://www.inaturalist.org</string>

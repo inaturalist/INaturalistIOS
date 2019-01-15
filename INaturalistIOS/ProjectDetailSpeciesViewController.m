@@ -6,13 +6,15 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+#import <RestKit/RestKit.h>
 
 #import "ProjectDetailSpeciesViewController.h"
 #import "SpeciesCount.h"
 #import "ExploreTaxon.h"
 #import "SpeciesCountCell.h"
+#import "INatReachability.h"
 
 @implementation ProjectDetailSpeciesViewController
 
@@ -26,7 +28,7 @@
 
         label.attributedText = ({
             NSString *emptyTitle;
-            if ([[RKClient sharedClient] isNetworkReachable]) {
+            if ([[INatReachability sharedClient] isNetworkReachable]) {
                 emptyTitle = NSLocalizedString(@"There are no observations for this project yet. Check back soon!", nil);
             } else {
                 emptyTitle = NSLocalizedString(@"No network connection. :(", nil);
@@ -90,7 +92,7 @@
         }
     }
     
-    [cell.taxonImageView sd_setImageWithURL:count.taxon.photoUrl];
+    [cell.taxonImageView setImageWithURL:count.taxon.photoUrl];
     
     return cell;
 }

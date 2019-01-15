@@ -7,7 +7,8 @@
 //
 
 #import <MBProgressHUD/MBProgressHUD.h>
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
+#import <RestKit/RestKit.h>
 
 #import "GuideCollectionViewController.h"
 #import "GuideTaxonViewController.h"
@@ -19,6 +20,7 @@
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
 #import "ImageStore.h"
+#import "INatReachability.h"
 
 static const int CellLabelTag = 200;
 static const int GutterWidth  = 5;
@@ -57,9 +59,7 @@ static const int GutterWidth  = 5;
             self.title = self.guide.title;
             NSDateComponents *offset = [[NSDateComponents alloc] init];
             [offset setDay:-1];
-            if (self.guide.xmlURL
-                && RKClient.sharedClient.reachabilityObserver.isNetworkReachable
-                ) {
+            if (self.guide.xmlURL && [[INatReachability sharedClient] isNetworkReachable]) {
                 [self downloadXML:self.guide.xmlURL quietly:YES];
             }
         } else if (self.guide.xmlURL) {
@@ -83,7 +83,9 @@ static const int GutterWidth  = 5;
     self.searchBar.translucent = NO;
     [self.view addSubview:self.searchBar];
     
-    [self.collectionView setContentOffset:CGPointMake(0, 44)];
+    // the collectionview wants to sit under the status bar, but we don't want that
+    // since we're adding a search bar
+    self.collectionView.contentInset = UIEdgeInsetsMake(40.0, 0.0, 0.0, 0.0);
     
     SWRevealViewController *revealController = [self revealViewController];
     [self.view addGestureRecognizer:revealController.panGestureRecognizer];
@@ -154,15 +156,15 @@ static const int GutterWidth  = 5;
     static NSString *identifier = @"GuideTaxonCell";
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:identifier forIndexPath:indexPath];
     UIImageView *img = (UIImageView *)[cell viewWithTag:100];
-    [img sd_cancelCurrentImageLoad];
+    [img cancelImageDownloadTask];
     img.image = [UIImage imageNamed:@"ic_unknown"];
     img.contentMode = UIViewContentModeScaleAspectFill;
     GuideTaxonXML *guideTaxon = [self guideTaxonAtIndexPath:indexPath];
     
     if (guideTaxon) {
         if (guideTaxon.smallPhotoUrl.host) {
-            [img sd_setImageWithURL:guideTaxon.smallPhotoUrl
-                   placeholderImage:[UIImage imageNamed:@"ic_unknown"]];
+            [img setImageWithURL:guideTaxon.smallPhotoUrl
+                placeholderImage:[UIImage imageNamed:@"ic_unknown"]];
         } else if (guideTaxon.smallPhotoUrl) {
             [img setImage:[UIImage imageWithContentsOfFile:guideTaxon.smallPhotoUrl.path]];
         }
@@ -277,8 +279,17 @@ static const int GutterWidth  = 5;
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
 {
+    if ([self collectionView:self.collectionView numberOfItemsInSection:0] > 0) {
+        // scroll to the first item upon search
+        NSIndexPath *first = [NSIndexPath indexPathForItem:0 inSection:0];
+        [self.collectionView scrollToItemAtIndexPath:first
+                                    atScrollPosition:UICollectionViewScrollPositionTop
+                                            animated:YES];
+
+    }
     self.searchBar.showsCancelButton = YES;
     [self.navigationController setNavigationBarHidden:YES animated:YES];
+    self.searchBar.frame = CGRectMake(0, 20, CGRectGetWidth(self.collectionView.frame), 44);
 }
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
@@ -286,6 +297,7 @@ static const int GutterWidth  = 5;
     self.searchBar.showsCancelButton = NO;
     [self.navigationController setNavigationBarHidden:NO
                                              animated:YES];
+    self.searchBar.frame = CGRectMake(0, 0, CGRectGetWidth(self.collectionView.frame), 44);
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar

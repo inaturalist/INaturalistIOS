@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <BlocksKit/BlocksKit.h>
 
 #import "ExploreLeaderboardViewController.h"
@@ -170,7 +170,7 @@ static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
     }
     
     if (userIconUrl) {
-        [cell.userIcon sd_setImageWithURL:userIconUrl];
+        [cell.userIcon setImageWithURL:userIconUrl];
     } else {
         cell.userIcon.image = [UIImage inat_defaultUserImage];
     }

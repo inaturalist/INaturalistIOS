@@ -48,6 +48,8 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     self.noInteractionLabel.text = nil;
 }
 

@@ -7,24 +7,26 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "TaxaSearchController.h"
+#import <CoreLocation/CoreLocation.h>
+
 #import "TaxonDetailViewController.h"
 #import "TaxonVisualization.h"
+#import "ObservationVisualization.h"
 
 @protocol TaxaSearchViewControllerDelegate <NSObject>
+- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxonId chosenViaVision:(BOOL)visionFlag;
+- (void)taxaSearchViewControllerCancelled;
 @optional
-- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxonId;
 - (void)taxaSearchViewControllerChoseSpeciesGuess:(NSString *)speciesGuess;
 @end
 
-@interface TaxaSearchViewController : UITableViewController <RecordSearchControllerDelegate, TaxonDetailViewControllerDelegate>
-@property (nonatomic, strong) TaxaSearchController *taxaSearchController;
-@property (nonatomic, strong) id <TaxaSearchViewControllerDelegate> delegate;
+@interface TaxaSearchViewController : UIViewController <TaxonDetailViewControllerDelegate>
+@property (nonatomic, weak) id <TaxaSearchViewControllerDelegate> delegate;
 @property (nonatomic, strong) NSString *query;
 @property (nonatomic, assign) BOOL hidesDoneButton;
 @property (nonatomic, assign) BOOL allowsFreeTextSelection;
-
-- (IBAction)clickedCancel:(id)sender;
-- (void)showTaxon:(id <TaxonVisualization>)taxon;
-- (void)clickedAccessory:(id)sender event:(UIEvent *)event;
+@property (nonatomic, strong) UIImage *imageToClassify;
+@property (nonatomic, assign) CLLocationCoordinate2D coordinate;
+@property (nonatomic, strong) NSDate *observedOn;
+@property (nonatomic, strong) id <ObservationVisualization> observationToClassify;
 @end

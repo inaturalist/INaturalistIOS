@@ -6,7 +6,8 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
+#import <AFNetworking/AFImageDownloader.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <FontAwesomeKit/FAKFontAwesome.h>
 #import <ActionSheetPicker-3.0/ActionSheetDatePicker.h>
@@ -15,11 +16,11 @@
 #import <QBImagePickerController/QBImagePickerController.h>
 #import <ImageIO/ImageIO.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
-#import <SDWebImage/UIImageView+WebCache.h>
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
+#import <RestKit/RestKit.h>
 
 #import "ObsEditV2ViewController.h"
 #import "Observation.h"
@@ -37,7 +38,6 @@
 #import "SubtitleDisclosureCell.h"
 #import "ObservationPhoto.h"
 #import "ObsCameraOverlay.h"
-#import "Observation+AddAssets.h"
 #import "ConfirmPhotoViewController.h"
 #import "FAKINaturalist.h"
 #import "ProjectChooserViewController.h"
@@ -55,6 +55,8 @@
 #import "ObsCenteredLabelCell.h"
 #import "ObsDetailTaxonCell.h"
 #import "ExploreUpdateRealm.h"
+#import "INatReachability.h"
+#import "UIViewController+INaturalist.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -94,6 +96,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                           target:self
                                                                                           action:@selector(cancelledNewObservation:)];
+    
+    self.view.backgroundColor = [UIColor inatTableViewBackgroundGray];
     
     self.tableView = ({
         UITableView *tv = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
@@ -145,45 +149,44 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     });
     // wait to add to self.view, since we don't always need it
     
-    NSDictionary *views = @{
-                            @"tv": self.tableView,
-                            @"save": self.saveButton,
-                            };
+    self.title = NSLocalizedString(@"Details", @"Title for confirm new observation details view");
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[tv]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    
+    // finish configuring subviews based on new obs context
     if (self.isMakingNewObservation) {
-        // new obs confirm has a save button
-        [self.view addSubview:self.saveButton];
-        
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-[save(==47)]-0-|"
-                                                                          options:0
-                                                                          metrics:0
-                                                                            views:views]];
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[save]-0-|"
-                                                                          options:0
-                                                                          metrics:0
-                                                                            views:views]];
-        
         // new obs confirm has no Done nav bar button
         self.navigationItem.rightBarButtonItem = nil;
-    } else {
-        // save existing obs has no save button
-        [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tv]-0-|"
-                                                                          options:0
-                                                                          metrics:0
-                                                                            views:views]];
         
+        // new obs confirm has a save button
+        [self.view addSubview:self.saveButton];
+    } else {
         // save existing obs has a Done nav bar button
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
                                                                                                target:self
                                                                                                action:@selector(saved:)];
     }
     
-    self.title = NSLocalizedString(@"Details", @"Title for confirm new observation details view");
+    // autolayout
+    UILayoutGuide *safeGuide = [self inat_safeLayoutGuide];
+    // horizontal
+    [self.tableView.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
+    [self.tableView.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
+    
+    if (self.isMakingNewObservation) {
+        // horizontal
+        [self.saveButton.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
+        [self.saveButton.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
+        
+        // vertical
+        [self.tableView.topAnchor constraintEqualToAnchor:safeGuide.topAnchor].active = YES;
+        [self.tableView.bottomAnchor constraintEqualToAnchor:self.saveButton.topAnchor].active = YES;
+        [self.saveButton.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
+        [self.saveButton.heightAnchor constraintEqualToConstant:47.0f].active = YES;
+    } else {
+        // vertical
+        [self.tableView.topAnchor constraintEqualToAnchor:safeGuide.topAnchor].active = YES;
+        [self.tableView.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
+    }
+    
     
 }
 
@@ -293,6 +296,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     if (![textView.text isEqualToString:self.observation.inatDescription]) {
         // text changed
         self.observation.inatDescription = textView.text;
+        self.observation.localUpdatedAt = [NSDate date];
         [[Analytics sharedClient] event:kAnalyticsEventObservationNotesChanged
                          withProperties:@{
                                           @"Via": [self analyticsVia]
@@ -320,12 +324,18 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - PhotoScrollViewDelegate
 
 - (void)photoScrollView:(PhotoScrollViewCell *)psv setDefaultIndex:(NSInteger)idx {
+    ObservationPhoto *newDefault = self.observation.sortedObservationPhotos[idx];
+    newDefault.position = @(0);
+    newDefault.localUpdatedAt = [NSDate date];
+    
     for (ObservationPhoto *photo in self.observation.observationPhotos) {
-        if (photo.position.integerValue == idx) {
-            photo.position = @(0);
-        } else if (photo.position.integerValue < idx) {
+        if ([photo isEqual:newDefault]) {
+            continue;
+        }
+        if (photo.position.integerValue < idx) {
             // needs to move down one
             photo.position = @(photo.position.integerValue + 1);
+            photo.localUpdatedAt = [NSDate date];
         }
     }
     
@@ -352,6 +362,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     for (int i = 0; i < self.observation.sortedObservationPhotos.count; i++) {
         ObservationPhoto *op = self.observation.sortedObservationPhotos[i];
         op.position = @(i);
+        op.updatedAt = [NSDate date];
     }
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationDeletePhoto
@@ -364,7 +375,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)photoScrollView:(PhotoScrollViewCell *)psv selectedIndex:(NSInteger)idx {
-    // show the hires photo?
     ObservationPhoto *op = [self.observation.sortedObservationPhotos objectAtIndex:idx];
     if (!op) return;
     
@@ -392,7 +402,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     __weak MHGalleryController *blockGallery = gallery;
     
-    gallery.finishedCallback = ^(NSUInteger currentIndex,UIImage *image,MHTransitionDismissMHGallery *interactiveTransition,MHGalleryViewMode viewMode){
+    gallery.finishedCallback = ^(NSInteger currentIndex, UIImage *image, MHTransitionDismissMHGallery *interactiveTransition, MHGalleryViewMode viewMode) {
+        
         __strong typeof(blockGallery)strongGallery = blockGallery;
         dispatch_async(dispatch_get_main_queue(), ^{
             [strongGallery dismissViewControllerAnimated:YES completion:nil];
@@ -423,6 +434,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.imagePicker.delegate = self;
     self.imagePicker.allowsMultipleSelection = YES;
     self.imagePicker.maximumNumberOfSelection = 4;     // arbitrary
+    self.imagePicker.mediaType = QBImagePickerMediaTypeImage;
+    self.imagePicker.assetCollectionSubtypes = [ImageStore assetCollectionSubtypes];
     
     if (self.presentedViewController) {
         UINavigationController *nav = (UINavigationController *)self.presentedViewController;
@@ -439,7 +452,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     picker.delegate = self;
     picker.allowsEditing = NO;
     picker.showsCameraControls = NO;
-    picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, 50);
     
     ObsCameraOverlay *overlay = [[ObsCameraOverlay alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     overlay.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
@@ -495,6 +507,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     picker.cameraOverlayView = overlay;
     
+    UIScreen *screen = [UIScreen mainScreen];
+    CGFloat cameraAspectRatio = 4.0 / 3.0;
+    CGFloat cameraPreviewHeight = screen.nativeBounds.size.width * cameraAspectRatio;
+    CGFloat screenHeight = screen.nativeBounds.size.height;
+    CGFloat transformHeight = (screenHeight-cameraPreviewHeight) / screen.nativeScale / 2.0f;
+    
+    picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, transformHeight);
     [self presentViewController:picker animated:YES completion:nil];
 }
 
@@ -562,13 +581,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
     confirm.image = [info objectForKey:UIImagePickerControllerOriginalImage];
-    
-    // add metadata with geo
-    CLLocation *loc = [[CLLocation alloc] initWithLatitude:[self.observation.visibleLatitude doubleValue]
-                                                 longitude:[self.observation.visibleLongitude doubleValue]];
-    NSMutableDictionary *meta = [((NSDictionary *)[info objectForKey:UIImagePickerControllerMediaMetadata]) mutableCopy];
-    [meta setValue:[self getGPSDictionaryForLocation:loc]
-            forKey:((NSString * )kCGImagePropertyGPSDictionary)];
+    confirm.metadata = [info objectForKey:UIImagePickerControllerMediaMetadata];
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationAddPhoto
                      withProperties:@{
@@ -645,71 +658,15 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     });
 }
 
-// http://stackoverflow.com/a/5314634/720268
-- (NSDictionary *)getGPSDictionaryForLocation:(CLLocation *)location {
-    NSMutableDictionary *gps = [NSMutableDictionary dictionary];
-    
-    // GPS tag version
-    [gps setObject:@"2.2.0.0" forKey:(NSString *)kCGImagePropertyGPSVersion];
-    
-    // Time and date must be provided as strings, not as an NSDate object
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"HH:mm:ss.SSSSSS"];
-    [formatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"UTC"]];
-    [gps setObject:[formatter stringFromDate:location.timestamp] forKey:(NSString *)kCGImagePropertyGPSTimeStamp];
-    [formatter setDateFormat:@"yyyy:MM:dd"];
-    [gps setObject:[formatter stringFromDate:location.timestamp] forKey:(NSString *)kCGImagePropertyGPSDateStamp];
-    
-    // Latitude
-    CGFloat latitude = location.coordinate.latitude;
-    if (latitude < 0) {
-        latitude = -latitude;
-        [gps setObject:@"S" forKey:(NSString *)kCGImagePropertyGPSLatitudeRef];
-    } else {
-        [gps setObject:@"N" forKey:(NSString *)kCGImagePropertyGPSLatitudeRef];
-    }
-    [gps setObject:[NSNumber numberWithFloat:latitude] forKey:(NSString *)kCGImagePropertyGPSLatitude];
-    
-    // Longitude
-    CGFloat longitude = location.coordinate.longitude;
-    if (longitude < 0) {
-        longitude = -longitude;
-        [gps setObject:@"W" forKey:(NSString *)kCGImagePropertyGPSLongitudeRef];
-    } else {
-        [gps setObject:@"E" forKey:(NSString *)kCGImagePropertyGPSLongitudeRef];
-    }
-    [gps setObject:[NSNumber numberWithFloat:longitude] forKey:(NSString *)kCGImagePropertyGPSLongitude];
-    
-    // Altitude
-    CGFloat altitude = location.altitude;
-    if (!isnan(altitude)){
-        if (altitude < 0) {
-            altitude = -altitude;
-            [gps setObject:@"1" forKey:(NSString *)kCGImagePropertyGPSAltitudeRef];
-        } else {
-            [gps setObject:@"0" forKey:(NSString *)kCGImagePropertyGPSAltitudeRef];
-        }
-        [gps setObject:[NSNumber numberWithFloat:altitude] forKey:(NSString *)kCGImagePropertyGPSAltitude];
-    }
-    
-    // Speed, must be converted from m/s to km/h
-    if (location.speed >= 0){
-        [gps setObject:@"K" forKey:(NSString *)kCGImagePropertyGPSSpeedRef];
-        [gps setObject:[NSNumber numberWithFloat:location.speed*3.6] forKey:(NSString *)kCGImagePropertyGPSSpeed];
-    }
-    
-    // Heading
-    if (location.course >= 0){
-        [gps setObject:@"T" forKey:(NSString *)kCGImagePropertyGPSTrackRef];
-        [gps setObject:[NSNumber numberWithFloat:location.course] forKey:(NSString *)kCGImagePropertyGPSTrack];
-    }
-    
-    return gps;
-}
-
 #pragma mark - CLLocationManagerDelegate
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+    [[Analytics sharedClient] event:kAnalyticsEventLocationPermissionsChanged
+                     withProperties:@{
+                                      @"Via": NSStringFromClass(self.class),
+                                      @"NewValue": @(status),
+                                      }];
+
     switch (status) {
         case kCLAuthorizationStatusAuthorizedAlways:
         case kCLAuthorizationStatusAuthorizedWhenInUse:
@@ -754,7 +711,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         
         NSIndexPath *ip = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
         [self.tableView beginUpdates];
-        [self.tableView reloadRowsAtIndexPaths:@[ ip ] withRowAnimation:UITableViewRowAnimationFade];
+        [self.tableView reloadRowsAtIndexPaths:@[ ip ]
+                              withRowAnimation:UITableViewRowAnimationNone];
         [self.tableView endUpdates];
         
         if (newLocation.horizontalAccuracy < 10) {
@@ -787,6 +745,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)stopUpdatingLocation {
+    self.shouldContinueUpdatingLocation = NO;
     [self.locationManager stopUpdatingLocation];
 }
 
@@ -798,7 +757,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - geocoding helper
 
 - (void)reverseGeocodeCoordinatesForObservation:(Observation *)obs {
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         return;
     }
     
@@ -823,10 +782,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           locality,
                                                           administrativeArea,
                                                           ISOcountryCode ] componentsJoinedByString:@", "];
+                                    obs.localUpdatedAt = [NSDate date];
                                     NSIndexPath *locRowIp = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
                                     [self.tableView beginUpdates];
                                     [self.tableView reloadRowsAtIndexPaths:@[ locRowIp ]
-                                                          withRowAnimation:UITableViewRowAnimationAutomatic];
+                                                          withRowAnimation:UITableViewRowAnimationNone];
                                     [self.tableView endUpdates];
                                 } @catch (NSException *exception) {
                                     if ([exception.name isEqualToString:NSObjectInaccessibleException])
@@ -852,11 +812,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     self.observation.taxonID = nil;
     self.observation.iconicTaxonID = nil;
     self.observation.iconicTaxonName = nil;
+    self.observation.localUpdatedAt = [NSDate date];
     
     NSIndexPath *speciesIndexPath = [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionIdentify];
     [self.tableView beginUpdates];
     [self.tableView reloadRowsAtIndexPaths:@[ speciesIndexPath ]
-                          withRowAnimation:UITableViewRowAnimationFade];
+                          withRowAnimation:UITableViewRowAnimationNone];
     [self.tableView endUpdates];
 }
 
@@ -928,10 +889,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                       @"Via": [self analyticsVia],
                                       @"Projects": @(self.observation.projectObservations.count),
                                       @"Photos": @(self.observation.observationPhotos.count),
-                                      @"OFVs": @(self.observation.observationFieldValues.count)
+                                      @"OFVs": @(self.observation.observationFieldValues.count),
+                                      @"Online Reachability": INatReachability.sharedClient.isNetworkReachable ? @"Yes": @"No"
                                       }];
     
-    self.observation.localUpdatedAt = [NSDate date];
+    // clear upload validation error message
+    self.observation.validationErrorMsg = nil;
     
     NSError *error;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
@@ -958,7 +921,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             [po deleteEntity];
             [deletedProjects addObject:po];
         }
-        self.observation.localUpdatedAt = [NSDate date];
     }
     [self.observation removeProjectObservations:deletedProjects];
     
@@ -978,9 +940,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             ObservationFieldValue *ofv = [ObservationFieldValue object];
             ofv.observation = self.observation;
             ofv.observationField = pof.observationField;
+            ofv.localUpdatedAt = [NSDate date];
+            ofv.localCreatedAt = [NSDate date];
         }
         
-        self.observation.localUpdatedAt = [NSDate date];
+        po.localUpdatedAt = [NSDate date];
+        po.localCreatedAt = [NSDate date];
     }
     
     [self.tableView reloadData];
@@ -988,9 +953,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 #pragma mark - Taxa Search
 
-- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon {
+- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon chosenViaVision:(BOOL)visionFlag {
     self.observation.taxonID = @(taxon.taxonId);
     self.observation.localUpdatedAt = [NSDate date];
+    // explicitly wrap this as a bool
+    self.observation.ownersIdentificationFromVision = [NSNumber numberWithBool:visionFlag];
     
     NSString *newTaxonName = taxon.commonName ?: taxon.scientificName;
     if (!newTaxonName) { newTaxonName = NSLocalizedString(@"Unknown", @"unknown taxon"); }
@@ -1026,9 +993,15 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self.navigationController popToViewController:self animated:YES];
 }
 
+- (void)taxaSearchViewControllerCancelled {
+    [self.navigationController popToViewController:self animated:YES];
+}
+
 #pragma mark - EditLocationDelegate
 
 - (void)editLocationViewControllerDidSave:(EditLocationViewController *)controller location:(INatLocation *)location {
+    
+    [self stopUpdatingLocation];
     
     if (location.latitude.integerValue == 0 && location.longitude.integerValue == 0) {
         // nothing happens on null island
@@ -1103,7 +1076,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 return 44;
             } else if (indexPath.item == 2) {
                 // location
-                CLLocationCoordinate2D coords;
+                CLLocationCoordinate2D coords = kCLLocationCoordinate2DInvalid;
                 
                 if (self.observation.privateLatitude.floatValue) {
                     coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
@@ -1201,8 +1174,43 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 TaxaSearchViewController *search = [storyboard instantiateViewControllerWithIdentifier:@"TaxaSearchViewController"];
                 search.hidesDoneButton = YES;
                 search.delegate = self;
-                search.query = self.observation.speciesGuess;
+                // only prime the query if there's a placeholder, not a taxon)
+                if (self.observation.speciesGuess && !self.observation.taxonID) {
+                    search.query = self.observation.speciesGuess;
+                }
                 search.allowsFreeTextSelection = YES;
+                
+                if (self.observation.observationPhotos.count > 0) {
+                    ObservationPhoto *op = [self.observation.sortedObservationPhotos firstObject];
+                    NSString *imgKey = [op photoKey];
+                    if (imgKey) {
+                        UIImage *image = [[ImageStore sharedImageStore] find:imgKey forSize:ImageStoreSmallSize];
+                        search.imageToClassify = image;
+                    }
+                    if (!search.imageToClassify) {
+                        // if we couldn't find it in the imagestore,
+                        // try to load it from the afnetworking caches
+                        NSURLRequest *request = [NSURLRequest requestWithURL:op.smallPhotoUrl];
+                        UIImage *image = [[[UIImageView sharedImageDownloader] imageCache] imageforRequest:request
+                                                                                  withAdditionalIdentifier:nil];;
+                        if (image) {
+                            search.imageToClassify = image;
+                        } else if ([self.observation recordID]) {
+                            // if we _still_ can't find an image, and the obs has been uploaded
+                            // to inat, try classifying the observation by id
+                            search.observationToClassify = self.observation;
+                        }
+                    }
+                    
+                    if (search.imageToClassify) {
+                        if (CLLocationCoordinate2DIsValid(self.observation.visibleLocation)) {
+                            search.coordinate = self.observation.visibleLocation;
+                        }
+                        if (self.observation.observedOn) {
+                            search.observedOn = self.observation.observedOn;
+                        }
+                    }
+                }
                 [self.navigationController pushViewController:search animated:YES];
             } else {
                 // do nothing
@@ -1250,10 +1258,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                         __strong typeof(weakSelf) strongSelf = self;
                                                         strongSelf.observation.localObservedOn = date;
                                                         strongSelf.observation.observedOnString = [Observation.jsDateFormatter stringFromDate:date];
+                                                        strongSelf.observation.localUpdatedAt = [NSDate date];
                                                         
                                                         [strongSelf.tableView beginUpdates];
                                                         [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                                                                    withRowAnimation:UITableViewRowAnimationFade];
+                                                                                    withRowAnimation:UITableViewRowAnimationNone];
                                                         [strongSelf.tableView endUpdates];
                                                         
                                                     } cancelBlock:nil
@@ -1303,6 +1312,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           NSString *newValue = geoprivacyOptions[selectedIndex];
                                                           
                                                           strongSelf.observation.geoprivacy = newValue;
+                                                          strongSelf.observation.localUpdatedAt = [NSDate date];
                                                           
                                                           [[Analytics sharedClient] event:kAnalyticsEventObservationGeoprivacyChanged
                                                                            withProperties:@{ @"Via": [self analyticsVia],
@@ -1310,7 +1320,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           
                                                           [strongSelf.tableView beginUpdates];
                                                           [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                                                                      withRowAnimation:UITableViewRowAnimationFade];
+                                                                                      withRowAnimation:UITableViewRowAnimationNone];
                                                           [strongSelf.tableView endUpdates];
                                                           
                                                       } cancelBlock:nil
@@ -1336,10 +1346,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           __strong typeof(weakSelf) strongSelf = weakSelf;
                                                           
                                                           strongSelf.observation.captive = @(selectedIndex);
+                                                          strongSelf.observation.localUpdatedAt = [NSDate date];
                                                           
                                                           [strongSelf.tableView beginUpdates];
                                                           [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                                                                      withRowAnimation:UITableViewRowAnimationFade];
+                                                                                      withRowAnimation:UITableViewRowAnimationNone];
                                                           [strongSelf.tableView endUpdates];
                                                           
                                                       } cancelBlock:nil
@@ -1379,7 +1390,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             // show alertview
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Are you sure? This is permanent.", nil)
                                                                            message:nil
-                                                                    preferredStyle:UIAlertControllerStyleActionSheet];
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
             [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Never mind",nil)
                                                       style:UIAlertActionStyleCancel
                                                     handler:nil]];
@@ -1476,7 +1487,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         if ([etr.iconicTaxonName isEqualToString:etr.commonName]) {
             cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
         } else if (etr.photoUrl) {
-            [cell.taxonImageView sd_setImageWithURL:etr.photoUrl];
+            [cell.taxonImageView setImageWithURL:etr.photoUrl];
         } else {
             cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
         }
@@ -1497,7 +1508,14 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
             cell.taxonSecondaryNameLabel.textColor = [UIColor colorWithHexString:@"#777777"];
             cell.taxonNameLabel.text = NSLocalizedString(@"What did you see?", @"unknown taxon title");
-            cell.taxonSecondaryNameLabel.text = NSLocalizedString(@"Look up species name", @"unknown taxon subtitle");
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:kINatSuggestionsPrefKey] &&
+                self.observation.sortedObservationPhotos.count > 0) {
+                cell.taxonSecondaryNameLabel.text = NSLocalizedString(@"View suggestions",
+                                                                      @"unknown taxon subtitle when suggestions are available");
+            } else {
+                cell.taxonSecondaryNameLabel.text = NSLocalizedString(@"Look up species name",
+                                                                      @"unknown taxon subtitle when suggestions are unavailable");
+            }
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         }
     }
@@ -1649,12 +1667,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (UITableViewCell *)illegalCellForIndexPath:(NSIndexPath *)ip {
     NSLog(@"indexpath is %@", ip);
     NSAssert(NO, @"illegal cell for confirm screen");
+    return nil;
 }
 
 #pragma mark - UITableViewCell title helpers
 
 - (NSString *)geoPrivacyTitle {
-    return NSLocalizedString(@"Geo Privacy", @"Geoprivacy button title");
+    return NSLocalizedString(@"Geoprivacy", @"Geoprivacy button title");
 }
 
 - (NSString *)captiveTitle {

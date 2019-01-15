@@ -104,6 +104,8 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     [@[ self.infoButton, self.activityButton, self.favesButton ] enumerateObjectsUsingBlock:^(UIButton *button, NSUInteger idx, BOOL * _Nonnull stop) {
         button.enabled = YES;
     }];

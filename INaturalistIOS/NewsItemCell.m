@@ -6,7 +6,7 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
@@ -172,9 +172,11 @@
 }
 
 - (void)prepareForReuse {
-    [self.newsCategoryImageView sd_cancelCurrentImageLoad];
+    [super prepareForReuse];
+    
+    [self.newsCategoryImageView cancelImageDownloadTask];
     self.newsCategoryImageView.image = nil;
-    [self.postImageView sd_cancelCurrentImageLoad];
+    [self.postImageView cancelImageDownloadTask];
     self.postImageView.image = nil;
     
     self.newsCategoryTitle.text = nil;

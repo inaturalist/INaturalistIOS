@@ -65,31 +65,7 @@
     if (indexPath.section < 2) {
         return [super tableView:tableView cellForRowAtIndexPath:indexPath];
     } else if (indexPath.section == 2) {
-        if (indexPath.item == 0) {
-            // notes
-            ObsDetailNotesCell *cell = [tableView dequeueReusableCellWithIdentifier:@"notes"];
-            cell.notesTextView.dataDetectorTypes = UIDataDetectorTypeLink;
-            
-            NSError *err;
-            NSDictionary *opts = @{
-                                  NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-                                  NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding),
-                                  };
-            NSMutableAttributedString *notes = [[[NSAttributedString alloc] initWithData:[self.observation.inatDescription dataUsingEncoding:NSUTF8StringEncoding]
-                                                                                 options:opts
-                                                                      documentAttributes:nil
-                                                                                   error:&err] mutableCopy];
-            
-            // reading this as HTML gives it a with-serif font
-            [notes addAttribute:NSFontAttributeName
-                          value:[UIFont systemFontOfSize:14]
-                          range:NSMakeRange(0, notes.length)];
-            if (notes) {
-                cell.notesTextView.attributedText = notes;
-            }
-            
-            return cell;
-        } else if (indexPath.item == 1) {
+        if (self.observation.inatDescription.length == 0 || indexPath.item == 1) {
             // map
             ObsDetailMapCell *cell = [tableView dequeueReusableCellWithIdentifier:@"map"];
             cell.mapView.delegate = self;
@@ -101,13 +77,13 @@
                 cell.mapView.hidden = NO;
                 cell.noLocationLabel.hidden = YES;
                 
-            	CLLocationDistance distance;
-            	if ([self.observation visiblePositionalAccuracy] == 0) {
-            		distance = 500;
-            	} else {
-            		distance = MAX([self.observation visiblePositionalAccuracy], 200);
-            	}
-            	
+                CLLocationDistance distance;
+                if ([self.observation visiblePositionalAccuracy] == 0) {
+                    distance = 500;
+                } else {
+                    distance = MAX([self.observation visiblePositionalAccuracy], 200);
+                }
+                
                 cell.mapView.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
                 
                 MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];
@@ -124,7 +100,7 @@
                     } else {
                         positionalAccuracy = NSLocalizedString(@"???", @"positional accuracy when we don't know");
                     }
-
+                    
                     NSString *baseStr = NSLocalizedString(@"Lat: %.5f Long: %.5f Acc: %@", @"visualization of latitude/longitude/accuracy");
                     NSString *subtitleString = [NSString stringWithFormat:baseStr,
                                                 coords.latitude,
@@ -149,11 +125,41 @@
                 cell.geoprivacyLabel.attributedText = ({
                     FAKIcon *private = [FAKINaturalist icnLocationPrivateIconWithSize:24];
                     [private addAttribute:NSForegroundColorAttributeName
-                                     value:[UIColor lightGrayColor]];
+                                    value:[UIColor lightGrayColor]];
                     private.attributedString;
                 });
             } else {
                 cell.geoprivacyLabel.text = nil;
+            }
+            return cell;
+        } else {
+            // notes
+            ObsDetailNotesCell *cell = [tableView dequeueReusableCellWithIdentifier:@"notes"];
+            cell.notesTextView.dataDetectorTypes = UIDataDetectorTypeLink;
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            
+            // disable user interaction on this textview to make the cell
+            // fully selectable (only for kAnalyticsEventObservationDescriptionTapped)
+            cell.notesTextView.userInteractionEnabled = NO;
+            
+            NSError *err;
+            NSDictionary *opts = @{
+                                  NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
+                                  NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding),
+                                  };
+            NSMutableAttributedString *notes = [[[NSAttributedString alloc] initWithData:[self.observation.inatDescription dataUsingEncoding:NSUTF8StringEncoding]
+                                                                                 options:opts
+                                                                      documentAttributes:nil
+                                                                                   error:&err] mutableCopy];
+            
+            // reading this as HTML gives it a with-serif font
+            [notes addAttribute:NSFontAttributeName
+                          value:[UIFont systemFontOfSize:14]
+                          range:NSMakeRange(0, notes.length)];
+            if (notes) {
+                cell.notesTextView.attributedText = notes;
+            } else {
+                cell.notesTextView.text = @"";
             }
             
             return cell;
@@ -288,54 +294,16 @@
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section < 2) {
-        return [super tableView:tableView heightForRowAtIndexPath:indexPath];
-    } else if (indexPath.section == 2) {
-        if (indexPath.row == 0) {
-            // notes
-            if (self.observation.inatDescription && self.observation.inatDescription.length > 0) {
-                return [self heightForRowInTableView:tableView withBodyText:self.observation.inatDescription];
-            } else {
-                return CGFLOAT_MIN;
-            }
-        } else if (indexPath.row == 1) {
-            // maps
-            return 180;
-        }
-    } else if (indexPath.section == 3) {
-        // data quality
-        return 80;
-    } else if (indexPath.section == 4) {
-        // projects
-        return 44;
-    }
-    
-    return CGFLOAT_MIN;
-}
-
-- (CGFloat)heightForRowInTableView:(UITableView *)tableView withBodyText:(NSString *)text {
-    // 30 for some padding on the left/right
-    CGFloat usableWidth = tableView.bounds.size.width - 30;
-    CGSize maxSize = CGSizeMake(usableWidth, CGFLOAT_MAX);
-    UIFont *font = [UIFont systemFontOfSize:14.0f];
-    
-    CGRect textRect = [text boundingRectWithSize:maxSize
-                                         options:NSStringDrawingUsesLineFragmentOrigin
-                                      attributes:@{ NSFontAttributeName: font }
-                                         context:nil];
-    
-    // 22 for notes padding above and below
-    return MAX(44, textRect.size.height + 22);
-}
-
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section < 2) {
         return [super tableView:tableView numberOfRowsInSection:section];
     } else if (section == 2) {
         // notes/map
-        return 2;
+        if (self.observation.inatDescription.length > 0) {
+            return 2;
+        } else {
+            return 1;
+        }
     } else if (section == 3 || section == 4) {
         // data quality, projects
         return 1;
@@ -361,7 +329,7 @@
         [super tableView:tableView didSelectRowAtIndexPath:indexPath];
     } else if (indexPath.section == 2) {
         // notes / map
-        if (indexPath.item == 1) {
+        if (self.observation.inatDescription.length == 0 || indexPath.item == 1) {
             // map
             [tableView deselectRowAtIndexPath:indexPath animated:YES];
             
@@ -376,7 +344,7 @@
         // data quality, do nothing
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         if (self.observation.dataQuality == ObsDataQualityNone) {
-            NSURL *dataQualityURL = [NSURL URLWithString:@"http://www.inaturalist.org/pages/help#quality"];
+            NSURL *dataQualityURL = [NSURL URLWithString:@"https://www.inaturalist.org/pages/help#quality"];
             if (dataQualityURL) {
                 [[UIApplication sharedApplication] openURL:dataQualityURL];
             }

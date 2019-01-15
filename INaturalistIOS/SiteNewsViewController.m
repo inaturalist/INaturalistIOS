@@ -6,23 +6,24 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <YLMoment/YLMoment.h>
 #import <NSString_stripHtml/NSString_stripHTML.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
+#import <RestKit/RestKit.h>
 
 #import "SiteNewsViewController.h"
 #import "NewsItem.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
-#import "User.h"
-#import "NewsitemViewController.h"
+#import "NewsItemViewController.h"
 #import "NewsItemCell.h"
 #import "Project.h"
 #import "UIColor+INaturalist.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
+#import "INatReachability.h"
 
 static UIImage *briefcase;
 
@@ -121,7 +122,7 @@ static UIImage *briefcase;
         cell.newsCategoryTitle.text = self.project.title;
         NSURL *iconURL = [NSURL URLWithString:self.project.iconURL];
         if (iconURL) {
-            [cell.newsCategoryImageView sd_setImageWithURL:iconURL];
+            [cell.newsCategoryImageView setImageWithURL:iconURL];
         } else {
             cell.newsCategoryImageView.image = briefcase;
         }
@@ -129,7 +130,7 @@ static UIImage *briefcase;
         cell.newsCategoryTitle.text = newsItem.parentTitleText;
         NSURL *iconURL = [NSURL URLWithString:newsItem.parentIconUrl];
         if (iconURL) {
-            [cell.newsCategoryImageView sd_setImageWithURL:iconURL];
+            [cell.newsCategoryImageView setImageWithURL:iconURL];
         } else {
             cell.newsCategoryImageView.image = briefcase;
         }
@@ -137,7 +138,7 @@ static UIImage *briefcase;
     
     NSURL *coverImageURL = [NSURL URLWithString:newsItem.postCoverImageUrl];
     if (coverImageURL) {
-        [cell.postImageView sd_setImageWithURL:coverImageURL];
+        [cell.postImageView setImageWithURL:coverImageURL];
         [cell showPostImageView:YES];
     } else {
         [cell showPostImageView:NO];
@@ -180,7 +181,7 @@ static UIImage *briefcase;
 - (void)loadNewNews {
     
     // silently do nothing if we're offline
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         return;
     }
     
@@ -204,7 +205,7 @@ static UIImage *briefcase;
 - (void)loadOldNews {
     
     // silently do nothing if we're offline
-    if (![[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
         return;
     }
     

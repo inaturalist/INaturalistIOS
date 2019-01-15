@@ -10,8 +10,9 @@
 
 @interface UIImage (INaturalist)
 
-+ (instancetype) inat_defaultProjectImage;
-+ (instancetype) inat_defaultGuideImage;
-+ (instancetype) inat_defaultUserImage;
++ (instancetype)inat_defaultProjectImage;
++ (instancetype)inat_defaultGuideImage;
++ (instancetype)inat_defaultUserImage;
 
+- (NSData *)inat_JPEGDataRepresentationWithMetadata:(NSDictionary *)metadata;
 @end

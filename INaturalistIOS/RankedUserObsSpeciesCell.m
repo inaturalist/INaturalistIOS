@@ -6,7 +6,7 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 
 #import "RankedUserObsSpeciesCell.h"
 
@@ -29,8 +29,10 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     self.userImageView.image = nil;
-    [self.userImageView sd_cancelCurrentImageLoad];
+    [self.userImageView cancelImageDownloadTask];
     
     self.observationsCountLabel.text = @"";
     self.speciesCountLabel.text = @"";

@@ -6,7 +6,7 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "SpeciesCountCell.h"
@@ -27,10 +27,12 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     self.countLabel.text = @"";
     self.taxonNameLabel.text = @"";
     self.taxonImageView.image = nil;
-    [self.taxonImageView sd_cancelCurrentImageLoad];
+    [self.taxonImageView cancelImageDownloadTask];
 }
 
 @end

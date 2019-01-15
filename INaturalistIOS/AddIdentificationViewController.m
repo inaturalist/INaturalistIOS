@@ -10,18 +10,24 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <UIImageView+WebCache.h>
+#import <UIView+WebCache.h>
 
 #import "AddIdentificationViewController.h"
 #import "Observation.h"
 #import "ImageStore.h"
 #import "TaxonPhoto.h"
 #import "Analytics.h"
+#import "TextViewCell.h"
+#import "ObsDetailTaxonCell.h"
+#import "INaturalistAppDelegate.h"
+#import "LoginController.h"
+#import "IdentificationsAPI.h"
 
-@interface AddIdentificationViewController () <RKRequestDelegate> {
+@interface AddIdentificationViewController () <RKRequestDelegate, UITextViewDelegate> {
     BOOL viewHasPresented;
 }
-@property (weak, nonatomic) IBOutlet UITextField *speciesGuessTextField;
-@property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
+@property BOOL taxonViaVision;
+@property (copy) NSString *comment;
 
 - (IBAction)cancelAction:(id)sender;
 - (IBAction)saveAction:(id)sender;
@@ -30,6 +36,15 @@
 @end
 
 @implementation AddIdentificationViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    [self.tableView registerNib:[UINib nibWithNibName:@"TaxonCell" bundle:nil]
+         forCellReuseIdentifier:@"taxonFromNib"];
+    [self.tableView registerClass:[TextViewCell class]
+           forCellReuseIdentifier:@"textViewCell"];
+}
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -54,12 +69,8 @@
     if ([segue.identifier isEqualToString:@"IdentificationTaxaSearchSegue"]) {
         TaxaSearchViewController *vc = (TaxaSearchViewController *)[segue.destinationViewController topViewController];
         [vc setDelegate:self];
-        //vc.query = self.observation.speciesGuess;
+        vc.observationToClassify = self.observation;
     }
-}
-
-- (void)dealloc {
-    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 - (IBAction)cancelAction:(id)sender {
@@ -69,7 +80,7 @@
 - (IBAction)saveAction:(id)sender {
     
     BOOL inputValidated = YES;
-    NSString *alertMsg;
+    NSString *alertMsg = nil;
     
     if (!self.observation || ![self.observation inatRecordId]) {
         inputValidated = NO;
@@ -86,6 +97,7 @@
         if (!alertMsg) {
             alertMsg = NSLocalizedString(@"Unknown error while making an identification.", @"Unknown error");
         }
+        
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
                                                                        message:alertMsg
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -97,90 +109,121 @@
         return;
     }
     
-    NSDictionary *params = @{
-                             @"identification[body]": self.descriptionTextView.text,
-                             @"identification[observation_id]": @([self.observation inatRecordId]),
-                             @"identification[taxon_id]": @([self.taxon taxonId])
-                             };
-    [[Analytics sharedClient] debugLog:@"Network - Add Identification"];
+    IdentificationsAPI *api = [[IdentificationsAPI alloc] init];
+    __weak typeof(self) weakSelf = self;
     
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    hud.labelText = NSLocalizedString(@"Saving...",nil);
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
-    
-    [[RKClient sharedClient] post:@"/identifications" params:params delegate:self];
+    hud.labelText = NSLocalizedString(@"Saving...", nil);
+
+    [api addIdentificationTaxonId:weakSelf.taxon.taxonId
+                    observationId:weakSelf.observation.inatRecordId
+                             body:weakSelf.comment ?: nil
+                           vision:self.taxonViaVision
+                          handler:^(NSArray *results, NSInteger count, NSError *error) {
+                              if (weakSelf.navigationController.view) {
+                                  [MBProgressHUD hideAllHUDsForView:weakSelf.navigationController.view animated:YES];
+                              }
+                              
+                              if (error) {
+                                  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                                                                                 message:error.localizedDescription
+                                                                                          preferredStyle:UIAlertControllerStyleAlert];
+                                  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                            style:UIAlertActionStyleCancel
+                                                                          handler:nil]];
+                                  [weakSelf presentViewController:alert animated:YES completion:nil];
+                              } else {
+                                  [weakSelf.navigationController popViewControllerAnimated:YES];
+                              }
+                          }];
 }
 
 - (IBAction)clickedSpeciesButton:(id)sender {
     if (self.taxon) {
         self.taxon = nil;
-        [self taxonToUI];
+        [self.tableView reloadData];
     } else {
         [self performSegueWithIdentifier:@"IdentificationTaxaSearchSegue" sender:nil];
     }
 }
 
-- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
-    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-    
-    if (response.statusCode == 200) {
-        [self.navigationController popViewControllerAnimated:YES];
+- (void)textViewDidChange:(UITextView *)textView {
+    self.comment = textView.text;
+}
+
+
+#pragma mark - UITableViewDataSource & Delegate
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 2;
+}
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 1;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if (section == 0) {
+        return NSLocalizedString(@"Identification Taxon", @"Title for taxon section when adding an ID");
     } else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                                                                       message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding ID")
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
+        return NSLocalizedString(@"Tell Us Why", @"Title for description/comment when adding an ID");
     }
 }
 
-- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
-    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-    
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                                                                   message:error.localizedDescription
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                              style:UIAlertActionStyleCancel
-                                            handler:nil]];
-    [self presentViewController:alert animated:YES completion:nil];
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0) {
+        ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
+        if (self.taxon) {
+            if (self.taxon.photoUrl) {
+                [cell.taxonImageView sd_setImageWithURL:self.taxon.photoUrl];
+            } else {
+                [cell.taxonImageView setImage:[[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName]];
+            }
+            cell.taxonNameLabel.text = self.taxon.commonName;
+            cell.taxonSecondaryNameLabel.text = self.taxon.scientificName;
+        } else {
+            [cell.taxonImageView setImage:[[ImageStore sharedImageStore] iconicTaxonImageForName:@"unknown"]];
+            cell.taxonNameLabel.text = NSLocalizedString(@"Unknown", nil);
+            cell.taxonSecondaryNameLabel.text = nil;
+        }
+        return cell;
+    } else {
+        TextViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"textViewCell"];
+        cell.textView.text = self.comment;
+        cell.textView.delegate = self;
+        return cell;
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0) {
+        return 55;
+    } else {
+        return 105;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 0) {
+        // begin taxon search (again, presumably)
+        [self performSegueWithIdentifier:@"IdentificationTaxaSearchSegue" sender:nil];
+    }
 }
 
 #pragma mark - TaxaSearchViewControllerDelegate
-- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon
+- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon chosenViaVision:(BOOL)visionFlag
 {
     [self dismissViewControllerAnimated:YES completion:nil];
     self.taxon = taxon;
-    [self taxonToUI];
+    self.taxonViaVision = visionFlag;
+    self.comment = nil;
+    [self.tableView reloadData];
 }
 
-- (void)taxonToUI
-{
-    [self.speciesGuessTextField setText:self.taxon.commonName ?: self.taxon.scientificName];
-    
-    UITableViewCell *speciesCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    UIImageView *img = (UIImageView *)[speciesCell viewWithTag:1];
-    UIButton *rightButton = (UIButton *)[speciesCell viewWithTag:3];
-    img.layer.cornerRadius = 5.0f;
-    img.clipsToBounds = YES;
-    [img sd_cancelCurrentImageLoad];
-    
-    if (self.taxon) {
-        img.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName];
-        if ([self.taxon photoUrl]) {
-            [img sd_setImageWithURL:[self.taxon photoUrl]
-                   placeholderImage:[[ImageStore sharedImageStore] iconicTaxonImageForName:self.taxon.iconicTaxonName]];
-        }
-        self.speciesGuessTextField.enabled = NO;
-        rightButton.imageView.image = [UIImage imageNamed:@"298-circlex"];
-    } else {
-        rightButton.imageView.image = [UIImage imageNamed:@"06-magnify"];
-        self.speciesGuessTextField.enabled = YES;
-        self.speciesGuessTextField.textColor = [UIColor blackColor];
-    }
+- (void)taxaSearchViewControllerCancelled {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

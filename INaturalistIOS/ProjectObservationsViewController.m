@@ -6,10 +6,11 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <SDWebImage/UIImageView+WebCache.h>
+#import <AFNetworking/UIImageView+AFNetworking.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <ActionSheetPicker-3.0/ActionSheetPicker.h>
 #import <FontAwesomeKit/FAKIonicons.h>
+#import <RestKit/RestKit.h>
 
 #import "ProjectObservationsViewController.h"
 #import "ProjectObservationHeaderView.h"
@@ -28,8 +29,10 @@
 #import "Taxon.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
-#import "User.h"
 #import "ExploreTaxonRealm.h"
+#import "INatReachability.h"
+#import "ExploreUserRealm.h"
+#import "UIColor+INaturalist.h"
 
 static NSString *SimpleFieldIdentifier = @"simple";
 static NSString *LongTextFieldIdentifier = @"longtext";
@@ -47,10 +50,19 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 
 @implementation ProjectObservationsViewController
 
+- (NSArray *)joinedProjectSortDescriptors {
+    return @[
+             [NSSortDescriptor sortDescriptorWithKey:@"isNewStyleProject" ascending:YES],
+             [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES],
+             ];
+}
+
 #pragma mark - UIViewController lifecycle
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.joinedProjects = [self.joinedProjects sortedArrayUsingDescriptors:[self joinedProjectSortDescriptors]];
     
     if (self.isReadOnly) {
         self.title = NSLocalizedString(@"Projects", nil);
@@ -75,10 +87,10 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     [self.tableView registerClass:[ObsFieldSimpleValueCell class] forCellReuseIdentifier:SimpleFieldIdentifier];
     [self.tableView registerClass:[ObsFieldLongTextValueCell class] forCellReuseIdentifier:LongTextFieldIdentifier];
     
-    if ([[[RKClient sharedClient] reachabilityObserver] isNetworkReachable]) {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         if ([appDelegate.loginController isLoggedIn]) {
-        	User *me = [appDelegate.loginController fetchMe];
+            ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
 	        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     	    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
         	NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
@@ -180,13 +192,12 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         ProjectObservationField *pof = [project sortedProjectObservationFields][indexPath.item];
         ObservationField *field = pof.observationField;
         
-        NSSet *ofvs = [field.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL *stop) {
-            return [ofv.observation isEqual:self.observation];
-        }];
-        if (ofvs.count > 0) {
-            ObservationFieldValue *ofv = ofvs.anyObject;
-            ofv.value = [self currentValueForIndexPath:indexPath];
-            ofv.localUpdatedAt = [NSDate date];
+        ObservationFieldValue *ofv = [self.observation valueWithObservationFieldId:pof.observationFieldID.integerValue];
+        if (ofv) {
+            if (![ofv.value isEqualToString:[self currentValueForIndexPath:indexPath]]) {
+                ofv.value = [self currentValueForIndexPath:indexPath];
+                ofv.localUpdatedAt = [NSDate date];
+            }
         } else {
             ObservationFieldValue *ofv = [ObservationFieldValue object];
             ofv.observationField = field;
@@ -251,7 +262,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 
 #pragma mark - TaxaSearchViewControllerDelegate
 
-- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon {
+- (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon chosenViaVision:(BOOL)visionFlag {
     [self.navigationController popToViewController:self animated:YES];
     
     if (!self.taxaSearchIndexPath) { return; }
@@ -259,14 +270,9 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     Project *project = [self projectForSection:self.taxaSearchIndexPath.section];
     ProjectObservationField *field = [project sortedProjectObservationFields][self.taxaSearchIndexPath.item];
     
-    NSSet *ofvs = [field.observationField.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL *stop) {
-        return [ofv.observation isEqual:self.observation];
-    }];
-    
-    if (ofvs.count > 0) {
-        // pick one?
-        ObservationFieldValue *ofv = ofvs.anyObject;
-        ofv.value = [NSString stringWithFormat:@"%ld", taxon.taxonId];
+    ObservationFieldValue *ofv = [self.observation valueWithObservationFieldId:field.observationFieldID.integerValue];
+    if (ofv) {
+        ofv.value = [NSString stringWithFormat:@"%ld", (long)taxon.taxonId];
         ofv.localUpdatedAt = [NSDate date];
     }
     
@@ -279,13 +285,17 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     [self saveVisibleObservationFieldValues];
 }
 
+- (void)taxaSearchViewControllerCancelled {
+    [self.navigationController popToViewController:self animated:YES];
+}
+
 #pragma mark - UITableView delegate & datasource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     Project *project = [self projectForSection:indexPath.section];
     ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
     
-    if ([field.observationField.datatype isEqualToString:@"text"]) {
+    if ([[ProjectObservationField textFieldDataTypes] containsObject:field.observationField.datatype]) {
         if (field.observationField.allowedValuesArray.count > 1) {
             ObsFieldSimpleValueCell *cell = [tableView dequeueReusableCellWithIdentifier:SimpleFieldIdentifier];
             [self configureSimpleCell:cell forObsField:field];
@@ -323,28 +333,32 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     BOOL projectIsSelected = [self projectIsSelected:project];
     
     CGFloat height = [self tableView:tableView heightForHeaderInSection:section];
-    ProjectObservationHeaderView *header = [[ProjectObservationHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.bounds.size.width, height)];
+    
+    UINib *nib = [UINib nibWithNibName:@"ProjectObservationHeaderView" bundle:[NSBundle mainBundle]];
+    ProjectObservationHeaderView *header = [[nib instantiateWithOwner:nil options:nil] firstObject];
+    header.frame = CGRectMake(0, 0, tableView.bounds.size.width, height);
     header.projectTitleLabel.text = project.title;
-
+    header.projectTypeLabel.text = [project titleForTypeOfProject];
+    
     if (self.isReadOnly) {
-        // not showing this yet
-        header.infoButton.hidden = YES;
-        header.infoButton.tag = section;
-        
         header.selectedSwitch.hidden = YES;
+        header.backgroundColor = [UIColor whiteColor];
+    } else if ([project isNewStyleProject]) {
+        header.selectedSwitch.hidden = YES;
+        header.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.2];
     } else {
-        header.infoButton.hidden = YES;
         header.selectedSwitch.hidden = NO;
         [header.selectedSwitch setOn:projectIsSelected animated:NO];
         header.selectedSwitch.tag = section;
         [header.selectedSwitch addTarget:self action:@selector(selectedChanged:) forControlEvents:UIControlEventValueChanged];
+        header.backgroundColor = [UIColor whiteColor];
     }
     
     NSURL *url = [NSURL URLWithString:project.iconURL];
     if (url) {
         header.projectThumbnailImageView.backgroundColor = [UIColor clearColor];
         header.projectThumbnailImageView.contentMode = UIViewContentModeScaleAspectFill;
-        [header.projectThumbnailImageView sd_setImageWithURL:url];
+        [header.projectThumbnailImageView setImageWithURL:url];
     } else {
         // use standard projects icon
         header.projectThumbnailImageView.backgroundColor = [UIColor colorWithHexString:@"#cccccc"];
@@ -359,21 +373,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    Project *project = [self projectForSection:section];
-    
-    CGFloat baseHeight = 44;
-    NSDictionary *attrs = @{
-                            NSFontAttributeName: [UIFont systemFontOfSize:14],
-                            };
-    CGRect titleBoundingRect = [project.title boundingRectWithSize:CGSizeMake(199, CGFLOAT_MAX)
-                                                           options:NSStringDrawingUsesLineFragmentOrigin
-                                                        attributes:attrs
-                                                           context:nil];
-    if (titleBoundingRect.size.height > 18) {
-        baseHeight += 3;
-    }
-    
-    return baseHeight;
+    return 55;
 }
 
 
@@ -384,7 +384,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     UIFont *fieldFont = field.required ? [UIFont boldSystemFontOfSize:17] : [UIFont systemFontOfSize:17];
 
     
-    if ([field.observationField.datatype isEqualToString:@"text"] && field.observationField.allowedValuesArray.count == 1) {
+    if ([[ProjectObservationField textFieldDataTypes] containsObject:field.observationField.datatype] && field.observationField.allowedValuesArray.count == 1) {
         return [self heightForLongTextProjectField:field inTableView:tableView font:fieldFont];
     } else {
         return [self heightForSimpleProjectField:field inTableView:tableView font:fieldFont];
@@ -399,6 +399,10 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         return 0;
     }
     Project *project = [self projectForSection:section];
+    if ([project isNewStyleProject]) {
+        // only show new style projects in readonly mode
+        return 0;
+    }
     if ([self projectIsSelected:project]) {
         return project.projectObservationFields.count;
     } else {
@@ -421,6 +425,11 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     }
     
     Project *project = [self projectForSection:indexPath.section];
+    if ([project isNewStyleProject]) {
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        return;
+    }
+    
     ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
     NSArray *values = field.observationField.allowedValuesArray;
     NSInteger initialSelection = 0;
@@ -429,7 +438,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         initialSelection = [values indexOfObject:ofv.value];
     }
     
-    if ([field.observationField.datatype isEqualToString:@"text"] && field.observationField.allowedValuesArray.count > 1) {
+    if ([[ProjectObservationField textFieldDataTypes] containsObject:field.observationField.datatype] && field.observationField.allowedValuesArray.count > 1) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         
         ProjectObsFieldViewController *pofVC = [[ProjectObsFieldViewController alloc] initWithNibName:nil bundle:nil];
@@ -440,7 +449,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 
         [self.navigationController pushViewController:pofVC animated:YES];
 
-    } else if ([field.observationField.datatype isEqualToString:@"text"]) {
+    } else if ([[ProjectObservationField textFieldDataTypes] containsObject:field.observationField.datatype]) {
         // free text
         
         // deselect
@@ -464,7 +473,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         cell.valueLabel.hidden = YES;
         
         UITextField *tf = [[UITextField alloc] initWithFrame:cell.valueLabel.frame];
-        tf.keyboardType = UIKeyboardTypeNumberPad;
+        tf.keyboardType = UIKeyboardTypeDecimalPad;
         tf.textAlignment = NSTextAlignmentRight;
         tf.returnKeyType = UIReturnKeyDone;
         tf.text = cell.valueLabel.text;
@@ -483,7 +492,10 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         TaxaSearchViewController *search = [storyboard instantiateViewControllerWithIdentifier:@"TaxaSearchViewController"];
         search.hidesDoneButton = YES;
         search.delegate = self;
-        search.query = self.observation.speciesGuess;
+        // only prime the query if there's a placeholder, not a taxon)
+        if (self.observation.speciesGuess && ! self.observation.taxon) {
+            search.query = self.observation.speciesGuess;
+        }
         [self.navigationController pushViewController:search animated:YES];
         
         // stash the selected index path so we know what ofv to update
@@ -602,14 +614,8 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         cell.fieldLabel.font = [UIFont systemFontOfSize:cell.fieldLabel.font.pointSize];
     }
     
-    
-    NSSet *ofvs = [self.observation.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL *stop) {
-        return [ofv.observationField.recordID isEqual:field.observationField.recordID];
-    }];
-    
-    if (ofvs.count > 0) {
-        // pick one?
-        ObservationFieldValue *ofv = ofvs.anyObject;
+    ObservationFieldValue *ofv = [self.observation valueWithObservationFieldId:field.observationFieldID.integerValue];
+    if (ofv) {
         if ([field.observationField.datatype isEqualToString:@"taxon"]) {
             ExploreTaxonRealm *etr = [ExploreTaxonRealm objectForPrimaryKey:@(ofv.value.integerValue)];
             if (etr) {
@@ -641,13 +647,8 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 
     cell.textField.delegate = self;
     
-    NSSet *ofvs = [field.observationField.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL *stop) {
-        return [ofv.observation isEqual:self.observation];
-    }];
-    
-    if (ofvs.count > 0) {
-        // pick one?
-        ObservationFieldValue *ofv = ofvs.anyObject;
+    ObservationFieldValue *ofv = [self.observation valueWithObservationFieldId:field.observationFieldID.integerValue];
+    if (ofv) {
         cell.textField.text = ofv.value ?: ofv.defaultValue;
     } else {
         cell.textField.text = nil;
@@ -772,10 +773,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         [projects addObject:pu.project];
     }];
     
-    self.joinedProjects = [projects sortedArrayUsingComparator:^NSComparisonResult(Project *p1, Project *p2) {
-        return [p1.title compare:p2.title];
-    }];
-    
+    self.joinedProjects = [projects sortedArrayUsingDescriptors:[self joinedProjectSortDescriptors]];
     [self.tableView reloadData];
 }
 

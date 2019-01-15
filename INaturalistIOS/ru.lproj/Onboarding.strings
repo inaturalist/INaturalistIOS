@@ -1,0 +1,65 @@
+/* Class = "UILabel"; text = "Observe"; ObjectID = "0HC-89-zFL"; */
+"0HC-89-zFL.text" = "Наблюдать";
+
+/* Class = "UITextField"; placeholder = "Email"; ObjectID = "2e2-wM-KPk"; */
+"2e2-wM-KPk.placeholder" = "Электронная почта";
+
+/* Class = "UILabel"; text = "Discuss"; ObjectID = "2hB-WM-pN1"; */
+"2hB-WM-pN1.text" = "Обсудить";
+
+/* Class = "UILabel"; text = "Or Log in with:"; ObjectID = "Bfj-77-C1k"; */
+"Bfj-77-C1k.text" = "Или войдите через:";
+
+/* Class = "UITextField"; placeholder = "Password"; ObjectID = "FZ5-km-oDo"; */
+"FZ5-km-oDo.placeholder" = "Пароль";
+
+/* Class = "UIButton"; normalTitle = "Skip >"; ObjectID = "J6N-uD-ctb"; */
+"J6N-uD-ctb.normalTitle" = "Пропустить >";
+
+/* Class = "UIButton"; normalTitle = "Sign Up"; ObjectID = "LVz-7N-QYA"; */
+"LVz-7N-QYA.normalTitle" = "Регистрация";
+
+/* Class = "UIButton"; normalTitle = "X"; ObjectID = "MC0-kW-bph"; */
+"MC0-kW-bph.normalTitle" = "X";
+
+/* Class = "UILabel"; text = "iNaturalist will automatically generate suggestions based on your photo and location."; ObjectID = "Nb8-x2-D2v"; */
+"Nb8-x2-D2v.text" = "iNaturalist будет автоматически генерировать предложения, основанные на ваших фото и местоположении.";
+
+/* Class = "UILabel"; text = "Explore and Connect with Nature"; ObjectID = "RqF-E7-mYe"; */
+"RqF-E7-mYe.text" = "Исследуйте и соединитесь с природой";
+
+/* Class = "UILabel"; text = "Swipe >"; ObjectID = "L6Y-1o-yPc"; */
+"L6Y-1o-yPc.text" = "Смахните >";
+
+/* Class = "UILabel"; text = "Get outside and observe an individual organism. Pick something wild, and take a clear, full frame photo."; ObjectID = "XWS-dF-hpb"; */
+"XWS-dF-hpb.text" = "Выйдите на улицу и наблюдайте за индивидуальным организмом. Выберите что-нибудь дикое и сделайте четкие полнокадровые фото.";
+
+/* Class = "UILabel"; text = "By using iNaturalist you agree to the Terms of Service and Privacy Policy"; ObjectID = "YtY-We-SSc"; */
+"YtY-We-SSc.text" = "Используя iNaturalist, вы соглашаетесь с Условиями использования и Политикой Конфиденциальности";
+
+/* Class = "UITextField"; placeholder = "Username"; ObjectID = "dSw-gs-zGG"; */
+"dSw-gs-zGG.placeholder" = "Имя пользователя";
+
+/* Class = "UILabel"; text = "Share your observation with the community to discuss and confirm your findings."; ObjectID = "ixn-0U-lJ7"; */
+"ixn-0U-lJ7.text" = "Делитесь вашими наблюдениями с сообществом, чтобы обсудить и подтвердить ваши выводы.";
+
+/* Class = "UILabel"; text = "Your observation may be vetted as Research Grade and shared with scientists working to better understand and protect nature. "; ObjectID = "oro-uB-RY1"; */
+"oro-uB-RY1.text" = "Ваши наблюдения могут быть проверены на соответствие Research Grade (класс исследований) и доведены до сведения ученых, работающими над тем, чтобы лучше понять и защитить природу. ";
+
+/* Class = "UILabel"; text = "Sign Up"; ObjectID = "pbQ-o3-5Xy"; */
+"pbQ-o3-5Xy.text" = "Зарегистироваться";
+
+/* Class = "UILabel"; text = "Contribute"; ObjectID = "sBd-1Y-eNL"; */
+"sBd-1Y-eNL.text" = "Внести вклад";
+
+/* Class = "UIButton"; normalTitle = "Already have an account?"; ObjectID = "uop-S8-3lF"; */
+"uop-S8-3lF.normalTitle" = "Уже зарегистрированы?";
+
+/* Class = "UILabel"; text = "Identify"; ObjectID = "vCH-CP-6hM"; */
+"vCH-CP-6hM.text" = "Идентифицировать";
+
+/* Class = "UILabel"; text = "Yes, license my content so scientists can use my data! Learn More"; ObjectID = "xUc-8o-XIN"; */
+"xUc-8o-XIN.text" = "Да, лицензия моего контента такова, что ученые могут использовать мои данные! Подробнее";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "yxB-jO-b09"; */
+"yxB-jO-b09.normalTitle" = "Кнопка";

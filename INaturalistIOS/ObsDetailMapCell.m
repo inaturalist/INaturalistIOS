@@ -26,11 +26,6 @@
         
         noLocation.attributedString;
     });
-    
-    // ios8 and later
-    if ([self.mapView respondsToSelector:@selector(setLayoutMargins:)]) {
-        [self.mapView setLayoutMargins:UIEdgeInsetsMake(30, 30, 45, 50)];
-    }
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -40,6 +35,8 @@
 }
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     self.locationNameLabel.text = nil;
     self.mapView.hidden = NO;
     self.noLocationLabel.hidden = YES;
