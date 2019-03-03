@@ -25,7 +25,7 @@ Check out our [Roadmap](https://github.com/inaturalist/INaturalistIOS/wiki/Roadm
 Getting Help
 ------------
 
-Did you find this repository while searching for a solution to a problem with INaturalistIOS? Consider first checking in with the iNaturalist [Google Group](https://groups.google.com/forum/#!forum/inaturalist) to see if other users are reporting issues or to ask a question. If you're pretty sure there is a technical issue to raise, [submit an issue](https://github.com/inaturalist/INaturalistIOS/issues). A "good" issue is one that is:
+Did you find this repository while searching for a solution to a problem with INaturalistIOS? Consider first checking in with the iNaturalist [Forum](https://forum.inaturalist.org) to see if other users are reporting issues or to ask a question. If you're pretty sure there is a technical issue to raise, [submit an issue](https://github.com/inaturalist/INaturalistIOS/issues). A "good" issue is one that is:
 
 - Reproducible, by you and others;
 - Well-described, including:
