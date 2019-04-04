@@ -636,7 +636,7 @@ static const int ChangePartnerMinimumInterval = 86400;
 
 
 - (void)presentPartnerChangeAlertForPartner:(Partner *)partner {
-    NSString *baseConfirmText = NSLocalizedString(@"%@ is a member of the iNaturalist Network in %@. Local institutions supporting %@ will have access to your email address and access to the true coordinates for observations that are publicly obscured or private. Would you like to change your affiliation?", @"confirmation alert text when changing a users network affiliation.");
+    NSString *baseConfirmText = NSLocalizedString(@"%1%@ is a member of the iNaturalist Network in %2%@. Local institutions supporting %3%@ will have access to your email address and access to the true coordinates for observations that are publicly obscured or private. Would you like to change your affiliation?", @"confirmation alert text when changing a users network affiliation. %1%@ is network name, %2%@ is the country, %3%@ is the network name again");
     NSString *confirmMsg = [NSString stringWithFormat:baseConfirmText,
                             partner.name, partner.countryName, partner.name];
     
