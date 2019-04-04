@@ -3,6 +3,24 @@
 <plist version="1.0">
 <array>
 	<dict>
+		<key>logoName</key>
+		<string>network_logo_pa</string>
+		<key>countryName</key>
+		<string>Panamá</string>
+		<key>identifier</key>
+		<string>13</string>
+		<key>name</key>
+		<string>iNaturalist Panamá</string>
+		<key>shortName</key>
+		<string>iNaturalistPa</string>
+		<key>baseUrl</key>
+		<string>https://panama.inaturalist.org</string>
+		<key>mobileCountryCodes</key>
+		<array>
+			<string>714</string>
+		</array>
+	</dict>
+	<dict>
 		<key>countryName</key>
 		<string>Portugal</string>
 		<key>identifier</key>
