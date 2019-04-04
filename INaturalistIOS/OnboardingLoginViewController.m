@@ -533,12 +533,15 @@
     [[Analytics sharedClient] event:kAnalyticsEventPartnerAlertPresented
                      withProperties:@{ @"Partner": partner.name }];
     
-    NSString *alertTitle = [NSString stringWithFormat:NSLocalizedString(@"Use %@?",
+    NSString *alertTitle = [NSString stringWithFormat:NSLocalizedString(@"Join %@?",
                                                                         @"join iNat network partner alert title"),
                             partner.shortName];
-    NSString *alertMsgFmt = NSLocalizedString(@"Would you like to use %@, a member of the iNaturalist Network in %@? Clicking OK will localize your experience and share data accordingly.",
-                                              @"join iNat network partner alert message");
-    NSString *alertMsg = [NSString stringWithFormat:alertMsgFmt, partner.name, partner.countryName];
+    
+   
+
+    NSString *alertMsgFmt = NSLocalizedString(@"%1%@ is part of the international iNaturalist Network. Would you like to join %2%@ to localize your experience of iNaturalist and share data with local institutions?",
+                                              @"join iNat network partner alert message - %1%@ is the country name, %2%@ is partner name");
+    NSString *alertMsg = [NSString stringWithFormat:alertMsgFmt, partner.countryName, partner.name];
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
                                                                    message:alertMsg
