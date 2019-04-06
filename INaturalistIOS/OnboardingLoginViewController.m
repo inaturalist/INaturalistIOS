@@ -539,7 +539,7 @@
     
    
 
-    NSString *alertMsgFmt = NSLocalizedString(@"%1%@ is part of the international iNaturalist Network. Would you like to join %2%@ to localize your experience of iNaturalist and share data with local institutions?",
+    NSString *alertMsgFmt = NSLocalizedString(@"%@ is part of the international iNaturalist Network. Would you like to join %@ to localize your experience of iNaturalist and share data with local institutions?",
                                               @"join iNat network partner alert message - %1%@ is the country name, %2%@ is partner name");
     NSString *alertMsg = [NSString stringWithFormat:alertMsgFmt, partner.countryName, partner.name];
     
