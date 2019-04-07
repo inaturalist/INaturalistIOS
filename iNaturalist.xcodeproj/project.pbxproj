@@ -959,6 +959,13 @@
 		FACEEB271D1C607600B2EC62 /* ExploreUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreUser.m; sourceTree = "<group>"; };
 		FAD05EA21B9A911400C14085 /* TextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextViewCell.h; sourceTree = "<group>"; };
 		FAD05EA31B9A911400C14085 /* TextViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextViewCell.m; sourceTree = "<group>"; };
+		FAD35175225A7D9300E0BE6C /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ca-ES"; path = "ca-ES.lproj/MainStoryboard.strings"; sourceTree = "<group>"; };
+		FAD35176225A7D9300E0BE6C /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ca-ES"; path = "ca-ES.lproj/Onboarding.strings"; sourceTree = "<group>"; };
+		FAD35177225A7D9300E0BE6C /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ca-ES"; path = "ca-ES.lproj/Projects.strings"; sourceTree = "<group>"; };
+		FAD35178225A7D9300E0BE6C /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ca-ES"; path = "ca-ES.lproj/Activity.strings"; sourceTree = "<group>"; };
+		FAD35179225A7D9300E0BE6C /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ca-ES"; path = "ca-ES.lproj/Guides.strings"; sourceTree = "<group>"; };
+		FAD3517A225A7D9300E0BE6C /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ca-ES"; path = "ca-ES.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		FAD3517B225A7D9300E0BE6C /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ca-ES"; path = "ca-ES.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		FADD57E919FEFF2500E141C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = iNaturalist/Images.xcassets; sourceTree = "<group>"; };
 		FADD58641A00662200E141C9 /* UIFont+ExploreFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+ExploreFonts.h"; sourceTree = "<group>"; };
 		FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+ExploreFonts.m"; sourceTree = "<group>"; };
@@ -2080,6 +2087,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				es,
 				Base,
@@ -2105,6 +2113,7 @@
 				"pt-BR",
 				ro,
 				nl,
+				"ca-ES",
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -2647,6 +2656,7 @@
 				FA68C99820C094E700B5D8AC /* pt-BR */,
 				FA68C99D20C094FF00B5D8AC /* ro */,
 				FAB1FCA621405712001CE431 /* nl */,
+				FAD35175225A7D9300E0BE6C /* ca-ES */,
 			);
 			name = MainStoryboard.storyboard;
 			path = INaturalistIOS;
@@ -2678,6 +2688,7 @@
 				FA30C2F12090D882006F7629 /* cs */,
 				FA68C9A220C0950000B5D8AC /* ro */,
 				FAB1FCAB21405713001CE431 /* nl */,
+				FAD3517A225A7D9300E0BE6C /* ca-ES */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2708,6 +2719,7 @@
 				FA30C2F22090D882006F7629 /* cs */,
 				FA68C9A320C0950000B5D8AC /* ro */,
 				FAB1FCAC21405713001CE431 /* nl */,
+				FAD3517B225A7D9300E0BE6C /* ca-ES */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2740,6 +2752,7 @@
 				FA68C99A20C094E800B5D8AC /* pt-BR */,
 				FA68C99F20C0950000B5D8AC /* ro */,
 				FAB1FCA821405713001CE431 /* nl */,
+				FAD35177225A7D9300E0BE6C /* ca-ES */,
 			);
 			name = Projects.storyboard;
 			path = INaturalistIOS;
@@ -2749,6 +2762,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				FA399AAD1DDBDC73007ABD3E /* Base */,
+				FAD35178225A7D9300E0BE6C /* ca-ES */,
 			);
 			name = Activity.storyboard;
 			path = INaturalistIOS;
@@ -2782,6 +2796,7 @@
 				FA68C99C20C094E800B5D8AC /* pt-BR */,
 				FA68C9A120C0950000B5D8AC /* ro */,
 				FAB1FCAA21405713001CE431 /* nl */,
+				FAD35179225A7D9300E0BE6C /* ca-ES */,
 			);
 			name = Guides.storyboard;
 			path = INaturalistIOS;
@@ -2815,6 +2830,7 @@
 				FA68C99920C094E700B5D8AC /* pt-BR */,
 				FA68C99E20C094FF00B5D8AC /* ro */,
 				FAB1FCA721405713001CE431 /* nl */,
+				FAD35176225A7D9300E0BE6C /* ca-ES */,
 			);
 			name = Onboarding.storyboard;
 			path = INaturalistIOS;
