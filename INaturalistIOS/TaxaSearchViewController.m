@@ -35,8 +35,6 @@
 #import "ExploreUser.h"
 #import "UIImage+INaturalist.h"
 
-#define MIN_CHARS_TAXA_SEARCH 3
-
 @interface TaxaSearchViewController () <UISearchResultsUpdating, UISearchControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 @property UISearchController *searchController;
 @property RLMResults <ExploreTaxonRealm *> *searchResults;
@@ -111,6 +109,18 @@
     return _api;
 }
 
+// https://stackoverflow.com/a/31245380/3796488
+- (BOOL)shouldQueryAPI {
+    // ex. "櫻花" means "cherry blossom" in Chinese.
+    NSInteger minCharsTaxaSearch = 3;
+    BOOL isHan = ([self.searchController.searchBar.text rangeOfString:@"\\p{Han}" options:NSRegularExpressionSearch].location != NSNotFound);
+    if (isHan) {
+        minCharsTaxaSearch = 1;
+    }
+    BOOL hasEnoughChars = (self.searchController.searchBar.text.length >= minCharsTaxaSearch);
+    return hasEnoughChars;
+}
+
 - (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
     if (self.showingSuggestions) {
         return;
@@ -123,7 +133,7 @@
     });
     
     // don't bother querying api until the user has entered a reasonable amount of text
-    if (searchController.searchBar.text.length < MIN_CHARS_TAXA_SEARCH) {
+    if (![self shouldQueryAPI]) {
         self.searchResults = nil;
         [self.tableView reloadData];
         return;
@@ -579,7 +589,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if ([self showingSuggestions]) {
         return self.commonAncestor ? 2 : 1;
-    } else if (self.searchController.searchBar.text.length >= MIN_CHARS_TAXA_SEARCH) {
+    } else if ([self shouldQueryAPI]) {
         return self.allowsFreeTextSelection ? 2 : 1;
     } else if (self.scores.count > 0) {
         if (self.commonAncestor) {
@@ -608,13 +618,13 @@
         }
     } else {
         if (self.allowsFreeTextSelection) {
-            if (self.searchController.searchBar.text.length >= MIN_CHARS_TAXA_SEARCH && section == 0) {
+            if ([self shouldQueryAPI] && section == 0) {
                 if (self.searchResults.count > 0) {
                     return @"iNaturalist";
                 } else {
                     return NSLocalizedString(@"No iNaturalist Results", nil);
                 }
-            } else if (self.searchController.searchBar.text.length >= MIN_CHARS_TAXA_SEARCH && section == 1) {
+            } else if ([self shouldQueryAPI] && section == 1) {
                 return NSLocalizedString(@"Placeholder", nil);
             }
         }
@@ -636,7 +646,7 @@
         }
     } else {
         if (self.allowsFreeTextSelection) {
-            if (self.searchController.searchBar.text.length >= MIN_CHARS_TAXA_SEARCH) {
+            if ([self shouldQueryAPI]) {
                 if (section == 0) {
                     return self.searchResults.count;
                 } else {
@@ -646,7 +656,7 @@
                 return 0;
             }
         } else {
-            if (self.searchController.searchBar.text.length >= MIN_CHARS_TAXA_SEARCH) {
+            if ([self shouldQueryAPI]) {
                 return self.searchResults.count;
             } else {
                 return 0;
