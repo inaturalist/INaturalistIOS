@@ -377,6 +377,15 @@ static const int ChangePartnerMinimumInterval = 86400;
 
 - (void)localSignOut
 {
+    // clear preference cached signin info & preferences
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:INatUsernamePrefKey];
+    [defaults removeObjectForKey:kINatUserIdPrefKey];
+    [defaults removeObjectForKey:INatPasswordPrefKey];
+    [defaults removeObjectForKey:INatTokenPrefKey];
+    [defaults removeObjectForKey:kInatCustomBaseURLStringKey];
+    [defaults synchronize];
+    
     // clear google signin
     if ([[GIDSignIn sharedInstance] hasAuthInKeychain]) {
         [[GIDSignIn sharedInstance] signOut];
@@ -392,15 +401,6 @@ static const int ChangePartnerMinimumInterval = 86400;
     for (NXOAuth2Account *account in [[NXOAuth2AccountStore sharedStore] accounts]) {
         [[NXOAuth2AccountStore sharedStore] removeAccount:account];
     }
-    
-    // clear preference cached signin info & preferences
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults removeObjectForKey:INatUsernamePrefKey];
-    [defaults removeObjectForKey:kINatUserIdPrefKey];
-    [defaults removeObjectForKey:INatPasswordPrefKey];
-    [defaults removeObjectForKey:INatTokenPrefKey];
-    [defaults removeObjectForKey:kInatCustomBaseURLStringKey];
-    [defaults synchronize];
     
     // clear cached RKClient authentication details
     [RKClient.sharedClient setUsername:nil];
