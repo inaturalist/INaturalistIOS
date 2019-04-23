@@ -364,7 +364,6 @@
     [ProjectObservation deleteAll];
     [NewsItem deleteAll];
     [ObservationFieldValue deleteAll];
-    [User deleteAll];
     
     for (DeletedRecord *dr in [DeletedRecord allObjects]) {
         [dr deleteEntity];
