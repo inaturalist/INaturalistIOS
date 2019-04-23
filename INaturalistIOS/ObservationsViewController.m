@@ -1502,6 +1502,12 @@
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response
 {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (!appDelegate.loggedIn) {
+        // abandon the request
+        return;
+    }
+    
     if (response.allHeaderFields[@"X-Deleted-Observations"]) {
         NSString *deletedString = response.allHeaderFields[@"X-Deleted-Observations"];
         NSArray *recordIDs = [deletedString componentsSeparatedByString:@","];
