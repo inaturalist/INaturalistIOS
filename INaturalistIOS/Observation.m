@@ -457,24 +457,18 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     for (ObservationPhoto *op in [ObservationPhoto needingSync]) {
         if (op.observation) {
             [needingUpload addObject:op.observation];
-        } else {
-            [op destroy];
         }
     }
     
     for (ObservationFieldValue *ofv in [ObservationFieldValue needingSync]) {
         if (ofv.observation) {
             [needingUpload addObject:ofv.observation];
-        } else {
-            [ofv destroy];
         }
     }
     
     for (ProjectObservation *po in [ProjectObservation needingSync]) {
         if (po.observation) {
             [needingUpload addObject:po.observation];
-        } else {
-            [po destroy];
         }
     }
     
