@@ -1411,9 +1411,19 @@
 }
 
 #pragma mark - RKObjectLoaderDelegate
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects
-{    
+- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
 	[self.refreshControl endRefreshing];
+    
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (!appDelegate.loggedIn) {
+        // abandon everything that was loaded
+        for (INatModel *o in objects) {
+            o.syncedAt = nil;
+            [o destroy];
+        }
+        return;
+    }
+    
     NSDate *now = [NSDate date];
     for (INatModel *o in objects) {
 		if ([o isKindOfClass:[Observation class]]) {
