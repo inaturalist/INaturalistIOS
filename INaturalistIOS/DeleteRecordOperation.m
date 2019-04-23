@@ -48,6 +48,11 @@
         return;
     }
     
+    if (![dr isKindOfClass:[DeletedRecord class]]) {
+        [self markOperationCompleted];
+        return;
+    }
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.delegate deleteSessionStarted:dr];
     });
