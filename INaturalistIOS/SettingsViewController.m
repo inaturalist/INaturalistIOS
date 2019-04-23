@@ -411,12 +411,6 @@ static const int ChangePartnerMinimumInterval = 86400;
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     [appDelegate reconfigureForNewBaseUrl];
     
-    // remove OAuth account stuff
-    NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
-    for (NXOAuth2Account *account in sharedStore.accounts) {
-        [sharedStore removeAccount:account];
-    }
-    
     // clear realm
     RLMRealm *realm = [RLMRealm defaultRealm];
     [realm beginWriteTransaction];
