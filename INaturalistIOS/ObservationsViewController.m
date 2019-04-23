@@ -1430,6 +1430,8 @@
 			Observation *observation = (Observation *)o;
             DeletedRecord *dr = [DeletedRecord objectWithPredicate:[NSPredicate predicateWithFormat:@"modelName == 'Observation' AND recordID = %@", o.recordID]];
             if (dr) {
+                // already deleted locally, abandon it
+                o.syncedAt = nil;
                 [o destroy];
                 continue;
             }
