@@ -185,14 +185,6 @@
     
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
     NSArray *sortedActivity = [activity sortedArrayUsingDescriptors:@[ sortDescriptor ]];
-    /*
-    NSArray *sortedActivity = [activity sortedArrayUsingComparator:^NSComparisonResult(id <ActivityVisualization> obj1, id  <ActivityVisualization> obj2) {
-        NSDate *obj1Date = [obj1 createdAt];
-        NSDate *obj2Date = [obj2 createdAt];
-        NSLog(@"comparing %@ with %@", obj1Date, obj2Date);
-        return [obj1Date compare:obj2Date];
-    }];
-     */
     
     return sortedActivity;
 }
