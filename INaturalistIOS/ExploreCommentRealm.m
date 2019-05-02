@@ -26,4 +26,24 @@
     return @"commentId";
 }
 
+- (NSString *)body {
+    return self.commentText;
+}
+
+- (NSDate *)createdAt {
+    return self.commentedDate;
+}
+
+- (NSURL *)userIconUrl {
+    return self.commenter.userIcon;
+}
+
+- (NSInteger)userId {
+    return self.commenter.userId;
+}
+
+- (NSString *)userName {
+    return self.commenter.login;
+}
+
 @end

@@ -11,9 +11,10 @@
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <RestKit/RestKit.h>
+#import <BlocksKit/BlocksKit.h>
+#import <Realm/Realm.h>
 
 #import "ProjectDetailV2ViewController.h"
-#import "Project.h"
 #import "ProjectUser.h"
 #import "ProjectDetailPageViewController.h"
 #import "ObsDetailV2ViewController.h"
@@ -25,9 +26,10 @@
 #import "ProjectAboutViewController.h"
 #import "SiteNewsViewController.h"
 #import "UIImage+INaturalist.h"
-#import "ProjectNewsButton.h"
 #import "OnboardingLoginViewController.h"
 #import "INatReachability.h"
+#import "ProjectsAPI.h"
+#import "ExploreProjectRealm.h"
 
 // At this offset the Header stops its transformations
 // 200 is the height of the header
@@ -35,7 +37,7 @@
 // 20 is the height of the status bar
 static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 
-@interface ProjectDetailV2ViewController () <ContainedScrollViewDelegate, RKObjectLoaderDelegate>
+@interface ProjectDetailV2ViewController () <ContainedScrollViewDelegate>
 
 @property IBOutlet UIView *projectHeader;
 @property IBOutlet UILabel *projectNameLabel;
@@ -43,7 +45,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 @property IBOutlet UIImageView *projectHeaderBackground;
 
 @property IBOutlet UIButton *joinButton;
-@property IBOutlet ProjectNewsButton *newsButton;
+@property IBOutlet UIButton *newsButton;
 @property IBOutlet UIButton *aboutButton;
 
 @property IBOutlet UIView *container;
@@ -53,6 +55,15 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 @end
 
 @implementation ProjectDetailV2ViewController
+
+- (ProjectsAPI *)projectsAPI {
+    static ProjectsAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[ProjectsAPI alloc] init];
+    });
+    return _api;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -76,21 +87,19 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     self.projectThumbnail.layer.borderColor = [UIColor whiteColor].CGColor;
     self.projectThumbnail.layer.borderWidth = 1.0f;
     
-    [self.joinButton setTitle:[NSLocalizedString(@"Join", @"Join project button") uppercaseString]
+    [self.joinButton setTitle:NSLocalizedString(@"JOIN", @"Join project button")
                      forState:UIControlStateNormal];
-    self.joinButton.layer.cornerRadius = 15.0f;
-    [self.aboutButton setTitle:[NSLocalizedString(@"About", @"About project button") uppercaseString]
+    [self.aboutButton setTitle:NSLocalizedString(@"ABOUT", @"About project button")
                       forState:UIControlStateNormal];
-    self.aboutButton.layer.cornerRadius = 15.0f;
+    [self.newsButton setTitle:NSLocalizedString(@"NEWS",a @"News project button")
+                     forState:UIControlStateNormal];
+    [@[ self.joinButton, self.newsButton, self.aboutButton ] bk_each:^(UIButton *btn) {
+        btn.layer.cornerRadius = 15.0f;
+    }];
     
-    self.newsButton.newsTextLabel.text = [NSLocalizedString(@"News",a @"News project button") uppercaseString];
-    self.newsButton.layer.cornerRadius = 15.0f;
-    [self configureNewsButton];
-    
-    NSURL *projectThumbUrl = [NSURL URLWithString:self.project.iconURL];
-    if (projectThumbUrl) {
-        [self.projectThumbnail setImageWithURL:projectThumbUrl];
-        [self.projectHeaderBackground setImageWithURL:projectThumbUrl];
+    if (self.project.iconUrl) {
+        [self.projectThumbnail setImageWithURL:self.project.iconUrl];
+        [self.projectHeaderBackground setImageWithURL:self.project.iconUrl];
     } else {
         self.projectThumbnail.image = [UIImage inat_defaultProjectImage];
         self.projectThumbnail.backgroundColor = [UIColor whiteColor];
@@ -115,7 +124,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
                                                                             target:self
                                                                             action:@selector(myBack)];
     
-    self.projectUser = [ProjectUser objectWithPredicate:[NSPredicate predicateWithFormat:@"projectID = %@", self.project.recordID]];
+    self.projectUser = [ProjectUser objectWithPredicate:[NSPredicate predicateWithFormat:@"projectID = %ld", self.project.projectId]];
     
     [self.joinButton addTarget:self
                         action:@selector(joinTapped:)
@@ -158,28 +167,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    // re-fetch the project to make sure we're getting an updated news item count
-    NSString *path = [NSString stringWithFormat:@"/projects/%ld.json", (long)self.project.recordID.integerValue];
-    __weak typeof(self) weakSelf = self;
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
-        
-        loader.objectMapping = [Project mapping];
-        loader.onDidLoadObject = ^(id object) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            NSDate *now = [NSDate date];
-            [object setSyncedAt:now];
-            
-            NSError *error = nil;
-            [[[RKObjectManager sharedManager] objectStore] save:&error];
-            if (error) {
-                NSString *logMsg = [NSString stringWithFormat:@"SAVE ERROR: %@", error.localizedDescription];
-                [[Analytics sharedClient] debugLog:logMsg];
-            }
-            
-            strongSelf.project = (Project *)object;
-            [strongSelf configureNewsButton];
-        };
-    }];
+    // TODO: fetch the project news
     
     [UIView animateWithDuration:0.3f
                      animations:^{
@@ -213,10 +201,6 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 
 - (void)inat_performSegueWithIdentifier:(NSString *)identifier object:(id)object {
     [self performSegueWithIdentifier:identifier sender:object];
-}
-
-- (void)dealloc {
-    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 #pragma mark - Contained Scroll View Delegate
@@ -316,7 +300,8 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
         return;
     }
     
-    if (self.projectUser && self.projectUser.syncedAt) {
+    if (self.project.joined) {
+    //if (self.projectUser && self.projectUser.syncedAt) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Are you sure you want to leave this project?", nil)
                                                                        message:NSLocalizedString(@"This will also remove your observations from this project.",nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -347,18 +332,13 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 }
 
 - (void)configureJoinButton {
-    if (self.projectUser) {
+    if (self.project.joined) {
         [self.joinButton setTitle:[NSLocalizedString(@"Leave", @"Leave project button") uppercaseString]
                          forState:UIControlStateNormal];
     } else {
         [self.joinButton setTitle:[NSLocalizedString(@"Join", @"Join project button") uppercaseString]
                          forState:UIControlStateNormal];
     }
-}
-
-- (void)configureNewsButton {
-    self.newsButton.countLabel.text = [NSString stringWithFormat:@"%ld", (long)self.project.newsItemCount.integerValue];
-    self.newsButton.enabled = (self.project.newsItemCount.integerValue > 0);
 }
 
 - (void)presentSignupPrompt:(NSString *)reason {
@@ -381,15 +361,36 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
     
-    if (!self.projectUser) {
-        self.projectUser = [ProjectUser object];
-        self.projectUser.project = self.project;
-        self.projectUser.projectID = self.project.recordID;
-    }
-    [[RKObjectManager sharedManager] postObject:self.projectUser usingBlock:^(RKObjectLoader *loader) {
-        loader.delegate = self;
-        loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/join", self.project.recordID.intValue];
-        loader.objectMapping = [ProjectUser mapping];
+    
+    __weak typeof(self) weakSelf = self;
+    [[self projectsAPI] joinProject:self.project.projectId handler:^(NSArray *results, NSInteger count, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        
+        // hide the hud
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+        
+        if (error) {
+            if (error.code == 401) {
+                [weakSelf presentSignupPrompt:NSLocalizedString(@"You must be signed in to do that.", @"Reason text for signup prompt while trying to sync a project.")];
+            } else {
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                                               message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription]
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                          style:UIAlertActionStyleCancel
+                                                        handler:nil]];
+                [weakSelf presentViewController:alert animated:YES completion:nil];
+            }
+        } else {
+            if ([strongSelf.project isKindOfClass:[ExploreProjectRealm class]]) {
+                RLMRealm *realm = [RLMRealm defaultRealm];
+                [realm beginWriteTransaction];
+                ((ExploreProjectRealm *)strongSelf.project).joined = YES;
+                [realm commitWriteTransaction];
+                
+                [strongSelf configureJoinButton];
+            }
+        }
     }];
 }
 
@@ -401,56 +402,38 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
     
-    [[RKObjectManager sharedManager] deleteObject:self.projectUser usingBlock:^(RKObjectLoader *loader) {
-        loader.delegate = self;
-        loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/leave", self.project.recordID.intValue];
+    
+    __weak typeof(self) weakSelf = self;
+    [[self projectsAPI] leaveProject:self.project.projectId handler:^(NSArray *results, NSInteger count, NSError *error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        
+        // hide the hud
+        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+        
+        if (error) {
+            if (error.code == 401) {
+                [weakSelf presentSignupPrompt:NSLocalizedString(@"You must be signed in to do that.", @"Reason text for signup prompt while trying to sync a project.")];
+            } else {
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Whoops!",nil)
+                                                                               message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription]
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                          style:UIAlertActionStyleCancel
+                                                        handler:nil]];
+                [weakSelf presentViewController:alert animated:YES completion:nil];
+            }
+        } else {
+            if ([strongSelf.project isKindOfClass:[ExploreProjectRealm class]]) {
+                RLMRealm *realm = [RLMRealm defaultRealm];
+                [realm beginWriteTransaction];
+                ((ExploreProjectRealm *)strongSelf.project).joined = NO;
+                [realm commitWriteTransaction];
+                
+                [strongSelf configureJoinButton];
+            }
+        }
     }];
 }
-
-#pragma mark - RKObjectLoaderDelegate && RKRequestDelegate
-
-- (void)request:(RKRequest *)request didReceiveResponse:(RKResponse *)response {
-    if (request.method == RKRequestMethodDELETE) {
-        if (response.statusCode == 200) {
-            self.projectUser = nil;
-            [self configureJoinButton];
-        }
-    }
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(id)object {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-    });
-    
-    ProjectUser *pu = object;
-    if (pu) {
-        pu.syncedAt = [NSDate date];
-        [pu save];
-    }
-    self.projectUser = pu;
-    
-    [self configureJoinButton];
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-    });
-    
-    if (objectLoader.response.statusCode == 401) {
-        [self presentSignupPrompt:NSLocalizedString(@"You must be signed in to do that.", @"Reason text for signup prompt while trying to sync a project.")];
-    } else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                                       message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription]
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
-}
-
 
 
 @end

@@ -69,12 +69,12 @@
     [self fetch:path classMapping:IdentifierCount.class handler:done];
 }
 
-- (void)postObservation:(Observation *)observation handler:(INatAPIFetchCompletionCountHandler)done {
-    [[Analytics sharedClient] debugLog:@"Network - post observation to node"];
-    NSString *path = @"observations";
-    [self post:path params:[observation uploadableRepresentation] classMapping:[ExploreObservation class] handler:done];
+- (void)observationsForUserId:(NSInteger)userId count:(NSInteger)count handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - fetch observations for user"];
+    NSString *path = [NSString stringWithFormat:@"observations?user_id=%ld&per_page=%ld",
+                      (long)userId, (long)count];
+    [self fetch:path classMapping:ExploreObservation.class handler:done];
 }
-
 
 - (void)dealloc {
     [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:(id <RKRequestDelegate>)self];

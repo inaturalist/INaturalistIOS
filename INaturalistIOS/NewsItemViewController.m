@@ -12,19 +12,16 @@
 #import "NewsItemViewController.h"
 #import "NewsItem.h"
 #import "Analytics.h"
-
-@interface NewsItemViewController ()
-
-@end
+#import "ExplorePostRealm.h"
 
 @implementation NewsItemViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = self.newsItem.parentTitleText;
+    self.title = @"iNaturalist.org";
     
-    if (self.newsItem.urlForNewsItem) {
+    if (self.post.urlForNewsItem) {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                                                target:self
                                                                                                action:@selector(share:)];
@@ -46,7 +43,7 @@
     
     ARSafariActivity *safariActivity = [[ARSafariActivity alloc] init];
     
-    UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[self.newsItem.urlForNewsItem]
+    UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[self.post.urlForNewsItem]
                                                                            applicationActivities:@[safariActivity]];
     activity.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
         if (completed) {
@@ -70,20 +67,20 @@
 
     html = [html stringByAppendingString:@"<body style=\"font-family: -apple-system, Helvetica, Arial, sans-serif; font-size: 17; \" ><style>div {max-width: 100%%; font-family=-apple-system, Helvetica, Arial, sans-serif; } figure { padding: 0; margin: 0; } img.user { padding-top: 0; padding-bottom: 0; border: 1px solid #C8C7CC; width: 20; height: 20; border-radius: 50%%; margin-right: 4; margin-left: 7; vertical-align: middle; } img { padding-top: 4; padding-bottom: 4; max-width: 100%%; } p {font-family: -apple-system, Helvetica, Arial, sans-serif; } div.post { padding-left: 0; padding-right: 0; margin-left: 15; margin-right: 15; }</style><div class=\"post\">"];
 
-    NSString *title = self.newsItem.postTitle ?: NSLocalizedString(@"Untitled Post", nil);
+    NSString *title = self.post.title ?: NSLocalizedString(@"Untitled Post", nil);
     html = [html stringByAppendingString:[NSString stringWithFormat:@"<p style=\"font-size: 24; \">%@</p>", title]];
     
     NSString *postedBy = NSLocalizedString(@"Posted by", @"label for a news post author");
-    NSString *authorIconURL = self.newsItem.authorIconUrl;
+    NSString *authorIconURL = self.post.authorIconUrlString;
     html = [html stringByAppendingString:[NSString stringWithFormat:@"<p style=\"font-size: 14; color: #686868;\">%@:<img class=\"user\" src=%@ />", postedBy, authorIconURL]];
-    NSString *author = self.newsItem.authorLogin ?: NSLocalizedString(@"Unknown author", nil);
-    NSString *publishedAt = [[YLMoment momentWithDate:self.newsItem.postPublishedAt] fromNowWithSuffix:NO];
+    NSString *author = self.post.authorLogin ?: NSLocalizedString(@"Unknown author", nil);
+    NSString *publishedAt = [[YLMoment momentWithDate:self.post.publishedAt] fromNowWithSuffix:NO];
     html = [html stringByAppendingString:[NSString stringWithFormat:@"%@  •  %@</p>", author, publishedAt]];
 
-    html = [html stringByAppendingString:self.newsItem.postBody];
+    html = [html stringByAppendingString:self.post.body];
     html = [html stringByAppendingString:@"</div></body>"];
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://inat-project-post/%lld", self.newsItem.recordID.longLongValue]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://inat-project-post/%ld", (long)self.post.postId]];
     
     [self.postBodyWebView loadHTMLString:html
                                  baseURL:url];
@@ -111,9 +108,8 @@
         
         [[Analytics sharedClient] event:kAnalyticsEventNewsTapLink
                          withProperties:@{
-                                          @"ParentType": [self.newsItem parentTypeString],
-                                          @"ParentName": [self.newsItem parentTitleText],
-                                          @"ArticleTitle": [self.newsItem postTitle],
+                                          @"ParentType": [self.post parentType],
+                                          @"ArticleTitle": [self.post title],
                                           @"Link": request.URL.absoluteString,
                                           }];
 

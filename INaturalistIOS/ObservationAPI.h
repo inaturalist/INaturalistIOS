@@ -19,6 +19,6 @@
 - (void)topObserversForTaxaIds:(NSArray *)taxaIds handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)topIdentifiersForTaxaIds:(NSArray *)taxaIds handler:(INatAPIFetchCompletionCountHandler)done;
 
-- (void)postObservation:(Observation *)observation handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)observationsForUserId:(NSInteger)userId count:(NSInteger)count handler:(INatAPIFetchCompletionCountHandler)done;
 
 @end

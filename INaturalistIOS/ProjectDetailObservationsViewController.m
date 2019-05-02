@@ -71,11 +71,9 @@
                                                                            forIndexPath:indexPath];
     
     ExploreObservation *obs = (ExploreObservation *)self.observations[indexPath.item];
-    ExploreObservationPhoto *photo = obs.observationPhotos.firstObject;
-    if (photo) {
-        NSString *mediumUrlString = [photo.url stringByReplacingOccurrencesOfString:@"square"
-                                                                         withString:@"small"];
-        [cell.photoImageView setImageWithURL:[NSURL URLWithString:mediumUrlString]];
+    ExploreObservationPhoto *obsPhoto = obs.observationPhotos.firstObject;
+    if (obsPhoto) {
+        [cell.photoImageView setImageWithURL:obsPhoto.squarePhotoUrl];
     } else {
         // show iconic taxon image
         FAKIcon *taxonIcon = [FAKINaturalist iconForIconicTaxon:obs.iconicTaxonName

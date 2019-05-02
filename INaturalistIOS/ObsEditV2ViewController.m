@@ -31,7 +31,6 @@
 #import "UIColor+INaturalist.h"
 #import "DisclosureCell.h"
 #import "TaxaSearchViewController.h"
-#import "ProjectChooserViewController.h"
 #import "ProjectObservation.h"
 #import "TextViewCell.h"
 #import "EditLocationViewController.h"
@@ -40,7 +39,6 @@
 #import "ObsCameraOverlay.h"
 #import "ConfirmPhotoViewController.h"
 #import "FAKINaturalist.h"
-#import "ProjectChooserViewController.h"
 #import "Project.h"
 #import "ObservationFieldValue.h"
 #import "ProjectObservationField.h"
@@ -69,7 +67,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 @property (nonatomic, strong) UINavigationController *albumsNavigationController;
 @end
 
-@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate, ProjectChooserViewControllerDelegate, CLLocationManagerDelegate> {
+@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate, CLLocationManagerDelegate> {
     
     CLLocationManager *_locationManager;
 }
@@ -905,50 +903,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self triggerAutoUpload];
     
     [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-#pragma mark - Project Chooser
-
-- (void)projectChooserViewController:(ProjectChooserViewController *)controller choseProjects:(NSArray *)projects {
-    [self.navigationController popToViewController:self animated:YES];
-    
-    NSMutableArray *newProjects = [NSMutableArray arrayWithArray:projects];
-    NSMutableSet *deletedProjects = [[NSMutableSet alloc] init];
-    for (ProjectObservation *po in self.observation.projectObservations) {
-        if ([projects containsObject:po.project]) {
-            [newProjects removeObject:po.project];
-        } else {
-            [po deleteEntity];
-            [deletedProjects addObject:po];
-        }
-    }
-    [self.observation removeProjectObservations:deletedProjects];
-    
-    if (newProjects.count > 0 || deletedProjects.count > 0) {
-        [[Analytics sharedClient] event:kAnalyticsEventObservationProjectsChanged
-                         withProperties:@{
-                                          @"Via": [self analyticsVia],
-                                          }];
-    }
-    
-    for (Project *project in newProjects) {
-        ProjectObservation *po = [ProjectObservation object];
-        po.observation = self.observation;
-        po.project = project;
-        
-        for (ProjectObservationField *pof in project.sortedProjectObservationFields) {
-            ObservationFieldValue *ofv = [ObservationFieldValue object];
-            ofv.observation = self.observation;
-            ofv.observationField = pof.observationField;
-            ofv.localUpdatedAt = [NSDate date];
-            ofv.localCreatedAt = [NSDate date];
-        }
-        
-        po.localUpdatedAt = [NSDate date];
-        po.localCreatedAt = [NSDate date];
-    }
-    
-    [self.tableView reloadData];
 }
 
 #pragma mark - Taxa Search

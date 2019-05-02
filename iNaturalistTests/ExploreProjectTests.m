@@ -38,4 +38,14 @@
     XCTAssertEqual(tpoua.type, ExploreProjectTypeOldStyle);
 }
 
+- (void)testProjectFields {
+    ExploreProject *tpoua = [MantleHelpers tpouaProjectFixture];
+    XCTAssertEqual(tpoua.fields.count, 10);
+}
+
+- (void)testRequiredFields {
+    ExploreProject *tpoua = [MantleHelpers tpouaProjectFixture];
+    XCTAssertEqual(tpoua.requiredFields.count, 2);
+}
+
 @end

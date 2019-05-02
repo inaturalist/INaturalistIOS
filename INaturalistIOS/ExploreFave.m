@@ -13,9 +13,10 @@
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
 	return @{
-		@"faver": @"user",
-		@"faveDate": @"created_at",
-	};
+             @"faveId": @"id",
+             @"faver": @"user",
+             @"faveDate": @"created_at",
+             };
 }
 
 + (NSValueTransformer *)faverJSONTransformer {

@@ -24,6 +24,15 @@
 // inactive IDs.
 + (ExploreObservation *)polychaeteFixture;
 
+// these are the featured projects for the iNat Site
++ (NSArray *)featuredProjectsINat;
+
+// these are the featured projects for the iNatNZ Site
++ (NSArray *)featuredProjectsNZ;
+
+// these are some of alex's projects
++ (NSArray *)alexsProjects;
+
 // this is a very popular umbrella project
 + (ExploreProject *)cnc2018ProjectFixture;
 

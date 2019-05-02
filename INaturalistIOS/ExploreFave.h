@@ -15,6 +15,7 @@
 
 @interface ExploreFave : MTLModel <FaveVisualization, MTLJSONSerializing>
 
+@property (nonatomic, assign) NSInteger faveId;
 @property (nonatomic, retain) ExploreUser *faver;
 @property (nonatomic, copy) NSDate *faveDate;
 

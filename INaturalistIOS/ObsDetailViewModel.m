@@ -38,6 +38,7 @@
 #import "UIImage+INaturalist.h"
 #import "NSLocale+INaturalist.h"
 #import "ExploreUserRealm.h"
+#import "ExploreObservationPhoto.h"
 
 @interface ObsDetailViewModel ()
 
@@ -145,9 +146,10 @@
             // user was viewing, and deleted, the last photo in the observation
             self.viewingPhoto = self.viewingPhoto - 1;
         }
-
-        id <INatPhoto> op = self.observation.sortedObservationPhotos[self.viewingPhoto];
-        UIImage *localImage = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
+        
+        
+        id <INatPhoto> obsPhoto = self.observation.sortedObservationPhotos[self.viewingPhoto];
+        UIImage *localImage = [[ImageStore sharedImageStore] find:obsPhoto.photoKey forSize:ImageStoreSmallSize];
         if (localImage) {
             cell.iv.image = localImage;
         } else {
@@ -157,7 +159,7 @@
             
             __weak typeof(cell.spinner)weakSpinner = cell.spinner;
             __weak typeof(cell.iv)weakIv = cell.iv;
-            [cell.iv setImageWithURLRequest:[NSURLRequest requestWithURL:op.mediumPhotoUrl]
+            [cell.iv setImageWithURLRequest:[NSURLRequest requestWithURL:obsPhoto.mediumPhotoUrl]
                            placeholderImage:nil
                                     success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
                                         weakIv.image = image;

@@ -14,6 +14,7 @@
 #import "ExploreUser.h"
 #import "ExploreTaxon.h"
 #import "ExploreTaxonRealm.h"
+#import "ExploreObservationFieldValue.h"
 
 @implementation ExploreObservation
 
@@ -34,11 +35,13 @@
              @"coordinatesObscured": @"coordinates_obscured",
              @"placeGuess": @"place_guess",
              @"user": @"user",
-             @"observationPhotos": @"photos",
+             @"observationPhotos": @"observation_photos",
              @"comments": @"comments",
              @"identifications": @"identifications",
              @"faves": @"faves",
              @"taxon": @"taxon",
+             @"observationFieldValues": @"ofvs",
+             @"uuid": @"uuid",
              };
 }
 
@@ -56,6 +59,10 @@
 
 + (NSValueTransformer *)favesJSONTransformer {
 	return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreFave.class];
+}
+
++ (NSValueTransformer *)observationFieldValuesJSONTransformer {
+    return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreObservationFieldValue.class];
 }
 
 + (NSValueTransformer *)taxonJSONTransformer {
@@ -228,11 +235,6 @@
 
 - (NSString *)sortable {
     return [NSString stringWithFormat:@"%f", self.timeObservedAt.timeIntervalSinceNow];
-}
-
-- (NSString *)uuid {
-    // TODO: fetch uuid
-    return  [[[NSUUID alloc] init] UUIDString];
 }
 
 - (NSInteger)taxonRecordID {

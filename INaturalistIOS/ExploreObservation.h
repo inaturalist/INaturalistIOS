@@ -22,29 +22,32 @@
 @property (nonatomic, assign) NSInteger observationId;
 @property (nonatomic, copy) NSString *speciesGuess;
 @property (nonatomic, copy) NSString *inatDescription;
-@property (nonatomic, copy) NSArray *observationPhotos;
 @property (nonatomic, copy) NSDate *timeObservedAt;
 @property (nonatomic, copy) NSDate *observedOn;
 @property (nonatomic, copy) NSString *qualityGrade;
 @property (nonatomic, assign) BOOL idPlease;
 @property (nonatomic, assign) NSInteger identificationsCount;
 @property (nonatomic, assign) NSInteger commentsCount;
-@property (nonatomic, copy) NSArray *identifications;
-@property (nonatomic, copy) NSArray *comments;
-@property (nonatomic, copy) NSArray *faves;
 @property (nonatomic, assign) BOOL mappable;
 @property (nonatomic, assign) NSInteger publicPositionalAccuracy;
 @property (nonatomic, assign) BOOL coordinatesObscured;
 @property (nonatomic, copy) NSString *placeGuess;
 @property (nonatomic, assign) CLLocationCoordinate2D location;
-@property (readonly) CLLocationDegrees latitude;
-@property (readonly) CLLocationDegrees longitude;
+@property (nonatomic, copy) NSString *uuid;
 
-@property (nonatomic, readonly) BOOL hasTime;
 
-@property (nonatomic, readonly) BOOL commentsAndIdentificationsSynchronized;
+@property (nonatomic, copy) NSArray *observationPhotos;
+@property (nonatomic, copy) NSArray *identifications;
+@property (nonatomic, copy) NSArray *comments;
+@property (nonatomic, copy) NSArray *faves;
+@property (nonatomic, copy) NSArray *observationFieldValues;
 
 @property (nonatomic) ExploreTaxon *taxon;
 @property (nonatomic) ExploreUser *user;
+
+@property (nonatomic, readonly) BOOL hasTime;
+@property (nonatomic, readonly) BOOL commentsAndIdentificationsSynchronized;
+@property (readonly) CLLocationDegrees latitude;
+@property (readonly) CLLocationDegrees longitude;
 
 @end

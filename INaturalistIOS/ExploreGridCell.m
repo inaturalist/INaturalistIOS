@@ -123,12 +123,9 @@
     observationImageView.image = [UIImage imageForIconicTaxon:observation.iconicTaxonName];
     
     if (observation.observationPhotos.count > 0) {
-        ExploreObservationPhoto *photo = (ExploreObservationPhoto *)observation.observationPhotos.firstObject;
-        
-        if (photo) {
-            NSString *mediumUrlString = [photo.url stringByReplacingOccurrencesOfString:@"square"
-                                                                             withString:@"medium"];
-            [observationImageView setImageWithURL:[NSURL URLWithString:mediumUrlString]];
+        ExploreObservationPhoto *obsPhoto = (ExploreObservationPhoto *)observation.observationPhotos.firstObject;
+        if (obsPhoto) {
+            [observationImageView setImageWithURL:obsPhoto.mediumPhotoUrl];
         }
 
     }

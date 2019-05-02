@@ -25,7 +25,6 @@
 #import "ObservationFieldValue.h"
 #import "ObservationPhoto.h"
 #import "ProjectObservation.h"
-#import "Project.h"
 #import "ImageStore.h"
 #import "INatUITabBarController.h"
 #import "INaturalistAppDelegate.h"
@@ -53,6 +52,9 @@
 #import "Taxon.h"
 #import "INatReachability.h"
 #import "NSLocale+INaturalist.h"
+#import "ObservationAPI.h"
+#import "ExploreObservation.h"
+#import "ExploreObservationRealm.h"
 
 @interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     
@@ -65,6 +67,9 @@
 @property (nonatomic, strong) NSDate *lastRefreshAt;
 @property (readonly) NSFetchedResultsController *fetchedResultsController;
 @property NSMutableDictionary *uploadProgress;
+
+@property RLMResults <ExploreObservationRealm *> *myObservations;
+@property RLMNotificationToken *myObservationsUpdateToken;
 @end
 
 @implementation ObservationsViewController
@@ -77,6 +82,16 @@
     });
     return _api;
 }
+
+- (ObservationAPI *)observationApi {
+    static ObservationAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[ObservationAPI alloc] init];
+    });
+    return _api;
+}
+
 
 - (void)presentLoginSplashWithReason:(NSString *)reason {
     [[Analytics sharedClient] event:kAnalyticsEventNavigateOnboardingScreenLogin
@@ -460,13 +475,37 @@
     }
 }
 
-- (void)refreshData
-{
+- (void)refreshData {
 	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 	if ([appDelegate.loginController isLoggedIn]) {
         
         ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
         [[Analytics sharedClient] debugLog:@"Network - Refresh 10 recent observations"];
+        __weak typeof(self) weakSelf = self;
+        [[self observationApi] observationsForUserId:me.userId count:10 handler:^(NSArray *results, NSInteger count, NSError *error) {
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            for (ExploreObservation *obs in results) {
+                ExploreObservationRealm *eor = [[ExploreObservationRealm alloc] initWithMantleModel:obs];
+                [realm beginWriteTransaction];
+                [realm addOrUpdateObject:eor];
+                [realm commitWriteTransaction];
+            }
+            [weakSelf.tableView reloadData];
+        }];
+        
+        [[Analytics sharedClient] debugLog:@"Network - Refresh 200 recent observations"];
+        [[self observationApi] observationsForUserId:me.userId count:200 handler:^(NSArray *results, NSInteger count, NSError *error) {
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            for (ExploreObservation *obs in results) {
+                ExploreObservationRealm *eor = [[ExploreObservationRealm alloc] initWithMantleModel:obs];
+                [realm beginWriteTransaction];
+                [realm addOrUpdateObject:eor];
+                [realm commitWriteTransaction];
+            }
+            [weakSelf.tableView reloadData];
+        }];
+
+        /*
         
         NSString *obsFetchPath = [NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields",
                                       me.login];
@@ -488,6 +527,7 @@
                                                          objectMapping:[Observation mapping]
                                                               delegate:self];
         });
+         */
 
         [self loadUserForHeader];
         self.lastRefreshAt = [NSDate date];
@@ -602,7 +642,6 @@
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
     // transition to obs detail
     [self performSegueWithIdentifier:@"obsDetailV2" sender:o];
-    return;
 }
 
 - (void)showError:(NSString *)errorMessage{
@@ -646,20 +685,22 @@
 
 # pragma mark TableViewController methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [self.myObservations count];
+    /*
     id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
     return [sectionInfo numberOfObjects];
+     */
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-
-    Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    
+    ExploreObservationRealm *o = [self.myObservations objectAtIndex:indexPath.item];
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     UploadManager *uploader = appDelegate.loginController.uploadManager;
     
-    
     if (o.validationErrorMsg && o.validationErrorMsg.length > 0 && uploader.state == UploadManagerStateIdle) {
-        // only show validation error status if this obs has a validation error, and it's not being retried
+        // only show vpo palidation error status if this obs has a validation error, and it's not being retried
         ObservationViewErrorCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ObservationErrorCell"];
         [self configureErrorCell:cell forIndexPath:indexPath];
         return cell;
@@ -731,7 +772,7 @@
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     UploadManager *uploader = appDelegate.loginController.uploadManager;
-    Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    ExploreObservationRealm *o = [self.myObservations objectAtIndex:indexPath.item];
     if (uploader.state != UploadManagerStateIdle && (o.needsUpload || o.childrenNeedingUpload.count > 0)) {
         return;
     } else {
@@ -742,14 +783,15 @@
 #pragma mark - TableViewCell helpers
 
 - (void)configureObservationCell:(ObservationViewCell *)cell forIndexPath:(NSIndexPath *)indexPath {
-    Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    
+    ExploreObservationRealm *o = [self.myObservations objectAtIndex:indexPath.item];
+
     // configure the photo
     if (o.sortedObservationPhotos.count > 0) {
-        ObservationPhoto *op = [o.sortedObservationPhotos objectAtIndex:0];
-        cell.observationImage.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
+        ExploreObservationPhoto *obsPhoto = [o.sortedObservationPhotos objectAtIndex:0];
+        
+        cell.observationImage.image = [[ImageStore sharedImageStore] find:obsPhoto.photoKey forSize:ImageStoreSquareSize];
         if (cell.observationImage.image == nil) {
-            [cell.observationImage sd_setImageWithURL:[NSURL URLWithString:op.squareURL]];
+            [cell.observationImage sd_setImageWithURL:obsPhoto.squarePhotoUrl];
         }
     } else {
         cell.observationImage.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:o.iconicTaxonName];
@@ -760,10 +802,8 @@
    	cell.observationImage.clipsToBounds = YES;
     
     // configure the title
-    if ([o exploreTaxonRealm]) {
-    	[cell.titleLabel setText:o.exploreTaxonRealm.commonName ?: o.exploreTaxonRealm.scientificName];
-    } else if ([o taxon]) {
-        [cell.titleLabel setText:o.taxon.defaultName ?: o.taxon.name];
+    if ([o taxon]) {
+        [cell.titleLabel setText:o.taxon.commonName ?: o.taxon.scientificName];
     } else if (o.speciesGuess && o.speciesGuess.length > 0) {
         [cell.titleLabel setText:o.speciesGuess];
     } else if (o.inatDescription && o.inatDescription.length > 0) {
@@ -831,11 +871,13 @@
 - (void)configureNormalCell:(ObservationViewNormalCell *)cell forIndexPath:(NSIndexPath *)indexPath {
     [self configureObservationCell:cell forIndexPath:indexPath];
     
-    Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    ExploreObservationRealm *o = [self.myObservations objectAtIndex:indexPath.item];
+
     if (o.placeGuess && o.placeGuess.length > 0) {
         cell.subtitleLabel.text = o.placeGuess;
     } else if (o.latitude) {
-        cell.subtitleLabel.text = [NSString stringWithFormat:@"%@, %@", o.latitude, o.longitude];
+        cell.subtitleLabel.text = [NSString stringWithFormat:@"%f, %f",
+                                   o.latitude, o.longitude];
     } else {
         cell.subtitleLabel.text = NSLocalizedString(@"Somewhere...",nil);
     }
@@ -1298,6 +1340,26 @@
                                                  name:kInatCoreDataRebuiltNotification
                                                object:nil];
     
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    ExploreUserRealm *me = appDelegate.loginController.meUserLocal;
+    NSPredicate *myObservationsPredicate = nil;
+    if (me) {
+        myObservationsPredicate = [NSPredicate predicateWithFormat:@"user.userId == %ld OR syncedAt == nil",
+                                   me.userId];
+    } else {
+        myObservationsPredicate = [NSPredicate predicateWithFormat:@"syncedAt == nil"];
+    }
+    
+    // TODO: redo this fetch if the user login state changes, since the predicate will change
+    self.myObservations = [ExploreObservationRealm objectsWithPredicate:myObservationsPredicate];
+    __weak typeof(self) weakSelf = self;
+    // TODO: invalidate this token and recreate it, if necessary, when login state changes
+    self.myObservationsUpdateToken = [self.myObservations addNotificationBlock:^(RLMResults<ExploreObservationRealm *> * _Nullable results,
+                                                                                 RLMCollectionChange * _Nullable change,
+                                                                                 NSError * _Nullable error) {
+        [weakSelf.tableView reloadData];
+    }];
+    
     // perform the iniital local fetch
     NSError *fetchError;
     [self.fetchedResultsController performFetch:&fetchError];
@@ -1328,7 +1390,6 @@
     settingsBarButton.accessibilityLabel = NSLocalizedString(@"Settings", @"accessibility label for settings button");
     self.navigationItem.rightBarButtonItem = settingsBarButton;
     
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.loginController.uploadManager setDelegate:self];
 }
 
@@ -1408,6 +1469,7 @@
 - (void)dealloc {
     [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self.myObservationsUpdateToken invalidate];
 }
 
 #pragma mark - RKObjectLoaderDelegate

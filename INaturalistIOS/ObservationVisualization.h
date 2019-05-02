@@ -54,6 +54,7 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
 - (NSSet *)faves;
 - (NSArray *)sortedActivity;
 - (NSArray *)sortedFaves;
+- (NSInteger)activityCount;
 
 - (NSInteger)inatRecordId;
 

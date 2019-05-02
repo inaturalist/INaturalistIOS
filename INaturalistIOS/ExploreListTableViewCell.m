@@ -353,12 +353,8 @@ static NSDateFormatter *shortFormatter;
     observationImageView.image = [UIImage imageForIconicTaxon:observation.iconicTaxonName];
     
     if (observation.observationPhotos.count > 0) {
-        ExploreObservationPhoto *photo = (ExploreObservationPhoto *)observation.observationPhotos.firstObject;
-        
-        NSString *mediumUrlString = [photo.url stringByReplacingOccurrencesOfString:@"square"
-                                                                         withString:@"medium"];
-        
-        [observationImageView setImageWithURL:[NSURL URLWithString:mediumUrlString]];
+        ExploreObservationPhoto *obsPhoto = observation.observationPhotos.firstObject;
+        [observationImageView setImageWithURL:obsPhoto.mediumPhotoUrl];
     }
     
     NSString *commonName = nil;

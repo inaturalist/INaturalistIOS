@@ -17,7 +17,6 @@
 #import "ObservationFieldValue.h"
 #import "ProjectObservation.h"
 #import "INaturalistAppDelegate.h"
-#import "Project.h"
 #import "LoginController.h"
 #import "NSURL+INaturalist.h"
 #import "ImageStore.h"

@@ -12,12 +12,17 @@
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
 	return @{
-		@"url": @"url",
-	};
+             @"observationPhotoId": @"id",
+             @"uuid": @"uuid",
+             @"position": @"position",
+             @"licenseCode": @"photo.license_code",
+             @"url": @"photo.url",
+             @"attribution": @"attribution",
+             };
 }
 
-- (NSString *)photoKey {
-    return nil;
++ (NSValueTransformer *)urlJSONTransformer {
+    return [NSValueTransformer valueTransformerForName:MTLURLValueTransformerName];
 }
 
 - (NSURL *)largePhotoUrl {
@@ -37,11 +42,16 @@
 }
 
 - (NSURL *)squarePhotoUrl {
-    return [NSURL URLWithString:self.url];
+    return self.url;
+}
+
+- (NSString *)photoKey {
+    return nil;
 }
 
 - (NSString *)urlStringForSize:(NSString *)size {
-    return [self.url stringByReplacingOccurrencesOfString:@"square" withString:size];
+    return [self.url.absoluteString stringByReplacingOccurrencesOfString:@"square"
+                                                              withString:size];
 }
 
 @end

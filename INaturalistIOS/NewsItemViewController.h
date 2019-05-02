@@ -8,12 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@class NewsItem;
+@class ExplorePostRealm;
 
 @interface NewsItemViewController : UIViewController <UIWebViewDelegate>
 
 @property IBOutlet UIWebView *postBodyWebView;
 
-@property NewsItem *newsItem;
+@property ExplorePostRealm *post;
 
 @end

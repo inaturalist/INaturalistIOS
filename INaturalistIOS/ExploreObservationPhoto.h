@@ -11,13 +11,13 @@
 
 #import "INatPhoto.h"
 
-@interface ExploreObservationPhoto : MTLModel <INatPhoto, MTLJSONSerializing>
+@interface ExploreObservationPhoto : MTLModel <MTLJSONSerializing, INatPhoto>
 
-@property (nonatomic, readonly) NSString *mediumURL;
-@property (nonatomic, readonly) NSString *squareURL;
-@property (nonatomic, readonly) NSString *thumbURL;
-@property (nonatomic, readonly) NSString *smallURL;
-@property (nonatomic, readonly) NSString *largeURL;
-@property (nonatomic, copy) NSString *url;
+@property (nonatomic, assign) NSInteger observationPhotoId;
+@property (nonatomic, assign) NSInteger position;
+@property (nonatomic, copy) NSString *uuid;
+@property (nonatomic, copy) NSString *licenseCode;
+@property (nonatomic, copy) NSURL *url;
+@property (nonatomic, copy) NSString *attribution;
 
 @end

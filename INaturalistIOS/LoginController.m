@@ -264,10 +264,11 @@ NSInteger INatMinPasswordLength = 6;
                                   } else {
                                       ExploreUserRealm *me = [[ExploreUserRealm alloc] init];
                                       me.login = [parsedData objectForKey:@"login"] ?: @"";
+                                      me.email = [parsedData objectForKey:@"email"];
+                                      me.userIconString = [parsedData objectForKey:@"user_icon_url"];
                                       me.userId = [[parsedData objectForKey:@"id"] integerValue];
                                       me.observationsCount = [[parsedData objectForKey:@"observations_count"] integerValue];
                                       me.siteId = [[parsedData objectForKey:@"site_id"] integerValue];
-                                      me.siteId = [parsedData objectForKey:@"site_id"] ?: @(1);
                                       me.syncedAt = [NSDate distantPast];
                                       
                                       RLMRealm *realm = [RLMRealm defaultRealm];

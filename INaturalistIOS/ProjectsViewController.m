@@ -25,221 +25,98 @@
 #import "OnboardingLoginViewController.h"
 #import "INatReachability.h"
 #import "ExploreUserRealm.h"
+#import "ProjectsAPI.h"
+#import "ExploreProject.h"
+#import "ExploreProjectRealm.h"
 
-static const int ListControlIndexFeatured = 1;
-static const int ListControlIndexNearby = 2;
+typedef NS_ENUM(NSInteger, ProjectSelection) {
+    ProjectSelectionMine = 0,
+    ProjectSelectionFeatured,
+    ProjectSelectionNearby
+};
 
-@interface ProjectsViewController () <RKObjectLoaderDelegate, RKRequestDelegate>
+@interface ProjectsViewController () <RKObjectLoaderDelegate, RKRequestDelegate, UISearchResultsUpdating>
+@property UISearchController *searchController;
 @end
 
 @implementation ProjectsViewController
 
-#pragma mark - load* methods are loading locally from core data
+#pragma mark fetch* methods are fetching from inaturalist.org
 
-- (void)loadData
-{
-    BOOL syncNeeded = NO;
-    switch (self.listControl.selectedSegmentIndex) {
-        case ListControlIndexFeatured:
-            [self loadFeaturedProjects];
-            syncNeeded = self.featuredProjectsSyncedAt ? NO : YES;
-            break;
-        case ListControlIndexNearby:
-            [self loadNearbyProjects];
-            syncNeeded = self.nearbyProjectsSyncedAt ? NO : YES;
-            break;
-        default:
-            [self loadUserProjects];
-            syncNeeded = self.projectUsersSyncedAt ? NO : YES;
-            break;
-    }
-    [self checkEmpty];
-    
-    if (syncNeeded && [[INatReachability sharedClient] isNetworkReachable]) {
-        [self sync];
-    }
-}
-
-- (void)loadUserProjects {
-    NSArray *projectUsers = [ProjectUser.all sortedArrayUsingComparator:^NSComparisonResult(ProjectUser *obj1, ProjectUser *obj2) {
-        return [obj1.project.title.lowercaseString compare:obj2.project.title.lowercaseString];
-    }];
-    // be defensive
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"project != nil"];
-    self.projects = [[projectUsers filteredArrayUsingPredicate:predicate] valueForKey:@"project"];
-    [self.tableView reloadData];
-}
-
-- (void)loadFeaturedProjects {
-    self.projects = [Project objectsWithPredicate:[NSPredicate predicateWithFormat:@"featuredAt != nil"]];
-    [self.tableView reloadData];
-}
-
-- (void)loadNearbyProjects {
-    // get all projects with a location
-    NSFetchRequest *request = [Project fetchRequest];
-    request.predicate = [NSPredicate predicateWithFormat:@"latitude != nil && longitude != nil"];
-    request.fetchLimit = 500;
-    NSArray *projectsWithLocations = [Project objectsWithFetchRequest:request];
-    
-    // anything less than 310 miles away is "nearby"
-    NSPredicate *nearbyPredicate = [NSPredicate predicateWithBlock:^BOOL(Project *p, NSDictionary *bindings) {
-        CLLocation *loc = [[CLLocation alloc] initWithLatitude:p.latitude.doubleValue
-                                                     longitude:p.longitude.doubleValue];
-        NSNumber *d = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:loc]];
-        return d.doubleValue < 500000; // meters
-    }];
-    NSArray *nearbyProjects = [projectsWithLocations filteredArrayUsingPredicate:nearbyPredicate];
-    
-    // sort nearby projects by how near they are (self.lastLocation)
-    NSComparator nearnessComparator = ^NSComparisonResult(Project *p1, Project *p2) {
-        CLLocation *p1Location = [[CLLocation alloc] initWithLatitude:p1.latitude.doubleValue
-                                                            longitude:p1.longitude.doubleValue];
-        CLLocation *p2Location = [[CLLocation alloc] initWithLatitude:p2.latitude.doubleValue
-                                                            longitude:p2.longitude.doubleValue];
-        NSNumber *p1Distance = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:p1Location]];
-        NSNumber *p2Distance = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:p2Location]];
-        return [p1Distance compare:p2Distance];
-    };
-    NSArray *projectsSortedByNearness = [nearbyProjects sortedArrayUsingComparator:nearnessComparator];
-
-    self.projects = projectsSortedByNearness;
-    [self.tableView reloadData];
-}
-
-- (void)checkEmpty
-{
-    if (self.projects.count == 0 && !self.searchDisplayController.active) {
-        if (self.noContentLabel) {
-            [self.noContentLabel removeFromSuperview];
-        } else {
-            self.noContentLabel = [[UILabel alloc] init];
-            self.noContentLabel.backgroundColor = [UIColor clearColor];
-            self.noContentLabel.textColor = [UIColor grayColor];
-            self.noContentLabel.textAlignment = NSTextAlignmentCenter;
-            self.noContentLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
-        }
-        
-        if (self.listControl.selectedSegmentIndex == ListControlIndexFeatured) {
-            self.noContentLabel.text = NSLocalizedString(@"No featured projects.", nil);
-        } else if (self.listControl.selectedSegmentIndex == ListControlIndexNearby) {
-            self.noContentLabel.text = NSLocalizedString(@"No nearby projects.",nil);
-        } else {
-            self.noContentLabel.text = NSLocalizedString(@"You haven't joined any projects yet.",nil);
-        }
-        self.noContentLabel.numberOfLines = 0;
-        [self.noContentLabel sizeToFit];
-        [self.noContentLabel setBounds:CGRectMake(0, 0, self.tableView.tableHeaderView.frame.size.width, 44)];
-        self.noContentLabel.center = CGPointMake(self.tableView.center.x, 
-                                                 self.tableView.tableHeaderView.frame.size.height +
-                                                 (self.tableView.rowHeight * 2) + (self.tableView.rowHeight / 2));
-        
-        [self.view addSubview:self.noContentLabel];
-    } else if (self.noContentLabel) {
-        [self.noContentLabel removeFromSuperview];
-    }
-}
-
-#pragma mark - sync* methods are fetching from inaturalist.org
-
-- (void)sync
-{
-    self.navigationItem.rightBarButtonItem = self.syncActivityItem;
-    switch (self.listControl.selectedSegmentIndex) {
-        case ListControlIndexFeatured:
-            [self syncFeaturedProjects];
-            break;
-        case ListControlIndexNearby:
-            [self syncNearbyProjects];
-            break;            
-        default:
-            [self syncUserProjects];
-            break;
-    }
-}
-
-- (void)syncFeaturedProjects {
-    NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    NSString *path;
-    if (self.lastLocation) {
-        path = [NSString stringWithFormat:@"/projects.json?featured=true&latitude=%f&longitude=%f&locale=%@-%@",
-                self.lastLocation.coordinate.latitude,
-                self.lastLocation.coordinate.longitude,
-                language,
-                countryCode];
-    } else {
-        path = [NSString stringWithFormat:@"/projects.json?featured=true&locale=%@-%@",
-                language,
-                countryCode];
-    }
-    
-    self.featuredProjectsSyncedAt = [NSDate date];
-    [self syncProjectsWithPath:path];
-}
-
-- (void)syncNearbyProjects {
-    if (!self.lastLocation) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Couldn't determine your location",nil)
-                                                                       message:NSLocalizedString(@"Make sure iNat has permission to access your location or give the GPS some time to fetch it.",nil)
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
-        [self syncFinished];
+- (void)fetchMyProjects {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (![appDelegate.loginController isLoggedIn]) {
         return;
     }
-    NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    NSString *language = [[NSLocale preferredLanguages] firstObject];
-    NSString *path = [NSString stringWithFormat:@"/projects.json?latitude=%f&longitude=%f&locale=%@-%@",
-                      self.lastLocation.coordinate.latitude,
-                      self.lastLocation.coordinate.longitude,
-                      language,
-                      countryCode];
+    ExploreUserRealm *me = appDelegate.loginController.meUserLocal;
     
-    self.nearbyProjectsSyncedAt = [NSDate date];
-    [self syncProjectsWithPath:path];
-}
-
-- (void)syncUserProjects {
-	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-	if ([appDelegate.loginController isLoggedIn]) {
-        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
-        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-        NSString *language = [[NSLocale preferredLanguages] firstObject];
-        NSString *path = [NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
-                          me.login,
-                          language,
-                          countryCode];
+    __weak typeof(self) weakSelf = self;
+    [[self projectsAPI] joinedProjectsUserId:me.userId handler:^(NSArray *results, NSInteger count, NSError *error) {
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        for (ExploreProject *project in results) {
+            ExploreProjectRealm *epr = [[ExploreProjectRealm alloc] initWithMantleModel:project];
+            epr.joined = YES;
+            [realm beginWriteTransaction];
+            [realm addOrUpdateObject:epr];
+            [realm commitWriteTransaction];
+        }
         
-        self.projectUsersSyncedAt = [NSDate date];
-        [self syncProjectsWithPath:path];
-    } else {
-        [self syncFinished];
-        self.projectUsersSyncedAt = nil;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.tableView reloadData];
+        });
+    }];
+}
 
-        [self showSignupPrompt:NSLocalizedString(@"You must be logged in to sync user projects.", @"Signup prompt reason when user tries to sync user projects.")];
+- (void)fetchFeaturedProjects {
+    __weak typeof(self) weakSelf = self;
+    [[self projectsAPI] featuredProjectsHandler:^(NSArray *results, NSInteger count, NSError *error) {
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        for (ExploreProject *project in results) {
+            ExploreProjectRealm *epr = [[ExploreProjectRealm alloc] initWithMantleModel:project];
+            [realm beginWriteTransaction];
+            [realm addOrUpdateObject:epr];
+            [realm commitWriteTransaction];
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.tableView reloadData];
+        });
+    }];
+}
+
+- (void)fetchNearbyProjects {
+    if (self.lastLocation) {
+        __weak typeof(self)weakSelf = self;
+        [[self projectsAPI] projectsNear:self.lastLocation.coordinate
+                                  radius:50
+                                 handler:^(NSArray *results, NSInteger count, NSError *error) {
+                                     RLMRealm *realm = [RLMRealm defaultRealm];
+                                     for (ExploreProject *project in results) {
+                                         ExploreProjectRealm *epr = [[ExploreProjectRealm alloc] initWithMantleModel:project];
+                                         [realm beginWriteTransaction];
+                                         [realm addOrUpdateObject:epr];
+                                         [realm commitWriteTransaction];
+                                     }
+                                     
+                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                         [weakSelf.tableView reloadData];
+                                     });
+                                 }];
     }
 }
 
-- (void)syncProjectsWithPath:(NSString *)path {
-    
-    RKObjectMapping *mapping = nil;
-    if ([path rangeOfString:@"projects/user"].location != NSNotFound) {
-        mapping = [ProjectUser mapping];
-    } else {
-        mapping = [Project mapping];
-    }
-    
-    [[Analytics sharedClient] debugLog:@"Network - Load projects"];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
-                                                    usingBlock:^(RKObjectLoader *loader) {
-                                                        loader.objectMapping = mapping;
-                                                        loader.delegate = self;
-                                                    }];
-    
+#pragma mark our API for project operations
+
+- (ProjectsAPI *)projectsAPI {
+    static ProjectsAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[ProjectsAPI alloc] init];
+    });
+    return _api;
 }
+
+#pragma mark helper for signup
 
 - (void)showSignupPrompt:(NSString *)reason {
     __weak typeof(self) weakSelf = self;
@@ -253,45 +130,10 @@ static const int ListControlIndexNearby = 2;
     login.closeAction = ^{
         __strong typeof(weakSelf) strongSelf = weakSelf;
         // switch back to featured
-        [strongSelf.listControl setSelectedSegmentIndex:ListControlIndexFeatured];
+        [strongSelf.projectSelectionControl setSelectedSegmentIndex:ProjectSelectionFeatured];
         [strongSelf dismissViewControllerAnimated:YES completion:nil];
     };
     [weakSelf presentViewController:login animated:YES completion:nil];
-}
-
-
-- (void)syncFinished
-{
-    self.navigationItem.rightBarButtonItem = self.searchButton;
-}
-
-- (UISegmentedControl *)listControl
-{
-    if (!_listControl) {
-        _listControl = [[UISegmentedControl alloc] initWithItems:@[
-                                                                   NSLocalizedString(@"Joined",nil),
-                                                                   NSLocalizedString(@"Featured",nil),
-                                                                   NSLocalizedString(@"Nearby",nil)
-                                                                   ]];
-        _listControl.tintColor = [UIColor inatTint];
-        
-        NSString *inatToken = [[NSUserDefaults standardUserDefaults] objectForKey:INatTokenPrefKey];
-        _listControl.selectedSegmentIndex = (inatToken && inatToken.length > 0) ? 0 : 1;
-        
-        [_listControl addTarget:self action:@selector(loadData) forControlEvents:UIControlEventValueChanged];
-    }
-    return _listControl;
-}
-
-- (UIBarButtonItem *)syncActivityItem
-{
-    if (!_syncActivityItem) {
-        UIActivityIndicatorView *aiv = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 34, 25)];
-        aiv.color = [UIColor inatTint];
-        [aiv startAnimating];
-        _syncActivityItem = [[UIBarButtonItem alloc] initWithCustomView:aiv];
-    }
-    return _syncActivityItem;
 }
 
 
@@ -300,7 +142,7 @@ static const int ListControlIndexNearby = 2;
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"projectDetailSegue"]) {
         ProjectDetailV2ViewController *vc = [segue destinationViewController];
-        vc.project = [sender isKindOfClass:[Project class]] ? sender : nil;
+        vc.project = sender;
     }
 }
 
@@ -329,11 +171,6 @@ static const int ListControlIndexNearby = 2;
 {
     [super viewDidLoad];
     
-    self.tableView.contentOffset = CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height);
-    if (!self.projectsSearchController) {
-        self.projectsSearchController = [[ProjectsSearchController alloc] 
-                                         initWithSearchDisplayController:self.searchDisplayController];
-    }
     if (!self.locationManager) {
         self.locationManager = [[CLLocationManager alloc] init];
         if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
@@ -343,14 +180,23 @@ static const int ListControlIndexNearby = 2;
         self.locationManager.distanceFilter = 1000;
     }
     
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+    self.searchController.searchResultsUpdater = self;
+    
+    self.searchController.hidesNavigationBarDuringPresentation = YES;
+    self.searchController.searchBar.searchBarStyle = UISearchBarStyleProminent;
+    self.searchController.dimsBackgroundDuringPresentation = NO;
+
+    self.tableView.tableHeaderView = self.searchController.searchBar;
+    // don't show default tableview placeholder below content cells
+    self.tableView.tableFooterView = [UIView new];
+    
+    self.definesPresentationContext = YES;
+    
     // try to sync "featured" projects automatically
     if ([[INatReachability sharedClient] isNetworkReachable]) {
-        self.navigationItem.rightBarButtonItem = self.syncActivityItem;
-        [self syncFeaturedProjects];
+        [self fetchFeaturedProjects];
     }
-    
-    self.tableView.separatorInset = UIEdgeInsetsMake(0, 15 + 29 + 15, 0, 0);
-
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -367,7 +213,7 @@ static const int ListControlIndexNearby = 2;
 {
     [super viewWillDisappear:animated];
     
-    [self syncFinished];
+    //[self syncFinished];
     if (self.locationManager) {
         [self.locationManager stopUpdatingLocation];
     }
@@ -397,7 +243,7 @@ static const int ListControlIndexNearby = 2;
     if (self.locationManager) {
         [self.locationManager startUpdatingLocation];
     }
-    [self loadData];
+    //[self loadData];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -410,18 +256,18 @@ static const int ListControlIndexNearby = 2;
     [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }
 
-#pragma mark - button targets
-
-- (IBAction)tappedSearch:(id)sender {
-    [self.searchDisplayController setActive:YES animated:YES];
-    [self.searchDisplayController.searchBar becomeFirstResponder];
-}
-
 #pragma mark - Table view data source
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return self.projects.count;
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (self.searchController.isActive) {
+        return [[self filteredProjects] count];
+    } else {
+        return [[self projectsForActiveSelection] count];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -433,54 +279,97 @@ static const int ListControlIndexNearby = 2;
         cell = [[ProjectTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    Project *p = [self.projects objectAtIndex:[indexPath row]];
-    cell.titleLabel.text = p.title;
+    ExploreProjectRealm *epr = nil;
+    if (self.searchController.isActive) {
+        epr = [[self filteredProjects] objectAtIndex:indexPath.row];
+    } else {
+        epr = [[self projectsForActiveSelection] objectAtIndex:indexPath.row];
+    }
+    
+    cell.titleLabel.text = epr.title;
     [cell.projectImage cancelImageDownloadTask];
-    [cell.projectImage setImageWithURL:[NSURL URLWithString:p.iconURL]
+    [cell.projectImage setImageWithURL:[epr iconUrl]
                       placeholderImage:[UIImage inat_defaultProjectImage]];
     
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    Project *selectedProject = nil;
-    
-    // be defensive
-    @try {
-        selectedProject = [self.projects objectAtIndex:indexPath.item];
-    }
-    @catch (NSException *exception) {
-        if ([exception.name isEqualToString:NSRangeException])
-            selectedProject = nil;
-        else
-            @throw exception;
+    ExploreProjectRealm *project = nil;
+    if (self.searchController.isActive) {
+        project = [[self filteredProjects] objectAtIndex:indexPath.row];
+    } else {
+        project = [[self projectsForActiveSelection] objectAtIndex:indexPath.row];
     }
     
-    if (selectedProject && [selectedProject isKindOfClass:[Project class]])
-        [self performSegueWithIdentifier:@"projectDetailSegue" sender:selectedProject];
+    if (project) {
+        [self performSegueWithIdentifier:@"projectDetailSegue" sender:project];
+    }
+}
+
+- (UISegmentedControl *)projectSelectionControl {
+    static UISegmentedControl *_control = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSArray *items = @[@"Joined", @"Featured", @"Nearby"];
+        _control = [[UISegmentedControl alloc] initWithItems:items];
+        _control.translatesAutoresizingMaskIntoConstraints = NO;
+
+        [_control addTarget:self
+                     action:@selector(projectSelectionChanged:)
+           forControlEvents:UIControlEventValueChanged];
+        _control.selectedSegmentIndex = 1;
+    });
+    
+    return _control;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    UIView *view = [UIView new];
-    view.frame = CGRectMake(0, 0, tableView.bounds.size.width, 44);
+    if (self.searchController.isActive) {
+        return [self viewForHeaderWithActiveSearch];
+    } else {
+        return [self viewForHeaderWithoutActiveSearch];
+    }
+}
+
+- (UIView *)viewForHeaderWithActiveSearch {
+    return [UIView new];
+}
+
+- (UIView *)viewForHeaderWithoutActiveSearch {
+    static UIView *_header = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _header = [UIView new];
+        [_header addSubview:self.projectSelectionControl];
+        [[self projectSelectionControl].centerXAnchor constraintEqualToAnchor:_header.centerXAnchor].active = YES;
+        [[self projectSelectionControl].centerYAnchor constraintEqualToAnchor:_header.centerYAnchor].active = YES;
+    });
     
-    view.backgroundColor = [UIColor whiteColor];
+    return _header;
+}
+
+
+- (void)projectSelectionChanged:(UISegmentedControl *)control {
+    if (control.selectedSegmentIndex == ProjectSelectionMine) {
+        [self fetchMyProjects];
+    } else if (control.selectedSegmentIndex == ProjectSelectionFeatured) {
+        [self fetchFeaturedProjects];
+    } else {
+        [self fetchNearbyProjects];
+    }
     
-    UIView *separator = [UIView new];
-    separator.frame = CGRectMake(0, 43.5f, tableView.bounds.size.width, 0.5f);
-    separator.backgroundColor = [UIColor lightGrayColor];
-    [view addSubview:separator];
-    
-    [view addSubview:self.listControl];
-    self.listControl.center = view.center;
-    
-    return view;
+    [self.tableView reloadData];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 44;
+    if (self.searchController.isActive) {
+        return 0;
+    } else {
+        return 44;
+    }
 }
-
+ 
 #pragma mark - CLLocationManagerDelegate
 - (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
     
@@ -506,8 +395,8 @@ static const int ListControlIndexNearby = 2;
     }
     
     if (shouldSync && [[INatReachability sharedClient] isNetworkReachable]) {
-        [self syncFeaturedProjects];
-        [self syncNearbyProjects];
+        //[self syncFeaturedProjects];
+        //[self syncNearbyProjects];
     }
 }
 
@@ -544,12 +433,12 @@ static const int ListControlIndexNearby = 2;
         [[Analytics sharedClient] debugLog:logMsg];
     }
     
-    [self syncFinished];
-    [self loadData];
+    //[self syncFinished];
+    //[self loadData];
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    [self syncFinished];
+    //[self syncFinished];
     
     // KLUDGE!! RestKit doesn't seem to handle failed auth very well
     BOOL jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
@@ -588,10 +477,10 @@ static const int ListControlIndexNearby = 2;
     }
     
     if (authFailure) {
-        [self syncFinished];
+        //[self syncFinished];
         [self showSignupPrompt:nil];
     } else if (errorMsg) {
-        [self syncFinished];
+        //[self syncFinished];
         
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Whoops!",nil)
                                                                        message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
@@ -600,6 +489,77 @@ static const int ListControlIndexNearby = 2;
                                                   style:UIAlertActionStyleCancel
                                                 handler:nil]];
         [self presentViewController:alert animated:YES completion:nil];
+    }
+}
+
+#pragma mark UISearchResultsUpdating
+
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+    if (searchController.searchBar.text.length > 0) {
+        __weak typeof(self)weakSelf = self;
+        [[self projectsAPI] searchProjectsTitleText:searchController.searchBar.text
+                                            handler:^(NSArray *results, NSInteger count, NSError *error) {
+                                                RLMRealm *realm = [RLMRealm defaultRealm];
+                                                for (ExploreProject *project in results) {
+                                                    ExploreProjectRealm *epr = [[ExploreProjectRealm alloc] initWithMantleModel:project];
+                                                    [realm beginWriteTransaction];
+                                                    [realm addOrUpdateObject:epr];
+                                                    [realm commitWriteTransaction];
+                                                }
+                                                
+                                                dispatch_async(dispatch_get_main_queue(), ^{
+                                                    [weakSelf.tableView reloadData];
+                                                });
+                                            }];
+    }
+    
+    [self.tableView reloadData];
+}
+
+- (RLMResults *)filteredProjects {
+    return [ExploreProjectRealm objectsWhere:@"title CONTAINS[c] %@",
+            self.searchController.searchBar.text];
+}
+
+- (RLMResults *)projectsForSelection:(ProjectSelection)idx {
+    if (idx == ProjectSelectionMine) {
+        return self.myProjects;
+    } else if (idx == ProjectSelectionNearby) {
+        return self.nearbyProjects;
+    } else {
+        return self.featuredProjects;
+    }
+}
+
+- (RLMResults *)projectsForActiveSelection {
+    return [self projectsForSelection:[[self projectSelectionControl] selectedSegmentIndex]];
+}
+
+- (RLMResults *)featuredProjects {
+    NSInteger siteId = 1;
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (appDelegate.loginController.meUserLocal) {
+        siteId = appDelegate.loginController.meUserLocal.siteId;
+    }
+    return [ExploreProjectRealm featuredProjectsForSite:siteId];
+}
+
+- (RLMResults *)nearbyProjects {
+    if (self.lastLocation) {
+        return [ExploreProjectRealm projectsNear:self.lastLocation];
+    } else {
+        // TODO: show cannot determine location? or just hide nearby tab?
+        return [ExploreProjectRealm projectsWithLocations];
+    }
+}
+
+- (RLMResults *)myProjects {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (appDelegate.loginController.isLoggedIn) {
+        return [ExploreProjectRealm joinedProjects];
+    } else {
+        // TODO: show empty list? or show not logged in? or just hide "my projects" tab?
+        return @[];
     }
 }
 

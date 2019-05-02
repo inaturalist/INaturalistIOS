@@ -28,6 +28,10 @@
     [self requestMethod:@"GET" path:path params:nil classMapping:classForMapping handler:done];
 }
 
+- (void)delete:(NSString *)path handler:(INatAPIFetchCompletionCountHandler)done {
+    [self requestMethod:@"DELETE" path:path params:nil classMapping:nil handler:done];
+}
+
 - (NSString *)apiBaseUrl {
     return @"https://api.inaturalist.org/v1";
 }
@@ -139,39 +143,58 @@
     } else {
         NSMutableArray *results = [NSMutableArray array];
         NSInteger totalResults = 0;
-        NSString *totalResultsKey = @"total_results";
-        if ([json valueForKey:totalResultsKey] && [json valueForKey:totalResultsKey] != [NSNull null]) {
-            totalResults = [[json valueForKey:totalResultsKey] integerValue];
-        }
         
-        if ([json valueForKey:@"results"]) {
-            for (NSDictionary *resultJSON in [json valueForKey:@"results"]) {
+        if ([json isKindOfClass:[NSDictionary class]]) {
+            NSString *totalResultsKey = @"total_results";
+            if ([json valueForKey:totalResultsKey] && [json valueForKey:totalResultsKey] != [NSNull null]) {
+                totalResults = [[json valueForKey:totalResultsKey] integerValue];
+            }
+            
+            if ([json valueForKey:@"results"]) {
+                // sometimes results from node come back inside a results
+                // variable in the response dictionary
+                for (NSDictionary *resultJSON in [json valueForKey:@"results"]) {
+                    NSError *error;
+                    MTLModel *result = [MTLJSONAdapter modelOfClass:ClassForMapping
+                                                 fromJSONDictionary:resultJSON
+                                                              error:&error];
+                    if (result) {
+                        [results addObject:result];
+                    } else {
+                        // skip this one
+                        NSLog(@"MANTLE ERROR: %@", error);
+                    }
+                }
+            } else {
+                // sometimes results from node come back as a bare object
                 NSError *error;
                 MTLModel *result = [MTLJSONAdapter modelOfClass:ClassForMapping
-                                             fromJSONDictionary:resultJSON
+                                             fromJSONDictionary:json
                                                           error:&error];
-                
                 if (result) {
                     [results addObject:result];
+                    totalResults = 1;
                 } else {
                     // skip this one
                     NSLog(@"MANTLE ERROR: %@", error);
                 }
             }
         } else {
-            NSError *error;
-            MTLModel *result = [MTLJSONAdapter modelOfClass:ClassForMapping
-                                         fromJSONDictionary:json
-                                                      error:&error];
-            
-            if (result) {
-                [results addObject:result];
-                totalResults = 1;
-            } else {
-                // skip this one
-                NSLog(@"MANTLE ERROR: %@", error);
+            // sometimes results from node come back as an array of objects
+            for (id jsonObject in json) {
+                NSError *error;
+                MTLModel *result = [MTLJSONAdapter modelOfClass:ClassForMapping
+                                             fromJSONDictionary:jsonObject
+                                                          error:&error];
+                if (result) {
+                    [results addObject:result];
+                    // total results is unknown, can't set
+                } else {
+                    // skip this one
+                    NSLog(@"MANTLE ERROR: %@", error);
+                }
+
             }
-            
         }
         dispatch_async(dispatch_get_main_queue(), ^{
             done([NSArray arrayWithArray:results], totalResults, nil);

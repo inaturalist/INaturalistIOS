@@ -38,6 +38,7 @@
 #import "ExploreObservation.h"
 #import "ObservationAPI.h"
 #import "INatUITabBarController.h"
+#import "ExploreObservationPhoto.h"
 
 @interface ObsDetailV2ViewController () <ObsDetailViewModelDelegate, RKObjectLoaderDelegate, RKRequestDelegate>
 
@@ -316,10 +317,12 @@
         NSNumber *photoIndex = (NSNumber *)object;
         // can't do this in storyboards
         
-        NSArray *galleryData = [self.observation.sortedObservationPhotos bk_map:^id(id <INatPhoto> op) {
-            return [MHGalleryItem itemWithURL:op.largePhotoUrl.absoluteString
-                                  galleryType:MHGalleryTypeImage];
-        }];
+        NSMutableArray *galleryData = [NSMutableArray array];
+        for (id <INatPhoto> obsPhoto in self.observation.sortedObservationPhotos) {
+            MHGalleryItem *item = [MHGalleryItem itemWithURL:obsPhoto.largePhotoUrl.absoluteString
+                                                 galleryType:MHGalleryTypeImage];
+            [galleryData addObject:item];
+        }
         
         MHUICustomization *customization = [[MHUICustomization alloc] init];
         customization.showOverView = NO;

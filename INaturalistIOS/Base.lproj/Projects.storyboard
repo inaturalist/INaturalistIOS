@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="UPT-j8-FTq">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="UPT-j8-FTq">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -76,15 +76,8 @@
                         </connections>
                     </tableView>
                     <tabBarItem key="tabBarItem" title="Projects" image="projects-tab.png" id="AeY-f8-V2Q"/>
-                    <navigationItem key="navigationItem" title="Projects" id="erP-HQ-jwa">
-                        <barButtonItem key="rightBarButtonItem" systemItem="search" id="sNg-eb-B9l">
-                            <connections>
-                                <action selector="tappedSearch:" destination="WU4-PP-5v3" id="21x-9m-BA7"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Projects" id="erP-HQ-jwa"/>
                     <connections>
-                        <outlet property="searchButton" destination="sNg-eb-B9l" id="F6n-jm-gy8"/>
                         <outlet property="searchDisplayController" destination="rFc-OJ-xbK" id="9sT-Om-JHZ"/>
                         <segue destination="Cvt-h5-WFH" kind="push" identifier="projectDetailSegue" id="eqn-MM-xga"/>
                     </connections>
@@ -93,7 +86,6 @@
                 <searchDisplayController id="rFc-OJ-xbK">
                     <connections>
                         <outlet property="delegate" destination="WU4-PP-5v3" id="BUY-BW-fJs"/>
-                        <outlet property="searchBar" destination="KWv-kl-tNL" id="m45-39-gdZ"/>
                         <outlet property="searchContentsController" destination="WU4-PP-5v3" id="rYb-SP-E6f"/>
                         <outlet property="searchResultsDataSource" destination="WU4-PP-5v3" id="1oY-oo-pcR"/>
                         <outlet property="searchResultsDelegate" destination="WU4-PP-5v3" id="2T4-W2-Yu3"/>
@@ -101,6 +93,54 @@
                 </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="-788" y="3313"/>
+        </scene>
+        <!--Project About View Controller-->
+        <scene sceneID="RLi-8u-8B5">
+            <objects>
+                <viewController id="HaU-Gl-Oqi" customClass="ProjectAboutViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="gJg-lw-YFy"/>
+                        <viewControllerLayoutGuide type="bottom" id="FOD-D9-mmQ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Hfc-Fl-ZPo">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Dzv-5F-3Zx">
+                                <rect key="frame" x="16" y="96" width="343" height="555"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GDS-96-GEp">
+                                        <rect key="frame" x="0.0" y="0.0" width="343" height="23.5"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="20"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Ftn-aY-bJ5">
+                                        <rect key="frame" x="0.0" y="43.5" width="343" height="511.5"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    </textView>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="FOD-D9-mmQ" firstAttribute="top" secondItem="Dzv-5F-3Zx" secondAttribute="bottom" constant="16" id="N66-s6-ifK"/>
+                            <constraint firstItem="Dzv-5F-3Zx" firstAttribute="leading" secondItem="Hfc-Fl-ZPo" secondAttribute="leading" constant="16" id="Tmp-uF-u0H"/>
+                            <constraint firstAttribute="trailing" secondItem="Dzv-5F-3Zx" secondAttribute="trailing" constant="16" id="rYF-FC-6r1"/>
+                            <constraint firstItem="Dzv-5F-3Zx" firstAttribute="top" secondItem="gJg-lw-YFy" secondAttribute="bottom" constant="32" id="xsd-HD-jEz"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="aboutTextView" destination="Ftn-aY-bJ5" id="jjE-pw-Phb"/>
+                        <outlet property="titleLabel" destination="GDS-96-GEp" id="zzh-SN-d5f"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="svd-62-cPD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-512.79999999999995" y="4086.2068965517246"/>
         </scene>
         <!--Project DetailV2 View Controller-->
         <scene sceneID="F4M-Ql-xO6">
@@ -142,7 +182,7 @@
                                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 </state>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HuZ-un-AH0" customClass="ProjectNewsButton">
+                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HuZ-un-AH0">
                                                 <rect key="frame" x="80" y="0.0" width="80" height="30"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.20000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
@@ -190,10 +230,10 @@
                         <outlet property="projectHeaderBackground" destination="yxW-S2-7XQ" id="p3e-Jp-hlb"/>
                         <outlet property="projectNameLabel" destination="vWl-jb-1Ry" id="uVw-nX-16u"/>
                         <outlet property="projectThumbnail" destination="KKo-Rp-zvD" id="hfR-3H-Kxp"/>
-                        <segue destination="rSa-i4-Iyc" kind="push" identifier="projectAboutSegue" id="TjW-7G-p00"/>
                         <segue destination="OJc-7h-aVd" kind="show" identifier="segueToObservationDetail" id="xjb-X9-8y3"/>
                         <segue destination="Xq6-ac-B8V" kind="show" identifier="taxon" id="l9C-JJ-rTN"/>
                         <segue destination="nut-ys-RVl" kind="show" identifier="projectNewsSegue" id="elX-6c-9XC"/>
+                        <segue destination="HaU-Gl-Oqi" kind="show" identifier="projectAboutSegue" id="nPd-8i-ZO6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yVr-FX-sBA" userLabel="First Responder" sceneMemberID="firstResponder"/>

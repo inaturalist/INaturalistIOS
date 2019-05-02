@@ -7,10 +7,12 @@
 //
 
 #import <Realm/Realm.h>
+
 #import "ExploreComment.h"
 #import "ExploreUserRealm.h"
+#import "CommentVisualization.h"
 
-@interface ExploreCommentRealm : RLMObject
+@interface ExploreCommentRealm : RLMObject <CommentVisualization>
 
 @property NSInteger commentId;
 @property NSString *commentText;
@@ -20,3 +22,5 @@
 - (instancetype)initWithMantleModel:(ExploreComment *)model;
 
 @end
+
+RLM_ARRAY_TYPE(ExploreCommentRealm)

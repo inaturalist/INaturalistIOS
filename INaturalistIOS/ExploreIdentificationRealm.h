@@ -7,11 +7,13 @@
 //
 
 #import <Realm/Realm.h>
+
 #import "ExploreIdentification.h"
 #import "ExploreUserRealm.h"
 #import "ExploreTaxonRealm.h"
+#import "IdentificationVisualization.h"
 
-@interface ExploreIdentificationRealm : RLMObject
+@interface ExploreIdentificationRealm : RLMObject <IdentificationVisualization>
 
 @property NSInteger identificationId;
 @property NSString *identificationBody;
@@ -24,3 +26,5 @@
 - (instancetype)initWithMantleModel:(ExploreIdentification *)model;
 
 @end
+
+RLM_ARRAY_TYPE(ExploreIdentificationRealm)
