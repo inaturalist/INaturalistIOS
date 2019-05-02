@@ -83,8 +83,14 @@
 }
 
 - (ObsDataQuality)dataQuality {
-    // TODO: tbd
-    return ObsDataQualityNone;
+    if ([self.qualityGrade isEqualToString:@"research"]) {
+        return ObsDataQualityResearch;
+    } else if ([self.qualityGrade isEqualToString:@"needs_id"]) {
+        return ObsDataQualityNeedsID;
+    } else {
+        // must be casual?
+        return ObsDataQualityCasual;
+    }
 }
 
 
