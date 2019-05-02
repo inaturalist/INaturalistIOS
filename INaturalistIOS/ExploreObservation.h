@@ -25,7 +25,6 @@
 @property (nonatomic, copy) NSDate *timeObservedAt;
 @property (nonatomic, copy) NSDate *observedOn;
 @property (nonatomic, copy) NSString *qualityGrade;
-@property (nonatomic, assign) BOOL idPlease;
 @property (nonatomic, assign) NSInteger identificationsCount;
 @property (nonatomic, assign) NSInteger commentsCount;
 @property (nonatomic, assign) BOOL mappable;

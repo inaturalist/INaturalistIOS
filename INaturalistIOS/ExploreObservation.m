@@ -27,7 +27,6 @@
              @"timeObservedAt": @"time_observed_at_utc",
              @"observedOn": @"observed_on",
              @"qualityGrade": @"quality_grade",
-             @"idPlease": @"id_please",
              @"identificationsCount": @"identifications_count",
              @"commentsCount": @"comments_count",
              @"mappable": @"mappable",
@@ -102,9 +101,7 @@
 }
 
 - (void)setNilValueForKey:(NSString *)key {
-    if ([key isEqualToString:@"idPlease"]) {
-        self.idPlease = NO;
-    } else if ([key isEqualToString:@"identificationsCount"]) {
+    if ([key isEqualToString:@"identificationsCount"]) {
         self.identificationsCount = 0;
     } else if ([key isEqualToString:@"commentsCount"]) {
         self.commentsCount = 0;

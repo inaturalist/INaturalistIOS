@@ -27,7 +27,6 @@
 @property NSDate *timeObservedAt;
 @property NSDate *observedOn;
 @property NSString *qualityGrade;
-@property BOOL idPlease;
 @property NSInteger identificationsCount;
 @property NSInteger commentsCount;
 @property BOOL mappable;

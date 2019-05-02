@@ -23,7 +23,6 @@
         self.timeObservedAt = model.timeObservedAt;
         self.observedOn = model.observedOn;
         self.qualityGrade = model.qualityGrade;
-        self.idPlease = model.idPlease;
         self.identificationsCount = model.identificationsCount;
         self.commentsCount = model.commentsCount;
         self.mappable = model.mappable;
