@@ -148,12 +148,21 @@
 
 
 - (NSArray *)sortedActivity {
-    // TODO: tbd
-    return self.identifications;
+    NSMutableArray *activity = [NSMutableArray array];
+    for (ExploreCommentRealm *comment in self.comments) {
+        [activity addObject:comment];
+    }
+    for (ExploreIdentificationRealm *identification in self.identifications) {
+        [activity addObject:identification];
+    }
+    
+    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
+    return [activity sortedArrayUsingDescriptors:@[ sortDescriptor ]];
 }
 
 
 - (NSArray *)sortedFaves {
+    
     // TODO: tbd
     return self.faves;
 }
