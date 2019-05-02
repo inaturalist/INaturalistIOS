@@ -32,6 +32,7 @@
         self.latitude = model.latitude;
         self.longitude = model.longitude;
         self.uuid = model.uuid;
+        self.geoprivacy = model.geoprivacy;
         
         self.syncedAt = nil;
         
@@ -90,13 +91,6 @@
 - (ExploreTaxonRealm *)exploreTaxonRealm {
     return self.taxon;
 }
-
-
-- (NSString *)geoprivacy {
-    // TODO: tbd
-    return @"";
-}
-
 
 - (BOOL)hasUnviewedActivityBool {
     // TODO: tbd

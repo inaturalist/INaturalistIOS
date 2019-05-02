@@ -34,6 +34,7 @@
 @property BOOL coordinatesObscured;
 @property NSString *placeGuess;
 @property NSString *validationErrorMsg;
+@property NSString *geoprivacy;
 
 @property CLLocationDegrees latitude;
 @property CLLocationDegrees longitude;

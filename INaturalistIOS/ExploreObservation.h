@@ -33,7 +33,7 @@
 @property (nonatomic, copy) NSString *placeGuess;
 @property (nonatomic, assign) CLLocationCoordinate2D location;
 @property (nonatomic, copy) NSString *uuid;
-
+@property (nonatomic, copy) NSString *geoprivacy;
 
 @property (nonatomic, copy) NSArray *observationPhotos;
 @property (nonatomic, copy) NSArray *identifications;

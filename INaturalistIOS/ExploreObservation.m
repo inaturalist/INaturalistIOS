@@ -250,10 +250,6 @@
     return @"";
 }
 
-- (NSString *)geoprivacy {
-    return @"";
-}
-
 - (NSSet *)projectObservations {
     return [NSSet set];
 }
