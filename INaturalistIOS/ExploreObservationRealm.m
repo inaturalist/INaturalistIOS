@@ -33,6 +33,7 @@
         self.longitude = model.longitude;
         self.uuid = model.uuid;
         self.geoprivacy = model.geoprivacy;
+        self.captive = model.captive;
         
         self.syncedAt = nil;
         
@@ -112,10 +113,8 @@
     return self.observationId;
 }
 
-
 - (BOOL)isCaptive {
-    // TODO: tbd
-    return NO;
+    return self.captive;
 }
 
 

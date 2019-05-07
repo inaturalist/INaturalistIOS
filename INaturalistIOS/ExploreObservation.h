@@ -34,6 +34,7 @@
 @property (nonatomic, assign) CLLocationCoordinate2D location;
 @property (nonatomic, copy) NSString *uuid;
 @property (nonatomic, copy) NSString *geoprivacy;
+@property (nonatomic, assign) BOOL captive;
 
 @property (nonatomic, copy) NSArray *observationPhotos;
 @property (nonatomic, copy) NSArray *identifications;

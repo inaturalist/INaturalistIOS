@@ -35,6 +35,7 @@
 @property NSString *placeGuess;
 @property NSString *validationErrorMsg;
 @property NSString *geoprivacy;
+@property BOOL captive;
 
 @property CLLocationDegrees latitude;
 @property CLLocationDegrees longitude;

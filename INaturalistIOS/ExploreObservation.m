@@ -41,6 +41,7 @@
              @"taxon": @"taxon",
              @"observationFieldValues": @"ofvs",
              @"uuid": @"uuid",
+             @"captive": @"captive",
              };
 }
 
@@ -232,10 +233,6 @@
 
 - (NSSet *)observationFieldValues {
     return [NSSet set];
-}
-
-- (BOOL)captive {
-    return NO;
 }
 
 - (NSString *)validationErrorMsg {
