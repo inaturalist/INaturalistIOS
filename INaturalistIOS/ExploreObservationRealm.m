@@ -104,7 +104,6 @@
     return NO;
 }
 
-
 - (NSString *)iconicTaxonName {
     return self.taxon.iconicTaxonName;
 }
@@ -117,9 +116,7 @@
     return self.captive;
 }
 
-
 - (BOOL)isEditable {
-    // TODO: tbd
     return YES;
 }
 
@@ -135,12 +132,8 @@
 }
 
 
-- (void)setTaxon:(Taxon *)newValue {
-    // TODO: tbd
-}
-
-
 - (NSString *)sortable {
+    
     // TODO: tbd
     return nil;
 }
