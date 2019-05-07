@@ -195,8 +195,11 @@
 
 
 - (CLLocationCoordinate2D)visibleLocation {
-    // TODO: tbd
-    return kCLLocationCoordinate2DInvalid;
+    if (CLLocationCoordinate2DIsValid(self.location)) {
+        return self.location;
+    } else {
+        return kCLLocationCoordinate2DInvalid;
+    }
 }
 
 
