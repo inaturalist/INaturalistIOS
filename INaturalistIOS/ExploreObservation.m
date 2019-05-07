@@ -113,8 +113,8 @@
     } else if ([key isEqualToString:@"publicPositionalAccuracy"]) {
         self.publicPositionalAccuracy = 0;
     } else if ([key isEqualToString:@"location"]) {
-    	self.location = CLLocationCoordinate2DMake(-19999.0,-19999.0);
-    	// do nothing?
+        self.location = kCLLocationCoordinate2DInvalid;
+        // do nothing?
     } else {
         [super setNilValueForKey:key];
     }
@@ -299,12 +299,12 @@
 }
 
 - (CLLocationCoordinate2D)visibleLocation {
-	if (CLLocationCoordinate2DIsValid(self.location)) {
-		return self.location;
-	} else {
-		// invalid location
-		return CLLocationCoordinate2DMake(-19999.0,-19999.0);
-	}
+    if (CLLocationCoordinate2DIsValid(self.location)) {
+        return self.location;
+    } else {
+        // invalid location
+        return kCLLocationCoordinate2DInvalid;
+    }
 }
 
 - (CLLocationDistance)visiblePositionalAccuracy {
