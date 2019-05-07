@@ -50,15 +50,15 @@
 }
 
 + (NSValueTransformer *)commentsJSONTransformer {
-	return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreComment.class];
+    return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreComment.class];
 }
 
 + (NSValueTransformer *)identificationsJSONTransformer {
-	return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreIdentification.class];
+    return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreIdentification.class];
 }
 
 + (NSValueTransformer *)favesJSONTransformer {
-	return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreFave.class];
+    return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreFave.class];
 }
 
 + (NSValueTransformer *)observationFieldValuesJSONTransformer {
@@ -66,22 +66,22 @@
 }
 
 + (NSValueTransformer *)taxonJSONTransformer {
-	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreTaxon.class];
+    return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreTaxon.class];
 }
 
 + (NSValueTransformer *)userJSONTransformer {
-	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreUser.class];
+    return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreUser.class];
 }
 
 + (NSValueTransformer *)observedOnJSONTransformer {
-	static NSDateFormatter *_dateFormatter = nil;
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		_dateFormatter = [[NSDateFormatter alloc] init];
-		_dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
-		_dateFormatter.dateFormat = @"yyyy-MM-dd";
-	});
-
+    static NSDateFormatter *_dateFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        _dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        _dateFormatter.dateFormat = @"yyyy-MM-dd";
+    });
+    
     return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
         return [_dateFormatter dateFromString:dateString];
     }];
@@ -89,15 +89,15 @@
 
 + (NSValueTransformer *)locationJSONTransformer {
     return [MTLValueTransformer transformerWithBlock:^id(NSString *locationCoordinateString) {
-    	NSArray *c = [locationCoordinateString componentsSeparatedByString:@","];
-    	if (c.count == 2) {
-    		CLLocationDegrees latitude = [((NSString *)c[0]) floatValue];
-    		CLLocationDegrees longitude = [((NSString *)c[1]) floatValue];
-    		CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(latitude, longitude);
-    		return [NSValue valueWithMKCoordinate:coords];
-    	} else {
-    		return nil;
-    	}
+        NSArray *c = [locationCoordinateString componentsSeparatedByString:@","];
+        if (c.count == 2) {
+            CLLocationDegrees latitude = [((NSString *)c[0]) floatValue];
+            CLLocationDegrees longitude = [((NSString *)c[1]) floatValue];
+            CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(latitude, longitude);
+            return [NSValue valueWithMKCoordinate:coords];
+        } else {
+            return nil;
+        }
     }];
 }
 
@@ -106,7 +106,7 @@
         self.identificationsCount = 0;
     } else if ([key isEqualToString:@"commentsCount"]) {
         self.commentsCount = 0;
-   	} else if ([key isEqualToString:@"mappable"]) {
+    } else if ([key isEqualToString:@"mappable"]) {
         self.mappable = NO;
     } else if ([key isEqualToString:@"coordinatesObscured"]) {
         self.coordinatesObscured = NO;
@@ -121,8 +121,8 @@
 }
 
 - (ExploreTaxonRealm *)exploreTaxonRealm {
-	RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", self.taxon.taxonId];
-	return [results firstObject];
+    RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", self.taxon.taxonId];
+    return [results firstObject];
 }
 
 #pragma mark - Uploadable
@@ -142,7 +142,7 @@
 #pragma mark - ObservationVisualization
 
 - (BOOL)isCaptive {
-	return self.captive;
+    return self.captive;
 }
 
 - (NSString *)iconicTaxonName {
@@ -154,11 +154,11 @@
 }
 
 - (NSString *)username {
-	return self.user.login;
+    return self.user.login;
 }
 
 - (NSURL *)userThumbUrl {
-	return self.user.userIcon;
+    return self.user.userIcon;
 }
 
 - (CLLocationDegrees)privateLatitude {
@@ -220,7 +220,7 @@
 }
 
 - (NSInteger)userID {
-	return self.user.userId;
+    return self.user.userId;
 }
 
 - (NSString *)sortable {
@@ -228,7 +228,7 @@
 }
 
 - (NSInteger)taxonRecordID {
-	return self.taxon.taxonId;
+    return self.taxon.taxonId;
 }
 
 - (NSSet *)observationFieldValues {
@@ -252,23 +252,23 @@
 }
 
 - (CLLocationCoordinate2D)coordinate {
-	return self.location;
+    return self.location;
 }
 
 - (CLLocationDegrees)latitude {
-	if (CLLocationCoordinate2DIsValid(self.location)) {
-		return self.location.latitude;
-	} else {
+    if (CLLocationCoordinate2DIsValid(self.location)) {
+        return self.location.latitude;
+    } else {
         return 0.0;
-	}
+    }
 }
 
 - (CLLocationDegrees)longitude {
-	if (CLLocationCoordinate2DIsValid(self.location)) {
-		return self.location.longitude;
-	} else {
+    if (CLLocationCoordinate2DIsValid(self.location)) {
+        return self.location.longitude;
+    } else {
         return 0.0;
-	}
+    }
 }
 
 - (NSString *)title {
@@ -308,7 +308,7 @@
 }
 
 - (CLLocationDistance)visiblePositionalAccuracy {
-	return self.publicPositionalAccuracy;
+    return self.publicPositionalAccuracy;
 }
 
 
