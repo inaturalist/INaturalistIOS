@@ -120,10 +120,20 @@
     return YES;
 }
 
++ (NSDateFormatter *)shortDateFormatter
+{
+    static dispatch_once_t once;
+    static NSDateFormatter *shortFormatter;
+    dispatch_once(&once, ^{
+        shortFormatter = [[NSDateFormatter alloc] init];
+        shortFormatter.dateStyle = NSDateFormatterShortStyle;
+        shortFormatter.timeStyle = NSDateFormatterNoStyle;
+    });
+    return shortFormatter;
+}
 
 - (NSString *)observedOnShortString {
-    // TODO: tbd
-    return @"blah";
+    return [[self.class shortDateFormatter] stringFromDate:self.observedOn];
 }
 
 - (NSSet *)projectObservations {
