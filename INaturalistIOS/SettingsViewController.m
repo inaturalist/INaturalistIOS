@@ -582,7 +582,7 @@ static const int ChangePartnerMinimumInterval = 86400;
         if (!lastChange) {
             return YES;
         } else {
-            NSTimeInterval timeSinceChange = [lastChange timeIntervalSinceNow];
+            NSTimeInterval timeSinceChange = [[NSDate date] timeIntervalSinceDate:lastChange];
             if (timeSinceChange > ChangePartnerMinimumInterval) {
                 return YES;
             } else {
