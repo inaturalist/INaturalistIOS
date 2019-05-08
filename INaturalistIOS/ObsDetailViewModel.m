@@ -225,31 +225,33 @@
 - (UITableViewCell *)taxonCellForTableView:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath {
     ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
 	cell.selectionStyle = UITableViewCellSelectionStyleDefault;
-	
-    RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", [self.observation taxonRecordID]];
-
     cell.taxonNameLabel.textColor = [UIColor blackColor];
 
-	if ([self.observation taxonRecordID] != 0 && results.count == 0) {
-		__weak typeof(self) weakSelf = self;
-		[self.taxonApi taxonWithId:[self.observation taxonRecordID] handler:^(NSArray *results, NSInteger count, NSError *error) {
-			// put the results into realm
-			RLMRealm *realm = [RLMRealm defaultRealm];
-			[realm beginWriteTransaction];
-			for (ExploreTaxon *taxon in results) {
-				ExploreTaxonRealm *etr = [[ExploreTaxonRealm alloc] initWithMantleModel:taxon];
-				[realm addOrUpdateObject:etr];
-			}
-			[realm commitWriteTransaction];
-			
-			// update the UI
-			dispatch_async(dispatch_get_main_queue(), ^{
-				__strong typeof(weakSelf) strongSelf = weakSelf;
-				[[strongSelf delegate] reloadTableView];
-			});
-		}];
-	} else if (results.count == 1) {
-        ExploreTaxonRealm *etr = [results firstObject];
+    ExploreTaxonRealm *etr = nil;
+    if ([self.observation.taxon isKindOfClass:[ExploreTaxonRealm class]]) {
+        etr = (ExploreTaxonRealm *)self.observation.taxon;
+    } else if ([self.observation.taxon isKindOfClass:[ExploreTaxon class]]) {
+        ExploreTaxon *et = (ExploreTaxon *)self.observation.taxon;
+        etr = [[ExploreTaxonRealm alloc] initWithMantleModel:et];
+        
+        // add to realm
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        [realm addOrUpdateObject:etr];
+        [realm commitWriteTransaction];
+    }
+    
+    if (etr) {
+        if ([etr.iconicTaxonName isEqualToString:etr.commonName]) {
+            // show the iconic illustration instead of the photo for super high level taxa
+            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
+        } else if (etr.photoUrl) {
+            [cell.taxonImageView setImageWithURL:etr.photoUrl];
+        } else {
+            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
+        }
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+
         if (!etr.commonName || [etr.commonName isEqualToString:etr.scientificName]) {
             // no common name, so only show scientific name in the main label
             cell.taxonNameLabel.text = etr.scientificName;
@@ -275,27 +277,17 @@
                 cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
                 cell.taxonSecondaryNameLabel.text = [NSString stringWithFormat:@"%@ %@",
                                                      [etr.rankName capitalizedString], etr.scientificName];
-
             }
         }
-
-        if ([etr.iconicTaxonName isEqualToString:etr.commonName]) {
-            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
-        } else if (etr.photoUrl) {
-            [cell.taxonImageView setImageWithURL:etr.photoUrl];
-        } else {
-            cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
-        }
-        
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     } else {
-    	cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        // no taxon
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         FAKIcon *question = [FAKINaturalist speciesUnknownIconWithSize:44];
         [question addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
         cell.taxonImageView.image = [question imageWithSize:CGSizeMake(44, 44)];
         // the question icon has a rendered border
         cell.taxonImageView.layer.borderWidth = 0.0f;
-
+        
         if (self.observation.speciesGuess) {
             cell.taxonNameLabel.text = self.observation.speciesGuess;
         } else {
