@@ -169,11 +169,6 @@
     return self.faves;
 }
 
-- (Taxon *)taxon {
-    return nil;
-}
-
-
 - (NSInteger)taxonRecordID {
     return self.taxon.taxonId;
 }
