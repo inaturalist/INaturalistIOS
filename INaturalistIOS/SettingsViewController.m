@@ -19,6 +19,7 @@
 #import <Realm/Realm.h>
 #import <RestKit/RestKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
+#import <SafariServices/SafariServices.h>
 
 #import "SettingsViewController.h"
 #import "Observation.h"
@@ -427,41 +428,26 @@ static const int ChangePartnerMinimumInterval = 86400;
     [self.tableView reloadData];
 }
 
-- (void)launchTutorial
-{
-    NSArray *tutorialImages = @[
-                                [UIImage imageNamed:@"tutorial1"],
-                                [UIImage imageNamed:@"tutorial2"],
-                                [UIImage imageNamed:@"tutorial3"],
-                                [UIImage imageNamed:@"tutorial4"],
-                                [UIImage imageNamed:@"tutorial5"],
-                                [UIImage imageNamed:@"tutorial6"],
-                                [UIImage imageNamed:@"tutorial7"],
-                                ];
-    
-    NSArray *galleryData = [tutorialImages bk_map:^id(UIImage *image) {
-        return [MHGalleryItem itemWithImage:image];
-    }];
-    
-    MHUICustomization *customization = [[MHUICustomization alloc] init];
-    customization.showOverView = NO;
-    customization.showMHShareViewInsteadOfActivityViewController = NO;
-    customization.hideShare = YES;
-    customization.useCustomBackButtonImageOnImageViewer = NO;
-    
-    MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
-    gallery.galleryItems = galleryData;
-    gallery.presentationIndex = 0;
-    gallery.UICustomization = customization;
-    
-    __weak MHGalleryController *blockGallery = gallery;
-    
-    gallery.finishedCallback = ^(NSInteger currentIndex, UIImage *image, MHTransitionDismissMHGallery *interactiveTransition, MHGalleryViewMode viewMode) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [blockGallery dismissViewControllerAnimated:YES completion:nil];
-        });
-    };
-    [self presentMHGalleryController:gallery animated:YES completion:nil];
+- (void)launchTutorial {
+#ifdef INatTutorialURL
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
+        [[Analytics sharedClient] event:kAnalyticsEventTutorial];
+        NSURL *tutorialUrl = [NSURL URLWithString:INatTutorialURL];
+        
+        SFSafariViewController *safari = [[SFSafariViewController alloc] initWithURL:tutorialUrl];
+        [self.navigationController presentViewController:safari animated:YES completion:nil];
+    } else {
+        [self networkUnreachableAlert];
+    }
+#else
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot rate", @"Failure message")
+                                                                   message:NSLocalizedString(@"No URL configured", nil)
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                              style:UIAlertActionStyleDefault
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+#endif
 }
 
 - (void)sendSupportEmail
@@ -977,7 +963,7 @@ static const int ChangePartnerMinimumInterval = 86400;
 - (UITableViewCell *)tableView:(UITableView *)tableView tutorialCellForIndexPath:(NSIndexPath *)indexPath {
     SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
                                                                    forIndexPath:indexPath];
-    cell.leadingTextLabel.text = NSLocalizedString(@"Tutorial", @"label for start tutorial action in settings.");
+    cell.leadingTextLabel.text = NSLocalizedString(@"Video Tutorial", @"label for start video tutorial action in settings.");
     return cell;
 }
 
