@@ -290,6 +290,7 @@
 		FADE674B1FD7B2B400AB4F09 /* IdentificationsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE674A1FD7B2B400AB4F09 /* IdentificationsAPI.m */; };
 		FADFB0D5216D371700F2CD14 /* ExploreProjectRealmTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FADFB0D4216D371700F2CD14 /* ExploreProjectRealmTests.m */; };
 		FADFB0DA216EEC6800F2CD14 /* AlexsProjects.json in Resources */ = {isa = PBXBuildFile; fileRef = FADFB0D9216EEC6800F2CD14 /* AlexsProjects.json */; };
+		FAEA0A4E229224EF004111A1 /* CLPlacemark+INat.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEA0A4D229224EF004111A1 /* CLPlacemark+INat.m */; };
 		FAEB5C0F2069A19000BA3132 /* LoginSwitchContextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEB5C0E2069A19000BA3132 /* LoginSwitchContextButton.m */; };
 		FAEB5C132069A5B400BA3132 /* LoginSwitchContextButtonTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEB5C122069A5B400BA3132 /* LoginSwitchContextButtonTests.m */; };
 		FAEF232E1C7CD80300208F44 /* ProjectDetailV2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF232D1C7CD80300208F44 /* ProjectDetailV2ViewController.m */; };
@@ -1017,6 +1018,8 @@
 		FAE9D0961D13807900137660 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		FAE9D0971D13807900137660 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FAE9D0981D13807900137660 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FAEA0A4C229224EF004111A1 /* CLPlacemark+INat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CLPlacemark+INat.h"; sourceTree = "<group>"; };
+		FAEA0A4D229224EF004111A1 /* CLPlacemark+INat.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "CLPlacemark+INat.m"; sourceTree = "<group>"; };
 		FAEB5C0D2069A19000BA3132 /* LoginSwitchContextButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LoginSwitchContextButton.h; sourceTree = "<group>"; };
 		FAEB5C0E2069A19000BA3132 /* LoginSwitchContextButton.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginSwitchContextButton.m; sourceTree = "<group>"; };
 		FAEB5C122069A5B400BA3132 /* LoginSwitchContextButtonTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginSwitchContextButtonTests.m; sourceTree = "<group>"; };
@@ -1411,6 +1414,8 @@
 				FA63FA1419E4CE65007306F9 /* Analytics.m */,
 				FAA0A1961F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.h */,
 				FAA0A1971F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.m */,
+				FAEA0A4C229224EF004111A1 /* CLPlacemark+INat.h */,
+				FAEA0A4D229224EF004111A1 /* CLPlacemark+INat.m */,
 				FA2285601C8A49D700AC6FEA /* ContainedScrollViewDelegate.h */,
 				FA6F87681B0E99A20019B157 /* FAKINaturalist.h */,
 				FA6F87691B0E99A20019B157 /* FAKINaturalist.m */,
@@ -2596,6 +2601,7 @@
 				FA9249821EF85FD000E0C387 /* ExploreTaxonScore.m in Sources */,
 				FAEF23381C7D090900208F44 /* ProjectDetailObservationsViewController.m in Sources */,
 				FA50E4231C223FD400718B81 /* ObsDetailTaxonCell.m in Sources */,
+				FAEA0A4E229224EF004111A1 /* CLPlacemark+INat.m in Sources */,
 				FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */,
 				FAC59DFC20DB0890000A6558 /* UploadOperation.m in Sources */,
 				FA3F1F941A12CABA00928102 /* ExploreUser+SearchResultsHelper.m in Sources */,
