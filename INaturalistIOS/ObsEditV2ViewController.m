@@ -57,6 +57,7 @@
 #import "ExploreUpdateRealm.h"
 #import "INatReachability.h"
 #import "UIViewController+INaturalist.h"
+#import "CLPlacemark+INat.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -774,14 +775,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                             CLPlacemark *placemark = [placemarks firstObject];
                             if (placemark) {
                                 @try {
-                                    NSString *name = placemark.name ?: @"";
-                                    NSString *locality = placemark.locality ?: @"";
-                                    NSString *administrativeArea = placemark.administrativeArea ?: @"";
-                                    NSString *ISOcountryCode = placemark.ISOcountryCode ?: @"";
-                                    obs.placeGuess = [ @[ name,
-                                                          locality,
-                                                          administrativeArea,
-                                                          ISOcountryCode ] componentsJoinedByString:@", "];
+                                    obs.placeGuess = [placemark inatPlaceGuess];
                                     obs.localUpdatedAt = [NSDate date];
                                     NSIndexPath *locRowIp = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
                                     [self.tableView beginUpdates];
