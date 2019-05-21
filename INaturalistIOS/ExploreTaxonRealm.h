@@ -14,20 +14,22 @@
 
 @interface ExploreTaxonRealm : RLMObject <TaxonVisualization>
 
-@property (nonatomic, assign) NSInteger taxonId;
-@property (nonatomic, copy) NSString *webContent;
-@property (nonatomic, copy) NSString *commonName;
-@property (nonatomic, copy) NSString *scientificName;
-@property (nonatomic, copy) NSString *searchableCommonName;
-@property (nonatomic, copy) NSString *searchableScientificName;
-@property (nonatomic, copy) NSString *photoUrlString;
-@property (nonatomic, readonly) NSURL *photoUrl;
-@property (nonatomic, copy) NSString *rankName;
-@property (nonatomic, assign) NSInteger rankLevel;
-@property (nonatomic, copy) NSString *iconicTaxonName;
-@property (nonatomic, copy) NSString *lastMatchedTerm;
-@property (nonatomic, copy) NSString *searchableLastMatchedTerm;
-@property (nonatomic, assign) NSInteger observationCount;
+@property NSInteger taxonId;
+@property NSString *webContent;
+@property NSString *commonName;
+@property NSString *scientificName;
+@property NSString *searchableCommonName;
+@property NSString *searchableScientificName;
+@property NSString *photoUrlString;
+@property (readonly) NSURL *photoUrl;
+@property NSString *rankName;
+@property NSInteger rankLevel;
+@property NSString *iconicTaxonName;
+@property NSString *lastMatchedTerm;
+@property NSString *searchableLastMatchedTerm;
+@property NSInteger observationCount;
+@property NSString *wikipediaUrlString;
+@property (readonly) NSURL *wikipediaUrl;
 
 // to-many relationships
 @property RLMArray<ExploreTaxonPhotoRealm *><ExploreTaxonPhotoRealm> *taxonPhotos;
@@ -35,5 +37,6 @@
 
 - (BOOL)isGenusOrLower;
 - (instancetype)initWithMantleModel:(ExploreTaxon *)model;
+- (NSAttributedString *)wikipediaSummaryAttrStringWithSystemFontSize:(CGFloat)fontSize;
 
 @end

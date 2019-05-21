@@ -323,11 +323,11 @@
             if (self.fullTaxon) {
                 cell.commonNameLabel.text = self.fullTaxon.commonName;
                 cell.scientificNameLabel.text = self.fullTaxon.scientificName;
-                cell.summaryLabel.text = nil;
+                cell.summaryTextView.text = nil;
             } else {
                 cell.commonNameLabel.text = self.taxon.commonName;
                 cell.scientificNameLabel.text = self.taxon.scientificName;
-                cell.summaryLabel.text = nil;
+                cell.summaryTextView.text = nil;
             }
             
             CGFloat scientificNameSize = cell.scientificNameLabel.font.pointSize;
@@ -341,11 +341,9 @@
                                                  self.taxon.scientificName];
             }
             
-            if (self.fullTaxon.webContent && [self.fullTaxon.webContent length] > 0) {
-                cell.summaryLabel.text = [NSString stringWithFormat:@"%@ (%@)",
-                                          [self.fullTaxon.webContent stringByStrippingHTML],
-                                          NSLocalizedString(@"Source: Wikipedia", nil)
-                                          ];
+            if (self.fullTaxon) {
+                cell.summaryTextView.attributedText = [self.fullTaxon wikipediaSummaryAttrStringWithSystemFontSize:15.0f];
+                [cell.summaryTextView sizeToFit];
             }
 
             return cell;

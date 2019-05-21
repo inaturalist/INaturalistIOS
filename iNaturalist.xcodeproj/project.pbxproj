@@ -125,6 +125,7 @@
 		FA3D1E8B21DA94AA00673936 /* ExploreProjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D1E8A21DA94AA00673936 /* ExploreProjectTests.m */; };
 		FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */; };
 		FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D90F61A95148500BAA0EC /* ExploreLeaderboardCell.m */; };
+		FA3D929D2294AF55004A1AA1 /* TextViewNoInsets.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3D929C2294AF55004A1AA1 /* TextViewNoInsets.m */; };
 		FA3E75E81D73A57D00C459E5 /* OnboardingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3E75E71D73A57D00C459E5 /* OnboardingViewController.m */; };
 		FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */; };
 		FA3F1F8D1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FA3F1F8C1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m */; };
@@ -589,6 +590,8 @@
 		FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ExploreLeaderboardViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		FA3D90F51A95148500BAA0EC /* ExploreLeaderboardCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreLeaderboardCell.h; sourceTree = "<group>"; };
 		FA3D90F61A95148500BAA0EC /* ExploreLeaderboardCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreLeaderboardCell.m; sourceTree = "<group>"; };
+		FA3D929B2294AF55004A1AA1 /* TextViewNoInsets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TextViewNoInsets.h; sourceTree = "<group>"; };
+		FA3D929C2294AF55004A1AA1 /* TextViewNoInsets.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TextViewNoInsets.m; sourceTree = "<group>"; };
 		FA3E75E61D73A57D00C459E5 /* OnboardingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardingViewController.h; sourceTree = "<group>"; };
 		FA3E75E71D73A57D00C459E5 /* OnboardingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnboardingViewController.m; sourceTree = "<group>"; };
 		FA3F1F881A12ABEF00928102 /* ExploreDisambiguator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreDisambiguator.h; sourceTree = "<group>"; };
@@ -1467,6 +1470,8 @@
 				FAB7028621431BD600462F62 /* UIViewController+INaturalist.h */,
 				FAB7028721431BD600462F62 /* UIViewController+INaturalist.m */,
 				FAC59DF920DB0880000A6558 /* Uploader */,
+				FA3D929B2294AF55004A1AA1 /* TextViewNoInsets.h */,
+				FA3D929C2294AF55004A1AA1 /* TextViewNoInsets.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -2509,6 +2514,7 @@
 				FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */,
 				19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */,
 				19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */,
+				FA3D929D2294AF55004A1AA1 /* TextViewNoInsets.m in Sources */,
 				FAEB5C0F2069A19000BA3132 /* LoginSwitchContextButton.m in Sources */,
 				FAFED1FC1DB5A2680015CCBA /* ExploreCommentRealm.m in Sources */,
 				FA99BDCB1FD794E300C9D985 /* CommentsAPI.m in Sources */,

@@ -20,4 +20,7 @@
 
 - (BOOL)isGenusOrLower;
 
+- (NSURL *)wikipediaUrl;
+- (NSString *)wikipediaArticleName;
+
 @end
