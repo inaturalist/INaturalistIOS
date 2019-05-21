@@ -23,6 +23,9 @@
 @property (nonatomic, copy) NSString *matchedTerm;
 @property (nonatomic, assign) NSInteger observationCount;
 @property (nonatomic, copy) NSArray *taxonPhotos;
+@property (nonatomic, copy) NSURL *wikipediaUrl;
+
+@property (readonly) NSString *wikipediaArticleName;
 
 - (BOOL)isGenusOrLower;
 

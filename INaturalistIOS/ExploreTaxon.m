@@ -24,10 +24,15 @@
 		@"matchedTerm": @"matched_term",
 		@"observationCount": @"observations_count",
         @"taxonPhotos": @"taxon_photos",
+        @"wikipediaUrl": @"wikipedia_url",
 	};
 }
 
 + (NSValueTransformer *)photoUrlJSONTransformer {
+    return [NSValueTransformer valueTransformerForName:MTLURLValueTransformerName];
+}
+
++ (NSValueTransformer *)wikipediaUrlJSONTransformer {
     return [NSValueTransformer valueTransformerForName:MTLURLValueTransformerName];
 }
 
@@ -47,6 +52,10 @@
     } else {
         [super setNilValueForKey:key];
     }
+}
+
+- (NSString *)wikipediaArticleName {
+    return [self.wikipediaUrl lastPathComponent];
 }
 
 @end
