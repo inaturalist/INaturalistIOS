@@ -1433,10 +1433,13 @@
 				FAB7028621431BD600462F62 /* UIViewController+INaturalist.h */,
 				FAB7028721431BD600462F62 /* UIViewController+INaturalist.m */,
 				FAC59DF920DB0880000A6558 /* Uploader */,
+<<<<<<< HEAD
+=======
 				FA3D929B2294AF55004A1AA1 /* TextViewNoInsets.h */,
 				FA3D929C2294AF55004A1AA1 /* TextViewNoInsets.m */,
 				FAD125422296060C006E70FC /* InsetLabel.h */,
 				FAD125432296060C006E70FC /* InsetLabel.m */,
+>>>>>>> 4ec8b70... show notice about adding obs to collection project
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -2585,8 +2588,11 @@
 				19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */,
 				FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */,
 				FA3F202E1A141AD800928102 /* AutocompleteSearchItem.m in Sources */,
+<<<<<<< HEAD
+=======
 				FA1FFFCE21E94AF500834CD0 /* ExploreObservationField.m in Sources */,
 				FAD125442296060C006E70FC /* InsetLabel.m in Sources */,
+>>>>>>> 4ec8b70... show notice about adding obs to collection project
 				1955FCFD17F102FA004F57F2 /* GuideXML.m in Sources */,
 				FA711AAE1D53E52600C4FFDB /* OnboardingLoginViewController.m in Sources */,
 				FA4E72D319FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m in Sources */,
