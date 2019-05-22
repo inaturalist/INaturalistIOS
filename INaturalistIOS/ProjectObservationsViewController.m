@@ -33,6 +33,7 @@
 #import "INatReachability.h"
 #import "ExploreUserRealm.h"
 #import "UIColor+INaturalist.h"
+#import "InsetLabel.h"
 
 static NSString *SimpleFieldIdentifier = @"simple";
 static NSString *LongTextFieldIdentifier = @"longtext";
@@ -69,6 +70,17 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     } else {
         self.title = NSLocalizedString(@"Choose Projects", @"title for project observations chooser");
     }
+    
+    self.tableView.tableHeaderView = ({
+        InsetLabel *label = [InsetLabel new];
+        label.insets = UIEdgeInsetsMake(10, 10, 10, 10);
+        label.text = NSLocalizedString(@"Please note: Observations will be automatically included in a collection project if they meet its requirements.",
+                                       @"helpful note about observations and collection projects on the screen where you can add observations to projects.");
+        label.numberOfLines = 0;
+        label.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.2];
+        label;
+    });
+    [self.tableView.tableHeaderView sizeToFit];
     
     self.navigationItem.leftBarButtonItem = ({
         FAKIcon *backIcon = [FAKIonIcons iosArrowBackIconWithSize:34];
