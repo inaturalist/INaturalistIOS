@@ -18,6 +18,7 @@
 #import "ExploreObservationFieldValueRealm.h"
 #import "ExploreObservationPhotoRealm.h"
 #import "ExploreFaveRealm.h"
+#import "ExploreProjectObservationRealm.h"
 
 @interface ExploreObservationRealm : RLMObject <ObservationVisualization, Uploadable>
 
@@ -30,7 +31,8 @@
 @property NSInteger identificationsCount;
 @property NSInteger commentsCount;
 @property BOOL mappable;
-@property NSInteger publicPositionalAccuracy;
+@property CLLocationAccuracy publicPositionalAccuracy;
+@property CLLocationAccuracy positionalAccuracy;
 @property BOOL coordinatesObscured;
 @property NSString *placeGuess;
 @property NSString *validationErrorMsg;
@@ -46,16 +48,21 @@
 @property RLMArray <ExploreObservationFieldValueRealm *><ExploreObservationFieldValueRealm> *observationFieldValues;
 @property RLMArray <ExploreObservationPhotoRealm *><ExploreObservationPhotoRealm> *observationPhotos;
 @property RLMArray <ExploreFaveRealm *><ExploreFaveRealm> *faves;
-// TODO: project observatio
+@property RLMArray <ExploreProjectObservationRealm *><ExploreProjectObservationRealm> *projectObservations;
 
 @property ExploreTaxonRealm *taxon;
 @property ExploreUserRealm *user;
 
+@property NSDate *updatedAt;
 @property NSDate *syncedAt;
+@property NSDate *createdAt;
+
+@property BOOL hasUnviewedActivityBool;
 
 @property (readonly) CLLocationCoordinate2D location;
 @property (readonly) BOOL hasTime;
 @property (readonly) BOOL commentsAndIdentificationsSynchronized;
+@property (readonly) BOOL needsSync;
 
 - (instancetype)initWithMantleModel:(ExploreObservation *)model;
 

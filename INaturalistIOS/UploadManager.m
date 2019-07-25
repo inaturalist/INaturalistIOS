@@ -10,12 +10,7 @@
 
 #import "UploadManager.h"
 #import "INatModel.h"
-#import "DeletedRecord.h"
-#import "Observation.h"
 #import "Analytics.h"
-#import "ObservationPhoto.h"
-#import "ObservationFieldValue.h"
-#import "ProjectObservation.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
 #import "NSURL+INaturalist.h"
@@ -24,6 +19,7 @@
 #import "DeleteRecordOperation.h"
 #import "ObservationAPI.h"
 #import "ExploreUserRealm.h"
+#import "ExploreObservationRealm.h"
 
 static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 
@@ -98,11 +94,14 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
         
         // add the delete jobs to the queue
         for (DeletedRecord *dr in self.recordsToDelete) {
+            /*
+             TODO: realm
             DeleteRecordOperation *op = [[DeleteRecordOperation alloc] init];
             op.rootObjectId = dr.objectID;
             op.nodeSessionManager = weakSelf.nodeSessionManager;
             op.delegate = self.delegate;
             [self.deleteQueue addOperation:op];
+             */
         }
     } failure:^(NSError *error) {
         NSError *jwtFailedError = [NSError errorWithDomain:INatJWTFailureErrorDomain
@@ -134,14 +133,15 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
                                              forHTTPHeaderField:@"Authorization"];
         
         // add the observations to the queue
-        for (Observation *o in self.observationsToUpload) {
+        for (ExploreObservationRealm *o in self.observationsToUpload) {
             UploadObservationOperation *op = [[UploadObservationOperation alloc] init];
-            op.rootObjectId = o.objectID;
+            op.uuid = o.uuid;
             op.userSiteId = appDelegate.loginController.meUserLocal.siteId;
             op.nodeSessionManager = weakSelf.nodeSessionManager;
             op.delegate = weakSelf.delegate;
             [weakSelf.uploadQueue addOperation:op];
         }
+
     } failure:^(NSError *error) {
         NSError *jwtFailedError = [NSError errorWithDomain:INatJWTFailureErrorDomain
                                                       code:error.code
@@ -178,6 +178,9 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 - (void)autouploadPendingContentExcludeInvalids:(BOOL)excludeInvalids {
     if (!self.shouldAutoupload) { return; }
     
+    // TODO: realm
+    /*
+    
     NSMutableArray *recordsToDelete = [NSMutableArray array];
     for (Class klass in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
         [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
@@ -206,6 +209,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
         [self syncDeletedRecords:recordsToDelete
           thenUploadObservations:observationsToUpload];
     }
+     */
 }
 
 - (void)stopUploadActivity {
@@ -302,9 +306,12 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 - (void)loggedIn {
     // if there are any deleted records around,
     // they're stale and should be trashed
+    /*
+     TODO: realm
     for (DeletedRecord *record in [DeletedRecord allObjects]) {
         [record deleteEntity];
     }
+     */
     NSError *error = nil;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
     if (error) {

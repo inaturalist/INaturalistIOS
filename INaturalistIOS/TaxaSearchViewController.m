@@ -15,7 +15,6 @@
 
 #import "TaxaSearchViewController.h"
 #import "ImageStore.h"
-#import "TaxonPhoto.h"
 #import "TaxonDetailViewController.h"
 #import "Analytics.h"
 #import "FAKINaturalist.h"
@@ -29,11 +28,11 @@
 #import "TaxonSuggestionCell.h"
 #import "UIColor+INaturalist.h"
 #import "ExploreTaxonScore.h"
-#import "ObservationPhoto.h"
 #import "ObserverCount.h"
 #import "IdentifierCount.h"
 #import "ExploreUser.h"
 #import "UIImage+INaturalist.h"
+#import "ExploreObservationRealm.h"
 
 @interface TaxaSearchViewController () <UISearchResultsUpdating, UISearchControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 @property UISearchController *searchController;
@@ -400,7 +399,7 @@
 
 - (void)loadAndShowObservationSuggestionsWithCompletion:(INatAPISuggestionsCompletionHandler)done {
     self.showingSuggestions = YES;
-    ObservationPhoto *op = [[self.observationToClassify sortedObservationPhotos] firstObject];
+    id <INatPhoto> op = [[self.observationToClassify sortedObservationPhotos] firstObject];
     [self.headerImageView setImageWithURL:[op squarePhotoUrl]];
     self.tableView.backgroundView = self.loadingView;
     [[self api] suggestionsForObservationId:self.observationToClassify.inatRecordId

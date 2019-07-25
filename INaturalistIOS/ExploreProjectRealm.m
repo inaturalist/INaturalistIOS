@@ -16,8 +16,6 @@
     }
     return self;
 }
-
-
 @end
 
 @implementation ExploreProjectRealm
@@ -32,6 +30,8 @@
         self.iconUrlString = model.iconUrl.absoluteString;
         self.terms = model.terms;
         self.inatDescription = model.inatDescription;
+        self.type = model.type;
+        
         for (ExploreProjectSiteFeatures *siteFeatures in model.siteFeatures) {
             ExploreProjectRealmSiteFeatures *eprsf = [[ExploreProjectRealmSiteFeatures alloc] initWithMantleModel:siteFeatures];
             [self.siteFeatures addObject:eprsf];
@@ -66,7 +66,7 @@
     return @"projectId";
 }
 
-+ (RLMResults *)featuredProjectsForSite:(NSInteger *)siteId {
++ (RLMResults *)featuredProjectsForSite:(NSInteger)siteId {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SUBQUERY(siteFeatures, $siteFeature, $siteFeature.featuredAt != NIL AND $siteFeature.siteId == %d) .@count > 0", siteId];
     RLMResults *results = [[self class] objectsWithPredicate:predicate];
     RLMSortDescriptor *sort = [RLMSortDescriptor sortDescriptorWithKeyPath:@"title" ascending:YES];
@@ -99,6 +99,14 @@
 
 + (RLMResults *)joinedProjects {
     return [[self class] objectsWhere:@"joined == TRUE"];
+}
+
+- (NSString *)titleForTypeOfProject {
+    if (self.type == ExploreProjectTypeCollection || self.type == ExploreProjectTypeUmbrella) {
+        return NSLocalizedString(@"Collection Project", @"Collection type of project, which automatically collects observations into it.");
+    } else {
+        return NSLocalizedString(@"Traditional Project", @"Traditional inat type of project, where users have to manually add observations to the project.");
+    }
 }
 
 @end

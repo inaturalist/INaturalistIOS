@@ -8,7 +8,6 @@
 
 #import "ExploreTaxon+SearchResultsHelper.h"
 #import "UIFont+ExploreFonts.h"
-#import "TaxonPhoto.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
 
 @implementation ExploreTaxon (SearchResultsHelper)

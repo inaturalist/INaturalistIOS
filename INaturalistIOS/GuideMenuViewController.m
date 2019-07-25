@@ -8,7 +8,6 @@
 
 #import "GuideMenuViewController.h"
 #import "GuideViewController.h"
-#import "Observation.h"
 #import "SSZipArchive.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"

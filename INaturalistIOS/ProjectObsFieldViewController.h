@@ -8,15 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-@class Observation;
-@class ObservationField;
-@class ProjectObservationField;
-@class ObservationFieldValue;
+@class ExploreObservationRealm;
+@class ExploreObservationFieldRealm;
+@class ExploreProjectObservationFieldRealm;
+@class ExploreObservationFieldValueRealm;
 
 @interface ProjectObsFieldViewController : UIViewController
 
-@property Observation *observation;
-@property ProjectObservationField *projectObsField;
-@property ObservationFieldValue *obsFieldValue;
+@property ExploreObservationRealm *observation;
+@property ExploreProjectObservationFieldRealm *projectObsField;
+@property ExploreObservationFieldValueRealm *obsFieldValue;
 
 @end

@@ -80,7 +80,7 @@
 
 - (void)joinedProjectsUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch joined projects from node"];
-    NSString *path = [NSString stringWithFormat:@"users/%ld/projects", (long)userId];
+    NSString *path = [NSString stringWithFormat:@"projects?member_id=%ld&per_page=200", (long)userId];
     [super fetch:path classMapping:[ExploreProject class] handler:done];
 }
 
@@ -94,6 +94,12 @@
     [[Analytics sharedClient] debugLog:@"Network - leave project via node"];
     NSString *path = [NSString stringWithFormat:@"projects/%ld/leave", (long)projectId];
     [super delete:path handler:done];
+}
+
+- (void)projectsWithIds:(NSArray *)projectIds handler:(INatAPIFetchCompletionCountHandler)done {
+    NSString *projectIdsString = [projectIds componentsJoinedByString:@","];
+    NSString *path = [NSString stringWithFormat:@"projects/%@", projectIdsString];
+    [super fetch:path classMapping:[ExploreProject class] handler:done];
 }
 
 

@@ -11,7 +11,6 @@
 #import <RestKit/RestKit.h>
 
 #import "ObsDetailFavesViewModel.h"
-#import "Observation.h"
 #import "FaveVisualization.h"
 #import "DisclosureCell.h"
 #import "ObsDetailAddFaveHeader.h"

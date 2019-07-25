@@ -13,12 +13,11 @@
 @interface ObservationAPI : INatAPI
 
 - (void)observationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done;
-- (void)railsObservationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)updatesWithHandler:(INatAPIFetchCompletionCountHandler)done;
 - (void)seenUpdatesForObservationId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)topObserversForTaxaIds:(NSArray *)taxaIds handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)topIdentifiersForTaxaIds:(NSArray *)taxaIds handler:(INatAPIFetchCompletionCountHandler)done;
-
 - (void)observationsForUserId:(NSInteger)userId count:(NSInteger)count handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)deletedObservationsSinceDate:(NSDate *)date handler:(INatAPIFetchCompletionCountHandler)done;
 
 @end

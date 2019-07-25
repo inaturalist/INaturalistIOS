@@ -23,8 +23,6 @@
 #import "ExploreUser.h"
 #import "UIColor+ExploreColors.h"
 #import "Analytics.h"
-#import "Taxon.h"
-#import "TaxonPhoto.h"
 #import "UIFont+ExploreFonts.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
 #import "ExploreDisambiguator.h"
@@ -464,7 +462,7 @@
                 __weak typeof(self)weakSelf = self;
                 disambiguator.chosenBlock = ^void(id choice) {
                     // observations controller will fetch observations using this taxon
-                    [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForTaxon:(Taxon *)choice]];
+                    [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForTaxon:(ExploreTaxon *)choice]];
                     
                     __strong typeof(weakSelf)strongSelf = weakSelf;
                     [strongSelf showActiveSearch];

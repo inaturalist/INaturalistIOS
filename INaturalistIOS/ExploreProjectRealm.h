@@ -31,6 +31,7 @@ RLM_ARRAY_TYPE(ExploreProjectRealmSiteFeatures)
 @property BOOL joined;
 @property NSString *terms;
 @property NSString *inatDescription;
+@property ExploreProjectType type;
 
 // to-many relationship
 @property RLMArray<ExploreProjectRealmSiteFeatures *><ExploreProjectRealmSiteFeatures> *siteFeatures;
@@ -49,7 +50,5 @@ RLM_ARRAY_TYPE(ExploreProjectRealmSiteFeatures)
 + (RLMResults *)projectsNear:(CLLocation *)location;
 + (RLMResults *)projectsWithLocations;
 + (RLMResults *)joinedProjects;
-
-
 
 @end

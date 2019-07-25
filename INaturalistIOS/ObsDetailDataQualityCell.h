@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Observation.h"
+
+#import "ObservationVisualization.h"
 
 @interface ObsDetailDataQualityCell : UITableViewCell
 

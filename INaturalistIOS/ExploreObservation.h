@@ -28,7 +28,8 @@
 @property (nonatomic, assign) NSInteger identificationsCount;
 @property (nonatomic, assign) NSInteger commentsCount;
 @property (nonatomic, assign) BOOL mappable;
-@property (nonatomic, assign) NSInteger publicPositionalAccuracy;
+@property (nonatomic, assign) CLLocationAccuracy publicPositionalAccuracy;
+@property (nonatomic, assign) CLLocationAccuracy positionalAccuracy;
 @property (nonatomic, assign) BOOL coordinatesObscured;
 @property (nonatomic, copy) NSString *placeGuess;
 @property (nonatomic, assign) CLLocationCoordinate2D location;
@@ -40,6 +41,7 @@
 @property (nonatomic, copy) NSArray *identifications;
 @property (nonatomic, copy) NSArray *comments;
 @property (nonatomic, copy) NSArray *faves;
+@property (nonatomic, copy) NSArray *projectObservations;
 @property (nonatomic, copy) NSArray *observationFieldValues;
 
 @property (nonatomic) ExploreTaxon *taxon;
@@ -49,5 +51,9 @@
 @property (nonatomic, readonly) BOOL commentsAndIdentificationsSynchronized;
 @property (readonly) CLLocationDegrees latitude;
 @property (readonly) CLLocationDegrees longitude;
+
+@property (nonatomic, copy) NSDate *syncedAt;
+@property (nonatomic, copy) NSDate *updatedAt;
+@property (nonatomic, copy) NSDate *createdAt;
 
 @end

@@ -15,18 +15,11 @@
 #import <M13ProgressSuite/M13ProgressViewPie.h>
 
 #import "ConfirmPhotoViewController.h"
-#import "Taxon.h"
-#import "TaxonPhoto.h"
 #import "ImageStore.h"
-#import "Observation.h"
-#import "ObservationPhoto.h"
 #import "MultiImageView.h"
 #import "TaxaSearchViewController.h"
 #import "UIColor+ExploreColors.h"
-#import "Observation.h"
 #import "Analytics.h"
-#import "Project.h"
-#import "ProjectObservation.h"
 #import "ObsEditV2ViewController.h"
 #import "UIColor+INaturalist.h"
 #import "INaturalistAppDelegate.h"
@@ -34,6 +27,8 @@
 #import "UIImage+INaturalist.h"
 #import "NSData+INaturalist.h"
 #import "UIViewController+INaturalist.h"
+#import "ExploreObservationRealm.h"
+#import "ExploreObservationPhotoRealm.h"
 
 #define CHICLETWIDTH 100.0f
 #define CHICLETHEIGHT 98.0f
@@ -66,40 +61,38 @@
         self.confirmFollowUpAction = ^(NSArray *confirmedAssets){
             __strong typeof(weakSelf) strongSelf = weakSelf;
             
+            NSDate *now = [NSDate date];
+
             // go straight to making the observation
-            Observation *o = [Observation object];
-            o.localCreatedAt = [NSDate date];
-            o.localUpdatedAt = [NSDate date];
+            ExploreObservationRealm *o = [[ExploreObservationRealm alloc] init];
+            o.uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
+            o.updatedAt = now;
+            o.createdAt = now;
+                        
+            if (strongSelf.taxon && [self.taxon isKindOfClass:[ExploreTaxonRealm class]]) {
+                o.taxon = (ExploreTaxonRealm *)strongSelf.taxon;
+                o.speciesGuess = [strongSelf.taxon commonName] ?: [strongSelf.taxon scientificName];
+            }
             
             if (strongSelf.obsLocation) {
-                o.latitude = @(strongSelf.obsLocation.coordinate.latitude);
-                o.longitude = @(strongSelf.obsLocation.coordinate.longitude);
-                o.positionalAccuracy = @(strongSelf.obsLocation.horizontalAccuracy);
+                o.latitude = strongSelf.obsLocation.coordinate.latitude;
+                o.longitude = strongSelf.obsLocation.coordinate.longitude;
+                o.positionalAccuracy = strongSelf.obsLocation.horizontalAccuracy;
             }
             
             if (strongSelf.obsDate) {
                 o.observedOn = strongSelf.obsDate;
-                o.localObservedOn = o.observedOn;
-                o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
-            }
-            
-            if (weakSelf.taxon) {
-                o.taxon = weakSelf.taxon;
-                o.speciesGuess = weakSelf.taxon.defaultName ?: weakSelf.taxon.name;
-            }
-            
-            if (weakSelf.project) {
-                ProjectObservation *po = [ProjectObservation object];
-                po.observation = o;
-                po.project = weakSelf.project;
+                o.timeObservedAt = strongSelf.obsDate;
             }
             
             NSInteger idx = 0;
             for (UIImage *image in confirmedAssets) {
-                ObservationPhoto *op = [ObservationPhoto object];
-                op.position = @(idx);
-                [op setObservation:o];
-                [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
+                ExploreObservationPhotoRealm *op = [[ExploreObservationPhotoRealm alloc] init];
+                op.uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
+                //op.updatedAt = now;
+                
+                op.position = idx;
+                op.photoKey = [[ImageStore sharedImageStore] createKey];
                 
                 NSError *saveError = nil;
                 BOOL saved = [[ImageStore sharedImageStore] storeImage:image
@@ -111,8 +104,6 @@
                                                delegate:nil
                                       cancelButtonTitle:NSLocalizedString(@"OK", nil)
                                       otherButtonTitles:nil] show];
-                    [o destroy];
-                    [op destroy];
                     return;
                 } else if (!saved) {
                     [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg")
@@ -120,16 +111,30 @@
                                                delegate:nil
                                       cancelButtonTitle:NSLocalizedString(@"OK", nil)
                                       otherButtonTitles:nil] show];
-                    [o destroy];
-                    [op destroy];
                     return;
                 }
                 
-                op.localCreatedAt = [NSDate date];
-                op.localUpdatedAt = [NSDate date];
-
                 idx++;
+                [o.observationPhotos addObject:op];
             }
+            
+            // save the observation
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            [realm beginWriteTransaction];
+            [realm addOrUpdateObject:o];
+            [realm commitWriteTransaction];
+            
+            /*
+            
+             TODO: project observations
+            
+            if (weakSelf.project) {
+                ProjectObservation *po = [ProjectObservation object];
+                po.observation = o;
+                po.project = weakSelf.project;
+            }
+
+             */
             
             ObsEditV2ViewController *editObs = [[ObsEditV2ViewController alloc] initWithNibName:nil bundle:nil];
             editObs.observation = o;

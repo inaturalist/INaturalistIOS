@@ -10,7 +10,6 @@
 #import <ARSafariActivity/ARSafariActivity.h>
 
 #import "NewsItemViewController.h"
-#import "NewsItem.h"
 #import "Analytics.h"
 #import "ExplorePostRealm.h"
 

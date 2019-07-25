@@ -13,12 +13,11 @@
 #import <RestKit/RestKit.h>
 
 #import "GuideTaxonViewController.h"
-#import "Observation.h"
 #import "RXMLElement+Helpers.h"
 #import "GuideImageXML.h"
 #import "Analytics.h"
-#import "Taxon.h"
 #import "INatUITabBarController.h"
+#import "ExploreTaxonRealm.h"
 
 static const int WebViewTag = 1;
 
@@ -68,29 +67,22 @@ static const int WebViewTag = 1;
     // we're working from serialized taxon objects (GuideTaxonXML) but this API wants
     // regular Taxon objects.
     INatUITabBarController *tabBar = (INatUITabBarController *)self.tabBarController;
-    Taxon *observedTaxon = nil;
+    ExploreTaxonRealm *observedTaxon = nil;
     if (self.guideTaxon.taxonID && self.guideTaxon.taxonID.length > 0) {
-        NSArray *records = @[ self.guideTaxon.taxonID ];
-        observedTaxon = [[Taxon matchingRecordIDs:records] firstObject];
+        observedTaxon = [ExploreTaxonRealm objectForPrimaryKey:@(self.guideTaxon.taxonID.integerValue)];
     }
-    if (observedTaxon) {
-        [tabBar triggerNewObservationFlowForTaxon:observedTaxon project:nil];
-    } else {
-        observedTaxon = [[Taxon alloc] initWithEntity:[Taxon entity]
-                       insertIntoManagedObjectContext:[NSManagedObjectContext defaultContext]];
-        observedTaxon.recordID = @(self.guideTaxon.taxonID.integerValue);
-        observedTaxon.name = self.guideTaxon.name;
-        
-        NSError *saveError = nil;
-        [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-        if (saveError) {
-            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving: %@",
-                                                saveError.localizedDescription]];
-            [tabBar triggerNewObservationFlowForTaxon:nil project:nil];
-        } else {
-            [tabBar triggerNewObservationFlowForTaxon:observedTaxon project:nil];
-        }
+    if (!observedTaxon) {
+        // this is kinda janky?
+        observedTaxon = [[ExploreTaxonRealm alloc] init];
+        observedTaxon.taxonId = self.guideTaxon.taxonID.integerValue;
+        observedTaxon.scientificName = self.guideTaxon.name;
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        [realm addOrUpdateObject:observedTaxon];
+        [realm commitWriteTransaction];
     }
+    
+    [tabBar triggerNewObservationFlowForTaxon:observedTaxon project:nil];
 }
 
 # pragma mark - UIWebViewDelegate

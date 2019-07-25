@@ -20,4 +20,7 @@
 @property (nonatomic, copy) NSURL *url;
 @property (nonatomic, copy) NSString *attribution;
 
+@property (nonatomic, copy) NSDate *syncedAt;
+@property (nonatomic, copy) NSDate *updatedAt;
+
 @end

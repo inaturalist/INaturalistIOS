@@ -11,8 +11,6 @@
 #import <RestKit/RestKit.h>
 
 #import "ProjectsViewController.h"
-#import "Project.h"
-#import "ProjectUser.h"
 #import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
 #import "INaturalistAppDelegate.h"
@@ -397,98 +395,6 @@ typedef NS_ENUM(NSInteger, ProjectSelection) {
     if (shouldSync && [[INatReachability sharedClient] isNetworkReachable]) {
         //[self syncFeaturedProjects];
         //[self syncNearbyProjects];
-    }
-}
-
-#pragma mark - RKRequest and RKObjectLoader delegates
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
-    NSDate *now = [NSDate date];
-    for (INatModel *o in objects) {
-        [o setSyncedAt:now];
-    }
-    
-    if ([objectLoader.URL.absoluteString rangeOfString:@"featured"].location != NSNotFound) {
-        NSArray *rejects = [Project objectsWithPredicate:
-                            [NSPredicate predicateWithFormat:@"featuredAt != nil && syncedAt < %@", now]];
-        for (Project *p in rejects) {
-            if (p.projectUsers.count == 0) {
-                [p deleteEntity];
-            } else {
-                p.featuredAt = nil;
-                p.syncedAt = now;
-            }
-        }
-    } else if ([objectLoader.URL.path rangeOfString:@"projects/user"].location != NSNotFound) {
-        NSArray *rejects = [ProjectUser objectsWithPredicate:[NSPredicate predicateWithFormat:@"syncedAt < %@", now]];
-        for (ProjectUser *pu in rejects) {
-            [pu deleteEntity];
-        }
-    }
-    
-    NSError *error = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    if (error) {
-        NSString *logMsg = [NSString stringWithFormat:@"SAVE ERROR: %@", error.localizedDescription];
-        [[Analytics sharedClient] debugLog:logMsg];
-    }
-    
-    //[self syncFinished];
-    //[self loadData];
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    //[self syncFinished];
-    
-    // KLUDGE!! RestKit doesn't seem to handle failed auth very well
-    BOOL jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
-    BOOL authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
-    NSString *errorMsg = error.localizedDescription;
-    
-    if (jsonParsingError || authFailure) {
-        [self showSignupPrompt:nil];
-    } else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                                       message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
-}
-
-- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
-    bool authFailure = false;
-    NSString *errorMsg;
-    switch (response.statusCode) {
-        case 401:
-            // Unauthorized
-            authFailure = true;
-            break;
-        case 422:
-            // UNPROCESSABLE ENTITY
-            
-            errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
-            break;
-        default:
-            return;
-            break;
-    }
-    
-    if (authFailure) {
-        //[self syncFinished];
-        [self showSignupPrompt:nil];
-    } else if (errorMsg) {
-        //[self syncFinished];
-        
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                                       message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 

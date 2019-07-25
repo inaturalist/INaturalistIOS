@@ -15,6 +15,7 @@
 #import "ExploreTaxon.h"
 #import "ExploreTaxonRealm.h"
 #import "ExploreObservationFieldValue.h"
+#import "ExploreProjectObservation.h"
 
 @implementation ExploreObservation
 
@@ -24,13 +25,14 @@
              @"location": @"location",
              @"inatDescription": @"description",
              @"speciesGuess": @"species_guess",
-             @"timeObservedAt": @"time_observed_at_utc",
+             @"timeObservedAt": @"time_observed_at",
              @"observedOn": @"observed_on",
              @"qualityGrade": @"quality_grade",
              @"identificationsCount": @"identifications_count",
              @"commentsCount": @"comments_count",
              @"mappable": @"mappable",
              @"publicPositionalAccuracy": @"public_positional_accuracy",
+             @"positionalAccuracy": @"positional_accuracy",
              @"coordinatesObscured": @"coordinates_obscured",
              @"placeGuess": @"place_guess",
              @"user": @"user",
@@ -42,11 +44,18 @@
              @"observationFieldValues": @"ofvs",
              @"uuid": @"uuid",
              @"captive": @"captive",
+             @"projectObservations": @"project_observations",
+             @"updatedAt": @"updated_at",
+             @"createdAt": @"created_at",
              };
 }
 
 + (NSValueTransformer *)observationPhotosJSONTransformer {
     return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreObservationPhoto.class];
+}
+
++ (NSValueTransformer *)projectObservationsJSONTransformer {
+    return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreProjectObservation.class];
 }
 
 + (NSValueTransformer *)commentsJSONTransformer {
@@ -87,6 +96,49 @@
     }];
 }
 
++ (NSValueTransformer *)timeObservedAtJSONTransformer {
+    static NSDateFormatter *_dateFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        _dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        _dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
+    });
+    
+    return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
+        return [_dateFormatter dateFromString:dateString];
+    }];
+}
+
++ (NSValueTransformer *)createdAtJSONTransformer {
+    static NSDateFormatter *_dateFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        _dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        _dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
+    });
+    
+    return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
+        return [_dateFormatter dateFromString:dateString];
+    }];
+}
+
++ (NSValueTransformer *)updatedAtJSONTransformer {
+    static NSDateFormatter *_dateFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        _dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        _dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
+    });
+    
+    return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
+        return [_dateFormatter dateFromString:dateString];
+    }];
+}
+
+
 + (NSValueTransformer *)locationJSONTransformer {
     return [MTLValueTransformer transformerWithBlock:^id(NSString *locationCoordinateString) {
         NSArray *c = [locationCoordinateString componentsSeparatedByString:@","];
@@ -112,6 +164,8 @@
         self.coordinatesObscured = NO;
     } else if ([key isEqualToString:@"publicPositionalAccuracy"]) {
         self.publicPositionalAccuracy = 0;
+    } else if ([key isEqualToString:@"positionalAccuracy"]) {
+        self.positionalAccuracy = 0;
     } else if ([key isEqualToString:@"location"]) {
         self.location = kCLLocationCoordinate2DInvalid;
         // do nothing?
@@ -231,24 +285,12 @@
     return self.taxon.taxonId;
 }
 
-- (NSSet *)observationFieldValues {
-    return [NSSet set];
-}
-
 - (NSString *)validationErrorMsg {
     return @"";
 }
 
-- (NSSet *)projectObservations {
-    return [NSSet set];
-}
-
 - (NSArray *)sortedObservationPhotos {
     return self.observationPhotos;
-}
-
-- (CLLocationAccuracy)positionalAccuracy {
-    return self.publicPositionalAccuracy;
 }
 
 - (CLLocationCoordinate2D)coordinate {
@@ -308,7 +350,19 @@
 }
 
 - (CLLocationDistance)visiblePositionalAccuracy {
-    return self.publicPositionalAccuracy;
+    if (self.coordinatesObscured) {
+        return self.publicPositionalAccuracy;
+    } else {
+        return self.positionalAccuracy;
+    }
+}
+
+- (NSArray *)projectIds {
+    NSMutableArray *projectIds = [NSMutableArray arrayWithCapacity:self.projectObservations.count];
+    for (ExploreProjectObservation *po in self.projectObservations) {
+        [projectIds addObject:@(po.projectId)];
+    }
+    return [NSArray arrayWithArray:projectIds];
 }
 
 

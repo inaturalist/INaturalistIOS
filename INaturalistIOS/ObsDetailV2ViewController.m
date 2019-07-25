@@ -14,7 +14,6 @@
 #import <RestKit/RestKit.h>
 
 #import "ObsDetailV2ViewController.h"
-#import "Observation.h"
 #import "ObsDetailViewModel.h"
 #import "DisclosureCell.h"
 #import "SubtitleDisclosureCell.h"
@@ -28,7 +27,6 @@
 #import "ObsEditV2ViewController.h"
 #import "ObsDetailSelectorHeaderView.h"
 #import "ObsDetailAddActivityFooter.h"
-#import "ObservationPhoto.h"
 #import "LocationViewController.h"
 #import "ObsDetailNoInteractionHeaderFooter.h"
 #import "ObsDetailAddFaveHeader.h"
@@ -121,11 +119,6 @@
                                                                                                target:self
                                                                                                action:@selector(editObs)];
     }
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(handleNSManagedObjectContextDidSaveNotification:)
-                                                 name:NSManagedObjectContextDidSaveNotification
-                                               object:[Observation managedObjectContext]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -208,6 +201,9 @@
 }
 
 - (void)reloadObservation {
+    /*
+     TODO: realm
+     
     if (self.observation.needsUpload || self.observation.childrenNeedingUpload.count != 0) {
         // don't clobber any un-uploaded edits to this observation or its children
         return;
@@ -237,6 +233,7 @@
                            }
                        }];
     }
+     */
 }
 
 - (void)didReceiveMemoryWarning {
@@ -263,6 +260,8 @@
 #pragma mark - notifications
 
 - (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification {
+    /*
+     TODO: realm version?
     BOOL updatedMe = NO;
     for (id object in [notification.userInfo valueForKey:@"updated"]) {
         if ([object isKindOfClass:[Observation class]]) {
@@ -278,6 +277,7 @@
             [self.tableView reloadData];
         });
     }
+     */
 }
 
 #pragma mark - obs detail view model delegate

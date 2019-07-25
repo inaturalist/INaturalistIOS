@@ -15,17 +15,12 @@
 #import <Photos/Photos.h>
 
 #import "INatUITabBarController.h"
-#import "Observation.h"
-#import "ObservationPhoto.h"
 #import "INatWebController.h"
 #import "ConfirmPhotoViewController.h"
 #import "UIColor+INaturalist.h"
 #import "ObsCameraOverlay.h"
-#import "Taxon.h"
 #import "INatTooltipView.h"
 #import "Analytics.h"
-#import "ProjectObservation.h"
-#import "Project.h"
 #import "LoginController.h"
 #import "ObsEditV2ViewController.h"
 #import "INaturalistAppDelegate.h"
@@ -35,6 +30,7 @@
 #import "NewsPagerViewController.h"
 #import "ImageStore.h"
 #import "ExploreUserRealm.h"
+#import "ExploreObservationRealm.h"
 
 #define EXPLORE_TAB_INDEX   0
 #define NEWS_TAB_INDEX      1
@@ -110,8 +106,7 @@ static char PROJECT_ASSOCIATED_KEY;
     }
 }
 
-
-- (void)triggerNewObservationFlowForTaxon:(Taxon *)taxon project:(Project *)project {
+- (void)triggerNewObservationFlowForTaxon:(id<TaxonVisualization>)taxon project:(Project *)project {
     
     // check for free disk space
     if ([NSFileManager freeDiskSpaceMB] < 100) {
@@ -199,7 +194,8 @@ static char PROJECT_ASSOCIATED_KEY;
     }
 }
 
-- (void)newObservationForTaxon:(Taxon *)taxon project:(Project *)project {
+
+- (void)newObservationForTaxon:(id <TaxonVisualization>)taxon project:(Project *)project {
     
     if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:HasMadeAnObservationKey];
@@ -332,7 +328,8 @@ static char PROJECT_ASSOCIATED_KEY;
     } else if ([tabBarController.viewControllers indexOfObject:viewController] == ME_TAB_INDEX) {
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         if (appDelegate.loginController.meUserLocal.observationsCount == 0) {
-            if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey] && ![Observation hasAtLeastOneEntity]) {
+            NSInteger localObsCount = [[ExploreObservationRealm allObjects] count];
+            if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey] && localObsCount == 0) {
                 // show the "make your first" tooltip
                 [self makeAndShowFirstObsTooltip];
             }
@@ -406,7 +403,7 @@ static char PROJECT_ASSOCIATED_KEY;
 
 #pragma mark - Add New Observation methods
 
-- (void)openLibraryTaxon:(Taxon *)taxon project:(Project *)project {
+- (void)openLibraryTaxon:(id <TaxonVisualization>)taxon project:(Project *)project {
     PHAuthorizationStatus phAuthStatus = [PHPhotoLibrary authorizationStatus];
     switch (phAuthStatus) {
         case PHAuthorizationStatusRestricted:
@@ -459,28 +456,31 @@ static char PROJECT_ASSOCIATED_KEY;
     [nav setNavigationBarHidden:NO animated:YES];
 }
 
-
-- (void)noPhotoTaxon:(Taxon *)taxon project:(Project *)project {
-    Observation *o = [Observation object];
-    
+- (void)noPhotoTaxon:(id <TaxonVisualization>)taxon project:(Project *)project {
     NSDate *now = [NSDate date];
-    o.localCreatedAt = now;
+
+    ExploreObservationRealm *o = [[ExploreObservationRealm alloc] init];
+    o.uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
+    o.updatedAt = now;
+    o.createdAt = now;
     
     // photoless observation defaults to now
     o.observedOn = now;
-    o.localObservedOn = o.observedOn;
-    o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
+    o.timeObservedAt = now;
     
-    if (taxon) {
-        o.taxon = taxon;
-        o.speciesGuess = taxon.defaultName;
+    if (taxon && [taxon isKindOfClass:[ExploreTaxonRealm class]]) {
+        o.taxon = (ExploreTaxonRealm *)taxon;
+        o.speciesGuess = [taxon commonName] ?: [taxon scientificName];
     }
     
+    /*
+     TODO: project observation here
     if (project) {
         ProjectObservation *po = [ProjectObservation object];
         po.observation = o;
         po.project = project;
     }
+     */
     
     ObsEditV2ViewController *confirmObs = [[ObsEditV2ViewController alloc] initWithNibName:nil bundle:nil];
     confirmObs.observation = o;

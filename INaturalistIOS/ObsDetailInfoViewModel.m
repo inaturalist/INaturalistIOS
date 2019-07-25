@@ -12,7 +12,6 @@
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 #import "ObsDetailInfoViewModel.h"
-#import "Observation.h"
 #import "DisclosureCell.h"
 #import "ObsDetailMapCell.h"
 #import "UIColor+ExploreColors.h"
@@ -181,7 +180,7 @@
         [project addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
         cell.cellImageView.image = [project imageWithSize:CGSizeMake(44, 44)];
         
-        cell.secondaryLabel.text = [NSString stringWithFormat:@"%ld", (unsigned long)self.observation.projectObservations.count];
+        cell.secondaryLabel.text = [NSString stringWithFormat:@"%ld", (unsigned long)self.observation.projectIds.count];
         
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         if (self.observation.projectObservations.count > 0) {
@@ -316,7 +315,7 @@
     // notes/map, data quality
     NSInteger numSections = [super numberOfSectionsInTableView:tableView] + 2;
     
-    if (self.observation.projectObservations.count > 0) {
+    if (self.observation.projectIds.count > 0) {
         // show projects section
         numSections++;
     }
@@ -352,7 +351,7 @@
     } else if (indexPath.section == 4) {
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         // projects
-        if (self.observation.projectObservations.count > 0) {
+        if (self.observation.projectIds.count > 0) {
             // show the projects view
             [self.delegate inat_performSegueWithIdentifier:@"projects" sender:nil];
         }

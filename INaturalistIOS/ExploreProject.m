@@ -96,4 +96,12 @@
     return [[self fields] filteredArrayUsingPredicate:required];
 }
 
+- (NSString *)titleForTypeOfProject {
+    if (self.type == ExploreProjectTypeCollection || self.type == ExploreProjectTypeUmbrella) {
+        return NSLocalizedString(@"Collection Project", @"Collection type of project, which automatically collects observations into it.");
+    } else {
+        return NSLocalizedString(@"Traditional Project", @"Traditional inat type of project, where users have to manually add observations to the project.");
+    }
+}
+
 @end

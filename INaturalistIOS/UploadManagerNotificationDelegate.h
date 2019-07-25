@@ -8,17 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
+@class ExploreObservationRealm;
 @class Observation;
 @class DeletedRecord;
 @class UploadManager;
 
 @protocol UploadManagerNotificationDelegate <NSObject>
-- (void)uploadSessionStarted:(Observation *)observation;
+- (void)uploadSessionStarted:(NSString *)observationUUID;
 - (void)uploadSessionFinished;
-- (void)uploadSessionProgress:(float)progress for:(Observation *)observation;
-- (void)uploadSessionSuccessFor:(Observation *)observation;
-- (void)uploadSessionFailedFor:(Observation *)observation error:(NSError *)error;
-- (void)uploadSessionCancelledFor:(Observation *)observation;
+- (void)uploadSessionProgress:(float)progress for:(NSString *)observationUUID;
+- (void)uploadSessionSuccessFor:(NSString *)observationUUID;
+- (void)uploadSessionFailedFor:(NSString *)observationUUID error:(NSError *)error;
+- (void)uploadSessionCancelledFor:(NSString *)observationUUID;
 
 - (void)deleteSessionStarted:(DeletedRecord *)deletedRecord;
 - (void)deleteSessionFinished;

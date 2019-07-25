@@ -8,12 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
+#import "ObservationVisualization.h"
+
 @class Observation;
 
 @interface ProjectObservationsViewController : UITableViewController
 
-@property Observation *observation;
-@property NSArray *joinedProjects;
+@property id <ObservationVisualization> observation;
 @property BOOL isReadOnly;
 
 @end

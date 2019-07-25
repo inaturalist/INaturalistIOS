@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@class Taxon;
-@class Project;
+#import "TaxonVisualization.h"
+#import "ProjectVisualization.h"
+
 @class MultiImageView;
 
 @interface ConfirmPhotoViewController : UIViewController
@@ -19,8 +20,8 @@
 @property NSArray *assets;
 @property BOOL shouldContinueUpdatingLocation;
 
-@property Taxon *taxon;
-@property Project *project;
+@property id <TaxonVisualization> taxon;
+@property id <ProjectVisualization> project;
 
 @property (nonatomic, copy) void(^confirmFollowUpAction)(NSArray *confirmedAssets);
 

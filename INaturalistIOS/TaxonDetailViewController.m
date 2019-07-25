@@ -18,8 +18,6 @@
 #import "TaxaAPI.h"
 #import "ExploreTaxon.h"
 #import "ExploreTaxonRealm.h"
-#import "Observation.h"
-#import "TaxonPhoto.h"
 #import "ImageStore.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"

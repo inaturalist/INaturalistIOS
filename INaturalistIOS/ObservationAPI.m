@@ -15,7 +15,6 @@
 #import "ObserverCount.h"
 #import "IdentifierCount.h"
 #import "Analytics.h"
-#import "Observation.h"
 
 @implementation ObservationAPI
 
@@ -29,24 +28,6 @@
     [[Analytics sharedClient] debugLog:@"Network - fetch observation updates from node"];
     NSString *path = @"observations/updates?per_page=100";
     [self fetch:path classMapping:ExploreUpdate.class handler:done];
-}
-
-- (void)railsObservationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%ld", (long)identifier]
-                                                    usingBlock:^(RKObjectLoader *loader) {
-                                                        loader.objectMapping = [Observation mapping];
-                                                        loader.onDidLoadObject = ^(id object) {
-                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                                done(@[], 0, nil);
-                                                            });
-                                                        };
-                                                        
-                                                        loader.onDidFailWithError = ^(NSError *error) {
-                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                                done(nil, 0, error);
-                                                            });
-                                                        };
-                                                    }];
 }
 
 - (void)seenUpdatesForObservationId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
@@ -74,6 +55,21 @@
     NSString *path = [NSString stringWithFormat:@"observations?user_id=%ld&per_page=%ld",
                       (long)userId, (long)count];
     [self fetch:path classMapping:ExploreObservation.class handler:done];
+}
+
+- (void)deletedObservationsSinceDate:(NSDate *)date handler:(INatAPIFetchCompletionCountHandler)done {
+    if (!date) { return; }
+    
+    static NSDateFormatter *dateFormatter = nil;
+    if (!dateFormatter) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.dateFormat = @"yyyy-MM-dd";
+    }
+    NSString *dateString = [dateFormatter stringFromDate:date];
+    
+    [[Analytics sharedClient] debugLog:@"Network - fetch deleted records for user"];
+    NSString *path = [NSString stringWithFormat:@"observations/deleted?since=%@", dateString];
+    [self fetch:path classMapping:NSNumber.class handler:done];
 }
 
 - (void)dealloc {

@@ -10,8 +10,9 @@
 
 #import "ExploreObservationPhoto.h"
 #import "INatPhoto.h"
+#import "Uploadable.h"
 
-@interface ExploreObservationPhotoRealm : RLMObject <INatPhoto>
+@interface ExploreObservationPhotoRealm : RLMObject <INatPhoto, Uploadable>
 
 @property NSInteger observationPhotoId;
 @property NSInteger position;
@@ -23,7 +24,12 @@
 
 @property (readonly) NSURL *url;
 
+@property NSDate *updatedAt;
+@property NSDate *syncedAt;
+
 - (instancetype)initWithMantleModel:(ExploreObservationPhoto *)model;
+
+@property (readonly) RLMLinkingObjects *observations;
 
 @end
 

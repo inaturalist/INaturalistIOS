@@ -22,13 +22,6 @@
 #import <SafariServices/SafariServices.h>
 
 #import "SettingsViewController.h"
-#import "Observation.h"
-#import "ObservationPhoto.h"
-#import "ProjectUser.h"
-#import "ProjectObservation.h"
-#import "Comment.h"
-#import "Identification.h"
-#import "DeletedRecord.h"
 #import "INatUITabBarController.h"
 #import "NXOAuth2.h"
 #import "Analytics.h"

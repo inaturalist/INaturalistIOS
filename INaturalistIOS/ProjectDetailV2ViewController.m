@@ -15,7 +15,6 @@
 #import <Realm/Realm.h>
 
 #import "ProjectDetailV2ViewController.h"
-#import "ProjectUser.h"
 #import "ProjectDetailPageViewController.h"
 #import "ObsDetailV2ViewController.h"
 #import "ContainedScrollViewDelegate.h"
@@ -50,7 +49,8 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 
 @property IBOutlet UIView *container;
 
-@property ProjectUser *projectUser;
+// TODO: realm
+/*@property ProjectUser *projectUser;*/
 
 @end
 
@@ -124,7 +124,8 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
                                                                             target:self
                                                                             action:@selector(myBack)];
     
-    self.projectUser = [ProjectUser objectWithPredicate:[NSPredicate predicateWithFormat:@"projectID = %ld", self.project.projectId]];
+    // TODO: realm
+    //self.projectUser = [ProjectUser objectWithPredicate:[NSPredicate predicateWithFormat:@"projectID = %ld", self.project.projectId]];
     
     [self.joinButton addTarget:self
                         action:@selector(joinTapped:)

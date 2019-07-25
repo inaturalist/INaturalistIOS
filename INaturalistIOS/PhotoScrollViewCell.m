@@ -11,7 +11,7 @@
 
 #import "PhotoScrollViewCell.h"
 #import "PhotoChicletCell.h"
-#import "ObservationPhoto.h"
+#import "INatPhoto.h"
 #import "ImageStore.h"
 #import "AddChicletCell.h"
 
@@ -95,7 +95,7 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
     UICollectionViewCell *cell = (PhotoChicletCell *)button.superview.superview;
     NSIndexPath *ip = [self.collectionView indexPathForCell:cell];
     
-    ObservationPhoto *op = self.photos[ip.item-1];
+    id <INatPhoto> op = self.photos[ip.item-1];
     NSMutableArray *mutablePhotos = [self.photos mutableCopy];
     [mutablePhotos removeObject:op];
     self.photos = [NSArray arrayWithArray:mutablePhotos];
@@ -110,7 +110,7 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
     PhotoChicletCell *cell = (PhotoChicletCell *)button.superview.superview;
     NSIndexPath *ip = [self.collectionView indexPathForCell:cell];
     
-    ObservationPhoto *op = self.photos[ip.item-1];
+    id <INatPhoto> op = self.photos[ip.item-1];
     NSMutableArray *mutablePhotos = [self.photos mutableCopy];
     [mutablePhotos removeObject:op];
     [mutablePhotos insertObject:op atIndex:0];
@@ -141,13 +141,13 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
     } else {
         PhotoChicletCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"photoChiclet" forIndexPath:indexPath];
         
-        ObservationPhoto *obsPhoto = (ObservationPhoto *)self.photos[indexPath.item - 1];
-        if (obsPhoto.photoKey) {
-            cell.photoImageView.image = [[ImageStore sharedImageStore] find:obsPhoto.photoKey
+        id <INatPhoto> op = self.photos[indexPath.item - 1];
+        if (op.photoKey) {
+            cell.photoImageView.image = [[ImageStore sharedImageStore] find:op.photoKey
                                                                     forSize:ImageStoreSquareSize];
         }
         if (!cell.photoImageView.image) {
-            NSURL *squarePhotoUrl = [NSURL URLWithString:obsPhoto.squareURL];
+            NSURL *squarePhotoUrl = [op squarePhotoUrl];
             if (squarePhotoUrl) {
                 [cell.photoImageView setImageWithURL:squarePhotoUrl];
             }

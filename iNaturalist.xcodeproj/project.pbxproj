@@ -115,6 +115,7 @@
 		FA1FFFEB21EAE8BD00834CD0 /* ExploreFaveRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1FFFEA21EAE8BD00834CD0 /* ExploreFaveRealm.m */; };
 		FA2552101D1F49A8005D2128 /* ExploreTaxonRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */; };
 		FA2552131D1F4D62005D2128 /* TaxaAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2552121D1F4D62005D2128 /* TaxaAPI.m */; };
+		FA27B15B227A734100546057 /* ExploreDeletedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = FA27B15A227A734100546057 /* ExploreDeletedObject.m */; };
 		FA2A07991C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2A07981C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m */; };
 		FA394EB8218909AF004AE0FE /* ProjectObservationHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA394EB7218909AF004AE0FE /* ProjectObservationHeaderView.xib */; };
 		FA399A971DDBDB3E007ABD3E /* Projects.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA399A991DDBDB3E007ABD3E /* Projects.storyboard */; };
@@ -149,6 +150,7 @@
 		FA4D56BF1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4D56BE1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.m */; };
 		FA4D56C21C1A6C7100C5C5AE /* ObsDetailNotesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4D56C11C1A6C7100C5C5AE /* ObsDetailNotesCell.m */; };
 		FA4DA57A2176684B00A3B0BC /* ExploreProjectRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FADFB0D7216EE06D00F2CD14 /* ExploreProjectRealm.m */; };
+		FA4DD614229DFCC30002B02E /* ExploreProjectObservationRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4DD613229DFCC30002B02E /* ExploreProjectObservationRealm.m */; };
 		FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B119FAC93400A9AB5D /* ExploreComment.m */; };
 		FA4E72BF19FAC93400A9AB5D /* ExploreIdentification.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B319FAC93400A9AB5D /* ExploreIdentification.m */; };
 		FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72B519FAC93400A9AB5D /* ExploreLocation.m */; };
@@ -267,6 +269,7 @@
 		FAC59DF520D9D8C2000A6558 /* UploadObservationOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC59DF420D9D8C2000A6558 /* UploadObservationOperation.m */; };
 		FAC59DF820D9DF87000A6558 /* DeleteRecordOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC59DF720D9DF87000A6558 /* DeleteRecordOperation.m */; };
 		FAC59DFC20DB0890000A6558 /* UploadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC59DFB20DB0890000A6558 /* UploadOperation.m */; };
+		FAC7DFE0229DE90D0091A181 /* ExploreProjectObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC7DFDF229DE90D0091A181 /* ExploreProjectObservation.m */; };
 		FAC9A8531F9EC0F2008E75EC /* NSData+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC9A8521F9EC0F2008E75EC /* NSData+INaturalist.m */; };
 		FACACA121BFBB17D002223D7 /* ObsDetailV2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA111BFBB17D002223D7 /* ObsDetailV2ViewController.m */; };
 		FACACA1B1BFBE0A9002223D7 /* ObsDetailViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA1A1BFBE0A9002223D7 /* ObsDetailViewModel.m */; };
@@ -546,6 +549,8 @@
 		FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreTaxonRealm.m; sourceTree = "<group>"; };
 		FA2552111D1F4D62005D2128 /* TaxaAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxaAPI.h; sourceTree = "<group>"; };
 		FA2552121D1F4D62005D2128 /* TaxaAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxaAPI.m; sourceTree = "<group>"; };
+		FA27B159227A734100546057 /* ExploreDeletedObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreDeletedObject.h; sourceTree = "<group>"; };
+		FA27B15A227A734100546057 /* ExploreDeletedObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreDeletedObject.m; sourceTree = "<group>"; };
 		FA2A07971C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailNoInteractionHeaderFooter.h; sourceTree = "<group>"; };
 		FA2A07981C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailNoInteractionHeaderFooter.m; sourceTree = "<group>"; };
 		FA30C2EC2090D881006F7629 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
@@ -644,6 +649,8 @@
 		FA4DADA31F9FFE1E0042D2FD /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Guides.strings"; sourceTree = "<group>"; };
 		FA4DADA41F9FFE1E0042D2FD /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		FA4DADA51F9FFE1E0042D2FD /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		FA4DD612229DFCC30002B02E /* ExploreProjectObservationRealm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreProjectObservationRealm.h; sourceTree = "<group>"; };
+		FA4DD613229DFCC30002B02E /* ExploreProjectObservationRealm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreProjectObservationRealm.m; sourceTree = "<group>"; };
 		FA4E72B019FAC93400A9AB5D /* ExploreComment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreComment.h; sourceTree = "<group>"; };
 		FA4E72B119FAC93400A9AB5D /* ExploreComment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreComment.m; sourceTree = "<group>"; };
 		FA4E72B219FAC93400A9AB5D /* ExploreIdentification.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreIdentification.h; sourceTree = "<group>"; };
@@ -961,6 +968,8 @@
 		FAC59DF720D9DF87000A6558 /* DeleteRecordOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeleteRecordOperation.m; sourceTree = "<group>"; };
 		FAC59DFA20DB0890000A6558 /* UploadOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UploadOperation.h; sourceTree = "<group>"; };
 		FAC59DFB20DB0890000A6558 /* UploadOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UploadOperation.m; sourceTree = "<group>"; };
+		FAC7DFDE229DE90D0091A181 /* ExploreProjectObservation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreProjectObservation.h; sourceTree = "<group>"; };
+		FAC7DFDF229DE90D0091A181 /* ExploreProjectObservation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreProjectObservation.m; sourceTree = "<group>"; };
 		FAC9A8511F9EC0F2008E75EC /* NSData+INaturalist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+INaturalist.h"; sourceTree = "<group>"; };
 		FAC9A8521F9EC0F2008E75EC /* NSData+INaturalist.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+INaturalist.m"; sourceTree = "<group>"; };
 		FACACA101BFBB17D002223D7 /* ObsDetailV2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailV2ViewController.h; sourceTree = "<group>"; };
@@ -1918,6 +1927,8 @@
 			children = (
 				FAFED1FA1DB5A2680015CCBA /* ExploreCommentRealm.h */,
 				FAFED1FB1DB5A2680015CCBA /* ExploreCommentRealm.m */,
+				FA27B159227A734100546057 /* ExploreDeletedObject.h */,
+				FA27B15A227A734100546057 /* ExploreDeletedObject.m */,
 				FA1FFFE921EAE8BD00834CD0 /* ExploreFaveRealm.h */,
 				FA1FFFEA21EAE8BD00834CD0 /* ExploreFaveRealm.m */,
 				FAFED1FD1DB5A2730015CCBA /* ExploreIdentificationRealm.h */,
@@ -1934,6 +1945,8 @@
 				FABFBD672187C77100B0BC38 /* ExplorePostRealm.m */,
 				FA1FFFCF21E9636000834CD0 /* ExploreProjectObservationFieldRealm.h */,
 				FA1FFFD021E9636000834CD0 /* ExploreProjectObservationFieldRealm.m */,
+				FA4DD612229DFCC30002B02E /* ExploreProjectObservationRealm.h */,
+				FA4DD613229DFCC30002B02E /* ExploreProjectObservationRealm.m */,
 				FADFB0D6216EE06D00F2CD14 /* ExploreProjectRealm.h */,
 				FADFB0D7216EE06D00F2CD14 /* ExploreProjectRealm.m */,
 				FA427EF01ECD1794003B26C3 /* ExploreTaxonPhotoRealm.h */,
@@ -1971,6 +1984,8 @@
 				FABFBD642187BAAB00B0BC38 /* ExplorePost.m */,
 				FA4E72BA19FAC93400A9AB5D /* ExploreProject.h */,
 				FA4E72BB19FAC93400A9AB5D /* ExploreProject.m */,
+				FAC7DFDE229DE90D0091A181 /* ExploreProjectObservation.h */,
+				FAC7DFDF229DE90D0091A181 /* ExploreProjectObservation.m */,
 				FA1FFFC721E946A300834CD0 /* ExploreProjectObservationField.h */,
 				FA1FFFC821E946A300834CD0 /* ExploreProjectObservationField.m */,
 				FA4E72BC19FAC93400A9AB5D /* ExploreTaxon.h */,
@@ -2473,6 +2488,7 @@
 				FA1FFFD621E9637D00834CD0 /* ExploreProjectObservationFieldRealm.m in Sources */,
 				19AE897318DD08A100505918 /* Comment.m in Sources */,
 				1985521814EC97C200DB55C5 /* INaturalist.xcdatamodeld in Sources */,
+				FA4DD614229DFCC30002B02E /* ExploreProjectObservationRealm.m in Sources */,
 				FAFFFBEE1BFFD6B5003B7B7B /* Fave.m in Sources */,
 				899A00D41B53AADD0079162F /* ProjectTableViewCell.m in Sources */,
 				1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */,
@@ -2677,10 +2693,12 @@
 				1955FCFD17F102FA004F57F2 /* GuideXML.m in Sources */,
 				FA711AAE1D53E52600C4FFDB /* OnboardingLoginViewController.m in Sources */,
 				FA4E72D319FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m in Sources */,
+				FA27B15B227A734100546057 /* ExploreDeletedObject.m in Sources */,
 				FA1FFFCD21E94AF200834CD0 /* ExploreProjectObservationField.m in Sources */,
 				19AE897618DD08B600505918 /* Identification.m in Sources */,
 				FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */,
 				FA4714F81ED7A88F00D57FDE /* TaxonSelectButtonCell.m in Sources */,
+				FAC7DFE0229DE90D0091A181 /* ExploreProjectObservation.m in Sources */,
 				FA4E72C319FAC93400A9AB5D /* ExploreProject.m in Sources */,
 				FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */,
 				FA7C53511BCD9D3100A0D5AA /* ProjectObsFieldViewController.m in Sources */,

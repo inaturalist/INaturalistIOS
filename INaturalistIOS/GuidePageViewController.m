@@ -8,7 +8,6 @@
 
 #import "GuidePageViewController.h"
 #import "GuideTaxonViewController.h"
-#import "Observation.h"
 #import "UIColor+INaturalist.h"
 
 @implementation GuidePageViewController

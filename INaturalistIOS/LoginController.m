@@ -19,9 +19,7 @@
 #import "INaturalistAppDelegate.h"
 #import "UIColor+INaturalist.h"
 #import "Partner.h"
-#import "User.h"
 #import "UploadManager.h"
-#import "Taxon.h"
 #import "ExploreUser.h"
 #import "PeopleAPI.h"
 #import "ExploreUserRealm.h"
@@ -385,9 +383,6 @@ didSignInForUser:(GIDGoogleUser *)user
     me.siteId = partner.identifier;
     [realm commitWriteTransaction];
     
-    // delete any stashed taxa from core data
-    [Taxon deleteAll];
-    
     NSError *saveError = nil;
     [[[RKObjectManager sharedManager] objectStore] save:&saveError];
     if (saveError) {
@@ -454,6 +449,8 @@ didSignInForUser:(GIDGoogleUser *)user
     
     // if we can't find the me user in realm,
     // try to fetch from core data
+    /*
+     TODO: even bother with this after realm transition?
     User *meFromCoreData = [self fetchMeFromCoreData];
     if (meFromCoreData) {
         ExploreUserRealm *me = [[ExploreUserRealm alloc] init];
@@ -473,6 +470,7 @@ didSignInForUser:(GIDGoogleUser *)user
         
         return me;
     }
+     */
     
     return nil;
 }
@@ -498,6 +496,10 @@ didSignInForUser:(GIDGoogleUser *)user
 }
 
 - (User *)fetchMeFromCoreData {
+    return nil;
+    
+    /*
+     TODO: keep after realm transition? or just handle in migration?
 	NSNumber *userId = nil;
 	NSString *username = nil;
 	if ([[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey]) {
@@ -533,6 +535,7 @@ didSignInForUser:(GIDGoogleUser *)user
     } else {
         return nil;
     }
+     */
 }
 
 - (BOOL)isLoggedIn {

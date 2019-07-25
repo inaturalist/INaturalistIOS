@@ -23,28 +23,18 @@
 #import <RestKit/RestKit.h>
 
 #import "ObsEditV2ViewController.h"
-#import "Observation.h"
-#import "Taxon.h"
 #import "ExploreTaxonRealm.h"
-#import "TaxonPhoto.h"
 #import "ImageStore.h"
 #import "UIColor+INaturalist.h"
 #import "DisclosureCell.h"
 #import "TaxaSearchViewController.h"
-#import "ProjectObservation.h"
 #import "TextViewCell.h"
 #import "EditLocationViewController.h"
 #import "SubtitleDisclosureCell.h"
-#import "ObservationPhoto.h"
 #import "ObsCameraOverlay.h"
 #import "ConfirmPhotoViewController.h"
 #import "FAKINaturalist.h"
-#import "Project.h"
-#import "ObservationFieldValue.h"
-#import "ProjectObservationField.h"
-#import "ObservationField.h"
 #import "ProjectObservationsViewController.h"
-#import "ProjectUser.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
 #import "UploadManager.h"
@@ -56,6 +46,8 @@
 #import "INatReachability.h"
 #import "UIViewController+INaturalist.h"
 #import "CLPlacemark+INat.h"
+#import "ExploreObservationRealm.h"
+#import "ExploreObservationPhotoRealm.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -230,21 +222,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     // delete all related updates
     RLMRealm *realm = [RLMRealm defaultRealm];
     [realm beginWriteTransaction];
-    NSString *predString = [NSString stringWithFormat:@"resourceId == %ld",
-                            (unsigned long)[[self.observation recordID] integerValue]];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:predString];
-    RLMResults *results = [ExploreUpdateRealm objectsWithPredicate:predicate];
-    [realm deleteObjects:results];
+    [realm deleteObject:self.observation];
     [realm commitWriteTransaction];
-    
-    // delete locally
-    [self.observation deleteEntity];
-    self.observation = nil;
-    NSError *error;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    if (error) {
-        // TODO: log it at least, also notify the user
-    }
     
     // trigger the delete to happen on the server
     [self triggerAutoUpload];
@@ -295,7 +274,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     if (![textView.text isEqualToString:self.observation.inatDescription]) {
         // text changed
         self.observation.inatDescription = textView.text;
-        self.observation.localUpdatedAt = [NSDate date];
         [[Analytics sharedClient] event:kAnalyticsEventObservationNotesChanged
                          withProperties:@{
                                           @"Via": [self analyticsVia]
@@ -323,20 +301,21 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - PhotoScrollViewDelegate
 
 - (void)photoScrollView:(PhotoScrollViewCell *)psv setDefaultIndex:(NSInteger)idx {
-    ObservationPhoto *newDefault = self.observation.sortedObservationPhotos[idx];
-    newDefault.position = @(0);
-    newDefault.localUpdatedAt = [NSDate date];
+    NSArray *sortedObservationPhotos = [self.observation sortedObservationPhotos];
+    ExploreObservationPhotoRealm *newDefault = [sortedObservationPhotos objectAtIndex:idx];
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    newDefault.position = 0;
     
-    for (ObservationPhoto *photo in self.observation.observationPhotos) {
-        if ([photo isEqual:newDefault]) {
+    for (ExploreObservationPhoto *op in sortedObservationPhotos) {
+        if ([op isEqual:newDefault]) {
             continue;
         }
-        if (photo.position.integerValue < idx) {
-            // needs to move down one
-            photo.position = @(photo.position.integerValue + 1);
-            photo.localUpdatedAt = [NSDate date];
+        if (op.position < idx) {
+            op.position = op.position + 1;
         }
     }
+    [realm commitWriteTransaction];
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationNewDefaultPhoto
                      withProperties:@{ @"Via": [self analyticsVia] }];
@@ -348,21 +327,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)photoScrollView:(PhotoScrollViewCell *)psv deletedIndex:(NSInteger)idx {
-    ObservationPhoto *photo = self.observation.sortedObservationPhotos[idx];
-    NSPredicate *minusDeletedPredicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
-        return ![evaluatedObject isEqual:photo];
-    }];
-    NSSet *newObsPhotos = [self.observation.observationPhotos filteredSetUsingPredicate:minusDeletedPredicate];
-    
-    self.observation.observationPhotos = newObsPhotos;
-    [photo deleteEntity];
-    
-    // update sortable
-    for (int i = 0; i < self.observation.sortedObservationPhotos.count; i++) {
-        ObservationPhoto *op = self.observation.sortedObservationPhotos[i];
-        op.position = @(i);
-        op.updatedAt = [NSDate date];
-    }
+    NSArray *sortedPhotos = [self.observation sortedObservationPhotos];
+    ExploreObservationPhotoRealm *photoToDelete = [sortedPhotos objectAtIndex:idx];
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    [realm deleteObject:photoToDelete];
+    [realm commitWriteTransaction];
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationDeletePhoto
                      withProperties:@{ @"Via": [self analyticsVia] }];
@@ -374,10 +344,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)photoScrollView:(PhotoScrollViewCell *)psv selectedIndex:(NSInteger)idx {
-    ObservationPhoto *op = [self.observation.sortedObservationPhotos objectAtIndex:idx];
+    NSArray *sortedPhotos = [self.observation sortedObservationPhotos];
+    ExploreObservationPhotoRealm *op = [sortedPhotos objectAtIndex:idx];
     if (!op) return;
     
-    NSArray *galleryData = [self.observation.sortedObservationPhotos bk_map:^id(ObservationPhoto *op) {
+    NSArray *galleryData = [self.observation.sortedObservationPhotos bk_map:^id(id <INatPhoto> op) {
         UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
         if (img) {
             return [MHGalleryItem itemWithImage:img];
@@ -526,16 +497,16 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         __strong typeof(weakSelf) strongSelf = weakSelf;
         
         NSInteger idx = 0;
-        ObservationPhoto *op = self.observation.sortedObservationPhotos.lastObject;
-        if (op) {
-            idx = op.position.integerValue + 1;
+        ExploreObservationPhotoRealm *lastOp = self.observation.sortedObservationPhotos.lastObject;
+        if (lastOp) {
+            idx = lastOp.position + 1;
         }
         for (UIImage *image in confirmedAssets) {
-            ObservationPhoto *op = [ObservationPhoto object];
-            op.position = @(idx);
-            [op setObservation:strongSelf.observation];
-            [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
             
+            ExploreObservationPhotoRealm *op = [[ExploreObservationPhotoRealm alloc] init];
+            op.position = idx;
+            [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
+
             NSError *saveError = nil;
             BOOL saved = [[ImageStore sharedImageStore] storeImage:image
                                                             forKey:op.photoKey
@@ -546,7 +517,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                            delegate:nil
                                   cancelButtonTitle:NSLocalizedString(@"OK", nil)
                                   otherButtonTitles:nil] show];
-                [op destroy];
                 return;
             } else if (!saved) {
                 [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg")
@@ -554,12 +524,14 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                            delegate:nil
                                   cancelButtonTitle:NSLocalizedString(@"OK", nil)
                                   otherButtonTitles:nil] show];
-                [op destroy];
                 return;
             }
-            
-            op.localCreatedAt = [NSDate date];
-            op.localUpdatedAt = [NSDate date];
+
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            [realm beginWriteTransaction];
+            [realm addOrUpdateObject:op];
+            [strongSelf.observation.observationPhotos addObject:op];
+            [realm commitWriteTransaction];
             
             idx++;
         }
@@ -595,14 +567,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         __strong typeof(weakSelf)strongSelf = weakSelf;
         
         NSInteger idx = 0;
-        ObservationPhoto *lastOp = [[self.observation sortedObservationPhotos] lastObject];
+        ExploreObservationPhotoRealm *lastOp = self.observation.sortedObservationPhotos.lastObject;
         if (lastOp) {
-            idx = [[lastOp position] integerValue] + 1;
+            idx = lastOp.position + 1;
         }
         for (UIImage *image in assets) {
-            ObservationPhoto *op = [ObservationPhoto object];
-            op.position = @(idx);
-            [op setObservation:strongSelf.observation];
+            ExploreObservationPhotoRealm *op = [[ExploreObservationPhotoRealm alloc] init];
+            op.position = idx;
             [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
             
             NSError *saveError = nil;
@@ -611,7 +582,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                              error:&saveError];
             NSString *saveErrorTitle = NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg");
             if (saveError) {
-                [op destroy];
                 [self dismissViewControllerAnimated:YES completion:^{
                     UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
                                                                                    message:saveError.localizedDescription
@@ -623,7 +593,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 }];
                 return;
             } else if (!saved) {
-                [op destroy];
                 [self dismissViewControllerAnimated:YES completion:^{
                     NSString *unknownErrMsg = NSLocalizedString(@"Unknown error", @"Message body when we don't know the error");
                     UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
@@ -637,8 +606,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 return;
             }
             
-            op.localCreatedAt = [NSDate date];
-            op.localUpdatedAt = [NSDate date];
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            [realm beginWriteTransaction];
+            [realm addOrUpdateObject:op];
+            [strongSelf.observation.observationPhotos addObject:op];
+            [realm commitWriteTransaction];
             
             idx++;
         }
@@ -699,14 +671,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     if (!self.observation) return;
     
     @try {
-        self.observation.latitude = @(newLocation.coordinate.latitude);
-        self.observation.longitude = @(newLocation.coordinate.longitude);
-        self.observation.privateLatitude = nil;
-        self.observation.privateLongitude = nil;
-        self.observation.positionalAccuracy = @(newLocation.horizontalAccuracy);
-        self.observation.positioningMethod = @"gps";
-        
-        self.observation.localUpdatedAt = [NSDate date];
+        self.observation.latitude = newLocation.coordinate.latitude;
+        self.observation.longitude = newLocation.coordinate.longitude;
+        self.observation.positionalAccuracy = newLocation.horizontalAccuracy;
         
         NSIndexPath *ip = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
         [self.tableView beginUpdates];
@@ -755,13 +722,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 #pragma mark - geocoding helper
 
-- (void)reverseGeocodeCoordinatesForObservation:(Observation *)obs {
+- (void)reverseGeocodeCoordinatesForObservation:(ExploreObservationRealm *)obs {
     if (![[INatReachability sharedClient] isNetworkReachable]) {
         return;
     }
     
-    CLLocation *loc = [[CLLocation alloc] initWithLatitude:obs.latitude.floatValue
-                                                 longitude:obs.longitude.floatValue];
+    CLLocation *loc = [[CLLocation alloc] initWithLatitude:obs.latitude
+                                                 longitude:obs.longitude];
     
     if (!self.geoCoder)
         self.geoCoder = [[CLGeocoder alloc] init];
@@ -773,8 +740,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                             CLPlacemark *placemark = [placemarks firstObject];
                             if (placemark) {
                                 @try {
+                                    RLMRealm *realm = [RLMRealm defaultRealm];
+                                    [realm beginWriteTransaction];
                                     obs.placeGuess = [placemark inatPlaceGuess];
-                                    obs.localUpdatedAt = [NSDate date];
+                                    [realm commitWriteTransaction];
                                     NSIndexPath *locRowIp = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
                                     [self.tableView beginUpdates];
                                     [self.tableView reloadRowsAtIndexPaths:@[ locRowIp ]
@@ -801,10 +770,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     self.observation.speciesGuess = nil;
     self.observation.taxon = nil;
-    self.observation.taxonID = nil;
-    self.observation.iconicTaxonID = nil;
-    self.observation.iconicTaxonName = nil;
-    self.observation.localUpdatedAt = [NSDate date];
     
     NSIndexPath *speciesIndexPath = [NSIndexPath indexPathForItem:0 inSection:ConfirmObsSectionIdentify];
     [self.tableView beginUpdates];
@@ -820,15 +785,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         [[Analytics sharedClient] event:kAnalyticsEventNewObservationCancel];
         
         [self stopUpdatingLocation];
-        [self.observation deleteEntity];
-        self.observation = nil;
-        NSError *error;
-        [[[RKObjectManager sharedManager] objectStore] save:&error];
-        if (error) {
-            // TODO: log it at least, also notify the user
-        }
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        [realm deleteObject:self.observation];
+        [realm commitWriteTransaction];
     } else {
-        [self.observation.managedObjectContext rollback];
+        // TODO: no rollback in realm
+        //[self.observation.managedObjectContext rollback];
     }
     
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
@@ -837,12 +800,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)saved:(UIButton *)button {
     UIAlertController *alert = nil;
     
-    if (!self.observation.taxonID && !self.observation.speciesGuess && self.observation.observationPhotos.count == 0) {
+    if (!self.observation.taxon && !self.observation.speciesGuess && self.observation.observationPhotos.count == 0) {
         // alert about the combo of no photos and no taxon/species guess being bad
         NSString *title = NSLocalizedString(@"No Photos and Missing Identification", nil);
         NSString *msg = NSLocalizedString(@"Without at least one photo, this observation will be impossible for others to help identify.", nil);
         alert = [UIAlertController alertControllerWithTitle:title message:msg preferredStyle:UIAlertControllerStyleAlert];
-    } else if (!self.observation.localObservedOn) {
+    } else if (!self.observation.observedOn) {
         // alert about no date
         NSString *title = NSLocalizedString(@"Missing Date", nil);
         NSString *msg = NSLocalizedString(@"Without a date, this observation may be very hard for others to identify accurately, and will never attain research grade.", nil);
@@ -886,7 +849,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                       }];
     
     // clear upload validation error message
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
     self.observation.validationErrorMsg = nil;
+    [realm commitWriteTransaction];
     
     NSError *error;
     [[[RKObjectManager sharedManager] objectStore] save:&error];
@@ -902,10 +868,16 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - Taxa Search
 
 - (void)taxaSearchViewControllerChoseTaxon:(id <TaxonVisualization>)taxon chosenViaVision:(BOOL)visionFlag {
-    self.observation.taxonID = @(taxon.taxonId);
-    self.observation.localUpdatedAt = [NSDate date];
+    ExploreTaxonRealm *etr = [ExploreTaxonRealm objectForPrimaryKey:@(taxon.taxonId)];
+    if (etr) {
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        self.observation.taxon = etr;
+        [realm commitWriteTransaction];
+    }
+    
     // explicitly wrap this as a bool
-    self.observation.ownersIdentificationFromVision = [NSNumber numberWithBool:visionFlag];
+    //self.observation.ownersIdentificationFromVision = [NSNumber numberWithBool:visionFlag];
     
     NSString *newTaxonName = taxon.commonName ?: taxon.scientificName;
     if (!newTaxonName) { newTaxonName = NSLocalizedString(@"Unknown", @"unknown taxon"); }
@@ -923,12 +895,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)taxaSearchViewControllerChoseSpeciesGuess:(NSString *)speciesGuess {
     // clear out any previously set taxon information
     self.observation.taxon = nil;
-    self.observation.taxonID = nil;
-    self.observation.iconicTaxonName = nil;
-    self.observation.iconicTaxonID = nil;
-    
-    self.observation.localUpdatedAt = [NSDate date];
-    
     self.observation.speciesGuess = speciesGuess;
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
@@ -951,21 +917,26 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     [self stopUpdatingLocation];
     
+    RLMRealm *realm = [RLMRealm defaultRealm];
+
     if (location.latitude.integerValue == 0 && location.longitude.integerValue == 0) {
         // nothing happens on null island
-        self.observation.latitude = nil;
-        self.observation.longitude = nil;
-        self.observation.positionalAccuracy = nil;
-        self.observation.positioningMethod = nil;
+        [realm beginWriteTransaction];
+        self.observation.latitude = kCLLocationCoordinate2DInvalid.latitude;
+        self.observation.longitude = kCLLocationCoordinate2DInvalid.longitude;
+        self.observation.positionalAccuracy = 0;
         self.observation.placeGuess = nil;
+        [realm commitWriteTransaction];
+        
         return;
     }
     
-    self.observation.latitude = location.latitude;
-    self.observation.longitude = location.longitude;
-    self.observation.positionalAccuracy = location.accuracy;
-    self.observation.positioningMethod = location.positioningMethod;
+    [realm beginWriteTransaction];
+    self.observation.latitude = location.latitude.doubleValue;
+    self.observation.longitude = location.longitude.doubleValue;
+    self.observation.positionalAccuracy = location.accuracy.doubleValue;
     self.observation.placeGuess = nil;
+    [realm commitWriteTransaction];
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationLocationChanged
                      withProperties:@{
@@ -1026,11 +997,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 // location
                 CLLocationCoordinate2D coords = kCLLocationCoordinate2DInvalid;
                 
+                /*
                 if (self.observation.privateLatitude.floatValue) {
                     coords = CLLocationCoordinate2DMake(self.observation.privateLatitude.floatValue, self.observation.privateLongitude.floatValue);
                 } else if (self.observation.latitude.floatValue) {
                     coords = CLLocationCoordinate2DMake(self.observation.latitude.floatValue, self.observation.longitude.floatValue);
                 }
+                 */
                 
                 return CLLocationCoordinate2DIsValid(coords) ? 66 : 44;
                 
@@ -1123,13 +1096,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 search.hidesDoneButton = YES;
                 search.delegate = self;
                 // only prime the query if there's a placeholder, not a taxon)
-                if (self.observation.speciesGuess && !self.observation.taxonID) {
+                if (self.observation.speciesGuess && !self.observation.taxon) {
                     search.query = self.observation.speciesGuess;
                 }
                 search.allowsFreeTextSelection = YES;
                 
                 if (self.observation.observationPhotos.count > 0) {
-                    ObservationPhoto *op = [self.observation.sortedObservationPhotos firstObject];
+                    id <INatPhoto> op = [self.observation.sortedObservationPhotos firstObject];
                     NSString *imgKey = [op photoKey];
                     if (imgKey) {
                         UIImage *image = [[ImageStore sharedImageStore] find:imgKey forSize:ImageStoreSmallSize];
@@ -1143,10 +1116,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                                   withAdditionalIdentifier:nil];;
                         if (image) {
                             search.imageToClassify = image;
-                        } else if ([self.observation recordID]) {
+                        // TODO:
+                        //} else if ([self.observation recordID]) {
                             // if we _still_ can't find an image, and the obs has been uploaded
                             // to inat, try classifying the observation by id
-                            search.observationToClassify = self.observation;
+                            //search.observationToClassify = self.observation;
                         }
                     }
                     
@@ -1172,12 +1146,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 __weak typeof(self) weakSelf = self;
                 [[[ActionSheetDatePicker alloc] initWithTitle:NSLocalizedString(@"Select Date", @"title for date selector")
                                                datePickerMode:UIDatePickerModeDateAndTime
-                                                 selectedDate:self.observation.localObservedOn ?: [NSDate date]
+                                                 selectedDate:self.observation.observedOn ?: [NSDate date]
                                                     doneBlock:^(ActionSheetDatePicker *picker, id selectedDate, id origin) {
                                                         
                                                         NSDate *date = (NSDate *)selectedDate;
                                                         
-                                                        if ([date timeIntervalSinceDate:self.observation.localObservedOn] == 0) {
+                                                        if ([date timeIntervalSinceDate:self.observation.observedOn] == 0) {
                                                             // nothing changed
                                                             return;
                                                         }
@@ -1204,9 +1178,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                         
                                                         
                                                         __strong typeof(weakSelf) strongSelf = self;
-                                                        strongSelf.observation.localObservedOn = date;
-                                                        strongSelf.observation.observedOnString = [Observation.jsDateFormatter stringFromDate:date];
-                                                        strongSelf.observation.localUpdatedAt = [NSDate date];
+                                                        strongSelf.observation.observedOn = date;
                                                         
                                                         [strongSelf.tableView beginUpdates];
                                                         [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
@@ -1221,11 +1193,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 EditLocationViewController *map = [storyboard instantiateViewControllerWithIdentifier:@"EditLocationViewController"];
                 map.delegate = self;
                 
-                if (self.observation.visibleLatitude) {
-                    INatLocation *loc = [[INatLocation alloc] initWithLatitude:self.observation.visibleLatitude
-                                                                     longitude:self.observation.visibleLongitude
-                                                                      accuracy:self.observation.positionalAccuracy];
-                    loc.positioningMethod = self.observation.positioningMethod;
+                if (CLLocationCoordinate2DIsValid(self.observation.location)) {
+                    INatLocation *loc = [[INatLocation alloc] initWithLatitude:@(self.observation.latitude)
+                                                                     longitude:@(self.observation.longitude)
+                                                                      accuracy:@(self.observation.positionalAccuracy)];
                     [map setCurrentLocation:loc];
                 } else {
                     [map setCurrentLocation:nil];
@@ -1260,7 +1231,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           NSString *newValue = geoprivacyOptions[selectedIndex];
                                                           
                                                           strongSelf.observation.geoprivacy = newValue;
-                                                          strongSelf.observation.localUpdatedAt = [NSDate date];
                                                           
                                                           [[Analytics sharedClient] event:kAnalyticsEventObservationGeoprivacyChanged
                                                                            withProperties:@{ @"Via": [self analyticsVia],
@@ -1277,7 +1247,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 // captive/cultivated
                 
                 NSArray *captiveOptions = @[@"No", @"Yes"];
-                NSInteger selectedIndex = self.observation.captive.integerValue;
+                NSInteger selectedIndex = self.observation.captive ? 1 : 0;
                 
                 __weak typeof(self) weakSelf = self;
                 [[[ActionSheetStringPicker alloc] initWithTitle:NSLocalizedString(@"Captive?", @"title for captive selector")
@@ -1294,7 +1264,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                           __strong typeof(weakSelf) strongSelf = weakSelf;
                                                           
                                                           strongSelf.observation.captive = @(selectedIndex);
-                                                          strongSelf.observation.localUpdatedAt = [NSDate date];
                                                           
                                                           [strongSelf.tableView beginUpdates];
                                                           [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
@@ -1309,16 +1278,20 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                     ProjectObservationsViewController *projectsVC = [[ProjectObservationsViewController alloc] initWithNibName:nil bundle:nil];
                     projectsVC.observation = self.observation;
                     
+                    /*
+                     TODO: realm?
                     NSMutableArray *projects = [NSMutableArray array];
+                    
                     [[ProjectUser all] enumerateObjectsUsingBlock:^(ProjectUser *pu, NSUInteger idx, BOOL *stop) {
                         [projects addObject:pu.project];
                     }];
                     
-                    projectsVC.joinedProjects = [projects sortedArrayUsingComparator:^NSComparisonResult(Project *p1, Project *p2) {
-                        return [p1.title compare:p2.title];
-                    }];
+                    //projectsVC.joinedProjects = [projects sortedArrayUsingComparator:^NSComparisonResult(Project *p1, Project //*p2) {
+                        //return [p1.title compare:p2.title];
+                    //}];
                     
                     [self.navigationController pushViewController:projectsVC animated:YES];
+                    */
                 } else {
                     UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"You must be logged in!", nil)
                                                                                    message:NSLocalizedString(@"You must be logged in to access projects.", nil)
@@ -1399,10 +1372,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     cell.taxonSecondaryNameLabel.textColor = [UIColor blackColor];
     cell.accessoryType = UITableViewCellAccessoryNone;
     
-    RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", self.observation.taxonID.integerValue];
-    
-    if (results.count == 1) {
-        ExploreTaxonRealm *etr = [results firstObject];
+    ExploreTaxonRealm *etr = [self.observation taxon];
+    if (etr) {
         if (!etr.commonName || [etr.commonName isEqualToString:etr.scientificName]) {
             // no common name, so only show scientific name in the main label
             cell.taxonNameLabel.text = etr.scientificName;
@@ -1492,7 +1463,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (UITableViewCell *)dateTimeCellInTableView:(UITableView *)tableView {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
-    cell.titleLabel.text = [self.observation observedOnPrettyString];
+    cell.titleLabel.text = [self.observation observedOnShortString];
     FAKIcon *calendar = [FAKINaturalist iosCalendarOutlineIconWithSize:44];
     [calendar addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
     cell.cellImageView.image = [calendar imageWithSize:CGSizeMake(44, 44)];
@@ -1506,25 +1477,19 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     DisclosureCell *cell;
     
-    CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(-19999.0, -19999.0);
-    
-    if (self.observation.visibleLatitude) {
-        coords = CLLocationCoordinate2DMake(self.observation.visibleLatitude.doubleValue, self.observation.visibleLongitude.doubleValue);
-    }
-    
-    if (CLLocationCoordinate2DIsValid(coords)) {
+    if (CLLocationCoordinate2DIsValid(self.observation.location)) {
         SubtitleDisclosureCell *subtitleCell = [tableView dequeueReusableCellWithIdentifier:@"subtitleDisclosure"];
         cell = subtitleCell;
         
         NSString *positionalAccuracy = nil;
-        if (self.observation.positionalAccuracy) {
-            positionalAccuracy = [NSString stringWithFormat:@"%ld m", (long)self.observation.positionalAccuracy.integerValue];
+        if (self.observation.positionalAccuracy != 0) {
+            positionalAccuracy = [NSString stringWithFormat:@"%.0f m", self.observation.positionalAccuracy];
         } else {
             positionalAccuracy = NSLocalizedString(@"???", @"positional accuracy when we don't know");
         }
         NSString *subtitleString = [NSString stringWithFormat:@"Lat: %.3f  Long: %.3f  Acc: %@",
-                                    coords.latitude,
-                                    coords.longitude,
+                                    self.observation.latitude,
+                                    self.observation.longitude,
                                     positionalAccuracy];
         subtitleCell.subtitleLabel.text = subtitleString;
         
@@ -1558,7 +1523,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
     cell.titleLabel.text = [self geoPrivacyTitle];
-    cell.secondaryLabel.text = self.observation.presentableGeoprivacy;
+    cell.secondaryLabel.text = self.observation.geoprivacy;
     
     FAKIcon *globe = [FAKIonIcons iosWorldOutlineIconWithSize:44];
     [globe addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
@@ -1573,7 +1538,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
     cell.titleLabel.text = [self captiveTitle];
-    cell.secondaryLabel.text = self.observation.captive.boolValue ? NSLocalizedString(@"Yes", nil) : NSLocalizedString(@"No", nil);
+    cell.secondaryLabel.text = self.observation.captive ? NSLocalizedString(@"Yes", nil) : NSLocalizedString(@"No", nil);
     FAKIcon *captive = [FAKINaturalist captiveIconWithSize:44];
     [captive addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
     cell.cellImageView.image = [captive imageWithSize:CGSizeMake(44, 44)];

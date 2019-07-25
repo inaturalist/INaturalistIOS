@@ -22,7 +22,7 @@
 - (NSString *)inatDescription;
 - (NSString *)terms;
 - (NSString *)projectObservationRules;
-
+- (NSString *)titleForTypeOfProject;
 - (BOOL)joined;
 
 @end

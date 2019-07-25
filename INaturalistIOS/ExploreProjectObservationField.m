@@ -23,4 +23,8 @@
     return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreObservationField.class];
 }
 
++ (NSArray *)textFieldDataTypes {
+    return @[ @"text", @"dna" ];
+}
+
 @end

@@ -27,6 +27,7 @@
         self.commentsCount = model.commentsCount;
         self.mappable = model.mappable;
         self.publicPositionalAccuracy = model.publicPositionalAccuracy;
+        self.positionalAccuracy = model.positionalAccuracy;
         self.coordinatesObscured = model.coordinatesObscured;
         self.placeGuess = model.placeGuess;
         self.latitude = model.latitude;
@@ -34,8 +35,9 @@
         self.uuid = model.uuid;
         self.geoprivacy = model.geoprivacy;
         self.captive = model.captive;
-        
-        self.syncedAt = nil;
+        self.updatedAt = model.updatedAt;
+        self.syncedAt = model.syncedAt;
+        self.createdAt = model.createdAt;
         
         if (model.taxon) {
             self.taxon = [[ExploreTaxonRealm alloc] initWithMantleModel:model.taxon];
@@ -69,6 +71,13 @@
             ExploreFaveRealm *efr = [[ExploreFaveRealm alloc] initWithMantleModel:fave];
             [self.faves addObject:efr];
         }
+        
+        for (ExploreProjectObservation *po in model.projectObservations) {
+            ExploreProjectObservationRealm *epor = [[ExploreProjectObservationRealm alloc] initWithMantleModel:po];
+            [self.projectObservations addObject:epor];
+        }
+        
+        self.hasUnviewedActivityBool = NO;
     }
     
     return self;
@@ -80,7 +89,8 @@
 }
 
 - (NSArray *)sortedObservationPhotos {
-    return self.observationPhotos;
+    RLMSortDescriptor *positionSort = [RLMSortDescriptor sortDescriptorWithKeyPath:@"position" ascending:YES];
+    return [self.observationPhotos sortedResultsUsingDescriptors:@[ positionSort ]];
 }
 
 - (ObsDataQuality)dataQuality {
@@ -97,11 +107,6 @@
 
 - (ExploreTaxonRealm *)exploreTaxonRealm {
     return self.taxon;
-}
-
-- (BOOL)hasUnviewedActivityBool {
-    // TODO: tbd
-    return NO;
 }
 
 - (NSString *)iconicTaxonName {
@@ -132,15 +137,33 @@
     return shortFormatter;
 }
 
++ (NSDateFormatter *)jsDateFormatter {
+    static dispatch_once_t once;
+    static NSDateFormatter *jsFormatter;
+    dispatch_once(&once, ^{
+        jsFormatter = [[NSDateFormatter alloc] init];
+        jsFormatter.timeZone = [NSTimeZone localTimeZone];
+        jsFormatter.dateFormat = @"EEE MMM dd yyyy HH:mm:ss 'GMT'Z (zzz)";
+        
+        // per #128 and https://groups.google.com/d/topic/inaturalist/8tE0QTT_kzc/discussion
+        // the server doesn't want the observed_on field to be localized
+        jsFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en-US"];
+    });
+    return jsFormatter;
+}
+
+
 - (NSString *)observedOnShortString {
     return [[self.class shortDateFormatter] stringFromDate:self.observedOn];
 }
 
-- (NSSet *)projectObservations {
-    // TODO: tbd
-    return [NSSet set];
+- (NSArray *)projectIds {
+    NSMutableArray *projectIds = [NSMutableArray arrayWithCapacity:self.projectObservations.count];
+    for (ExploreProjectObservationRealm *po in self.projectObservations) {
+        [projectIds addObject:@(po.projectId)];
+    }
+    return [NSArray arrayWithArray:projectIds];
 }
-
 
 - (NSString *)sortable {
     
@@ -199,30 +222,135 @@
 
 
 - (CLLocationAccuracy)visiblePositionalAccuracy {
-    // TODO: tbd
-    return 0;
+    if (self.coordinatesObscured) {
+        return self.publicPositionalAccuracy;
+    } else {
+        return self.positionalAccuracy;
+    }
 }
 
 
 - (NSArray *)childrenNeedingUpload {
-    // TODO: tbd
-    return @[];
+    NSMutableArray *childrenNeedingUpload = [NSMutableArray array];
+    for (ExploreObservationPhotoRealm *photo in self.observationPhotos) {
+        if ([photo needsUpload]) {
+            [childrenNeedingUpload addObject:photo];
+        }
+    }
+    
+    // TODO: add ovfs, pos
+    
+    return childrenNeedingUpload;
 }
 
 + (NSArray *)needingUpload {
-    // TODO: tbd
-    return @[];
+    NSMutableSet *needingUpload = [NSMutableSet set];
+    
+    // all observations that need sync themselves are upload candidates
+    for (ExploreObservationRealm *obs in [self needingSync]) {
+        [needingUpload addObject:obs];
+    }
+    
+    /*
+    // also, all observations whose uploadable children need sync
+    for (ObservationPhoto *op in [ObservationPhoto needingSync]) {
+        if (op.observation) {
+            [needingUpload addObject:op.observation];
+        }
+    }
+    
+    for (ObservationFieldValue *ofv in [ObservationFieldValue needingSync]) {
+        if (ofv.observation) {
+            [needingUpload addObject:ofv.observation];
+        }
+    }
+    
+    for (ProjectObservation *po in [ProjectObservation needingSync]) {
+        if (po.observation) {
+            [needingUpload addObject:po.observation];
+        }
+    }
+     */
+    
+    /*
+    return [[needingUpload allObjects] sortedArrayUsingComparator:^NSComparisonResult(INatModel *o1, INatModel *o2) {
+        return [o1.localCreatedAt compare:o2.localCreatedAt];
+    }];
+     */
+    return [needingUpload allObjects];
 }
 
 - (BOOL)needsUpload {
-    // TODO: tbd
+    // needs upload if this obs needs sync
+    if (self.needsSync) { return YES; }
     return NO;
 }
 
-- (NSDictionary *)uploadableRepresentation {
-    // TODO: tbd
-    return @{};
++ (RLMResults *)needingSync {
+    NSPredicate *syncPredicate = [NSPredicate predicateWithFormat:@"syncedAt == nil OR syncedAt < updatedAt"];
+    return [[self class] objectsWithPredicate:syncPredicate];
 }
+
+- (BOOL)needsSync {
+    return self.syncedAt == nil || [self.syncedAt timeIntervalSinceDate:self.updatedAt] < 0;
+}
+
+- (NSDictionary *)uploadableRepresentation {
+    NSMutableDictionary *mutableParams = [NSMutableDictionary dictionary];
+
+    // mappings for objects
+    NSDictionary *objectMappings = @{
+                              @"speciesGuess": @"species_guess",
+                              @"inatDescription": @"description",
+                              @"observedOnString": @"observed_on_string",
+                              @"placeGuess": @"place_guess",
+                              @"geoprivacy": @"geoprivacy",
+                              @"uuid": @"uuid",
+                              };
+    
+    // map the objects
+    for (NSString *key in objectMappings) {
+        if ([self valueForKey:key]) {
+            NSString *mappedName = objectMappings[key];
+            mutableParams[mappedName] = [self valueForKey:key];
+        }
+    }
+    
+    // handle taxon id separately
+    if (self.taxon) {
+        mutableParams[@"taxon_id"] = @(self.taxon.taxonId);
+    }
+    
+    // handle location separately
+    if (CLLocationCoordinate2DIsValid(self.location)) {
+        mutableParams[@"latitude"] = @(self.latitude);
+        mutableParams[@"longitude"] = @(self.longitude);
+        if (self.positionalAccuracy != 0) {
+            mutableParams[@"positional_accuracy"] = @(self.positionalAccuracy);
+        }
+    }
+    
+    // handle bools separately
+    NSDictionary *boolMappings = @{
+                                   @"captive": @"captive_flag",
+                                   // TBD: realm
+                                   // @"ownersIdentificationFromVision": @"owners_identification_from_vision",
+                                   };
+    // map the bools
+    for (NSString *key in boolMappings) {
+        NSString *mappedName = boolMappings[key];
+        mutableParams[mappedName] = [[self valueForKey:key] boolValue] ? @"YES" : @"NO";
+    }
+    
+    // return an immutable copy
+    // ignore_photos is required to avoid clobbering obs photos
+    // when updating an observation via the node endpoint
+    return @{
+             @"observation": [NSDictionary dictionaryWithDictionary:mutableParams],
+             @"ignore_photos": @"YES"
+             };
+}
+
 
 - (NSInteger)activityCount {
     return self.identifications.count + self.comments.count;
@@ -235,6 +363,14 @@
     } else {
         return CLLocationCoordinate2DMake(self.latitude, self.longitude);
     }
+}
+
+- (NSString *)observedOnString {
+    return [[[self class] jsDateFormatter] stringFromDate:self.timeObservedAt];
+}
+
++ (NSString *)endpointName {
+    return @"observations";
 }
 
 @end

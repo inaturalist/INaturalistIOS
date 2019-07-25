@@ -13,13 +13,10 @@
 #import <RestKit/RestKit.h>
 
 #import "ObsDetailActivityViewModel.h"
-#import "Observation.h"
 #import "DisclosureCell.h"
-#import "Taxon.h"
 #import "ExploreTaxon.h"
 #import "ExploreTaxonRealm.h"
 #import "ImageStore.h"
-#import "TaxonPhoto.h"
 #import "ObsDetailActivityMoreCell.h"
 #import "UIColor+INaturalist.h"
 #import "ObsDetailActivityAuthorCell.h"
@@ -517,6 +514,8 @@
 #pragma mark - misc helpers
 
 - (void)markActivityAsSeen {
+    /*
+     TODO: realm
     if (self.observation.inatRecordId && self.observation.hasUnviewedActivityBool && [self.observation isKindOfClass:[Observation class]]) {
         Observation *obs = (Observation *)self.observation;
         obs.hasUnviewedActivity = [NSNumber numberWithBool:NO];
@@ -527,6 +526,7 @@
         // the API won't take a nil callback at this point
         [api seenUpdatesForObservationId:self.observation.inatRecordId handler:^(NSArray *results, NSInteger count, NSError *error) { }];
     }
+     */
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"resourceId == %ld", [self.observation inatRecordId]];
     RLMResults *results = [ExploreUpdateRealm objectsWithPredicate:predicate];
@@ -557,11 +557,7 @@
         ExploreUserRealm *loggedInUser = [login meUserLocal];
         for (id <IdentificationVisualization> eachId in self.observation.identifications) {
             if ([[eachId userName] isEqualToString:loggedInUser.login] && [eachId isCurrent]) {
-                
-                NSPredicate *taxonPredicate = [NSPredicate predicateWithFormat:@"recordID == %ld", [eachId taxonId]];
-                Taxon *taxon = [[Taxon objectsWithPredicate:taxonPredicate] firstObject];
-                
-                return [[taxon recordID] integerValue];
+                return [eachId taxonId];
             }
         }
     }

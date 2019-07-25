@@ -14,6 +14,7 @@
 
 @interface UploadOperation : NSOperation
 @property AFHTTPSessionManager *nodeSessionManager;
+@property NSString *uuid;
 @property NSManagedObjectID *rootObjectId;
 @property NSInteger userSiteId;
 @property (weak) id <UploadManagerNotificationDelegate> delegate;

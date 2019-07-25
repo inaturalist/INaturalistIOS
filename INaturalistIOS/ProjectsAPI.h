@@ -22,6 +22,7 @@
 - (void)searchProjectsTitleText:(NSString *)text handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)joinedProjectsUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)projectsNear:(CLLocationCoordinate2D)coordinate radius:(NSInteger)radius handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)projectsWithIds:(NSArray *)projectIds handler:(INatAPIFetchCompletionCountHandler)done;
 
 - (void)joinProject:(NSInteger)projectId handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)leaveProject:(NSInteger)projectId handler:(INatAPIFetchCompletionCountHandler)done;

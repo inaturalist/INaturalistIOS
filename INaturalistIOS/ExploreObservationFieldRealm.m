@@ -29,5 +29,12 @@
     return @"fieldId";
 }
 
+- (NSString *)defaultValue {
+    if (self.allowedValues.count > 0) {
+        return [self.allowedValues firstObject];
+    } else {
+        return @"";
+    }
+}
 
 @end

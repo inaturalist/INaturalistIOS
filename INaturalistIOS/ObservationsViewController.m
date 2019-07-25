@@ -17,14 +17,9 @@
 #import <AFNetworking/AFNetworking.h>
 #import <MBProgressHUD/MBProgressHUD.h> 
 #import <AFNetworking/UIButton+AFNetworking.h>
-#import <RestKit/RestKit.h>
 
 #import "ObservationsViewController.h"
 #import "LoginController.h"
-#import "Observation.h"
-#import "ObservationFieldValue.h"
-#import "ObservationPhoto.h"
-#import "ProjectObservation.h"
 #import "ImageStore.h"
 #import "INatUITabBarController.h"
 #import "INaturalistAppDelegate.h"
@@ -41,7 +36,6 @@
 #import "ObservationViewUploadingCell.h"
 #import "ObservationViewWaitingUploadCell.h"
 #import "ObservationViewErrorCell.h"
-#import "DeletedRecord.h"
 #import "UploadManager.h"
 #import "ObsDetailV2ViewController.h"
 #import "ExploreTaxonRealm.h"
@@ -49,14 +43,13 @@
 #import "PeopleAPI.h"
 #import "OnboardingLoginViewController.h"
 #import "ExploreUpdateRealm.h"
-#import "Taxon.h"
 #import "INatReachability.h"
 #import "NSLocale+INaturalist.h"
 #import "ObservationAPI.h"
 #import "ExploreObservation.h"
 #import "ExploreObservationRealm.h"
 
-@interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
+@interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     
     
 
@@ -188,7 +181,7 @@
     CGPoint translatedCenter = [self.tableView convertPoint:buttonCenter fromView:button.superview];
     NSIndexPath *ip = [self.tableView indexPathForRowAtPoint:translatedCenter];
     
-    Observation *observation = [self.fetchedResultsController objectAtIndexPath:ip];
+    ExploreObservationRealm *observation = [self.myObservations objectAtIndex:ip.item];
     
     [[Analytics sharedClient] event:kAnalyticsEventSyncObservation
                      withProperties:@{
@@ -206,11 +199,16 @@
         [self stopSyncPressed];
     } else {
         NSMutableArray *recordsToDelete = [NSMutableArray array];
+        
+        // TODO: deleted records in realm
+        /*
         for (Class class in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
             [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
                                                                                       NSStringFromClass(class)]]];
         }
-        NSArray *recordsToUpload = [Observation needingUpload];
+         */
+        
+        NSArray *recordsToUpload = [ExploreObservationRealm needingUpload];
         if (recordsToDelete.count > 0 || recordsToUpload.count > 0) {
             [self sync:nil];
         } else {
@@ -353,11 +351,15 @@
     }
     
     NSMutableArray *recordsToDelete = [NSMutableArray array];
+    /*
+     TODO: realm deleted records
     for (Class class in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
         [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
                                                                                   NSStringFromClass(class)]]];
     }
-    NSArray *recordsToUpload = [Observation needingUpload];
+     */
+    
+    NSArray *recordsToUpload = [ExploreObservationRealm needingUpload];
     
     [[Analytics sharedClient] event:kAnalyticsEventSyncObservation
                      withProperties:@{
@@ -365,10 +367,9 @@
                                       @"numDeletes": @(recordsToDelete.count),
                                       @"numUploads": @(recordsToUpload.count),
                                       }];
-
-
+    
     [self uploadDeletes:recordsToDelete
-                uploads:[Observation needingUpload]];
+                uploads:recordsToUpload];
 }
 
 - (void)uploadDeletes:(NSArray *)recordsToDelete uploads:(NSArray *)observationsToUpload {
@@ -459,10 +460,8 @@
         return;
     }
     
-    NSInteger itemsToUpload = [[Observation needingUpload] count] + [Observation deletedRecordCount];
-    itemsToUpload += [ObservationPhoto deletedRecordCount];
-    itemsToUpload += [ProjectObservation deletedRecordCount];
-    itemsToUpload += [ObservationFieldValue deletedRecordCount];
+    // TOOD: realm account for deleted records of obs, photos, pos, ofvs
+    NSInteger itemsToUpload = [[ExploreObservationRealm needingUpload] count];
     
     if (itemsToUpload > 0) {
         // no implicit upload
@@ -485,6 +484,11 @@
         [[self observationApi] observationsForUserId:me.userId count:10 handler:^(NSArray *results, NSInteger count, NSError *error) {
             RLMRealm *realm = [RLMRealm defaultRealm];
             for (ExploreObservation *obs in results) {
+                obs.syncedAt = [NSDate date];
+                for (ExploreObservationPhoto *photo in obs.observationPhotos) {
+                    photo.updatedAt = [NSDate distantPast];
+                    photo.syncedAt = [NSDate date];
+                }
                 ExploreObservationRealm *eor = [[ExploreObservationRealm alloc] initWithMantleModel:obs];
                 [realm beginWriteTransaction];
                 [realm addOrUpdateObject:eor];
@@ -497,38 +501,21 @@
         [[self observationApi] observationsForUserId:me.userId count:200 handler:^(NSArray *results, NSInteger count, NSError *error) {
             RLMRealm *realm = [RLMRealm defaultRealm];
             for (ExploreObservation *obs in results) {
+                obs.syncedAt = [NSDate date];
+                for (ExploreObservationPhoto *photo in obs.observationPhotos) {
+                    photo.updatedAt = [NSDate distantPast];
+                    photo.syncedAt = [NSDate date];
+                }
                 ExploreObservationRealm *eor = [[ExploreObservationRealm alloc] initWithMantleModel:obs];
                 [realm beginWriteTransaction];
                 [realm addOrUpdateObject:eor];
                 [realm commitWriteTransaction];
             }
+            
+            [self.refreshControl endRefreshing];
             [weakSelf.tableView reloadData];
         }];
-
-        /*
         
-        NSString *obsFetchPath = [NSString stringWithFormat:@"/observations/%@.json?extra=observation_photos,projects,fields",
-                                      me.login];
-        NSString *localeString = [NSLocale inat_serverFormattedLocale];
-        if (localeString && ![localeString isEqualToString:@""]) {
-            obsFetchPath = [obsFetchPath stringByAppendingString:[NSString stringWithFormat:@"&locale=%@", localeString]];
-        }
-
-        
-        // fetch the most recent 10
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[obsFetchPath stringByAppendingString:@"&per_page=10"]
-                                                     objectMapping:[Observation mapping]
-                                                          delegate:self];
-        
-        // then fetch the most recent 200
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [[Analytics sharedClient] debugLog:@"Network - Refresh 200 recent observations"];
-            [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[obsFetchPath stringByAppendingString:@"&per_page=200"]
-                                                         objectMapping:[Observation mapping]
-                                                              delegate:self];
-        });
-         */
-
         [self loadUserForHeader];
         self.lastRefreshAt = [NSDate date];
 	}
@@ -537,8 +524,6 @@
 - (void)checkForDeleted {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     if ([appDelegate.loginController isLoggedIn]) {
-        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
-
         NSDate *lastSyncDate = [[NSUserDefaults standardUserDefaults] objectForKey:INatLastDeletedSync];
         if (!lastSyncDate) {
             // have never synced; use unix timestamp date of 0
@@ -548,16 +533,16 @@
             [lastSyncDate dateByAddingTimeInterval:-(60*60*24)];
         }
         
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-        [dateFormatter setLocale:enUSPOSIXLocale];
-        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
-        
-        NSString *iso8601String = [dateFormatter stringFromDate:lastSyncDate];
-        
         [[Analytics sharedClient] debugLog:@"Network - Get My Recent Observations"];
         
-        [[RKClient sharedClient] get:[NSString stringWithFormat:@"/observations/%@?updated_since=%@", me.login, iso8601String] delegate:self];
+        [[self observationApi] deletedObservationsSinceDate:lastSyncDate handler:^(NSArray *results, NSInteger count, NSError *error) {
+            
+            for (NSNumber *deletedObsId in results) {
+                // TODO: realm - do someting about this deletedObsId
+                // check down in the RKClient callback for details
+            }
+            
+        }];
     }
 }
 
@@ -565,8 +550,11 @@
 {
     if ([[INatReachability sharedClient] isNetworkReachable]) {
         [[Analytics sharedClient] debugLog:@"Network - Get My Updates Activity"];
-        [[RKClient sharedClient] get:@"/users/new_updates.json?notifier_types=Identification,Comment&skip_view=true&resource_type=Observation"
-                            delegate:self];
+        
+        [[self observationApi] updatesWithHandler:^(NSArray *results, NSInteger count, NSError *error) {
+            // TODO: realm - do something with these updates
+            // check down in the RKClient callback for details
+        }];
     }
 }
 
@@ -654,42 +642,18 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-#pragma mark - NSFetchedResultsControllerDelegate
 
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    // skip reload animation
-}
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    // skip reload animation
-    [self.tableView reloadData];
-    
-    // now is also a good time to reload the header
-    [self configureHeaderForLoggedInUser];
-}
-
-- (void)controller:(NSFetchedResultsController *)controller
-   didChangeObject:(id)anObject
-       atIndexPath:(NSIndexPath *)indexPath
-     forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath {
-    // skip reload animation
-}
+# pragma mark TableViewController methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][0];
-    tableView.backgroundView.hidden = ([sectionInfo numberOfObjects] != 0);
-    
+    // the background view is only shown when we have no observations
+    tableView.backgroundView.hidden = ([self.myObservations count] != 0);
+
     return 1;
 }
 
-# pragma mark TableViewController methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [self.myObservations count];
-    /*
-    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController sections][section];
-    return [sectionInfo numberOfObjects];
-     */
 }
 
 
@@ -818,7 +782,7 @@
 - (void)configureErrorCell:(ObservationViewErrorCell *)cell forIndexPath:(NSIndexPath *)indexPath {
     [self configureObservationCell:cell forIndexPath:indexPath];
     
-    Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    ExploreObservationRealm *o = [self.myObservations objectAtIndex:indexPath.item];
     cell.dateLabel.text = [[YLMoment momentWithDate:o.observedOn] fromNowWithSuffix:NO];
     cell.subtitleLabel.text = NSLocalizedString(@"Needs Your Attention", @"subtitle for an observation that failed validation.");
 }
@@ -828,7 +792,7 @@
     
     cell.subtitleLabel.text = NSLocalizedString(@"Uploading...", @"subtitle for observation while it's uploading.");
     
-    Observation *o = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    ExploreObservationRealm *o = [self.myObservations objectAtIndex:indexPath.item];
     if (o.uuid) {
         float progress = [self.uploadProgress[o.uuid] floatValue];
         [cell.progressBar setProgress:progress];
@@ -951,8 +915,12 @@
 }
 
 - (void)configureHeaderView:(MeHeaderView *)view forUser:(id <UserVisualization>)user {
-    NSUInteger needingUploadCount = [[Observation needingUpload] count];
+    NSUInteger needingUploadCount = [[ExploreObservationRealm needingUpload] count];
+    NSUInteger needingDeleteCount = 0;
+    /*
+     TODO: realm deleted records
     NSUInteger needingDeleteCount = [Observation deletedRecordCount] + [ObservationPhoto deletedRecordCount] + [ProjectObservation deletedRecordCount] + [ObservationFieldValue deletedRecordCount];
+     */
     
     if (needingUploadCount > 0 || needingDeleteCount > 0) {
 
@@ -1089,7 +1057,7 @@
         }
         
         // observation count
-        NSInteger observationCount = MAX(user.observationsCount, [[Observation allObjects] count]);
+        NSInteger observationCount = MAX(user.observationsCount, [[ExploreObservationRealm allObjects] count]);
         if (observationCount > 0) {
             NSString *baseObsCountStr;
             if (observationCount == 1) {
@@ -1340,18 +1308,12 @@
                                                  name:kInatCoreDataRebuiltNotification
                                                object:nil];
     
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    ExploreUserRealm *me = appDelegate.loginController.meUserLocal;
-    NSPredicate *myObservationsPredicate = nil;
-    if (me) {
-        myObservationsPredicate = [NSPredicate predicateWithFormat:@"user.userId == %ld OR syncedAt == nil",
-                                   me.userId];
-    } else {
-        myObservationsPredicate = [NSPredicate predicateWithFormat:@"syncedAt == nil"];
-    }
-    
     // TODO: redo this fetch if the user login state changes, since the predicate will change
-    self.myObservations = [ExploreObservationRealm objectsWithPredicate:myObservationsPredicate];
+    NSArray *sorts = @[
+                       [RLMSortDescriptor sortDescriptorWithKeyPath:@"createdAt" ascending:NO],
+                       ];
+    self.myObservations = [[ExploreObservationRealm allObjects] sortedResultsUsingDescriptors:sorts];
+    
     __weak typeof(self) weakSelf = self;
     // TODO: invalidate this token and recreate it, if necessary, when login state changes
     self.myObservationsUpdateToken = [self.myObservations addNotificationBlock:^(RLMResults<ExploreObservationRealm *> * _Nullable results,
@@ -1360,21 +1322,6 @@
         [weakSelf.tableView reloadData];
     }];
     
-    // perform the iniital local fetch
-    NSError *fetchError;
-    [self.fetchedResultsController performFetch:&fetchError];
-    if (fetchError) {
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"fetch error: %@",
-                                            fetchError.localizedDescription]];
-        
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Fetch Error", nil)
-                                                                       message:fetchError.localizedDescription
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
     
     self.navigationItem.leftBarButtonItem = nil;
     FAKIcon *settings = [FAKIonIcons iosGearOutlineIconWithSize:30];
@@ -1390,6 +1337,7 @@
     settingsBarButton.accessibilityLabel = NSLocalizedString(@"Settings", @"accessibility label for settings button");
     self.navigationItem.rightBarButtonItem = settingsBarButton;
     
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.loginController.uploadManager setDelegate:self];
 }
 
@@ -1460,19 +1408,20 @@
 {
     if ([segue.identifier isEqualToString:@"obsDetailV2"]) {
         ObsDetailV2ViewController *ovc = [segue destinationViewController];
-        ovc.observation = (Observation *)sender;
+        ovc.observation = sender;
         [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
                          withProperties:@{ @"via": @"Me Tab" }];
     }
 }
 
 - (void)dealloc {
-    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.myObservationsUpdateToken invalidate];
 }
 
 #pragma mark - RKObjectLoaderDelegate
+/*
+ TODO: any of this need to be pulled to realm stuff?
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
 	[self.refreshControl endRefreshing];
     
@@ -1646,6 +1595,7 @@
 {
 	NSLog(@"Request Error: %@", error.localizedDescription);
 }
+ */
 
 #pragma mark - Upload Notification Delegate
 
@@ -1666,6 +1616,8 @@
         [self loadUserForHeader];
     });
     
+    [self.tableView reloadData];
+    
     UIViewController *topVC = self.navigationController.topViewController;
     if ([topVC isKindOfClass:[ObsDetailV2ViewController class]]) {
         ObsDetailV2ViewController *obsDetail = (ObsDetailV2ViewController *)topVC;
@@ -1681,71 +1633,54 @@
                                       }];
 }
 
-- (void)uploadSessionCancelledFor:(Observation *)observation {
+- (void)uploadSessionCancelledFor:(NSString *)observationUUID {
     [[Analytics sharedClient] debugLog:@"Upload - Upload Cancelled"];
     
     self.meHeader.obsCountLabel.text = NSLocalizedString(@"Cancelling...", @"Title of me header while cancellling an upload session.");
     [self syncStopped];
 }
 
-- (void)uploadSessionStarted:(Observation *)observation {
+- (void)uploadSessionStarted:(NSString *)observationUUID {
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
     
-    if (observation.uuid) {
-        self.uploadProgress[observation.uuid] = @(0);
+    if (observationUUID) {
+        self.uploadProgress[observationUUID] = @(0);
     }
     
     [self configureHeaderForLoggedInUser];
     [self.meHeader startAnimatingUpload];
     
-    NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
-    if (ip) {
-        [self.tableView beginUpdates];
-        [self.tableView reloadRowsAtIndexPaths:@[ ip ]
-                              withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView endUpdates];
-    }
+    [self.tableView reloadData];
 }
 
-- (void)uploadSessionSuccessFor:(Observation *)observation {
+- (void)uploadSessionSuccessFor:(NSString *)observationUUID {
     [[Analytics sharedClient] debugLog:@"Upload - Success"];
     
     [self configureHeaderForLoggedInUser];
     
-    if (observation.uuid) {
-        self.uploadProgress[observation.uuid] = nil;
+    
+    if (observationUUID) {
+        self.uploadProgress[observationUUID] = nil;
     }
     
-    NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
-    if (ip) {
-        [self.tableView beginUpdates];
-        [self.tableView reloadRowsAtIndexPaths:@[ ip ]
-                              withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView endUpdates];
-    }
+    [self.tableView reloadData];
 }
 
-- (void)uploadSessionProgress:(float)progress for:(Observation *)observation {
-    if (observation.uuid) {
-        self.uploadProgress[observation.uuid] = @(progress);
+- (void)uploadSessionProgress:(float)progress for:(NSString *)observationUUID {
+    if (observationUUID) {
+        self.uploadProgress[observationUUID] = @(progress);
     }
     
-    NSIndexPath *ip = [self.fetchedResultsController indexPathForObject:observation];
-    if (ip) {
-        [self.tableView beginUpdates];
-        [self.tableView reloadRowsAtIndexPaths:@[ ip ]
-                              withRowAnimation:UITableViewRowAnimationNone];
-        [self.tableView endUpdates];
-    }
+    [self.tableView reloadData];
 }
 
 
-- (void)uploadSessionFailedFor:(Observation *)observation error:(NSError *)error {
+- (void)uploadSessionFailedFor:(NSString *)observationUUID error:(NSError *)error {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Fatal Error %@", error.localizedDescription]];
     
     // clear progress for this upload
-    if (observation.uuid) {
-        self.uploadProgress[observation.uuid] = nil;
+    if (observationUUID) {
+        self.uploadProgress[observationUUID] = nil;
     }
 
     // dirty the me user to force re-fetching

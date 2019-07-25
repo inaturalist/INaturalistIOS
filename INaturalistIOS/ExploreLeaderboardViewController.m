@@ -13,7 +13,6 @@
 #import "ExploreObservationsController.h"
 #import "ExploreLeaderboardCell.h"
 #import "ExploreLeaderboardHeader.h"
-#import "Taxon.h"
 #import "ExploreUser.h"
 #import "Analytics.h"
 #import "ObserverCount.h"

@@ -22,6 +22,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithMantleModel:(ExploreObservationField *)model;
 
+- (NSString *)defaultValue;
+
 @end
 
 NS_ASSUME_NONNULL_END

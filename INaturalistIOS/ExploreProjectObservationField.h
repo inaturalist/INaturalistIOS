@@ -20,6 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (retain) ExploreObservationField *observationField;
 
++ (NSArray *)textFieldDataTypes;
 
 @end
 

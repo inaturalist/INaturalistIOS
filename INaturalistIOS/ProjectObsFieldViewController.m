@@ -7,10 +7,12 @@
 //
 
 #import "ProjectObsFieldViewController.h"
-#import "Project.h"
-#import "ProjectObservationField.h"
-#import "ObservationField.h"
-#import "ObservationFieldValue.h"
+
+#import "ExploreObservationRealm.h"
+#import "ExploreObservationFieldRealm.h"
+#import "ExploreProjectObservationFieldRealm.h"
+#import "ExploreObservationFieldValueRealm.h"
+#import "ExploreProjectRealm.h"
 
 @interface ProjectObsFieldViewController () <UITableViewDataSource, UITableViewDelegate>
 @property UITableView *tableView;
@@ -23,7 +25,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = self.projectObsField.project.title;
+    NSInteger projectId = self.projectObsField.projectObservationFieldId;
+    
+    ExploreProjectRealm *project = [ExploreProjectRealm objectForPrimaryKey:@(projectId)];
+    self.title = project.title;
     
     self.tableView = ({
         UITableView *tv = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
@@ -60,7 +65,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *value = self.projectObsField.observationField.allowedValuesArray[indexPath.item];
+    NSString *value = self.projectObsField.observationField.allowedValues[indexPath.item];
     
     NSDictionary *attrs = @{
                             NSFontAttributeName: [UIFont systemFontOfSize:14],
@@ -74,7 +79,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.projectObsField.observationField.allowedValuesArray.count;
+    return self.projectObsField.observationField.allowedValues.count;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)selectedIndexPath {
@@ -89,20 +94,21 @@
     }
     
     // update model
-    self.obsFieldValue.value = self.projectObsField.observationField.allowedValuesArray[selectedIndexPath.item];
+    self.obsFieldValue.value = self.projectObsField.observationField.allowedValues[selectedIndexPath.item];
     
     // pop
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return self.projectObsField.observationField.desc ?: self.projectObsField.observationField.name;
+    return self.projectObsField.observationField.name;
+    //return self.projectObsField.observationField.desc ?: self.projectObsField.observationField.name;
 }
 
 #pragma mark - UITableView helpers
 
 - (void)configureCell:(UITableViewCell *)cell forIndexPath:(NSIndexPath *)indexPath {
-    NSString *value = self.projectObsField.observationField.allowedValuesArray[indexPath.item];
+    NSString *value = self.projectObsField.observationField.allowedValues[indexPath.item];
     cell.textLabel.text = value;
     cell.textLabel.numberOfLines = 0;
     

@@ -18,14 +18,13 @@
 #import "LoginController.h"
 #import "ObservationAPI.h"
 #import "Analytics.h"
-#import "Observation.h"
 #import "UpdatesItemCell.h"
-#import "ObservationPhoto.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
 #import "UIImage+INaturalist.h"
 #import "ObsDetailV2ViewController.h"
 #import "UIColor+INaturalist.h"
 #import "INatUITabBarController.h"
+#import "ExploreObservationRealm.h"
 
 @interface UpdatesViewController ()
 @property RLMResults *updates;
@@ -129,13 +128,14 @@
     
     for (NSNumber *obsId in obsIds) {
         [[self observationApi] seenUpdatesForObservationId:obsId.integerValue handler:^(NSArray *results, NSInteger count, NSError *error) {
+            
             // update hasUnviewedActivity flag
-            NSPredicate *obsPredicate = [NSPredicate predicateWithFormat:@"recordID == %@", obsId];
-            Observation *obs = [[Observation objectsWithPredicate:obsPredicate] firstObject];
+            ExploreObservationRealm *obs = [ExploreObservationRealm objectForPrimaryKey:obsId];
             if (obs) {
-                obs.hasUnviewedActivity = [NSNumber numberWithBool:NO];
-                NSError *error = nil;
-                [[[RKObjectManager sharedManager] objectStore] save:&error];
+                RLMRealm *realm = [RLMRealm defaultRealm];
+                [realm beginWriteTransaction];
+                obs.hasUnviewedActivityBool = NO;
+                [realm commitWriteTransaction];
             }
         }];
     }
@@ -211,11 +211,11 @@
     
     ExploreUpdateRealm *eur = [self.updates objectAtIndex:indexPath.item];
     
-    NSPredicate *obsPredicate = [NSPredicate predicateWithFormat:@"recordID == %d", eur.resourceId];
-    Observation *o = [Observation objectWithPredicate:obsPredicate];
-    if (!o) {
-        // fetch this observation, reload the cell
-        [[self observationApi] railsObservationWithId:eur.resourceId handler:^(NSArray *results, NSInteger count, NSError *error) {
+    ExploreObservationRealm *obs = [ExploreObservationRealm objectForPrimaryKey:@(eur.resourceId)];
+    if (!obs) {
+        [[self observationApi] observationWithId:eur.resourceId handler:^(NSArray *results, NSInteger count, NSError *error) {
+            
+            // try to fetch this observation, reload the cell
             if (error) {
                 // just get rid of this update
                 RLMRealm *realm = [RLMRealm defaultRealm];
@@ -223,18 +223,22 @@
                 [realm deleteObjects:@[ eur ]];
                 [realm commitWriteTransaction];
             } else {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                     withRowAnimation:UITableViewRowAnimationFade];
-                });
+                for (ExploreObservation *eo in results) {
+                    ExploreObservationRealm *eor = [[ExploreObservationRealm alloc] initWithMantleModel:eo];
+                    RLMRealm *realm = [RLMRealm defaultRealm];
+                    [realm beginWriteTransaction];
+                    [realm addOrUpdateObject:eor];
+                    [realm commitWriteTransaction];
+                }
             }
         }];
     }
-    if (o.observationPhotos.count > 0) {
-        ObservationPhoto *op = [o.sortedObservationPhotos firstObject];
+    
+    if (obs.observationPhotos.count > 0) {
+        ExploreObservationPhoto *op = [obs.sortedObservationPhotos firstObject];
         [cell.observationImageView setImageWithURL:op.squarePhotoUrl];
     } else {
-        NSString *iconicTaxonName = o.iconicTaxonName;
+        NSString *iconicTaxonName = obs.iconicTaxonName;
         cell.observationImageView.image = [UIImage imageForIconicTaxon:iconicTaxonName];
     }
     
@@ -285,10 +289,9 @@
         ObsDetailV2ViewController *vc = (ObsDetailV2ViewController *)segue.destinationViewController;
         vc.shouldShowActivityOnLoad = YES;
         
-        NSPredicate *obsPredicate = [NSPredicate predicateWithFormat:@"recordID == %d", eur.resourceId];
-        Observation *o = [Observation objectWithPredicate:obsPredicate];
-        if (o) {
-            vc.observation = o;
+        ExploreObservationRealm *obs = [ExploreObservationRealm objectForPrimaryKey:@(eur.resourceId)];
+        if (obs) {
+            vc.observation = obs;
         } else {
             vc.observationId = eur.resourceId;
         }

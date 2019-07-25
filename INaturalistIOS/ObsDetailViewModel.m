@@ -12,13 +12,9 @@
 #import <RestKit/RestKit.h>
 
 #import "ObsDetailViewModel.h"
-#import "Observation.h"
-#import "Taxon.h"
 #import "TaxaAPI.h"
 #import "ExploreTaxonRealm.h"
-#import "TaxonPhoto.h"
 #import "ImageStore.h"
-#import "ObservationPhoto.h"
 #import "PhotosPageControlCell.h"
 #import "DisclosureCell.h"
 #import "SubtitleDisclosureCell.h"

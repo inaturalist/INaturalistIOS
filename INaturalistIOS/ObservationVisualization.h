@@ -51,6 +51,7 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
 - (NSArray *)sortedObservationPhotos;
 - (NSSet *)observationFieldValues;
 - (NSSet *)projectObservations;
+- (NSArray *)projectIds;
 - (NSSet *)comments;
 - (NSSet *)identifications;
 - (NSSet *)faves;

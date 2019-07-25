@@ -151,18 +151,24 @@
             }
             
             if ([json valueForKey:@"results"]) {
-                // sometimes results from node come back inside a results
-                // variable in the response dictionary
-                for (NSDictionary *resultJSON in [json valueForKey:@"results"]) {
-                    NSError *error;
-                    MTLModel *result = [MTLJSONAdapter modelOfClass:ClassForMapping
-                                                 fromJSONDictionary:resultJSON
-                                                              error:&error];
-                    if (result) {
-                        [results addObject:result];
-                    } else {
-                        // skip this one
-                        NSLog(@"MANTLE ERROR: %@", error);
+                if ([ClassForMapping isSubclassOfClass:NSNumber.class]) {
+                    for (id resultJSON in [json valueForKey:@"results"]) {
+                        [results addObject:@([resultJSON integerValue])];
+                    }
+                } else if ([ClassForMapping isSubclassOfClass:MTLModel.class]) {
+                    // sometimes results from node come back inside a results
+                    // variable in the response dictionary
+                    for (NSDictionary *resultJSON in [json valueForKey:@"results"]) {
+                        NSError *error;
+                        MTLModel *result = [MTLJSONAdapter modelOfClass:ClassForMapping
+                                                     fromJSONDictionary:resultJSON
+                                                                  error:&error];
+                        if (result) {
+                            [results addObject:result];
+                        } else {
+                            // skip this one
+                            NSLog(@"MANTLE ERROR: %@", error);
+                        }
                     }
                 }
             } else {
