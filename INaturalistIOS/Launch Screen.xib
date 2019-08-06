@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -22,11 +22,21 @@
                         <constraint firstAttribute="height" constant="180" id="x4D-SY-CIa"/>
                     </constraints>
                 </imageView>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cas-ngs-white-logos" translatesAutoresizingMaskIntoConstraints="NO" id="F8d-cM-AAg">
+                    <rect key="frame" x="106.5" y="400" width="267" height="40"/>
+                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="F8d-cM-AAg" secondAttribute="height" multiplier="20:3" id="RZ0-Wt-mdH"/>
+                        <constraint firstAttribute="height" constant="40" id="ze3-oW-xqf"/>
+                    </constraints>
+                </imageView>
             </subviews>
             <color key="backgroundColor" red="0.4549019608" green="0.67450980390000004" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
             <constraints>
                 <constraint firstItem="ohQ-ca-M62" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="BIL-Uy-zjb"/>
                 <constraint firstItem="ohQ-ca-M62" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" constant="-40" id="SHE-nu-oeS"/>
+                <constraint firstAttribute="bottom" secondItem="F8d-cM-AAg" secondAttribute="bottom" constant="40" id="cvS-G2-7zd"/>
+                <constraint firstItem="F8d-cM-AAg" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="hcr-JC-v3n"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -34,6 +44,7 @@
         </view>
     </objects>
     <resources>
+        <image name="cas-ngs-white-logos" width="344" height="60"/>
         <image name="inat-white-logo" width="515" height="515"/>
     </resources>
 </document>
