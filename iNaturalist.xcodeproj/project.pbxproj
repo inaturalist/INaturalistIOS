@@ -843,6 +843,13 @@
 		FA9E07421E1B158F00AE7833 /* Octopus_rubescens.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = Octopus_rubescens.json; path = Fixtures/Octopus_rubescens.json; sourceTree = "<group>"; };
 		FA9E07441E1B15B100AE7833 /* Diptera.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = Diptera.json; path = Fixtures/Diptera.json; sourceTree = "<group>"; };
 		FA9E07461E1B15D100AE7833 /* TaxonTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonTests.m; sourceTree = "<group>"; };
+		FA9E2B2222FB97AD00FE4026 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		FA9E2B2322FB97AE00FE4026 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FA9E2B2422FB97AE00FE4026 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Projects.strings; sourceTree = "<group>"; };
+		FA9E2B2522FB97AE00FE4026 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Activity.strings; sourceTree = "<group>"; };
+		FA9E2B2622FB97AE00FE4026 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Guides.strings; sourceTree = "<group>"; };
+		FA9E2B2722FB97AE00FE4026 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA9E2B2822FB97AE00FE4026 /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA9EBE4A1ED50767001FE4AD /* TaxonMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxonMapViewController.h; sourceTree = "<group>"; };
 		FA9EBE4B1ED50767001FE4AD /* TaxonMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonMapViewController.m; sourceTree = "<group>"; };
 		FA9EE9F91C20BA6900CACF70 /* LocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocationViewController.h; sourceTree = "<group>"; };
@@ -2126,6 +2133,7 @@
 				ro,
 				nl,
 				"ca-ES",
+				uk,
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -2656,6 +2664,7 @@
 				FA68C99D20C094FF00B5D8AC /* ro */,
 				FAB1FCA621405712001CE431 /* nl */,
 				FAD35175225A7D9300E0BE6C /* ca-ES */,
+				FA9E2B2222FB97AD00FE4026 /* uk */,
 			);
 			name = MainStoryboard.storyboard;
 			path = INaturalistIOS;
@@ -2688,6 +2697,7 @@
 				FA68C9A220C0950000B5D8AC /* ro */,
 				FAB1FCAB21405713001CE431 /* nl */,
 				FAD3517A225A7D9300E0BE6C /* ca-ES */,
+				FA9E2B2722FB97AE00FE4026 /* uk */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2719,6 +2729,7 @@
 				FA68C9A320C0950000B5D8AC /* ro */,
 				FAB1FCAC21405713001CE431 /* nl */,
 				FAD3517B225A7D9300E0BE6C /* ca-ES */,
+				FA9E2B2822FB97AE00FE4026 /* uk */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2752,6 +2763,7 @@
 				FA68C99F20C0950000B5D8AC /* ro */,
 				FAB1FCA821405713001CE431 /* nl */,
 				FAD35177225A7D9300E0BE6C /* ca-ES */,
+				FA9E2B2422FB97AE00FE4026 /* uk */,
 			);
 			name = Projects.storyboard;
 			path = INaturalistIOS;
@@ -2762,6 +2774,7 @@
 			children = (
 				FA399AAD1DDBDC73007ABD3E /* Base */,
 				FAD35178225A7D9300E0BE6C /* ca-ES */,
+				FA9E2B2522FB97AE00FE4026 /* uk */,
 			);
 			name = Activity.storyboard;
 			path = INaturalistIOS;
@@ -2796,6 +2809,7 @@
 				FA68C9A120C0950000B5D8AC /* ro */,
 				FAB1FCAA21405713001CE431 /* nl */,
 				FAD35179225A7D9300E0BE6C /* ca-ES */,
+				FA9E2B2622FB97AE00FE4026 /* uk */,
 			);
 			name = Guides.storyboard;
 			path = INaturalistIOS;
@@ -2830,6 +2844,7 @@
 				FA68C99E20C094FF00B5D8AC /* ro */,
 				FAB1FCA721405713001CE431 /* nl */,
 				FAD35176225A7D9300E0BE6C /* ca-ES */,
+				FA9E2B2322FB97AE00FE4026 /* uk */,
 			);
 			name = Onboarding.storyboard;
 			path = INaturalistIOS;
