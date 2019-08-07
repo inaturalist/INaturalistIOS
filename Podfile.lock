@@ -15,7 +15,6 @@ PODS:
   - AFNetworking/Serialization (3.2.0)
   - AFNetworking/UIKit (3.2.0):
     - AFNetworking/NSURLSession
-  - Amplitude-iOS (3.7.1)
   - ARSafariActivity (1.0.4)
   - Base64 (1.1.2)
   - BlocksKit (2.2.5):
@@ -41,11 +40,8 @@ PODS:
   - Bolts/Tasks (1.9.0)
   - cocoa-oauth (0.0.1):
     - "NSData+Base64 (~> 1.0)"
-  - Crashlytics (3.12.0):
-    - Fabric (~> 1.9.0)
   - CustomIOSAlertView (0.9.3)
   - DCRoundSwitch (0.0.1)
-  - Fabric (1.9.0)
   - FBSDKCoreKit (4.37.0):
     - Bolts (~> 1.7)
   - FBSDKLoginKit (4.37.0):
@@ -184,14 +180,11 @@ PODS:
 DEPENDENCIES:
   - ActionSheetPicker-3.0 (= 1.3.12)
   - AFNetworking (= 3.2.0)
-  - Amplitude-iOS (~> 3.7.0)
   - ARSafariActivity
   - BlocksKit (= 2.2.5)
   - Bolts (= 1.9.0)
-  - Crashlytics (= 3.12.0)
   - CustomIOSAlertView (= 0.9.3)
   - DCRoundSwitch (= 0.0.1)
-  - Fabric (= 1.9.0)
   - FBSDKCoreKit (= 4.37.0)
   - FBSDKLoginKit (= 4.37.0)
   - FileMD5Hash (from `https://github.com/FutureWorkshops/FileMD5Hash.git`, commit `6864c180c010ab4b0514ba5c025091e12ab01199`)
@@ -234,16 +227,13 @@ SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - ActionSheetPicker-3.0
     - AFNetworking
-    - Amplitude-iOS
     - ARSafariActivity
     - Base64
     - BlocksKit
     - Bolts
     - cocoa-oauth
-    - Crashlytics
     - CustomIOSAlertView
     - DCRoundSwitch
-    - Fabric
     - FBSDKCoreKit
     - FBSDKLoginKit
     - FontAwesomeKit
@@ -324,16 +314,13 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   ActionSheetPicker-3.0: 9fd0713777fad3a3f3b89ea58c75d59ccdef28f4
   AFNetworking: 8ac6017b94ea105479f7776e5288e48ae9c59bb4
-  Amplitude-iOS: 4c49e5b00ebe5bf3800f219aaba8a55cf667c6c9
   ARSafariActivity: eccf8d928f242a6a290437afd27ed7178b7eadcc
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   cocoa-oauth: 1200a2170276a62a975f2786d505dab6e2db1fa8
-  Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
   CustomIOSAlertView: 94d2401e34fcfb0ac0134679d6947f5e251b0446
   DCRoundSwitch: 86d348f35be4d6ef18dbc9331c682aab6f85e980
-  Fabric: f988e33c97f08930a413e08123064d2e5f68d655
   FBSDKCoreKit: fe5f3474499a81963e11e3f3a5c753d0a95ca2b4
   FBSDKLoginKit: 2f7249686d1e30ce8a5ef5400eedf50b3e3df332
   FileMD5Hash: 81918bf9f82de8bce6a2ae38584c2cc95b7b078c
@@ -382,6 +369,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 0132a0642afda4d2ef54481e15efb9cd079fd9b5
+PODFILE CHECKSUM: 3137503342e4ea365671d1e2e3305c74ff29ca62
 
 COCOAPODS: 1.5.3

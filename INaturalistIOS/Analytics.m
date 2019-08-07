@@ -6,13 +6,9 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <Fabric/Fabric.h>
-#import <Crashlytics/Crashlytics.h>
-#import <Amplitude-iOS/Amplitude.h>
-
 #import "Analytics.h"
 
-@interface Analytics () <CrashlyticsDelegate>
+@interface Analytics ()
 @end
 
 @implementation Analytics
@@ -22,14 +18,6 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _sharedClient = [[Analytics alloc] init];
-
-#ifdef INatCrashlyticsKey
-        [Fabric with:@[CrashlyticsKit]];
-#endif
-        
-#ifdef INatAmplitudeKey
-        [[Amplitude instance] initializeApiKey:INatAmplitudeKey];
-#endif
     });
     return _sharedClient;
 }
@@ -39,35 +27,19 @@
 }
 
 - (void)event:(NSString *)name {
-#ifdef INatCrashlyticsKey
-    [Answers logCustomEventWithName:name customAttributes:nil];
-#endif
-    
-#ifdef INatAmplitudeKey
-    [[Amplitude instance] logEvent:name];
-#endif
+    // do nothing - no analytics platform for now
 }
 
 - (void)event:(NSString *)name withProperties:(NSDictionary *)properties {
-#ifdef INatCrashlyticsKey
-    [Answers logCustomEventWithName:name customAttributes:properties];
-#endif
-    
-#ifdef INatAmplitudeKey
-    [[Amplitude instance] logEvent:name withEventProperties:properties];
-#endif
+    // do nothing - no analytics platform for now
 }
 
 - (void)debugLog:(NSString *)logMessage {
-#ifdef INatCrashlyticsKey
-    CLS_LOG(@"%@", logMessage);
-#endif
+    // do nothing - no analytics platform for now
 }
 
 - (void)registerUserWithIdentifier:(NSString *)userIdentifier {
-#ifdef INatCrashlyticsKey
-    [[Crashlytics sharedInstance] setUserIdentifier:userIdentifier];
-#endif
+    // do nothing - no analytics platform for now
 }
 
 @end

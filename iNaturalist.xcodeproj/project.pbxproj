@@ -217,7 +217,6 @@
 		FA86CC381EAAE496004D6482 /* TaxonSuggestionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */; };
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
 		FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872701A2D048300D2168E /* RestrictedListHeader.m */; };
-		FA8872741A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */; };
 		FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */; };
 		FA9249821EF85FD000E0C387 /* ExploreTaxonScore.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9249811EF85FD000E0C387 /* ExploreTaxonScore.m */; };
 		FA9437831C869AA400CB10F3 /* ProjectsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9437821C869AA400CB10F3 /* ProjectsAPI.m */; };
@@ -2037,7 +2036,6 @@
 				1927512F14E9CCC9000ABAC4 /* Sources */,
 				1927513014E9CCC9000ABAC4 /* Frameworks */,
 				1927513114E9CCC9000ABAC4 /* Resources */,
-				FA63FA2919E4D40F007306F9 /* ShellScript */,
 				FA88B7681ABCD34A0004B4C6 /* ShellScript */,
 				C110890B09E5A0D7B69DC989 /* [CP] Copy Pods Resources */,
 			);
@@ -2350,20 +2348,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		FA63FA2919E4D40F007306F9 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -f ./config.h ]\nthen\n    while read def varname value; do        # Rea 3 values from each line\n        if [[ $def == \\#define ]]; then     # Check if 1st value is #define\n                                            # If it is assign variables.\n            temp_var=${value#@\\\"}           # strip @\" from start of value\n            export $varname=${temp_var%\\\"}  # strip \" from end of value\n        fi\n    done < ./config.h\nfi\n\nif [ -n \"$INatCrashlyticsKey\" ] && [ -n \"$INatCrashlyticsSecret\" ]\nthen\n    ./Pods/Fabric/Fabric.framework/run $INatCrashlyticsKey $INatCrashlyticsSecret\nfi";
-		};
 		FA88B7681ABCD34A0004B4C6 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2375,7 +2359,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cp \"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-acknowledgements.plist\" \"${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Pods-acknowledgements.plist\"";
+			shellScript = "cp \"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-acknowledgements.plist\" \"${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Pods-acknowledgements.plist\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -2535,7 +2519,6 @@
 				FA9249821EF85FD000E0C387 /* ExploreTaxonScore.m in Sources */,
 				FAEF23381C7D090900208F44 /* ProjectDetailObservationsViewController.m in Sources */,
 				FA50E4231C223FD400718B81 /* ObsDetailTaxonCell.m in Sources */,
-				FAEA0A4E229224EF004111A1 /* CLPlacemark+INat.m in Sources */,
 				FA4E72C019FAC93400A9AB5D /* ExploreLocation.m in Sources */,
 				FAC59DFC20DB0890000A6558 /* UploadOperation.m in Sources */,
 				FA3F1F941A12CABA00928102 /* ExploreUser+SearchResultsHelper.m in Sources */,
@@ -2593,7 +2576,6 @@
 				19570CC717EBB624000C800A /* GuideMenuViewController.m in Sources */,
 				FA3D90E11A9415B900BAA0EC /* ExploreLeaderboardViewController.m in Sources */,
 				FA3F202E1A141AD800928102 /* AutocompleteSearchItem.m in Sources */,
-				FA1FFFCE21E94AF500834CD0 /* ExploreObservationField.m in Sources */,
 				FAD125442296060C006E70FC /* InsetLabel.m in Sources */,
 				1955FCFD17F102FA004F57F2 /* GuideXML.m in Sources */,
 				FA711AAE1D53E52600C4FFDB /* OnboardingLoginViewController.m in Sources */,

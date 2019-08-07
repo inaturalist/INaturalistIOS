@@ -5,8 +5,6 @@ inhibit_all_warnings!
 
 target :iNaturalist do
   pod 'JWT', '2.2.0'
-  pod 'Fabric', '1.9.0'
-  pod 'Crashlytics', '3.12.0'
   pod 'FBSDKCoreKit', '4.37.0'
   pod 'FBSDKLoginKit', '4.37.0'
   pod 'Bolts', '1.9.0'
@@ -44,7 +42,6 @@ target :iNaturalist do
   pod 'ICViewPager', :git => 'https://github.com/alexshepard/ICViewPager.git', :commit => '4c45423b6a36fb38753af86a1050b6a3a1d548b8'
   pod 'Realm', '3.9.0'
   pod 'ARSafariActivity'
-  pod 'Amplitude-iOS', '~> 3.7.0'
   pod 'M13ProgressSuite'
   pod 'TOCropViewController', '~> 2.3.5'
   pod 'MHVideoPhotoGallery', :git => 'https://github.com/alexshepard/MHVideoPhotoGallery', :commit => '63c1c3d3578a913c26956b1c9c9f4411a8cfe226'
