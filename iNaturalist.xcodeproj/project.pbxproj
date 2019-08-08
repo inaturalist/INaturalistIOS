@@ -103,6 +103,7 @@
 		FA0F1B011BBB412C00533ED5 /* ObservationViewErrorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1B001BBB412C00533ED5 /* ObservationViewErrorCell.m */; };
 		FA0F1B051BBB561600533ED5 /* ObservationViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1B041BBB561600533ED5 /* ObservationViewCell.m */; };
 		FA11A7771CBFF8740039481B /* ProjectNewsButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA11A7761CBFF8740039481B /* ProjectNewsButton.m */; };
+		FA176D9122FBBCF600A5560E /* CLPlacemark+INat.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEA0A4D229224EF004111A1 /* CLPlacemark+INat.m */; };
 		FA1B58CC1D626DFD00663150 /* ABSorter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1B58CB1D626DFD00663150 /* ABSorter.m */; };
 		FA1F26291C20E25300CE73A8 /* ObsDetailDataQualityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1F26281C20E25300CE73A8 /* ObsDetailDataQualityCell.m */; };
 		FA2552101D1F49A8005D2128 /* ExploreTaxonRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */; };
@@ -2401,6 +2402,7 @@
 				FA4E72C119FAC93400A9AB5D /* ExploreObservation.m in Sources */,
 				1902812514F308AD005AC8D2 /* ImageStore.m in Sources */,
 				1902812814F315F3005AC8D2 /* INatModel.m in Sources */,
+				FA176D9122FBBCF600A5560E /* CLPlacemark+INat.m in Sources */,
 				FA0F1AFB1BBB410000533ED5 /* ObservationViewUploadingCell.m in Sources */,
 				FA4C19671B30EEE60066CA22 /* PartnerController.m in Sources */,
 				FAFAF7021BA0D64700CCADC2 /* SubtitleDisclosureCell.m in Sources */,
