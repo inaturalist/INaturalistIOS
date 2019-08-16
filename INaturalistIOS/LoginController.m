@@ -12,7 +12,6 @@
 #import <GoogleSignIn/GoogleSignIn.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <JWT/JWT.h>
-#import <GTMOAuth2/GTMOAuth2ViewControllerTouch.h>
 
 #import "LoginController.h"
 #import "Analytics.h"
