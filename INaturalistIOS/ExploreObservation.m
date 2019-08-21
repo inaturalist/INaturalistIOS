@@ -31,7 +31,7 @@
              @"commentsCount": @"comments_count",
              @"mappable": @"mappable",
              @"publicPositionalAccuracy": @"public_positional_accuracy",
-             @"coordinatesObscured": @"coordinates_obscured",
+             @"coordinatesObscuredToUser": @"obscured",
              @"placeGuess": @"place_guess",
              @"user": @"user",
              @"observationPhotos": @"photos",
@@ -103,8 +103,8 @@
         self.commentsCount = 0;
    	} else if ([key isEqualToString:@"mappable"]) {
         self.mappable = NO;
-    } else if ([key isEqualToString:@"coordinatesObscured"]) {
-        self.coordinatesObscured = NO;
+    } else if ([key isEqualToString:@"obscured"]) {
+        self.coordinatesObscuredToUser = NO;
     } else if ([key isEqualToString:@"publicPositionalAccuracy"]) {
         self.publicPositionalAccuracy = 0;
     } else if ([key isEqualToString:@"location"]) {

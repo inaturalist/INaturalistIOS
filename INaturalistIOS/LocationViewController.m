@@ -14,6 +14,7 @@
 #import "ObservationVisualization.h"
 #import "UIColor+INaturalist.h"
 #import "UIColor+ExploreColors.h"
+#import "UIImage+MapAnnotations.h"
 
 @interface LocationViewController () <MKMapViewDelegate>
 @property IBOutlet MKMapView *mapView;
@@ -63,16 +64,7 @@
         annotationView.canShowCallout = NO;
     }
     
-    // style for iconic taxon of the observation
-    FAKIcon *mapMarker = [FAKIonIcons iosLocationIconWithSize:35.0f];
-    [mapMarker addAttribute:NSForegroundColorAttributeName value:[UIColor colorForIconicTaxon:self.observation.iconicTaxonName]];
-    FAKIcon *mapOutline = [FAKIonIcons iosLocationOutlineIconWithSize:35.0f];
-    [mapOutline addAttribute:NSForegroundColorAttributeName value:[[UIColor colorForIconicTaxon:self.observation.iconicTaxonName] darkerColor]];
-    
-    // offset the marker so that the point of the pin (rather than the center of the glyph) is at the location of the observation
-    [mapMarker addAttribute:NSBaselineOffsetAttributeName value:@(35.0f)];
-    [mapOutline addAttribute:NSBaselineOffsetAttributeName value:@(35.0f)];
-    annotationView.image = [UIImage imageWithStackedIcons:@[mapMarker, mapOutline] imageSize:CGSizeMake(35.0f, 70)];
+    annotationView.image = [UIImage annotationImageForObservation:self.observation];
     
     return annotationView;
 }

@@ -218,6 +218,7 @@
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
 		FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872701A2D048300D2168E /* RestrictedListHeader.m */; };
 		FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */; };
+		FA8EBCE4230DC6E100C1D789 /* UIImage+MapAnnotations.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8EBCE3230DC6E100C1D789 /* UIImage+MapAnnotations.m */; };
 		FA9249821EF85FD000E0C387 /* ExploreTaxonScore.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9249811EF85FD000E0C387 /* ExploreTaxonScore.m */; };
 		FA9437831C869AA400CB10F3 /* ProjectsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9437821C869AA400CB10F3 /* ProjectsAPI.m */; };
 		FA9437861C869B7300CB10F3 /* ObservationAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9437851C869B7300CB10F3 /* ObservationAPI.m */; };
@@ -817,6 +818,8 @@
 		FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsCameraOverlay.m; sourceTree = "<group>"; };
 		FA89FF221AFD4A8B00B0611A /* INatPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatPhoto.h; sourceTree = "<group>"; };
 		FA8BC5E21D5011BB001355F5 /* INaturalist2.15.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.15.xcdatamodel; sourceTree = "<group>"; };
+		FA8EBCE2230DC6E100C1D789 /* UIImage+MapAnnotations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+MapAnnotations.h"; sourceTree = "<group>"; };
+		FA8EBCE3230DC6E100C1D789 /* UIImage+MapAnnotations.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+MapAnnotations.m"; sourceTree = "<group>"; };
 		FA91C7E41B4362FE004D4C5B /* UploadManagerNotificationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadManagerNotificationDelegate.h; sourceTree = "<group>"; };
 		FA9249801EF85FD000E0C387 /* ExploreTaxonScore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreTaxonScore.h; sourceTree = "<group>"; };
 		FA9249811EF85FD000E0C387 /* ExploreTaxonScore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreTaxonScore.m; sourceTree = "<group>"; };
@@ -1398,6 +1401,8 @@
 				FAB71E041FDC7D530039C45B /* INatReachability.m */,
 				FA627BA71ACB6A050079534E /* INatTooltipView.h */,
 				FA627BA81ACB6A050079534E /* INatTooltipView.m */,
+				FAD125422296060C006E70FC /* InsetLabel.h */,
+				FAD125432296060C006E70FC /* InsetLabel.m */,
 				FA6D69571B06A6CD000983F8 /* LoginController.h */,
 				FA6D69581B06A6CD000983F8 /* LoginController.m */,
 				FA6D69531B069031000983F8 /* NSAttributedString+InatHelpers.h */,
@@ -1421,12 +1426,16 @@
 				19D8340F17E7B746000A5C35 /* RXMLElement+Helpers.h */,
 				19D8341017E7B746000A5C35 /* RXMLElement+Helpers.m */,
 				1958892A1804BB0500294EB3 /* SystemVersionMacros.h */,
+				FA3D929B2294AF55004A1AA1 /* TextViewNoInsets.h */,
+				FA3D929C2294AF55004A1AA1 /* TextViewNoInsets.m */,
 				FA7FF8481BAB622200885034 /* UIAlertController+IOS9_Autorotate.h */,
 				FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */,
 				196E4E1D18D23C21009CE429 /* UIColor+INaturalist.h */,
 				196E4E1E18D23C22009CE429 /* UIColor+INaturalist.m */,
 				FA69822B1B2F49C900D9BD0F /* UIImage+INaturalist.h */,
 				FA69822C1B2F49C900D9BD0F /* UIImage+INaturalist.m */,
+				FA8EBCE2230DC6E100C1D789 /* UIImage+MapAnnotations.h */,
+				FA8EBCE3230DC6E100C1D789 /* UIImage+MapAnnotations.m */,
 				FA60A4441B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.h */,
 				FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */,
 				19C26201160CF42B005565F8 /* UIView+UIViewHelpers.h */,
@@ -1434,10 +1443,6 @@
 				FAB7028621431BD600462F62 /* UIViewController+INaturalist.h */,
 				FAB7028721431BD600462F62 /* UIViewController+INaturalist.m */,
 				FAC59DF920DB0880000A6558 /* Uploader */,
-				FA3D929B2294AF55004A1AA1 /* TextViewNoInsets.h */,
-				FA3D929C2294AF55004A1AA1 /* TextViewNoInsets.m */,
-				FAD125422296060C006E70FC /* InsetLabel.h */,
-				FAD125432296060C006E70FC /* InsetLabel.m */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";
@@ -2423,6 +2428,7 @@
 				19640DE61508100A003BF888 /* MapTypeViewController.m in Sources */,
 				19F62188150EC6B700C58F28 /* ProjectsViewController.m in Sources */,
 				FA3D929D2294AF55004A1AA1 /* TextViewNoInsets.m in Sources */,
+				FA8EBCE4230DC6E100C1D789 /* UIImage+MapAnnotations.m in Sources */,
 				FAEB5C0F2069A19000BA3132 /* LoginSwitchContextButton.m in Sources */,
 				FAFED1FC1DB5A2680015CCBA /* ExploreCommentRealm.m in Sources */,
 				FA99BDCB1FD794E300C9D985 /* CommentsAPI.m in Sources */,

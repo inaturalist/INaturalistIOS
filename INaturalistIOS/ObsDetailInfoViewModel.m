@@ -21,6 +21,7 @@
 #import "ObsDetailQualityDetailsFooter.h"
 #import "FAKINaturalist.h"
 #import "Analytics.h"
+#import "UIImage+MapAnnotations.h"
 
 @interface ObsDetailInfoViewModel () <MKMapViewDelegate>
 @end
@@ -42,14 +43,8 @@
         annotationView.canShowCallout = NO;
     }
     
-    // style for iconic taxon of the observation
-    FAKIcon *mapMarker = [FAKIonIcons iosLocationIconWithSize:35.0f];
-    [mapMarker addAttribute:NSForegroundColorAttributeName value:[UIColor colorForIconicTaxon:self.observation.iconicTaxonName]];
-    FAKIcon *mapOutline = [FAKIonIcons iosLocationOutlineIconWithSize:35.0f];
-    [mapOutline addAttribute:NSForegroundColorAttributeName value:[[UIColor colorForIconicTaxon:self.observation.iconicTaxonName] darkerColor]];
-    
-    annotationView.image = [UIImage imageWithStackedIcons:@[mapMarker, mapOutline] imageSize:CGSizeMake(35.0f, 70)];
-    
+    annotationView.image = [UIImage annotationImageForObservation:self.observation];
+
     return annotationView;
 }
 
@@ -113,20 +108,19 @@
                 cell.noLocationLabel.hidden = NO;
             }
             
-            
-            if ([self.observation.geoprivacy isEqualToString:@"obscured"]) {
-                cell.geoprivacyLabel.attributedText = ({
-                    FAKIcon *obscured = [FAKINaturalist icnLocationObscuredIconWithSize:24];
-                    [obscured addAttribute:NSForegroundColorAttributeName
-                                     value:[UIColor lightGrayColor]];
-                    obscured.attributedString;
-                });
-            } else if ([self.observation.geoprivacy isEqualToString:@"private"]) {
+            if ([self.observation.geoprivacy isEqualToString:@"private"]) {
                 cell.geoprivacyLabel.attributedText = ({
                     FAKIcon *private = [FAKINaturalist icnLocationPrivateIconWithSize:24];
                     [private addAttribute:NSForegroundColorAttributeName
                                     value:[UIColor lightGrayColor]];
                     private.attributedString;
+                });
+            } else if ([self.observation.geoprivacy isEqualToString:@"obscured"] || [self.observation coordinatesObscuredToUser]) {
+                cell.geoprivacyLabel.attributedText = ({
+                    FAKIcon *obscured = [FAKINaturalist icnLocationObscuredIconWithSize:24];
+                    [obscured addAttribute:NSForegroundColorAttributeName
+                                     value:[UIColor lightGrayColor]];
+                    obscured.attributedString;
                 });
             } else {
                 cell.geoprivacyLabel.text = nil;

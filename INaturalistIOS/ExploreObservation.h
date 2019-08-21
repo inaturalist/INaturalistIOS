@@ -34,7 +34,7 @@
 @property (nonatomic, copy) NSArray *faves;
 @property (nonatomic, assign) BOOL mappable;
 @property (nonatomic, assign) NSInteger publicPositionalAccuracy;
-@property (nonatomic, assign) BOOL coordinatesObscured;
+@property (nonatomic, assign) BOOL coordinatesObscuredToUser;
 @property (nonatomic, copy) NSString *placeGuess;
 @property (nonatomic, assign) CLLocationCoordinate2D location;
 @property (readonly) CLLocationDegrees latitude;

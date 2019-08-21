@@ -353,13 +353,6 @@
 	}];
 }
 
-- (NSArray *)mappableObservations {
-	return [self.observations.array bk_select:^BOOL(ExploreObservation *observation) {
-		// for iOS, we have our own idea of what "mappable" is
-		return !observation.coordinatesObscured;
-	}];
-}
-
 - (NSArray *)observationsWithPhotos {
 	return [self.observations.array bk_select:^BOOL(ExploreObservation *observation) {
 		return observation.observationPhotos.count > 0;

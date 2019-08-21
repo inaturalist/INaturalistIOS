@@ -40,6 +40,7 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
 - (NSString *)placeGuess;
 - (BOOL)idPlease;
 - (NSString *)geoprivacy;
+- (BOOL)coordinatesObscuredToUser;
 - (NSString *)qualityGrade;
 - (ObsDataQuality)dataQuality;
 

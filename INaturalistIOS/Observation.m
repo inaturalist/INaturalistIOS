@@ -549,7 +549,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 #pragma mark - ObservationVisualization
 
 - (BOOL)isCaptive {
-	return [self.captive boolValue];
+    return [self.captive boolValue];
 }
 
 - (NSInteger)inatRecordId {
@@ -575,28 +575,33 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 }
 
 - (CLLocationCoordinate2D)visibleLocation {
-	if (self.privateLatitude && self.privateLatitude.floatValue != 0) {
-		return CLLocationCoordinate2DMake(self.privateLatitude.floatValue, self.privateLongitude.floatValue);
-	} else if (self.latitude && self.latitude.floatValue != 0) {
-		return CLLocationCoordinate2DMake(self.latitude.floatValue, self.longitude.floatValue);
-	} else {
-		// invalid location
-		return CLLocationCoordinate2DMake(-19999.0,-19999.0);
-	}
+    if (self.privateLatitude && self.privateLatitude.floatValue != 0) {
+        return CLLocationCoordinate2DMake(self.privateLatitude.floatValue, self.privateLongitude.floatValue);
+    } else if (self.latitude && self.latitude.floatValue != 0) {
+        return CLLocationCoordinate2DMake(self.latitude.floatValue, self.longitude.floatValue);
+    } else {
+        // invalid location
+        return CLLocationCoordinate2DMake(-19999.0,-19999.0);
+    }
 }
 
 - (CLLocationDistance)visiblePositionalAccuracy {
-	if (self.privatePositionalAccuracy && self.privatePositionalAccuracy.integerValue != 0) {
-		return self.privatePositionalAccuracy.integerValue;
-	} else if (self.positionalAccuracy && self.positionalAccuracy.integerValue != 0) {
-		return self.positionalAccuracy.integerValue;
-	} else {
-		return 0;
-	}
+    if (self.privatePositionalAccuracy && self.privatePositionalAccuracy.integerValue != 0) {
+        return self.privatePositionalAccuracy.integerValue;
+    } else if (self.positionalAccuracy && self.positionalAccuracy.integerValue != 0) {
+        return self.positionalAccuracy.integerValue;
+    } else {
+        return 0;
+    }
 }
 
 - (BOOL)hasUnviewedActivityBool {
     return [self.hasUnviewedActivity boolValue] || [[self unseenUpdates] count] > 0;
+}
+
+- (BOOL)coordinatesObscuredToUser {
+    // coordinates of my stuff are not obscured to me
+    return NO;
 }
 
 - (RLMResults *)updates {

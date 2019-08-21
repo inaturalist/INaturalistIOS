@@ -25,6 +25,7 @@
 #import "NSURL+INaturalist.h"
 #import "ExploreContainerViewController.h"
 #import "ObsDetailV2ViewController.h"
+#import "UIImage+MapAnnotations.h"
 
 @interface ExploreMapViewController () <MKMapViewDelegate, CLLocationManagerDelegate> {
     ExploreLocation *centerLocation;
@@ -170,7 +171,7 @@
         }]];
         
         // compile candidates for adding to the map
-        NSArray *sortedCandidates = [self.observationDataSource.mappableObservations bk_select:^BOOL(ExploreObservation *candidate) {
+        NSArray *sortedCandidates = [self.observationDataSource.observations.array bk_select:^BOOL(ExploreObservation *candidate) {
             return CLLocationCoordinate2DIsValid(candidate.coordinate) &&
             MKMapRectContainsPoint(mapView.visibleMapRect, MKMapPointForCoordinate(candidate.coordinate));
         }];
@@ -236,18 +237,8 @@
         annotationView.canShowCallout = NO;
     }
     
-    // style for iconic taxon of the observation
-    FAKIcon *mapMarker = [FAKIonIcons iosLocationIconWithSize:25.0f];
     ExploreObservation *observation = (ExploreObservation *)annotation;
-    [mapMarker addAttribute:NSForegroundColorAttributeName value:[UIColor colorForIconicTaxon:observation.iconicTaxonName]];
-    FAKIcon *mapOutline = [FAKIonIcons iosLocationOutlineIconWithSize:25.0f];
-    [mapOutline addAttribute:NSForegroundColorAttributeName value:[[UIColor colorForIconicTaxon:observation.iconicTaxonName] darkerColor]];
-    
-    // offset the marker so that the point of the pin (rather than the center of the glyph) is at the location of the observation
-    [mapMarker addAttribute:NSBaselineOffsetAttributeName value:@(25.0f)];
-    [mapOutline addAttribute:NSBaselineOffsetAttributeName value:@(25.0f)];
-    annotationView.image = [UIImage imageWithStackedIcons:@[mapMarker, mapOutline] imageSize:CGSizeMake(25.0f, 50.0f)];
-    
+    annotationView.image = [UIImage annotationImageForObservation:observation];
     
     return annotationView;
 }
