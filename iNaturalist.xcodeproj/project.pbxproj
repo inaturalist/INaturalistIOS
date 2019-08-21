@@ -62,7 +62,6 @@
 		19AE897918DD08CC00505918 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE897818DD08CC00505918 /* User.m */; };
 		19AE897E18DD0AA700505918 /* AddCommentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE897B18DD0AA700505918 /* AddCommentViewController.m */; };
 		19AE897F18DD0AA700505918 /* AddIdentificationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE897D18DD0AA700505918 /* AddIdentificationViewController.m */; };
-		19AE898518DD0B2300505918 /* ObservationAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE898418DD0B2300505918 /* ObservationAnnotation.m */; };
 		19AE898818DD0B9600505918 /* RefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 19AE898718DD0B9600505918 /* RefreshControl.m */; };
 		19C26203160CF42B005565F8 /* UIView+UIViewHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C26202160CF42B005565F8 /* UIView+UIViewHelpers.m */; };
 		19D04794150FFDAE00BB5DBC /* NSString+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D04793150FFDAE00BB5DBC /* NSString+Helpers.m */; };
@@ -420,8 +419,6 @@
 		19AE897B18DD0AA700505918 /* AddCommentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AddCommentViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		19AE897C18DD0AA700505918 /* AddIdentificationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddIdentificationViewController.h; sourceTree = "<group>"; };
 		19AE897D18DD0AA700505918 /* AddIdentificationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = AddIdentificationViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		19AE898318DD0B2300505918 /* ObservationAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationAnnotation.h; sourceTree = "<group>"; };
-		19AE898418DD0B2300505918 /* ObservationAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationAnnotation.m; sourceTree = "<group>"; };
 		19AE898618DD0B9600505918 /* RefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefreshControl.h; sourceTree = "<group>"; };
 		19AE898718DD0B9600505918 /* RefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RefreshControl.m; sourceTree = "<group>"; };
 		19C26201160CF42B005565F8 /* UIView+UIViewHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+UIViewHelpers.h"; sourceTree = "<group>"; };
@@ -1415,8 +1412,6 @@
 				19D04793150FFDAE00BB5DBC /* NSString+Helpers.m */,
 				FA9BC3751B332BEC003375A2 /* NSURL+INaturalist.h */,
 				FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */,
-				19AE898318DD0B2300505918 /* ObservationAnnotation.h */,
-				19AE898418DD0B2300505918 /* ObservationAnnotation.m */,
 				FA4C19621B30EE890066CA22 /* Partner.h */,
 				FA4C19631B30EE890066CA22 /* Partner.m */,
 				FA4C19651B30EEE60066CA22 /* PartnerController.h */,
@@ -2503,7 +2498,6 @@
 				19AE898818DD0B9600505918 /* RefreshControl.m in Sources */,
 				FAC59DF820D9DF87000A6558 /* DeleteRecordOperation.m in Sources */,
 				FAB8C44A1C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m in Sources */,
-				19AE898518DD0B2300505918 /* ObservationAnnotation.m in Sources */,
 				191FB4CD16014A6800C1F5DE /* ObservationField.m in Sources */,
 				191FB4D016014FF400C1F5DE /* ObservationFieldValue.m in Sources */,
 				FA7591D720F43A170062DE7F /* SettingsSwitchCell.m in Sources */,
