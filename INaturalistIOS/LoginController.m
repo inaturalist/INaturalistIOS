@@ -627,22 +627,22 @@ didSignInForUser:(GIDGoogleUser *)user
 }
 
 - (NSString *)anonymousJWT {
-    if (INatAnonymousAPISecret) {
-        JWTClaimsSet *claimsSet = [[JWTClaimsSet alloc] init];
-        claimsSet.expirationDate = [[NSDate date] dateByAddingTimeInterval:300];
-        NSDate *expiration = [[NSDate date] dateByAddingTimeInterval:300];
-        NSTimeInterval expirationStamp = [expiration timeIntervalSince1970];
-        
-        NSDictionary *payload = @{
-                                  @"application" : @"ios",
-                                  @"exp": @((NSInteger)expirationStamp),
-                                  };
-        id<JWTAlgorithm> algorithm = [JWTAlgorithmFactory algorithmByName:@"HS512"];
-        NSString *encoded = [JWTBuilder encodePayload:payload].secret(INatAnonymousAPISecret).algorithm(algorithm).encode;
-        return encoded;
-    } else {
-        return nil;
-    }
+#ifdef INatAnonymousAPISecret
+    JWTClaimsSet *claimsSet = [[JWTClaimsSet alloc] init];
+    claimsSet.expirationDate = [[NSDate date] dateByAddingTimeInterval:300];
+    NSDate *expiration = [[NSDate date] dateByAddingTimeInterval:300];
+    NSTimeInterval expirationStamp = [expiration timeIntervalSince1970];
+    
+    NSDictionary *payload = @{
+                              @"application" : @"ios",
+                              @"exp": @((NSInteger)expirationStamp),
+                              };
+    id<JWTAlgorithm> algorithm = [JWTAlgorithmFactory algorithmByName:@"HS512"];
+    NSString *encoded = [JWTBuilder encodePayload:payload].secret(INatAnonymousAPISecret).algorithm(algorithm).encode;
+    return encoded;
+#else
+    return nil;
+#endif
 }
 
 

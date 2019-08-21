@@ -644,12 +644,15 @@ static const int ChangePartnerMinimumInterval = 86400;
                                               style:UIAlertActionStyleCancel
                                             handler:nil]];
     
+#ifdef INatPartnerLearnMoreURL
      [alert addAction:[UIAlertAction actionWithTitle:learnMoreText
                                        style:UIAlertActionStyleDefault
                                              handler:^(UIAlertAction * _Nonnull action) {
                                                  UIApplication *app = [UIApplication sharedApplication];
                                                  [app openURL:[NSURL URLWithString:INatPartnerLearnMoreURL]];
                                              }]];
+#endif
+    
     [self presentViewController:alert animated:YES completion:nil];
 }
 
