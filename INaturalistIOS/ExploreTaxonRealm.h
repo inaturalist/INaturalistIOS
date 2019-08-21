@@ -36,6 +36,7 @@
 
 
 - (BOOL)isGenusOrLower;
+- (BOOL)scientificNameIsItalicized;
 - (instancetype)initWithMantleModel:(ExploreTaxon *)model;
 - (NSAttributedString *)wikipediaSummaryAttrStringWithSystemFontSize:(CGFloat)fontSize;
 

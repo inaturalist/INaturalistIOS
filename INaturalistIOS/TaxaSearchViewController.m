@@ -758,7 +758,8 @@
         cell.taxonNameLabel.text = etr.commonName;
         cell.taxonSecondaryNameLabel.text = etr.scientificName;
         CGFloat pointSize = cell.taxonSecondaryNameLabel.font.pointSize;
-        if (etr.rankLevel > 0 && etr.rankLevel <= 20) {
+        
+        if ([etr scientificNameIsItalicized]) {
             cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:pointSize];
         } else {
             cell.taxonSecondaryNameLabel.text = [NSString stringWithFormat:@"%@ %@",
@@ -770,7 +771,8 @@
         cell.taxonNameLabel.text = etr.scientificName;
         cell.taxonSecondaryNameLabel.text = @"";
         CGFloat pointSize = cell.taxonNameLabel.font.pointSize;
-        if (etr.rankLevel > 0 && etr.rankLevel <= 20) {
+        
+        if ([etr scientificNameIsItalicized]) {
             cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:pointSize];
         } else {
             cell.taxonNameLabel.font = [UIFont systemFontOfSize:pointSize];

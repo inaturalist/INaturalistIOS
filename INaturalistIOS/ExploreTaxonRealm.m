@@ -91,4 +91,13 @@
 
 }
 
+- (BOOL)scientificNameIsItalicized {
+    // everything at genus and below EXCEPT complex
+    if ((self.rankLevel != 11) && (self.rankLevel > 0 && self.rankLevel <= 20)) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
 @end
