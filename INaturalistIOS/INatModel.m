@@ -7,7 +7,6 @@
 //
 
 #import "INatModel.h"
-#import "DeletedRecord.h"
 
 static NSDateFormatter *prettyDateFormatter = nil;
 static NSDateFormatter *shortDateFormatter = nil;
@@ -114,14 +113,6 @@ static NSDateFormatter *jsDateFormatter = nil;
 {
     NSError *error = nil;
     return [[NSManagedObjectContext defaultContext] countForFetchRequest:self.needingSyncRequest error:&error];
-}
-
-+ (NSInteger)deletedRecordCount
-{
-    NSFetchRequest *request = [DeletedRecord fetchRequest];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", NSStringFromClass(self)]];
-    NSError *error;
-    return [[NSManagedObjectContext defaultContext] countForFetchRequest:request error:&error];
 }
 
 + (id)stub

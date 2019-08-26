@@ -15,12 +15,12 @@
 #import "Comment.h"
 #import "Identification.h"
 #import "ObservationPhoto.h"
-#import "DeletedRecord.h"
 #import "ProjectObservation.h"
 #import "Fave.h"
 #import "User.h"
 #import "ExploreTaxonRealm.h"
 #import "ExploreUpdateRealm.h"
+#import "ExploreDeletedRecord.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKObjectMapping *defaultSerializationMapping = nil;
@@ -386,10 +386,19 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 - (void)prepareForDeletion
 {
     if (self.syncedAt) {
-        DeletedRecord *dr = [DeletedRecord object];
-        dr.recordID = self.recordID;
-        dr.modelName = NSStringFromClass(self.class);
+        ExploreDeletedRecord *dr = [[ExploreDeletedRecord alloc] initWithRecordId:self.recordID.integerValue
+                                                                        modelName:NSStringFromClass(self.class)];
+        dr.endpointName = [self.class endpointName];
+        dr.synced = NO;
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        [realm addObject:dr];
+        [realm commitWriteTransaction];
     }
+}
+
++ (NSString *)endpointName {
+    return @"observations";
 }
 
 - (NSString *)presentableGeoprivacy {

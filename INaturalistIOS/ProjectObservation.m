@@ -9,7 +9,7 @@
 #import "ProjectObservation.h"
 #import "Project.h"
 #import "Observation.h"
-#import "DeletedRecord.h"
+#import "ExploreDeletedRecord.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKManagedObjectMapping *defaultSerializationMapping = nil;
@@ -79,16 +79,25 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     return [self primitiveProjectID];
 }
 
-- (void)prepareForDeletion
-{
+- (void)prepareForDeletion {
     if (self.syncedAt && self.observation) {
-        DeletedRecord *dr = [DeletedRecord object];
-        dr.recordID = self.recordID;
-        dr.modelName = NSStringFromClass(self.class);
+        ExploreDeletedRecord *dr = [[ExploreDeletedRecord alloc] initWithRecordId:self.recordID.integerValue
+                                                                        modelName:NSStringFromClass(self.class)];
+        dr.endpointName = [self.class endpointName];
+        dr.synced = NO;
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        [realm addObject:dr];
+        [realm commitWriteTransaction];
     }
 }
 
 #pragma mark - Uploadable
+
++ (NSString *)endpointName {
+    // for deleted record syncs and such
+    return @"project_observations";
+}
 
 + (NSArray *)needingUpload {
     // observations (the parent object) take care of this

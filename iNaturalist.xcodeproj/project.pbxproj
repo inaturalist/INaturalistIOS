@@ -219,6 +219,7 @@
 		FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872701A2D048300D2168E /* RestrictedListHeader.m */; };
 		FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */; };
 		FA8EBCE4230DC6E100C1D789 /* UIImage+MapAnnotations.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8EBCE3230DC6E100C1D789 /* UIImage+MapAnnotations.m */; };
+		FA8EBCE7230DE48400C1D789 /* ExploreDeletedRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8EBCE6230DE48400C1D789 /* ExploreDeletedRecord.m */; };
 		FA9249821EF85FD000E0C387 /* ExploreTaxonScore.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9249811EF85FD000E0C387 /* ExploreTaxonScore.m */; };
 		FA9437831C869AA400CB10F3 /* ProjectsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9437821C869AA400CB10F3 /* ProjectsAPI.m */; };
 		FA9437861C869B7300CB10F3 /* ObservationAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9437851C869B7300CB10F3 /* ObservationAPI.m */; };
@@ -820,6 +821,8 @@
 		FA8BC5E21D5011BB001355F5 /* INaturalist2.15.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.15.xcdatamodel; sourceTree = "<group>"; };
 		FA8EBCE2230DC6E100C1D789 /* UIImage+MapAnnotations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+MapAnnotations.h"; sourceTree = "<group>"; };
 		FA8EBCE3230DC6E100C1D789 /* UIImage+MapAnnotations.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+MapAnnotations.m"; sourceTree = "<group>"; };
+		FA8EBCE5230DE48400C1D789 /* ExploreDeletedRecord.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreDeletedRecord.h; sourceTree = "<group>"; };
+		FA8EBCE6230DE48400C1D789 /* ExploreDeletedRecord.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreDeletedRecord.m; sourceTree = "<group>"; };
 		FA91C7E41B4362FE004D4C5B /* UploadManagerNotificationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadManagerNotificationDelegate.h; sourceTree = "<group>"; };
 		FA9249801EF85FD000E0C387 /* ExploreTaxonScore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreTaxonScore.h; sourceTree = "<group>"; };
 		FA9249811EF85FD000E0C387 /* ExploreTaxonScore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreTaxonScore.m; sourceTree = "<group>"; };
@@ -1873,6 +1876,8 @@
 			children = (
 				FAFED1FA1DB5A2680015CCBA /* ExploreCommentRealm.h */,
 				FAFED1FB1DB5A2680015CCBA /* ExploreCommentRealm.m */,
+				FA8EBCE5230DE48400C1D789 /* ExploreDeletedRecord.h */,
+				FA8EBCE6230DE48400C1D789 /* ExploreDeletedRecord.m */,
 				FAFED1FD1DB5A2730015CCBA /* ExploreIdentificationRealm.h */,
 				FAFED1FE1DB5A2730015CCBA /* ExploreIdentificationRealm.m */,
 				FA427EF01ECD1794003B26C3 /* ExploreTaxonPhotoRealm.h */,
@@ -2478,6 +2483,7 @@
 				FA7BC8CB1C59D2460032E709 /* NewsItem.m in Sources */,
 				19F8748715251D6B00A65F9A /* ProjectsSearchController.m in Sources */,
 				19F87493152670B200A65F9A /* RecordSearchController.m in Sources */,
+				FA8EBCE7230DE48400C1D789 /* ExploreDeletedRecord.m in Sources */,
 				FAEF23451C7D0E0100208F44 /* ProjectObsPhotoCell.m in Sources */,
 				FA9437831C869AA400CB10F3 /* ProjectsAPI.m in Sources */,
 				FA9EE9FB1C20BA6900CACF70 /* LocationViewController.m in Sources */,

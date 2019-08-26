@@ -15,6 +15,7 @@
 + (NSArray *)needingUpload;
 - (NSDictionary *)uploadableRepresentation;
 - (NSString *)uuid;
++ (NSString *)endpointName;
 
 @optional
 - (NSString *)fileUploadParameter;

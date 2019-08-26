@@ -21,8 +21,6 @@
 #define kINatUserIdPrefKey @"INatUserIdPrefKey"
 #define kINatSuggestionsPrefKey @"INatSuggestionsPrefKey"
 
-#define kINatLoggedInNotificationKey @"kINatLoggedInNotificationKey"
-
 #ifdef DEBUG1
     #define INatBaseURL @"http://localhost:3000"
     #define INatMediaBaseURL @"http://127.0.0.1:3000"

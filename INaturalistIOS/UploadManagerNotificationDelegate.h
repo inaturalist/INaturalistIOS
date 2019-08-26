@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class Observation;
-@class DeletedRecord;
+@class ExploreDeletedRecord;
 @class UploadManager;
 
 @protocol UploadManagerNotificationDelegate <NSObject>
@@ -20,7 +20,7 @@
 - (void)uploadSessionFailedFor:(Observation *)observation error:(NSError *)error;
 - (void)uploadSessionCancelledFor:(Observation *)observation;
 
-- (void)deleteSessionStarted:(DeletedRecord *)deletedRecord;
+- (void)deleteSessionStarted:(ExploreDeletedRecord *)deletedRecord;
 - (void)deleteSessionFinished;
-- (void)deleteSessionFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error;
+- (void)deleteSessionFailedFor:(ExploreDeletedRecord *)deletedRecord error:(NSError *)error;
 @end

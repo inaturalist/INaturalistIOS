@@ -42,7 +42,6 @@
 #import "ObservationViewUploadingCell.h"
 #import "ObservationViewWaitingUploadCell.h"
 #import "ObservationViewErrorCell.h"
-#import "DeletedRecord.h"
 #import "UploadManager.h"
 #import "ObsDetailV2ViewController.h"
 #import "ExploreTaxonRealm.h"
@@ -53,6 +52,7 @@
 #import "Taxon.h"
 #import "INatReachability.h"
 #import "NSLocale+INaturalist.h"
+#import "ExploreDeletedRecord.h"
 
 @interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     
@@ -192,8 +192,9 @@
     } else {
         NSMutableArray *recordsToDelete = [NSMutableArray array];
         for (Class class in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
-            [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
-                                                                                      NSStringFromClass(class)]]];
+            for (ExploreDeletedRecord *dr in [ExploreDeletedRecord needingSyncForModelName:NSStringFromClass(class)]) {
+                [recordsToDelete addObject:dr];
+            }
         }
         NSArray *recordsToUpload = [Observation needingUpload];
         if (recordsToDelete.count > 0 || recordsToUpload.count > 0) {
@@ -339,8 +340,9 @@
     
     NSMutableArray *recordsToDelete = [NSMutableArray array];
     for (Class class in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
-        [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
-                                                                                  NSStringFromClass(class)]]];
+        for (ExploreDeletedRecord *dr in [ExploreDeletedRecord needingSyncForModelName:NSStringFromClass(class)]) {
+            [recordsToDelete addObject:dr];
+        }
     }
     NSArray *recordsToUpload = [Observation needingUpload];
     
@@ -444,11 +446,12 @@
         return;
     }
     
-    NSInteger itemsToUpload = [[Observation needingUpload] count] + [Observation deletedRecordCount];
-    itemsToUpload += [ObservationPhoto deletedRecordCount];
-    itemsToUpload += [ProjectObservation deletedRecordCount];
-    itemsToUpload += [ObservationFieldValue deletedRecordCount];
     
+    NSInteger itemsToUpload = [[Observation needingUpload] count];
+    for (Class class in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
+        itemsToUpload += [[ExploreDeletedRecord needingSyncForModelName:NSStringFromClass(class)] count];
+    }
+
     if (itemsToUpload > 0) {
         // no implicit upload
         if (!notify) { return; }
@@ -909,8 +912,12 @@
 }
 
 - (void)configureHeaderView:(MeHeaderView *)view forUser:(id <UserVisualization>)user {
-    NSUInteger needingUploadCount = [[Observation needingUpload] count];
-    NSUInteger needingDeleteCount = [Observation deletedRecordCount] + [ObservationPhoto deletedRecordCount] + [ProjectObservation deletedRecordCount] + [ObservationFieldValue deletedRecordCount];
+    NSInteger needingUploadCount = [[Observation needingUpload] count];
+    
+    NSInteger needingDeleteCount = 0;
+    for (Class class in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
+        needingDeleteCount += [[ExploreDeletedRecord needingSyncForModelName:NSStringFromClass(class)] count];
+    }
     
     if (needingUploadCount > 0 || needingDeleteCount > 0) {
 
@@ -1428,7 +1435,7 @@
     for (INatModel *o in objects) {
 		if ([o isKindOfClass:[Observation class]]) {
 			Observation *observation = (Observation *)o;
-            DeletedRecord *dr = [DeletedRecord objectWithPredicate:[NSPredicate predicateWithFormat:@"modelName == 'Observation' AND recordID = %@", o.recordID]];
+            ExploreDeletedRecord *dr = [ExploreDeletedRecord deletedRecordId:o.recordID.integerValue withModelName:@"Observation"];
             if (dr) {
                 // already deleted locally, abandon it
                 o.syncedAt = nil;
@@ -1712,7 +1719,7 @@
 }
 
 
-- (void)deleteSessionStarted:(DeletedRecord *)deletedRecord {
+- (void)deleteSessionStarted:(ExploreDeletedRecord *)deletedRecord {
     [[Analytics sharedClient] debugLog:@"Upload - Delete Started"];
 
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
@@ -1731,7 +1738,7 @@
     [self syncStopped];
 }
 
-- (void)deleteSessionFailedFor:(DeletedRecord *)deletedRecord error:(NSError *)error {
+- (void)deleteSessionFailedFor:(ExploreDeletedRecord *)deletedRecord error:(NSError *)error {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Delete Failed: %@", [error localizedDescription]]];
     
     // dirty the me user to force re-fetching

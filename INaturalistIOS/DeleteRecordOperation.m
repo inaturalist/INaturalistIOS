@@ -10,7 +10,7 @@
 
 #import "DeleteRecordOperation.h"
 #import "NSURL+INaturalist.h"
-#import "DeletedRecord.h"
+#import "ExploreDeletedRecord.h"
 
 @implementation DeleteRecordOperation
 
@@ -20,7 +20,7 @@
         if (syncError) {
             NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];
             NSError *contextError = nil;
-            DeletedRecord *dr = [context existingObjectWithID:self.rootObjectId error:&contextError];
+            ExploreDeletedRecord *dr = [ExploreDeletedRecord deletedRecordId:self.recordId withModelName:self.modelName];
             [self.delegate deleteSessionFailedFor:dr error:syncError];
         }
     });
@@ -40,15 +40,14 @@
         return;
     }
     
-    NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];
-    NSError *contextError = nil;
-    DeletedRecord *dr = [context existingObjectWithID:self.rootObjectId error:&contextError];
-    if (!dr || contextError) {
-        [self deleteRecordFinishedSuccess:NO syncError:contextError];
+    ExploreDeletedRecord *dr = [ExploreDeletedRecord deletedRecordId:self.recordId withModelName:self.modelName];
+
+    if (!dr) {
+        [self deleteRecordFinishedSuccess:NO syncError:nil];
         return;
     }
     
-    if (![dr isKindOfClass:[DeletedRecord class]]) {
+    if (![dr isKindOfClass:[ExploreDeletedRecord class]]) {
         [self markOperationCompleted];
         return;
     }
@@ -56,18 +55,18 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.delegate deleteSessionStarted:dr];
     });
-
     
-    NSString *deletePath = [NSString stringWithFormat:@"/v1/%@/%ld",
-                            dr.modelName.underscore.pluralize,
-                            (long)dr.recordID.integerValue];
+    NSString *deletePath = [NSString stringWithFormat:@"/v1/%@/%ld", self.endpointName, (long)self.recordId];
     
     [self.nodeSessionManager DELETE:deletePath
                          parameters:nil
                             success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-                                // purge from core data
-                                [dr deleteEntity];
-                                [[[RKObjectManager sharedManager] objectStore] save:nil];
+                                // mark as synced
+                                ExploreDeletedRecord *dr = [ExploreDeletedRecord deletedRecordId:self.recordId withModelName:self.modelName];
+                                RLMRealm *realm = [RLMRealm defaultRealm];
+                                [realm beginWriteTransaction];
+                                dr.synced = YES;
+                                [realm commitWriteTransaction];
                                 
                                 [self deleteRecordFinishedSuccess:YES syncError:nil];
                             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -75,9 +74,12 @@
                                 NSHTTPURLResponse *r = [error.userInfo valueForKey:AFNetworkingOperationFailingURLResponseErrorKey];
                                 if (r) {
                                     if (r.statusCode == 404) {
-                                        // purge from core data
-                                        [dr deleteEntity];
-                                        [[[RKObjectManager sharedManager] objectStore] save:nil];
+                                        ExploreDeletedRecord *dr = [ExploreDeletedRecord deletedRecordId:self.recordId withModelName:self.modelName];
+                                        RLMRealm *realm = [RLMRealm defaultRealm];
+                                        [realm beginWriteTransaction];
+                                        dr.synced = YES;
+                                        [realm commitWriteTransaction];
+
                                         actualSuccess = YES;
                                     }
                                 }

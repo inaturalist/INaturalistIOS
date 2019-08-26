@@ -28,7 +28,6 @@
 #import "ProjectObservation.h"
 #import "Comment.h"
 #import "Identification.h"
-#import "DeletedRecord.h"
 #import "INatUITabBarController.h"
 #import "NXOAuth2.h"
 #import "Analytics.h"
@@ -366,7 +365,7 @@ static const int ChangePartnerMinimumInterval = 86400;
         [self localSignOut];
         
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate rebuildCoreData];
+        [appDelegate rebuildDatabase];
         
         [hud hide:YES afterDelay:2.0f];
         

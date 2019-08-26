@@ -33,7 +33,6 @@
 #import "LoginController.h"
 #import "INatUITabBarController.h"
 #import "NSURL+INaturalist.h"
-#import "DeletedRecord.h"
 #import "Fave.h"
 #import "NewsItem.h"
 #import "ExploreTaxonRealm.h"
@@ -44,6 +43,7 @@
 #import "NewsPagerViewController.h"
 #import "UpdatesViewController.h"
 #import "INatReachability.h"
+#import "ExploreDeletedRecord.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -281,19 +281,8 @@
     
     [self configureRestKit];
     
-    // if we're not logged in, deleted records aren't meaningful
-    // if there are any around, they're stale and should be trashed
-    if (!self.loginController.isLoggedIn) {
-        for (DeletedRecord *record in [DeletedRecord allObjects]) {
-            [record deleteEntity];
-        }
-    }
-    NSError *error = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    if (error) {
-        [[Analytics sharedClient] debugLog:@"Object Store Failed Removing Stale Deleted Records at Launch"];
-        [[Analytics sharedClient] debugLog:error.localizedDescription];
-    }
+    // on every launch, do some housekeeping of deleted records
+    [self cleanupDeletedRecords];
     
     if (![self.loginController isLoggedIn]) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -310,6 +299,21 @@
     }
 }
 
+- (void)cleanupDeletedRecords {
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    if (self.loginController.isLoggedIn) {
+        // if we're logged in, clean up any synced deleted records
+        [realm beginWriteTransaction];
+        [realm deleteObjects:[ExploreDeletedRecord syncedRecords]];
+        [realm commitWriteTransaction];
+    } else {
+        // if we're not logged in, deleted records aren't meaningful
+        // if there are any around, they're stale and should be trashed
+        [realm beginWriteTransaction];
+        [realm deleteObjects:[ExploreDeletedRecord allObjects]];
+        [realm commitWriteTransaction];
+    }
+}
 
 - (void)configureGlobalStyles {
     // set global styles
@@ -354,7 +358,7 @@
     return _inatObjectStore;
 }
 
-- (void)rebuildCoreData {
+- (void)rebuildDatabase {
     [Comment deleteAll];
     [Identification deleteAll];
     [User deleteAll];
@@ -365,9 +369,10 @@
     [NewsItem deleteAll];
     [ObservationFieldValue deleteAll];
     
-    for (DeletedRecord *dr in [DeletedRecord allObjects]) {
-        [dr deleteEntity];
-    }
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    [realm deleteObjects:[ExploreDeletedRecord allObjects]];
+    [realm commitWriteTransaction];
     
     NSError *error = nil;
     [[[RKObjectManager sharedManager] objectStore] save:&error];

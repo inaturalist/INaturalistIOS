@@ -21,7 +21,7 @@
 - (void)showInitialSignupUI;
 
 - (void)reconfigureForNewBaseUrl;
-- (void)rebuildCoreData;
+- (void)rebuildDatabase;
 
 @end
 

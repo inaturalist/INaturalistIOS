@@ -9,7 +9,7 @@
 #import "ObservationPhoto.h"
 #import "Observation.h"
 #import "ImageStore.h"
-#import "DeletedRecord.h"
+#import "ExploreDeletedRecord.h"
 
 static RKManagedObjectMapping *defaultMapping = nil;
 static RKManagedObjectMapping *defaultSerializationMapping = nil;
@@ -39,10 +39,20 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
     [super prepareForDeletion];
     [[ImageStore sharedImageStore] destroy:self.photoKey];
     if (self.syncedAt) {
-        DeletedRecord *dr = [DeletedRecord object];
-        dr.recordID = self.recordID;
-        dr.modelName = NSStringFromClass(self.class);
+        ExploreDeletedRecord *dr = [[ExploreDeletedRecord alloc] initWithRecordId:self.recordID.integerValue
+                                                                        modelName:NSStringFromClass(self.class)];
+
+        dr.endpointName = [self.class endpointName];
+        dr.synced = NO;
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        [realm addObject:dr];
+        [realm commitWriteTransaction];
     }
+}
+
++ (NSString *)endpointName {
+    return @"observation_photos";
 }
 
 + (RKManagedObjectMapping *)mapping

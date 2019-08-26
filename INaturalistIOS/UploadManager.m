@@ -10,7 +10,6 @@
 
 #import "UploadManager.h"
 #import "INatModel.h"
-#import "DeletedRecord.h"
 #import "Observation.h"
 #import "Analytics.h"
 #import "ObservationPhoto.h"
@@ -25,6 +24,7 @@
 #import "DeleteRecordOperation.h"
 #import "ObservationAPI.h"
 #import "ExploreUserRealm.h"
+#import "ExploreDeletedRecord.h"
 
 static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 
@@ -98,9 +98,13 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 
         
         // add the delete jobs to the queue
-        for (DeletedRecord *dr in self.recordsToDelete) {
+        for (ExploreDeletedRecord *dr in self.recordsToDelete) {
             DeleteRecordOperation *op = [[DeleteRecordOperation alloc] init];
-            op.rootObjectId = dr.objectID;
+            
+            op.endpointName = dr.endpointName;
+            op.recordId = dr.recordId;
+            op.modelName = dr.modelName;
+
             op.nodeSessionManager = weakSelf.nodeSessionManager;
             op.delegate = self.delegate;
             [self.deleteQueue addOperation:op];
@@ -181,8 +185,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     
     NSMutableArray *recordsToDelete = [NSMutableArray array];
     for (Class klass in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
-        [recordsToDelete addObjectsFromArray:[DeletedRecord objectsWithPredicate:[NSPredicate predicateWithFormat:@"modelName = %@", \
-                                                                                  NSStringFromClass(klass)]]];
+        [recordsToDelete addObjectsFromArray:[ExploreDeletedRecord needingSyncForModelName:NSStringFromClass(klass)]];
     }
     
     // invalid observations failed validation their last upload
@@ -228,7 +231,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(loggedIn)
-                                                     name:kINatLoggedInNotificationKey
+                                                     name:kUserLoggedInNotificationName
                                                    object:nil];
         
         self.photoUploads = [[NSMutableDictionary alloc] init];
@@ -303,15 +306,11 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 - (void)loggedIn {
     // if there are any deleted records around,
     // they're stale and should be trashed
-    for (DeletedRecord *record in [DeletedRecord allObjects]) {
-        [record deleteEntity];
-    }
-    NSError *error = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    if (error) {
-        [[Analytics sharedClient] debugLog:@"Object Store Failed Removing Stale Deleted Records at Login"];
-        [[Analytics sharedClient] debugLog:error.localizedDescription];
-    }
+    
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    [realm deleteObjects:[ExploreDeletedRecord allObjects]];
+    [realm commitWriteTransaction];
 }
 
 #pragma mark - Reachability Updates

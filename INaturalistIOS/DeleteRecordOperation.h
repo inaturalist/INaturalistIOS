@@ -11,4 +11,9 @@
 #import "UploadOperation.h"
 
 @interface DeleteRecordOperation : UploadOperation
+
+@property NSInteger recordId;
+@property NSString *modelName;
+@property NSString *endpointName;
+
 @end
