@@ -35,10 +35,13 @@
 
 @property IBOutlet UILabel *titleLabel;
 
+@property IBOutlet UIStackView *iNatAuthStackView;
+
 @property IBOutlet UIStackView *textfieldStackView;
 @property IBOutlet UITextField *usernameField;
 @property IBOutlet UITextField *passwordField;
 @property IBOutlet UITextField *emailField;
+@property IBOutlet UIButton *forgotButton;
 
 @property IBOutlet UIStackView *licenseStackView;
 @property IBOutlet UIButton *licenseMyDataButton;
@@ -116,6 +119,11 @@
     [self.licenseMyDataButton setAttributedTitle:check.attributedString
                                         forState:UIControlStateNormal];
     self.licenseMyData = YES;
+    
+    self.forgotButton.titleLabel.font = [UIFont systemFontOfSize:15.0f];
+    self.forgotButton.tintColor = [UIColor colorWithHexString:@"#4a4a4a"];
+    [self.forgotButton setTitle:NSLocalizedString(@"Forgot password?", @"Title for forgot password button.")
+                       forState:UIControlStateNormal];
     
     self.actionButton.backgroundColor = [UIColor inatTint];
     
@@ -229,49 +237,6 @@
     
     // start in signup context
     [self.switchContextButton setContext:LoginContextSignup];
-
-    self.passwordField.rightView = ({
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
-        button.frame = CGRectMake(0, 0, 65, 44);
-        
-        button.titleLabel.font = [UIFont systemFontOfSize:12.0f];
-        button.tintColor = [UIColor colorWithHexString:@"#c0c0c0"];
-        
-        [button setTitle:NSLocalizedString(@"Forgot?", @"Title for forgot password button.")
-                forState:UIControlStateNormal];
-        
-        __weak typeof(self)weakSelf = self;
-        [button bk_addEventHandler:^(id sender) {
-            __strong typeof(weakSelf)strongSelf = weakSelf;
-            if (![[INatReachability sharedClient] isNetworkReachable]) {
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
-                                                                               message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                          style:UIAlertActionStyleCancel
-                                                        handler:nil]];
-                [self presentViewController:alert animated:YES completion:nil];
-                return;
-            }
-            
-            INatWebController *webController = [[INatWebController alloc] init];
-            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/forgot_password.mobile", INatWebBaseURL]];
-            [webController setUrl:url];
-            webController.delegate = strongSelf;
-            UIBarButtonItem *cancel = [[UIBarButtonItem alloc] bk_initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                                      handler:^(id sender) {
-                                                                                          __strong typeof(weakSelf)strongSelf = weakSelf;
-                                                                                          [strongSelf dismissViewControllerAnimated:YES
-                                                                                                                         completion:nil];
-                                                                                      }];
-            webController.navigationItem.leftBarButtonItem = cancel;
-            UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:webController];
-            [strongSelf presentViewController:nav animated:YES completion:nil];
-            
-        } forControlEvents:UIControlEventTouchUpInside];
-        
-        button;
-    });
     
     if (self.startsInLoginMode && self.textfieldStackView.arrangedSubviews.count == 3) {
         [self switchAuthContext:nil];
@@ -338,41 +303,62 @@
     }
 }
 
-- (IBAction)switchAuthContext:(id)sender {
-    void (^switchContextBlock)() = nil;
-    if (self.textfieldStackView.arrangedSubviews.count == 3) {
-        switchContextBlock = ^{
-            [self.textfieldStackView removeArrangedSubview:self.emailField];
-            self.emailField.hidden = YES;
-            self.titleLabel.text = NSLocalizedString(@"Log In", nil);
-            [self.actionButton setTitle:NSLocalizedString(@"Log In", nil)
-                               forState:UIControlStateNormal];
-            self.licenseStackView.hidden = YES;
-            self.passwordField.rightViewMode = UITextFieldViewModeUnlessEditing;
-            [self.switchContextButton setContext:LoginContextLogin];
-        };
-    } else {
-        switchContextBlock = ^{
-            [self.textfieldStackView insertArrangedSubview:self.emailField
-                                                   atIndex:0];
-            self.emailField.hidden = NO;
-            self.titleLabel.text = NSLocalizedString(@"Sign Up", nil);
-            [self.actionButton setTitle:NSLocalizedString(@"Sign Up", nil)
-                               forState:UIControlStateNormal];
-            self.licenseStackView.hidden = NO;
-            self.passwordField.rightViewMode = UITextFieldViewModeNever;
-            [self.switchContextButton setContext:LoginContextSignup];
-        };
+- (IBAction)forgotPressed:(id)sender {
+    if (![[INatReachability sharedClient] isNetworkReachable]) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Internet connection required",nil)
+                                                                       message:NSLocalizedString(@"Try again next time you're connected to the Internet.", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+        return;
     }
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (sender) {
-            [UIView animateWithDuration:0.2f
-                             animations:switchContextBlock];
-        } else {
-            switchContextBlock();
-        }
-    });
+    INatWebController *webController = [[INatWebController alloc] init];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/forgot_password.mobile", INatWebBaseURL]];
+    [webController setUrl:url];
+    webController.delegate = self;
+    UIBarButtonItem *cancel = [[UIBarButtonItem alloc] bk_initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                              handler:^(id sender) {
+                                                                                  [self dismissViewControllerAnimated:YES
+                                                                                                                 completion:nil];
+                                                                              }];
+    webController.navigationItem.leftBarButtonItem = cancel;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:webController];
+    [self presentViewController:nav animated:YES completion:nil];
+}
+
+- (IBAction)switchAuthContext:(id)sender {
+    if (self.textfieldStackView.arrangedSubviews.count == 3) {
+        [self.textfieldStackView removeArrangedSubview:self.emailField];
+        self.emailField.hidden = YES;
+        
+        [self.iNatAuthStackView insertArrangedSubview:self.forgotButton
+                                              atIndex:2];
+        self.forgotButton.hidden = NO;
+        
+        self.titleLabel.text = NSLocalizedString(@"Log In", nil);
+        [self.actionButton setTitle:NSLocalizedString(@"Log In", nil)
+                           forState:UIControlStateNormal];
+        self.licenseStackView.hidden = YES;
+        self.passwordField.rightViewMode = UITextFieldViewModeUnlessEditing;
+        [self.switchContextButton setContext:LoginContextLogin];
+    } else {
+        [self.textfieldStackView insertArrangedSubview:self.emailField
+                                               atIndex:0];
+        self.emailField.hidden = NO;
+        
+        [self.iNatAuthStackView removeArrangedSubview:self.forgotButton];
+        self.forgotButton.hidden = YES;
+        
+        self.titleLabel.text = NSLocalizedString(@"Sign Up", nil);
+        [self.actionButton setTitle:NSLocalizedString(@"Sign Up", nil)
+                           forState:UIControlStateNormal];
+        self.licenseStackView.hidden = NO;
+        self.passwordField.rightViewMode = UITextFieldViewModeNever;
+        [self.switchContextButton setContext:LoginContextSignup];
+    }
 }
 
 - (IBAction)licenseTogglePressed:(id)sender {

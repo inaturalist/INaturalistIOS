@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="zUI-iq-68M">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="zUI-iq-68M">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment version="2304" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -352,8 +352,8 @@
                                     <action selector="closePressed:" destination="j80-yK-ZbF" eventType="touchUpInside" id="nam-GV-Rl5"/>
                                 </connections>
                             </button>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="bottom" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="31y-8d-eUf">
-                                <rect key="frame" x="42.5" y="40" width="290" height="323"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="31y-8d-eUf">
+                                <rect key="frame" x="42.5" y="40" width="290" height="363"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sign Up" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pbQ-o3-5Xy">
                                         <rect key="frame" x="0.0" y="0.0" width="290" height="29"/>
@@ -405,8 +405,15 @@
                                             </textField>
                                         </subviews>
                                     </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sZe-lG-yg8">
+                                        <rect key="frame" x="83.5" y="171" width="123" height="30"/>
+                                        <state key="normal" title="Forgot Password?"/>
+                                        <connections>
+                                            <action selector="forgotPressed:" destination="j80-yK-ZbF" eventType="touchUpInside" id="OoL-0w-ytR"/>
+                                        </connections>
+                                    </button>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gUI-g3-aai">
-                                        <rect key="frame" x="0.0" y="171" width="290" height="44"/>
+                                        <rect key="frame" x="0.0" y="211" width="290" height="44"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yxB-jO-b09">
                                                 <rect key="frame" x="0.0" y="0.0" width="60" height="44"/>
@@ -428,7 +435,7 @@
                                         </subviews>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LVz-7N-QYA">
-                                        <rect key="frame" x="0.0" y="225" width="290" height="44"/>
+                                        <rect key="frame" x="0.0" y="265" width="290" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="290" id="NA6-Vm-4Kf"/>
                                             <constraint firstAttribute="height" constant="44" id="adp-lg-tJN"/>
@@ -446,7 +453,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="082-Nj-s4i" customClass="LoginSwitchContextButton">
-                                        <rect key="frame" x="0.0" y="279" width="290" height="44"/>
+                                        <rect key="frame" x="0.0" y="319" width="290" height="44"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="TFS-BY-Drm"/>
                                         </constraints>
@@ -574,7 +581,9 @@
                         <outlet property="closeButton" destination="MC0-kW-bph" id="hFk-nF-RRT"/>
                         <outlet property="emailField" destination="2e2-wM-KPk" id="EQc-0R-nZi"/>
                         <outlet property="facebookButton" destination="u2t-rU-mF6" id="Ze9-Lz-HUy"/>
+                        <outlet property="forgotButton" destination="sZe-lG-yg8" id="jPp-SK-2N8"/>
                         <outlet property="googleButton" destination="JNh-8M-Acy" id="Zq5-Ly-3Gw"/>
+                        <outlet property="iNatAuthStackView" destination="31y-8d-eUf" id="myS-QY-yb4"/>
                         <outlet property="licenseMyDataButton" destination="yxB-jO-b09" id="Djz-b0-rYq"/>
                         <outlet property="licenseMyDataLabel" destination="xUc-8o-XIN" id="C1f-DM-TqK"/>
                         <outlet property="licenseStackView" destination="gUI-g3-aai" id="imr-hk-uqZ"/>
