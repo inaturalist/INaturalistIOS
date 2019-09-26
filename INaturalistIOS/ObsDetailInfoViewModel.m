@@ -69,6 +69,17 @@
             CLLocationCoordinate2D coords = [self.observation visibleLocation];
             
             if (CLLocationCoordinate2DIsValid(coords)) {
+                // latitude at 90 or -90 is legal on the server, and a legal coordinate,
+                // but is super problematic and needs to be nudged.
+                // spans with a center latitude at 90 or -90 produce MKCoordinateRegions
+                // map distinces of infinity in the x coordinate
+                
+                if (coords.latitude == 90) {
+                    coords = CLLocationCoordinate2DMake(89.999, coords.longitude);
+                } else if (coords.latitude == -90) {
+                    coords = CLLocationCoordinate2DMake(-89.999, coords.longitude);
+                }
+                
                 cell.mapView.hidden = NO;
                 cell.noLocationLabel.hidden = YES;
                 
