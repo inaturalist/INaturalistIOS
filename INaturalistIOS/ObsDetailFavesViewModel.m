@@ -151,7 +151,7 @@
 - (void)tappedFave:(UIControl *)control {
     if (![[INatReachability sharedClient] isNetworkReachable]) {
         [self.delegate noticeWithTitle:NSLocalizedString(@"Can't Fave", nil)
-                               message:NSLocalizedString(@"Network is required.", @"Network is required error message")];
+                               message:NSLocalizedString(@"Network is required.", @"Network (i.e. an Internet connection) is required error message")];
         return;
     }
     

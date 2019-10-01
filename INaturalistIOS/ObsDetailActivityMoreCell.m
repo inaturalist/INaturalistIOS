@@ -26,7 +26,7 @@
         NSMutableAttributedString *attr = [agreeIcon.attributedString mutableCopy];
         
         [attr appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
-        NSString *agreeText = NSLocalizedString(@"Agree", nil);
+        NSString *agreeText = NSLocalizedString(@"Agree", @"Label for a button that adds an ID of the same taxon as the current one, so the sense is 'I agree with this identification'");
         [attr appendAttributedString:[[NSAttributedString alloc] initWithString:agreeText
                                                                      attributes:@{
                                                                                   NSBaselineOffsetAttributeName: @(3)

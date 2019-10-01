@@ -106,7 +106,7 @@
         
         self.sortSelector = ({
             UISegmentedControl *control = [[UISegmentedControl alloc] initWithItems:@[ NSLocalizedString(@"Obs", @"Observation option for explore leaderboard sorting. Must be short."),
-                                                                                       NSLocalizedString(@"Species", @"Species optino for explore leaderboard sorting. Must be short.")] ];
+                                                                                       NSLocalizedString(@"Species", @"Species option for Explore leaderboard sorting. Must be short.")] ];
             control.translatesAutoresizingMaskIntoConstraints = NO;
             
             [control setContentCompressionResistancePriority:UILayoutPriorityRequired

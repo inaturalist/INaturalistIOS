@@ -414,7 +414,7 @@
         alertMsg = NSLocalizedString(@"Invalid Email Address", "Error for bad email when making account.");
     }  else if (!self.passwordField.text || self.passwordField.text.length < INatMinPasswordLength) {
         isValid = NO;
-        alertMsg = NSLocalizedString(@"Passwords must be six characters in length.",
+        alertMsg = NSLocalizedString(@"Passwords must be at least six characters in length.",
                                      @"Error for bad password when making account");
     } else if (!self.usernameField.text) {
         isValid = NO;
@@ -480,7 +480,7 @@
     }
     if (!self.passwordField.text || self.passwordField.text.length < INatMinPasswordLength) {
         isValid = NO;
-        alertMsg = NSLocalizedString(@"Passwords must be six characters in length.",
+        alertMsg = NSLocalizedString(@"Passwords must be at least six characters in length.",
                                      @"Error for bad password when making account");
     }
     if (!isValid) {
@@ -532,7 +532,8 @@
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
                                                                    message:alertMsg
                                                             preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"No", nil)
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"No",
+                                                                      @"Generic negative response to a yes/no question")
                                               style:UIAlertActionStyleCancel
                                             handler:^(UIAlertAction * _Nonnull action) {
                                                 // revert to default base URL

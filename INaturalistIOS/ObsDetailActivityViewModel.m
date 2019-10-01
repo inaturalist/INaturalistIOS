@@ -450,7 +450,7 @@
 - (void)addComment {
     if (![[INatReachability sharedClient] isNetworkReachable]) {
         [self.delegate noticeWithTitle:NSLocalizedString(@"Can't Comment", nil)
-                               message:NSLocalizedString(@"Network is required.", @"Network is required error message")];
+                               message:NSLocalizedString(@"Network is required.", @"Network (i.e. an Internet connection) is required error message")];
         return;
     }
     
@@ -467,7 +467,7 @@
 - (void)addIdentification {
     if (![[INatReachability sharedClient] isNetworkReachable]) {
         [self.delegate noticeWithTitle:NSLocalizedString(@"Can't Add ID", nil)
-                               message:NSLocalizedString(@"Network is required.", @"Network is required error message")];
+                               message:NSLocalizedString(@"Network is required.", @"Network (i.e. an Internet connection) is required error message")];
         return;
     }
     
@@ -483,14 +483,14 @@
 
 - (void)agree:(UIButton *)button {
     if (![[INatReachability sharedClient] isNetworkReachable]) {
-        [self.delegate noticeWithTitle:NSLocalizedString(@"Couldn't Agree", nil)
-                               message:NSLocalizedString(@"Network is required.", @"Network is required error message")];
+        [self.delegate noticeWithTitle:NSLocalizedString(@"Couldn't Agree", @"Title of an alert dialog you see when you try to agree with an identification but cannot due to connection issues or other errors")
+                               message:NSLocalizedString(@"Network is required.", @"Network (i.e. an Internet connection) is required error message")];
         return;
     }
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     if (!appDelegate.loginController.isLoggedIn) {
-        [self.delegate noticeWithTitle:NSLocalizedString(@"Couldn't Agree", nil)
+        [self.delegate noticeWithTitle:NSLocalizedString(@"Couldn't Agree", @"Title of an alert dialog you see when you try to agree with an identification but cannot due to connection issues or other errors")
                                message:NSLocalizedString(@"You must be logged in.", @"Account is required error message")];
         return;
     }

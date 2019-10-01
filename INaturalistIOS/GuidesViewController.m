@@ -287,7 +287,8 @@ static const int ListControlIndexNearby = 2;
 {
     if (!_listControl) {
         _listControl = [[UISegmentedControl alloc] initWithItems:@[
-                                                                   NSLocalizedString(@"All",nil),
+                                                                   NSLocalizedString(@"All",
+                                                                                     @"Label for a tab that shows all guides"),
                                                                    NSLocalizedString(@"Your Guides",nil),
                                                                    NSLocalizedString(@"Nearby",nil),
                                                                    ]];

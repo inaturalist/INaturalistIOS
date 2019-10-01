@@ -406,7 +406,8 @@
 
 - (NSString *)description
 {
-    return [NSString stringWithFormat:NSLocalizedString(@"<INatLocation: lat: %@ lon:%@ acc:%@>",@"<INatLocation: latitude: %@ longitude:%@ accuracy:%@>"), self.latitude, self.longitude, self.accuracy];
+    return [NSString stringWithFormat:@"<INatLocation: latitude: %@, longitude: %@, accuracy: %@>",
+            self.latitude, self.longitude, self.accuracy];
 }
 
 @end
