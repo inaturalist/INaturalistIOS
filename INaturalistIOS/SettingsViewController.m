@@ -38,7 +38,6 @@
 #import "Partner.h"
 #import "LoginController.h"
 #import "UploadManager.h"
-#import "UIColor+INaturalist.h"
 #import "PeopleAPI.h"
 #import "OnboardingLoginViewController.h"
 #import "ImageStore.h"
