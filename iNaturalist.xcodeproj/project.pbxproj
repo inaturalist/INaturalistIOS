@@ -2223,7 +2223,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-resources.sh",
 				"${PODS_ROOT}/ARSafariActivity/ARSafariActivity/ARSafariActivity.bundle",
 				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
 				"${PODS_ROOT}/FontAwesomeKit/FontAwesomeKit/FontAwesome.otf",
@@ -2330,7 +2330,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C94740F3686D5FF18FBE004B /* [CP] Check Pods Manifest.lock */ = {
