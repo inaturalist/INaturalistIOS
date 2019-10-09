@@ -6,6 +6,8 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+@import MessageUI;
+
 #import <VTAcknowledgementsViewController/VTAcknowledgementsViewController.h>
 #import <JDFTooltips/JDFTooltips.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
@@ -86,7 +88,7 @@ static const int SettingsVersionRowCount = 1;
 static const NSString *LastChangedPartnerDateKey = @"org.inaturalist.lastChangedPartnerDateKey";
 static const int ChangePartnerMinimumInterval = 86400;
 
-@interface SettingsViewController () {
+@interface SettingsViewController () <MFMailComposeViewControllerDelegate> {
     UITapGestureRecognizer *tapAway;
     JDFTooltipView *tooltip;
 }
@@ -451,21 +453,42 @@ static const int ChangePartnerMinimumInterval = 86400;
 
 - (void)sendSupportEmail
 {
-    NSString *email = [NSString stringWithFormat:@"mailto://help@inaturalist.org?cc=&subject=iNaturalist iPhone help - version: %@",
-                       self.versionText];
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    
-    if ([appDelegate.loginController isLoggedIn]) {
-        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
-        email = [email stringByAppendingString:[NSString stringWithFormat:@" user id: %ld,", (long)me.userId]];
-        email = [email stringByAppendingString:[NSString stringWithFormat:@" username: %@", me.login]];
-    } else {
-        email = [email stringByAppendingString:@" user not logged in"];
+    if (![MFMailComposeViewController canSendMail]) {
+        UIAlertController *alert = [[UIAlertController alloc] init];
+        alert.title = NSLocalizedString(@"Cannot Send Email", @"Title of alert when the system is not configured for the user to send email");
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                  style:UIAlertActionStyleDefault
+                                                handler:nil]];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        return;
     }
     
-    email = [email stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:email]];
+    MFMailComposeViewController* composeVC = [[MFMailComposeViewController alloc] init];
+    composeVC.mailComposeDelegate = self;
+    
+    NSString *supportEmailAddress = @"help@inaturalist.org";
+    NSString *supportTitle = [NSString stringWithFormat:@"iNaturalist iPhone help - version %@",
+                              self.versionText];
+    
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if ([appDelegate.loginController isLoggedIn]) {
+        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+        supportTitle = [supportTitle stringByAppendingString:[NSString stringWithFormat:@" user id: %ld,", (long)me.userId]];
+        supportTitle = [supportTitle stringByAppendingString:[NSString stringWithFormat:@" username: %@", me.login]];
+    } else {
+        supportTitle = [supportTitle stringByAppendingString:@" user not logged in"];
+    }
+    
+    // Configure the fields of the interface.
+    [composeVC setToRecipients:@[ supportEmailAddress ]];
+    [composeVC setSubject:supportTitle];
+    
+    // Present the view controller modally.
+    [self presentViewController:composeVC animated:YES completion:nil];
 }
+
+
 
 - (void)launchRateUs {
 #ifdef INatAppStoreURL
@@ -670,6 +693,14 @@ static const int ChangePartnerMinimumInterval = 86400;
                                                   }];
 
 }
+
+#pragma mark - MFMAilCompose delegate
+
+- (void)mailComposeController:(MFMailComposeViewController *)controller
+          didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error {
+   [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 
 #pragma mark - UITableView
 
