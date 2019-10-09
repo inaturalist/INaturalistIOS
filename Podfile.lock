@@ -198,7 +198,7 @@ DEPENDENCIES:
   - NSString_stripHtml (= 0.1.0)
   - NXOAuth2Client (= 1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
-  - QBImagePickerController (= 3.4.0)
+  - QBImagePickerController (from `https://github.com/alexshepard/QBImagePicker`, commit `9f3eb33fc63b3be4fd924b798115ef9dffa15729`)
   - RaptureXML (= 1.0.1)
   - Realm (= 3.9.0)
   - RestKit (= 0.10.3)
@@ -217,7 +217,7 @@ DEPENDENCIES:
   - YLProgressBar (= 3.9.0)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - ActionSheetPicker-3.0
     - AFNetworking
     - ARSafariActivity
@@ -250,7 +250,6 @@ SPEC REPOS:
     - NSString_stripHtml
     - NXOAuth2Client
     - PDKTStickySectionHeadersCollectionViewLayout
-    - QBImagePickerController
     - RaptureXML
     - Realm
     - RestKit
@@ -282,6 +281,9 @@ EXTERNAL SOURCES:
   MHVideoPhotoGallery:
     :commit: 63c1c3d3578a913c26956b1c9c9f4411a8cfe226
     :git: https://github.com/alexshepard/MHVideoPhotoGallery
+  QBImagePickerController:
+    :commit: 9f3eb33fc63b3be4fd924b798115ef9dffa15729
+    :git: https://github.com/alexshepard/QBImagePicker
   YLMoment:
     :commit: 35521e9f80c23de6f885771f97a6c1febe245c00
     :git: https://github.com/inaturalist/YLMoment.git
@@ -299,6 +301,9 @@ CHECKOUT OPTIONS:
   MHVideoPhotoGallery:
     :commit: 63c1c3d3578a913c26956b1c9c9f4411a8cfe226
     :git: https://github.com/alexshepard/MHVideoPhotoGallery
+  QBImagePickerController:
+    :commit: 9f3eb33fc63b3be4fd924b798115ef9dffa15729
+    :git: https://github.com/alexshepard/QBImagePicker
   YLMoment:
     :commit: 35521e9f80c23de6f885771f97a6c1febe245c00
     :git: https://github.com/inaturalist/YLMoment.git
@@ -360,6 +365,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 9d9dc9a4ff0ccce0730b77b49e66aeb2e3b95f35
+PODFILE CHECKSUM: 439ed21306e5979636595861f6b22931809057a2
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.8.3
