@@ -241,7 +241,7 @@
 - (void)configureApplication {
     
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
-	config.schemaVersion = 12;
+	config.schemaVersion = 13;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
         if (oldSchemaVersion < 1) {
             // add searchable (ie diacritic-less) taxon names
@@ -271,6 +271,18 @@
                                   block:^(RLMObject * _Nullable oldObject, RLMObject * _Nullable newObject) {
                                       newObject[@"syncedAt"] = [NSDate distantPast];
                                   }];
+        }
+        if (oldSchemaVersion < 12) {
+            [migration enumerateObjects:ExploreDeletedRecord.className
+                                  block:^(RLMObject * _Nullable oldObject, RLMObject * _Nullable newObject) {
+                if (oldObject[@"recordId"] != 0 && oldObject[@"modelName"]) {
+                    newObject[@"modelAndRecordId"] = [NSString stringWithFormat:@"%ld-%@",
+                                                      (long)oldObject[@"recordId"], oldObject[@"modelName"]];
+                } else {
+                    // just drop it if we can't make a primary key
+                    [migration deleteObject:newObject];
+                }
+            }];
         }
     };
     [RLMRealmConfiguration setDefaultConfiguration:config];
