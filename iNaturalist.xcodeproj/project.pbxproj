@@ -80,7 +80,6 @@
 		19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F6219E150ECC2E00C58F28 /* ProjectUser.m */; };
 		19F874841522E59000A65F9A /* INatWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F874831522E58F00A65F9A /* INatWebController.m */; };
 		19F8748715251D6B00A65F9A /* ProjectsSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F8748615251D6A00A65F9A /* ProjectsSearchController.m */; };
-		19F8748D15252B6000A65F9A /* ProjectTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8748C15252B6000A65F9A /* ProjectTableViewCell.xib */; };
 		19F87493152670B200A65F9A /* RecordSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F87492152670B100A65F9A /* RecordSearchController.m */; };
 		19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F87498152679F100A65F9A /* TaxaSearchViewController.m */; };
 		19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */; };
@@ -450,7 +449,6 @@
 		19F874831522E58F00A65F9A /* INatWebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = INatWebController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		19F8748515251D6900A65F9A /* ProjectsSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectsSearchController.h; sourceTree = "<group>"; };
 		19F8748615251D6A00A65F9A /* ProjectsSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectsSearchController.m; sourceTree = "<group>"; };
-		19F8748C15252B6000A65F9A /* ProjectTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProjectTableViewCell.xib; sourceTree = "<group>"; };
 		19F87491152670B000A65F9A /* RecordSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = RecordSearchController.h; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; wrapsLines = 1; };
 		19F87492152670B100A65F9A /* RecordSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = RecordSearchController.m; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; wrapsLines = 1; };
 		19F87497152679F000A65F9A /* TaxaSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxaSearchViewController.h; sourceTree = "<group>"; };
@@ -1362,7 +1360,6 @@
 				FA394EB7218909AF004AE0FE /* ProjectObservationHeaderView.xib */,
 				899A00D21B53AADD0079162F /* ProjectTableViewCell.h */,
 				899A00D31B53AADD0079162F /* ProjectTableViewCell.m */,
-				19F8748C15252B6000A65F9A /* ProjectTableViewCell.xib */,
 				FAA872CB1B13989D00366521 /* RoundedButtonCell.h */,
 				FAA872CC1B13989D00366521 /* RoundedButtonCell.m */,
 				FAA6EB1B1C90E17000F43552 /* RoundedButtonCell.xib */,
@@ -2151,7 +2148,6 @@
 			files = (
 				1927514B14E9CCC9000ABAC4 /* MainStoryboard.storyboard in Resources */,
 				FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */,
-				19F8748D15252B6000A65F9A /* ProjectTableViewCell.xib in Resources */,
 				19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */,
 				19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */,
 				FA97666820D1E3D200D172DC /* AboutHeaderView.xib in Resources */,

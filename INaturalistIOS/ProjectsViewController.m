@@ -29,53 +29,63 @@
 static const int ListControlIndexFeatured = 1;
 static const int ListControlIndexNearby = 2;
 
-@interface ProjectsViewController () <RKObjectLoaderDelegate, RKRequestDelegate>
+@interface ProjectsViewController () <RKObjectLoaderDelegate, RKRequestDelegate, UISearchResultsUpdating>
+@property UISearchController *searchController;
+@property NSArray *searchResults;
 @end
 
 @implementation ProjectsViewController
 
 #pragma mark - load* methods are loading locally from core data
 
-- (void)loadData
-{
-    BOOL syncNeeded = NO;
-    switch (self.listControl.selectedSegmentIndex) {
-        case ListControlIndexFeatured:
-            [self loadFeaturedProjects];
-            syncNeeded = self.featuredProjectsSyncedAt ? NO : YES;
-            break;
-        case ListControlIndexNearby:
-            [self loadNearbyProjects];
-            syncNeeded = self.nearbyProjectsSyncedAt ? NO : YES;
-            break;
-        default:
-            [self loadUserProjects];
-            syncNeeded = self.projectUsersSyncedAt ? NO : YES;
-            break;
-    }
-    [self checkEmpty];
-    
-    if (syncNeeded && [[INatReachability sharedClient] isNetworkReachable]) {
-        [self sync];
+- (NSArray *)projects {
+    if (self.searchController.isActive && self.searchController.searchBar.text.length > 0) {
+        // show searched projects
+        return [self filteredProjects:self.searchController.searchBar.text];
+    } else {
+        // show projects for context
+        switch (self.listControl.selectedSegmentIndex) {
+            case ListControlIndexFeatured:
+                return [self featuredProjects];
+                break;
+            case ListControlIndexNearby:
+                return [self nearbyProjects];
+                break;
+            default:
+                return [self userProjects];
+                break;
+        }
     }
 }
 
-- (void)loadUserProjects {
+- (NSArray *)titleSortDescriptors {
+    return @[
+        [NSSortDescriptor sortDescriptorWithKey:@"title"
+                                      ascending:YES],
+    ];
+}
+
+- (NSArray *)filteredProjects:(NSString *)searchTerm {
+    NSArray *projects = [Project objectsWithPredicate:[NSPredicate predicateWithFormat:@"title contains[c] %@",
+                                                       searchTerm]];
+    return [projects sortedArrayUsingDescriptors:[self titleSortDescriptors]];
+}
+
+- (NSArray *)userProjects {
     NSArray *projectUsers = [ProjectUser.all sortedArrayUsingComparator:^NSComparisonResult(ProjectUser *obj1, ProjectUser *obj2) {
         return [obj1.project.title.lowercaseString compare:obj2.project.title.lowercaseString];
     }];
     // be defensive
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"project != nil"];
-    self.projects = [[projectUsers filteredArrayUsingPredicate:predicate] valueForKey:@"project"];
-    [self.tableView reloadData];
+    return [[projectUsers filteredArrayUsingPredicate:predicate] valueForKey:@"project"];
 }
 
-- (void)loadFeaturedProjects {
-    self.projects = [Project objectsWithPredicate:[NSPredicate predicateWithFormat:@"featuredAt != nil"]];
-    [self.tableView reloadData];
+- (NSArray *)featuredProjects {
+    NSArray *projects = [Project objectsWithPredicate:[NSPredicate predicateWithFormat:@"featuredAt != nil"]];
+    return [projects sortedArrayUsingDescriptors:[self titleSortDescriptors]];
 }
 
-- (void)loadNearbyProjects {
+- (NSArray *)nearbyProjects {
     // get all projects with a location
     NSFetchRequest *request = [Project fetchRequest];
     request.predicate = [NSPredicate predicateWithFormat:@"latitude != nil && longitude != nil"];
@@ -101,15 +111,13 @@ static const int ListControlIndexNearby = 2;
         NSNumber *p2Distance = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:p2Location]];
         return [p1Distance compare:p2Distance];
     };
-    NSArray *projectsSortedByNearness = [nearbyProjects sortedArrayUsingComparator:nearnessComparator];
-
-    self.projects = projectsSortedByNearness;
-    [self.tableView reloadData];
+    
+    return [nearbyProjects sortedArrayUsingComparator:nearnessComparator];
 }
 
 - (void)checkEmpty
 {
-    if (self.projects.count == 0 && !self.searchDisplayController.active) {
+    if (self.projects.count == 0 && !self.searchController.isActive) {
         if (self.noContentLabel) {
             [self.noContentLabel removeFromSuperview];
         } else {
@@ -142,37 +150,11 @@ static const int ListControlIndexNearby = 2;
 
 #pragma mark - sync* methods are fetching from inaturalist.org
 
-- (void)sync
-{
-    self.navigationItem.rightBarButtonItem = self.syncActivityItem;
-    switch (self.listControl.selectedSegmentIndex) {
-        case ListControlIndexFeatured:
-            [self syncFeaturedProjects];
-            break;
-        case ListControlIndexNearby:
-            [self syncNearbyProjects];
-            break;            
-        default:
-            [self syncUserProjects];
-            break;
-    }
-}
-
 - (void)syncFeaturedProjects {
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    NSString *path;
-    if (self.lastLocation) {
-        path = [NSString stringWithFormat:@"/projects.json?featured=true&latitude=%f&longitude=%f&locale=%@-%@",
-                self.lastLocation.coordinate.latitude,
-                self.lastLocation.coordinate.longitude,
-                language,
-                countryCode];
-    } else {
-        path = [NSString stringWithFormat:@"/projects.json?featured=true&locale=%@-%@",
-                language,
-                countryCode];
-    }
+    NSString *path = [NSString stringWithFormat:@"/projects.json?featured=true&locale=%@-%@",
+                      language, countryCode];
     
     self.featuredProjectsSyncedAt = [NSDate date];
     [self syncProjectsWithPath:path];
@@ -260,13 +242,11 @@ static const int ListControlIndexNearby = 2;
 }
 
 
-- (void)syncFinished
-{
+- (void)syncFinished {
     self.navigationItem.rightBarButtonItem = self.searchButton;
 }
 
-- (UISegmentedControl *)listControl
-{
+- (UISegmentedControl *)listControl {
     if (!_listControl) {
         _listControl = [[UISegmentedControl alloc] initWithItems:@[
                                                                    NSLocalizedString(@"Joined",nil),
@@ -278,13 +258,18 @@ static const int ListControlIndexNearby = 2;
         NSString *inatToken = [[NSUserDefaults standardUserDefaults] objectForKey:INatTokenPrefKey];
         _listControl.selectedSegmentIndex = (inatToken && inatToken.length > 0) ? 0 : 1;
         
-        [_listControl addTarget:self action:@selector(loadData) forControlEvents:UIControlEventValueChanged];
+        [_listControl addTarget:self
+                         action:@selector(changedSelection)
+               forControlEvents:UIControlEventValueChanged];
     }
     return _listControl;
 }
 
-- (UIBarButtonItem *)syncActivityItem
-{
+- (void)changedSelection {
+    [self.tableView reloadData];
+}
+
+- (UIBarButtonItem *)syncActivityItem {
     if (!_syncActivityItem) {
         UIActivityIndicatorView *aiv = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 34, 25)];
         aiv.color = [UIColor inatTint];
@@ -329,16 +314,27 @@ static const int ListControlIndexNearby = 2;
 {
     [super viewDidLoad];
     
-    self.tableView.contentOffset = CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height);
-    if (!self.projectsSearchController) {
-        self.projectsSearchController = [[ProjectsSearchController alloc] 
-                                         initWithSearchDisplayController:self.searchDisplayController];
+    self.searchResults = [NSArray array];
+    
+    self.tableView.estimatedRowHeight = 60.0;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+    self.searchController.obscuresBackgroundDuringPresentation = NO;
+    self.searchController.searchBar.placeholder = NSLocalizedString(@"Search for project named...",
+                                                                    @"placeholder for project search field");
+    self.searchController.searchResultsUpdater = self;
+    if (@available(iOS 11.0, *)) {
+        self.navigationItem.searchController = self.searchController;
+    } else {
+        self.tableView.tableHeaderView = self.searchController.searchBar;
     }
+    self.definesPresentationContext = YES;
+
+    
     if (!self.locationManager) {
         self.locationManager = [[CLLocationManager alloc] init];
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
-            [self.locationManager requestWhenInUseAuthorization];
-        }
+        [self.locationManager requestWhenInUseAuthorization];
         self.locationManager.delegate = self;
         self.locationManager.distanceFilter = 1000;
     }
@@ -347,7 +343,14 @@ static const int ListControlIndexNearby = 2;
     if ([[INatReachability sharedClient] isNetworkReachable]) {
         self.navigationItem.rightBarButtonItem = self.syncActivityItem;
         [self syncFeaturedProjects];
+
+        // if the user is logged in, try to sync "joined" projects automatically
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if ([appDelegate.loginController isLoggedIn]) {
+            [self syncUserProjects];
+        }
     }
+    
     
     self.tableView.separatorInset = UIEdgeInsetsMake(0, 15 + 29 + 15, 0, 0);
 
@@ -397,7 +400,6 @@ static const int ListControlIndexNearby = 2;
     if (self.locationManager) {
         [self.locationManager startUpdatingLocation];
     }
-    [self loadData];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -413,25 +415,20 @@ static const int ListControlIndexNearby = 2;
 #pragma mark - button targets
 
 - (IBAction)tappedSearch:(id)sender {
-    [self.searchDisplayController setActive:YES animated:YES];
-    [self.searchDisplayController.searchBar becomeFirstResponder];
+    [self.searchController setActive:YES];
+    [self.searchController.searchBar becomeFirstResponder];    
 }
 
 #pragma mark - Table view data source
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.projects.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"ProjectCell";
-    
-    ProjectTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
-        cell = [[ProjectTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-    }
+    ProjectTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     Project *p = [self.projects objectAtIndex:[indexPath row]];
     cell.titleLabel.text = p.title;
@@ -462,12 +459,12 @@ static const int ListControlIndexNearby = 2;
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UIView *view = [UIView new];
-    view.frame = CGRectMake(0, 0, tableView.bounds.size.width, 44);
+    view.frame = CGRectMake(0, 0, tableView.bounds.size.width, 50);
     
     view.backgroundColor = [UIColor whiteColor];
     
     UIView *separator = [UIView new];
-    separator.frame = CGRectMake(0, 43.5f, tableView.bounds.size.width, 0.5f);
+    separator.frame = CGRectMake(0, 49.5f, tableView.bounds.size.width, 0.5f);
     separator.backgroundColor = [UIColor lightGrayColor];
     [view addSubview:separator];
     
@@ -478,7 +475,11 @@ static const int ListControlIndexNearby = 2;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 44;
+    if (self.searchController.isActive) {
+        return 0;
+    } else {
+        return 50;
+    }
 }
 
 #pragma mark - CLLocationManagerDelegate
@@ -520,6 +521,7 @@ static const int ListControlIndexNearby = 2;
     }
     
     if ([objectLoader.URL.absoluteString rangeOfString:@"featured"].location != NSNotFound) {
+        
         NSArray *rejects = [Project objectsWithPredicate:
                             [NSPredicate predicateWithFormat:@"featuredAt != nil && syncedAt < %@", now]];
         for (Project *p in rejects) {
@@ -530,6 +532,11 @@ static const int ListControlIndexNearby = 2;
                 p.syncedAt = now;
             }
         }
+        
+        for (Project *p in objects) {
+            p.featuredAt = now;
+        }
+        
     } else if ([objectLoader.URL.path rangeOfString:@"projects/user"].location != NSNotFound) {
         NSArray *rejects = [ProjectUser objectsWithPredicate:[NSPredicate predicateWithFormat:@"syncedAt < %@", now]];
         for (ProjectUser *pu in rejects) {
@@ -545,7 +552,8 @@ static const int ListControlIndexNearby = 2;
     }
     
     [self syncFinished];
-    [self loadData];
+    
+    [self.tableView reloadData];
 }
 
 - (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
@@ -600,6 +608,20 @@ static const int ListControlIndexNearby = 2;
                                                   style:UIAlertActionStyleCancel
                                                 handler:nil]];
         [self presentViewController:alert animated:YES completion:nil];
+    }
+}
+
+-(void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+    // fetch local results
+    [self.tableView reloadData];
+    
+    // fetch remote results
+    if (self.searchController.searchBar.text.length > 1) {
+        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+        NSString *path = [NSString stringWithFormat:@"/projects/search?locale=%@-%@&q=%@",
+                          language, countryCode, self.searchController.searchBar.text];
+        [self syncProjectsWithPath:path];
     }
 }
 

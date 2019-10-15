@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
-#import "ProjectsSearchController.h"
 
 @interface ProjectsViewController : UITableViewController <CLLocationManagerDelegate>
 @property (nonatomic, strong) NSArray *projects;
@@ -16,7 +15,7 @@
 @property (nonatomic, strong) NSDate *featuredProjectsSyncedAt;
 @property (nonatomic, strong) NSDate *nearbyProjectsSyncedAt;
 @property (nonatomic, strong) UILabel *noContentLabel;
-@property (nonatomic, strong) ProjectsSearchController *projectsSearchController;
+//@property (nonatomic, strong) ProjectsSearchController *projectsSearchController;
 @property (nonatomic, strong) UISegmentedControl *listControl;
 @property (nonatomic, strong) UIBarButtonItem *syncActivityItem;
 @property (nonatomic, strong) CLLocationManager *locationManager;
