@@ -10,9 +10,6 @@
 #import <CoreLocation/CoreLocation.h>
 
 @interface ProjectsViewController : UITableViewController <CLLocationManagerDelegate>
-@property (nonatomic, strong) NSDate *projectUsersSyncedAt;
-@property (nonatomic, strong) NSDate *featuredProjectsSyncedAt;
-@property (nonatomic, strong) NSDate *nearbyProjectsSyncedAt;
 @property (nonatomic, strong) UILabel *noContentLabel;
 //@property (nonatomic, strong) ProjectsSearchController *projectsSearchController;
 @property (nonatomic, strong) UISegmentedControl *listControl;

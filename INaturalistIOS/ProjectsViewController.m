@@ -168,7 +168,6 @@ static const int ListControlIndexNearby = 2;
     NSString *path = [NSString stringWithFormat:@"/projects.json?featured=true&locale=%@-%@",
                       language, countryCode];
     
-    self.featuredProjectsSyncedAt = [NSDate date];
     [self syncProjectsWithPath:path];
 }
 
@@ -192,7 +191,6 @@ static const int ListControlIndexNearby = 2;
                       language,
                       countryCode];
     
-    self.nearbyProjectsSyncedAt = [NSDate date];
     [self syncProjectsWithPath:path];
 }
 
@@ -207,11 +205,9 @@ static const int ListControlIndexNearby = 2;
                           language,
                           countryCode];
         
-        self.projectUsersSyncedAt = [NSDate date];
         [self syncProjectsWithPath:path];
     } else {
         [self syncFinished];
-        self.projectUsersSyncedAt = nil;
 
         [self showSignupPrompt:NSLocalizedString(@"You must be logged in to sync user projects.", @"Signup prompt reason when user tries to sync user projects.")];
     }
