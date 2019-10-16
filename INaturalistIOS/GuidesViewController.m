@@ -28,69 +28,76 @@
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
-static const int ListControlIndexAll = 0;
-static const int ListControlIndexUser = 1;
-static const int ListControlIndexNearby = 2;
 
-@interface GuidesViewController () <RKRequestDelegate, RKObjectLoaderDelegate>
+static const int ListControlIndexUser = 0;
+static const int ListControlIndexNearby = 1;
+
+@interface GuidesViewController () <RKRequestDelegate, RKObjectLoaderDelegate, UISearchResultsUpdating>
+@property UISearchController *searchController;
+@property NSArray *cachedGuides;
+@property BOOL guidesFilterHasChanged;
 @end
 
 @implementation GuidesViewController
 
-- (void)loadData
-{
-    BOOL syncNeeded = NO;
-    switch (self.listControl.selectedSegmentIndex) {
-        case ListControlIndexAll:
-            [self.tableView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
-            [self loadAllGuides];
-            syncNeeded = self.allGuidesSyncedAt ? NO : YES;
-            break;
-        case ListControlIndexNearby:
-            [self loadNearbyGuides];
-            syncNeeded = self.nearbyGuidesSyncedAt ? NO : YES;
-            break;
-        default:
-            [self loadUserGuides];
-            syncNeeded = self.guideUsersSyncedAt ? NO : YES;
-            break;
+- (NSArray *)guides {
+    if (self.guidesFilterHasChanged) {
+        self.cachedGuides = nil;
+        self.guidesFilterHasChanged = FALSE;
     }
-    [self checkEmpty];
-    [self.tableView reloadData];
     
-    if (syncNeeded && [[INatReachability sharedClient] isNetworkReachable]) {
-        [self sync:NO];
+    if (self.cachedGuides) {
+        return self.cachedGuides;
+    }
+    
+    if (self.searchController.isActive && self.searchController.searchBar.text.length > 0) {
+        // show searched guide
+        self.cachedGuides = [self filteredGuides:self.searchController.searchBar.text];
     } else {
-        [self syncFinished];
+        // show guides for selected context
+        switch (self.listControl.selectedSegmentIndex) {
+            case ListControlIndexUser:
+                self.cachedGuides = [self userGuides];
+                break;
+            case ListControlIndexNearby:
+                self.cachedGuides = [self nearbyGuides];
+                break;
+            default:
+                self.cachedGuides = @[];
+                break;
+        }
+    }
+    
+    return self.cachedGuides;
+}
+
+- (NSArray *)titleSortDescriptors {
+    return @[
+        [NSSortDescriptor sortDescriptorWithKey:@"title"
+                                      ascending:YES],
+    ];
+}
+
+- (NSArray *)filteredGuides:(NSString *)searchTerm {
+    NSArray *guides = [Guide objectsWithPredicate:[NSPredicate predicateWithFormat:@"title contains[c] %@",
+                                                       searchTerm]];
+    return [guides sortedArrayUsingDescriptors:[self titleSortDescriptors]];
+}
+
+- (NSArray *)userGuides {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+    if (me) {
+        NSPredicate *userGuidePredicate = [NSPredicate predicateWithFormat:@"userLogin = %@ OR ngzDownloadedAt != nil",
+                                           me.login];
+        NSArray *guides = [Guide objectsWithPredicate:userGuidePredicate];
+        return [guides sortedArrayUsingDescriptors:[self titleSortDescriptors]];
+    } else {
+        return @[ ];
     }
 }
 
-- (void)loadAllGuides
-{
-    self.guides = [Guide.all sortedArrayUsingComparator:^NSComparisonResult(Guide *g1, Guide *g2) {
-        return [g1.title.lowercaseString compare:g2.title.lowercaseString];
-    }];
-}
-
-- (void)loadUserGuides
-{
-	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
-	if (me) {
-		NSMutableArray *unsortedGuides = [NSMutableArray arrayWithArray:[Guide objectsWithPredicate:[NSPredicate predicateWithFormat:@"userLogin = %@ OR ngzDownloadedAt != nil", me.login]]];
-		self.guides = [unsortedGuides sortedArrayUsingComparator:^NSComparisonResult(Guide *g1, Guide *g2) {
-			return [g1.title.lowercaseString compare:g2.title.lowercaseString];
-		}];
-	}
-}
-
-- (void)loadFeaturedGuides
-{
-    self.guides = [NSMutableArray arrayWithArray:[Guide objectsWithPredicate:[NSPredicate predicateWithFormat:@"featuredAt != nil"]]];
-}
-
-- (void)loadNearbyGuides
-{
+- (NSArray *)nearbyGuides {
     NSFetchRequest *request = [Guide fetchRequest];
     request.predicate = [NSPredicate predicateWithFormat:@"latitude != nil && longitude != nil"];
     request.fetchLimit = 500;
@@ -110,112 +117,12 @@ static const int ListControlIndexNearby = 2;
         NSNumber *d = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:loc]];
         return d.doubleValue < 500000; // meters
     }]];
-    self.guides = [NSArray arrayWithArray:guides];
+    return [NSArray arrayWithArray:guides];
 }
 
-- (IBAction)clickedSync:(id)sender {
+#pragma mark - sync* methods fetch from inaturalist.org
 
-    if ([[INatReachability sharedClient] isNetworkReachable]) {
-        [self sync:YES];
-    } else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Network unreachable",nil)
-                                                                       message:NSLocalizedString(@"You must be connected to the Internet to sync.",nil)
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
-}
-
-- (void)checkEmpty
-{
-    if (self.guides.count == 0 && !self.searchDisplayController.active) {
-        if (self.noContentLabel) {
-            [self.noContentLabel removeFromSuperview];
-        } else {
-            self.noContentLabel = [[UILabel alloc] init];
-            self.noContentLabel.backgroundColor = [UIColor clearColor];
-            self.noContentLabel.textColor = [UIColor grayColor];
-            self.noContentLabel.textAlignment = NSTextAlignmentCenter;
-            self.noContentLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
-        }
-        
-        if (self.listControl.selectedSegmentIndex == ListControlIndexNearby) {
-            self.noContentLabel.text = NSLocalizedString(@"No nearby guides.",nil);
-        } else {
-            self.noContentLabel.text = NSLocalizedString(@"You haven't created or downloaded any guides yet.",nil);
-        }
-        self.noContentLabel.numberOfLines = 0;
-        [self.noContentLabel sizeToFit];
-        [self.noContentLabel setBounds:CGRectMake(0, 0, self.tableView.tableHeaderView.frame.size.width, 44)];
-        self.noContentLabel.center = CGPointMake(self.tableView.center.x,
-                                                 self.tableView.tableHeaderView.frame.size.height +
-                                                 (self.tableView.rowHeight * 2) + (self.tableView.rowHeight / 2));
-        
-        [self.view addSubview:self.noContentLabel];
-    } else if (self.noContentLabel) {
-        [self.noContentLabel removeFromSuperview];
-    }
-}
-
-- (void)sync
-{
-    [self sync:NO];
-}
-
-- (void)sync:(BOOL)explicit
-{
-    self.navigationItem.rightBarButtonItem = self.syncActivityItem;
-    switch (self.listControl.selectedSegmentIndex) {
-        case ListControlIndexAll:
-            [self syncAllGuides];
-            break;
-        case ListControlIndexNearby:
-            [self syncNearbyGuides:explicit];
-            break;
-        default:
-            if ([(INaturalistAppDelegate *)UIApplication.sharedApplication.delegate loggedIn]) {
-                [self syncUserGuides];
-            } else {
-                self.navigationItem.rightBarButtonItem = self.syncButton;
-            }
-            break;
-    }
-}
-
-- (void)syncAllGuides
-{
-    self.allGuidesSyncedAt = [NSDate date];
-    NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    NSString *url =[NSString stringWithFormat:@"/guides.json?locale=%@-%@",
-                    language,
-                    countryCode];
-    [self syncGuidesWithUrlString:url];
-}
-
-- (void)syncNearbyGuides
-{
-    [self syncNearbyGuides:NO];
-}
-
-- (void)syncNearbyGuides:(BOOL)explicit
-{
-    if (!self.lastLocation) {
-        if (explicit) {
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Couldn't determine your location", nil)
-                                                                           message:NSLocalizedString(@"Make sure iNat has permission to access your location or give the GPS some time to fetch it.", nil)
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                      style:UIAlertActionStyleCancel
-                                                    handler:nil]];
-            [self presentViewController:alert animated:YES completion:nil];
-        }
-        [self syncFinished];
-        return;
-    }
-    self.nearbyGuidesSyncedAt = [NSDate date];
+- (void)syncNearbyGuides {
     NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     NSString *url =[NSString stringWithFormat:@"/guides.json?latitude=%f&longitude=%f&locale=%@-%@",
@@ -224,11 +131,10 @@ static const int ListControlIndexNearby = 2;
                     language,
                     countryCode];
     
-    [self syncGuidesWithUrlString:url];
+    [self syncGuidesWithPath:url];
 }
 
-- (void)syncUserGuides
-{
+- (void)syncUserGuides {
 	INaturalistAppDelegate *delegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     ExploreUserRealm *me = [delegate.loginController meUserLocal];
 	if (me) {
@@ -236,14 +142,13 @@ static const int ListControlIndexNearby = 2;
     	NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     	NSString *url =[NSString stringWithFormat:@"/guides/user/%@.json?locale=%@-%@",
                     	me.login, language, countryCode];
-    	[self syncGuidesWithUrlString:url];
-        self.guideUsersSyncedAt = [NSDate date];
+    	[self syncGuidesWithPath:url];
     } else {
         [self syncFinished];
     }
 }
 
-- (void)syncGuidesWithUrlString:(NSString *)urlString {
+- (void)syncGuidesWithPath:(NSString *)urlString {
     [[Analytics sharedClient] debugLog:@"Network - Sync guides"];
     RKObjectManager *objectManager = [RKObjectManager sharedManager];
     [objectManager loadObjectsAtResourcePath:urlString
@@ -253,9 +158,8 @@ static const int ListControlIndexNearby = 2;
                                   }];
 }
 
-- (void)syncFinished
-{
-    self.navigationItem.rightBarButtonItem = self.syncButton;
+- (void)syncFinished {
+    self.navigationItem.rightBarButtonItem = self.searchButton;
 }
 
 - (void)presentSignupPrompt:(NSString *)reason {
@@ -268,42 +172,43 @@ static const int ListControlIndexNearby = 2;
     login.skippable = NO;
     login.closeAction = ^{
         __strong typeof(weakSelf)strongSelf = weakSelf;
-        // switch back to all
-        [strongSelf.listControl setSelectedSegmentIndex:ListControlIndexAll];
+        // switch back to nearby
+        [strongSelf.listControl setSelectedSegmentIndex:ListControlIndexNearby];
         [strongSelf dismissViewControllerAnimated:YES completion:nil];
     };
     [weakSelf presentViewController:login animated:YES completion:nil];
 }
 
-- (UIBarButtonItem *)listControlItem
-{
+- (UIBarButtonItem *)listControlItem {
     if (!_listControlItem) {
         _listControlItem = [[UIBarButtonItem alloc] initWithCustomView:self.listControl];
     }
     return _listControlItem;
 }
 
-- (UISegmentedControl *)listControl
-{
+
+- (UISegmentedControl *)listControl {
     if (!_listControl) {
         _listControl = [[UISegmentedControl alloc] initWithItems:@[
-                                                                   NSLocalizedString(@"All",
-                                                                                     @"Label for a tab that shows all guides"),
-                                                                   NSLocalizedString(@"Your Guides",nil),
-                                                                   NSLocalizedString(@"Nearby",nil),
-                                                                   ]];
+            NSLocalizedString(@"Your Guides",nil),
+            NSLocalizedString(@"Nearby",nil),
+        ]];
         _listControl.tintColor = [UIColor inatTint];
 
         NSString *inatToken = [[NSUserDefaults standardUserDefaults] objectForKey:INatTokenPrefKey];
         _listControl.selectedSegmentIndex = (inatToken && inatToken.length > 0) ? ListControlIndexUser : ListControlIndexNearby;
         
-        [_listControl addTarget:self action:@selector(loadData) forControlEvents:UIControlEventValueChanged];
+        [_listControl addTarget:self action:@selector(changedSelection) forControlEvents:UIControlEventValueChanged];
     }
     return _listControl;
 }
 
-- (UIBarButtonItem *)syncActivityItem
-{
+- (void)changedSelection {
+    self.guidesFilterHasChanged = YES;
+    [self.tableView reloadData];
+}
+
+- (UIBarButtonItem *)syncActivityItem {
     if (!_syncActivityItem) {
         UIActivityIndicatorView *aiv = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 34, 25)];
         aiv.color = [UIColor inatTint];
@@ -313,8 +218,7 @@ static const int ListControlIndexNearby = 2;
     return _syncActivityItem;
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"GuideDetailSegue"]) {
         GuideViewController *vc = [segue destinationViewController];
         Guide *g;
@@ -361,36 +265,40 @@ static const int ListControlIndexNearby = 2;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.tableView.contentOffset = CGPointMake(0, self.searchDisplayController.searchBar.frame.size.height);
-    if (!self.guidesSearchController) {
-        self.guidesSearchController = [[GuidesSearchController alloc]
-                                         initWithSearchDisplayController:self.searchDisplayController];
+    
+    self.tableView.estimatedRowHeight = 60.0;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
+    
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+    self.searchController.obscuresBackgroundDuringPresentation = NO;
+    self.searchController.searchBar.placeholder = NSLocalizedString(@"Search for guide named...",
+                                                                    @"placeholder for guide search field");
+    self.searchController.searchResultsUpdater = self;
+    if (@available(iOS 11.0, *)) {
+        self.navigationItem.searchController = self.searchController;
+    } else {
+        self.tableView.tableHeaderView = self.searchController.searchBar;
     }
+    self.definesPresentationContext = YES;
+    
     if (!self.locationManager) {
         self.locationManager = [[CLLocationManager alloc] init];
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
-            [self.locationManager requestWhenInUseAuthorization];
-        }
+        [self.locationManager requestWhenInUseAuthorization];
         self.locationManager.delegate = self;
         self.locationManager.distanceFilter = 1000;
     }
-}
+    
+    // try to sync nearby guides automatically
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
+        self.navigationItem.rightBarButtonItem = self.syncActivityItem;
+        [self nearbyGuides];
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    
-    [self.tableView deselectRowAtIndexPath:[self.tableView.indexPathsForSelectedRows objectAtIndex:0] animated:YES];
-    self.navigationController.navigationBar.translucent = NO;
-    [self.navigationController setToolbarHidden:NO];
-    [self.navigationController.toolbar setBarStyle:UIBarStyleDefault];
-    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-    [self setToolbarItems:[NSArray arrayWithObjects:
-                           flex,
-                           self.listControlItem,
-                           flex,
-                           nil]];
-    
+        // if the user is logged in, try to sync user guides automatically
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if ([appDelegate.loginController isLoggedIn]) {
+            [self syncUserGuides];
+        }
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -425,7 +333,6 @@ static const int ListControlIndexNearby = 2;
     if (self.locationManager) {
         [self.locationManager startUpdatingLocation];
     }
-    [self loadData];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -436,6 +343,13 @@ static const int ListControlIndexNearby = 2;
 
 - (void)dealloc {
     [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+}
+
+#pragma mark - button targets
+
+- (IBAction)tappedSearch:(id)sender {
+    [self.searchController setActive:YES];
+    [self.searchController.searchBar becomeFirstResponder];
 }
 
 #pragma mark - Table view data source
@@ -471,11 +385,55 @@ static const int ListControlIndexNearby = 2;
     [self performSegueWithIdentifier:@"GuideDetailSegue" sender:self];
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    UIView *view = [UIView new];
+    view.frame = CGRectMake(0, 0, tableView.bounds.size.width, 50);
+    
+    view.backgroundColor = [UIColor whiteColor];
+    
+    UIView *separator = [UIView new];
+    separator.frame = CGRectMake(0, 49.5f, tableView.bounds.size.width, 0.5f);
+    separator.backgroundColor = [UIColor lightGrayColor];
+    [view addSubview:separator];
+    
+    [view addSubview:self.listControl];
+    self.listControl.center = view.center;
+    
+    return view;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    if (self.searchController.isActive) {
+        return 0;
+    } else {
+        return 50;
+    }
+}
+
 #pragma mark - CLLocationManagerDelegate
-- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
-{
+- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
+    // flag if we should sync location-based guides
+    BOOL shouldSync = NO;
+    
+    if (!self.lastLocation) {
+        // sync if we just rebooted the app
+        shouldSync = YES;
+    }
     self.lastLocation = newLocation;
-    if (!self.nearbyGuidesSyncedAt && [[INatReachability sharedClient] isNetworkReachable]) {
+    
+    NSTimeInterval timeDelta = [newLocation.timestamp timeIntervalSinceDate:oldLocation.timestamp];
+    if (timeDelta > 300) {
+        // sync if last location update was more than 5 minutes ago
+        shouldSync = YES;
+    }
+    
+    CLLocationDistance distanceDelta = [newLocation distanceFromLocation:oldLocation];
+    if (distanceDelta > 1609) {
+        // sync if last location update was more than a mile ago
+        shouldSync = YES;
+    }
+        
+    if (shouldSync && [[INatReachability sharedClient] isNetworkReachable]) {
         [self syncNearbyGuides];
     }
 }
@@ -529,8 +487,9 @@ static const int ListControlIndexNearby = 2;
         [g setSyncedAt:now];
     }
     
+    NSDate *yesterday = [now dateByAddingTimeInterval:-86400];
     NSPredicate *pred = [NSPredicate predicateWithFormat:@"syncedAt < %@ AND ngzDownloadedAt == nil",
-                         now];
+                         yesterday];
     
     NSArray *rejects = [Guide objectsWithPredicate:pred];
     
@@ -547,7 +506,9 @@ static const int ListControlIndexNearby = 2;
     }
     
     [self syncFinished];
-    [self loadData];
+    
+    self.guidesFilterHasChanged = YES;
+    [self.tableView reloadData];
 }
 
 - (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
@@ -582,5 +543,23 @@ static const int ListControlIndexNearby = 2;
         [self presentViewController:alert animated:YES completion:nil];
     }
 }
+
+#pragma mark - UISearchResultsUpdating
+
+-(void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+    // show local results
+    self.guidesFilterHasChanged = YES;
+    [self.tableView reloadData];
+    
+    // fetch remote results
+    if (self.searchController.searchBar.text.length > 1) {
+        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
+        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+        NSString *path = [NSString stringWithFormat:@"/guides/search?locale=%@-%@&q=%@",
+                          language, countryCode, self.searchController.searchBar.text];
+        [self syncGuidesWithPath:path];
+    }
+}
+
 
 @end
