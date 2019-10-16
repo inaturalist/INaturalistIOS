@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
-#import "GuidesSearchController.h"
 #import "GuideViewController.h"
 
 @interface GuidesViewController : UITableViewController <CLLocationManagerDelegate, GuideViewControllerDelegate>

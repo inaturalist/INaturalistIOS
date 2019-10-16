@@ -22,7 +22,6 @@
 		191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 191B0B341500A8D900F2508E /* EditLocationAnnoView.m */; };
 		191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191C5C6917D3F5660086DBEB /* GuidesViewController.m */; };
 		191C5C8417D3FACC0086DBEB /* Guide.m in Sources */ = {isa = PBXBuildFile; fileRef = 191C5C8317D3FACC0086DBEB /* Guide.m */; };
-		191C5C8717D3FF660086DBEB /* GuidesSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191C5C8617D3FF650086DBEB /* GuidesSearchController.m */; };
 		191FB4CD16014A6800C1F5DE /* ObservationField.m in Sources */ = {isa = PBXBuildFile; fileRef = 191FB4CC16014A6700C1F5DE /* ObservationField.m */; };
 		191FB4D016014FF400C1F5DE /* ObservationFieldValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 191FB4CF16014FF400C1F5DE /* ObservationFieldValue.m */; };
 		191FB4D31601501A00C1F5DE /* ProjectObservationField.m in Sources */ = {isa = PBXBuildFile; fileRef = 191FB4D21601501A00C1F5DE /* ProjectObservationField.m */; };
@@ -79,8 +78,6 @@
 		19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F6219B150ECC2400C58F28 /* ProjectObservation.m */; };
 		19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F6219E150ECC2E00C58F28 /* ProjectUser.m */; };
 		19F874841522E59000A65F9A /* INatWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F874831522E58F00A65F9A /* INatWebController.m */; };
-		19F8748715251D6B00A65F9A /* ProjectsSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F8748615251D6A00A65F9A /* ProjectsSearchController.m */; };
-		19F87493152670B200A65F9A /* RecordSearchController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F87492152670B100A65F9A /* RecordSearchController.m */; };
 		19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F87498152679F100A65F9A /* TaxaSearchViewController.m */; };
 		19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */; };
 		19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */; };
@@ -346,8 +343,6 @@
 		191C5C8117D3F8810086DBEB /* INaturalist2.3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.3.xcdatamodel; sourceTree = "<group>"; };
 		191C5C8217D3FACC0086DBEB /* Guide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Guide.h; sourceTree = "<group>"; };
 		191C5C8317D3FACC0086DBEB /* Guide.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Guide.m; sourceTree = "<group>"; };
-		191C5C8517D3FF650086DBEB /* GuidesSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuidesSearchController.h; sourceTree = "<group>"; };
-		191C5C8617D3FF650086DBEB /* GuidesSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuidesSearchController.m; sourceTree = "<group>"; };
 		191FB4CA1601138100C1F5DE /* INaturalist2.2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.2.xcdatamodel; sourceTree = "<group>"; };
 		191FB4CB16014A6700C1F5DE /* ObservationField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationField.h; sourceTree = "<group>"; };
 		191FB4CC16014A6700C1F5DE /* ObservationField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationField.m; sourceTree = "<group>"; };
@@ -447,10 +442,6 @@
 		19F6219E150ECC2E00C58F28 /* ProjectUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectUser.m; sourceTree = "<group>"; };
 		19F874821522E58E00A65F9A /* INatWebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatWebController.h; sourceTree = "<group>"; };
 		19F874831522E58F00A65F9A /* INatWebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = INatWebController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
-		19F8748515251D6900A65F9A /* ProjectsSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectsSearchController.h; sourceTree = "<group>"; };
-		19F8748615251D6A00A65F9A /* ProjectsSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectsSearchController.m; sourceTree = "<group>"; };
-		19F87491152670B000A65F9A /* RecordSearchController.h */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.h; path = RecordSearchController.h; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; wrapsLines = 1; };
-		19F87492152670B100A65F9A /* RecordSearchController.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; path = RecordSearchController.m; sourceTree = "<group>"; tabWidth = 4; usesTabs = 0; wrapsLines = 1; };
 		19F87497152679F000A65F9A /* TaxaSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxaSearchViewController.h; sourceTree = "<group>"; };
 		19F87498152679F100A65F9A /* TaxaSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxaSearchViewController.m; sourceTree = "<group>"; };
 		19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TaxonOneNameTableViewCell.xib; sourceTree = "<group>"; };
@@ -1252,8 +1243,6 @@
 				FA9EE9FA1C20BA6900CACF70 /* LocationViewController.m */,
 				1905715E14FDFF49007FBE30 /* EditLocationViewController.h */,
 				1905715F14FDFF49007FBE30 /* EditLocationViewController.m */,
-				191C5C8517D3FF650086DBEB /* GuidesSearchController.h */,
-				191C5C8617D3FF650086DBEB /* GuidesSearchController.m */,
 				191C5C6817D3F5660086DBEB /* GuidesViewController.h */,
 				191C5C6917D3F5660086DBEB /* GuidesViewController.m */,
 				19570CC217EB92D8000C800A /* GuideViewController.h */,
@@ -1280,12 +1269,8 @@
 				FA78DFBC1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m */,
 				FA7C534F1BCD9D3100A0D5AA /* ProjectObsFieldViewController.h */,
 				FA7C53501BCD9D3100A0D5AA /* ProjectObsFieldViewController.m */,
-				19F8748515251D6900A65F9A /* ProjectsSearchController.h */,
-				19F8748615251D6A00A65F9A /* ProjectsSearchController.m */,
 				19F62186150EC6B700C58F28 /* ProjectsViewController.h */,
 				19F62187150EC6B700C58F28 /* ProjectsViewController.m */,
-				19F87491152670B000A65F9A /* RecordSearchController.h */,
-				19F87492152670B100A65F9A /* RecordSearchController.m */,
 				FA97666320D1E26600D172DC /* Settings */,
 				19F87497152679F000A65F9A /* TaxaSearchViewController.h */,
 				19F87498152679F100A65F9A /* TaxaSearchViewController.m */,
@@ -2477,8 +2462,6 @@
 				19F874841522E59000A65F9A /* INatWebController.m in Sources */,
 				FACCEB441ED4E5D0009C9A19 /* TaxonPhotoViewController.m in Sources */,
 				FA7BC8CB1C59D2460032E709 /* NewsItem.m in Sources */,
-				19F8748715251D6B00A65F9A /* ProjectsSearchController.m in Sources */,
-				19F87493152670B200A65F9A /* RecordSearchController.m in Sources */,
 				FA8EBCE7230DE48400C1D789 /* ExploreDeletedRecord.m in Sources */,
 				FAEF23451C7D0E0100208F44 /* ProjectObsPhotoCell.m in Sources */,
 				FA9437831C869AA400CB10F3 /* ProjectsAPI.m in Sources */,
@@ -2563,7 +2546,6 @@
 				FA3D90F71A95148500BAA0EC /* ExploreLeaderboardCell.m in Sources */,
 				FACEEB281D1C607600B2EC62 /* ExploreUser.m in Sources */,
 				191C5C8417D3FACC0086DBEB /* Guide.m in Sources */,
-				191C5C8717D3FF660086DBEB /* GuidesSearchController.m in Sources */,
 				1963DF6517D7E8830073DC68 /* GuideCollectionViewController.m in Sources */,
 				FACADF881CA1A731004B9D4A /* ProjectAboutViewController.m in Sources */,
 				19D8341117E7B746000A5C35 /* RXMLElement+Helpers.m in Sources */,
