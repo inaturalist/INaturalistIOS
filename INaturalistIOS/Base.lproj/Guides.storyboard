@@ -79,19 +79,10 @@
                     </navigationItem>
                     <connections>
                         <outlet property="searchButton" destination="Brt-Lb-xFL" id="hba-vm-p90"/>
-                        <outlet property="searchDisplayController" destination="VLW-30-4ir" id="pdy-qe-eJM"/>
                         <segue destination="Fem-T6-s3n" kind="show" identifier="GuideDetailSegue" id="hpf-2r-2cJ"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UY0-4k-0dg" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <searchDisplayController id="VLW-30-4ir">
-                    <connections>
-                        <outlet property="delegate" destination="T0F-Pj-PEA" id="goj-2a-UkR"/>
-                        <outlet property="searchContentsController" destination="T0F-Pj-PEA" id="Za2-D4-qxc"/>
-                        <outlet property="searchResultsDataSource" destination="T0F-Pj-PEA" id="1f1-am-0oU"/>
-                        <outlet property="searchResultsDelegate" destination="T0F-Pj-PEA" id="nyd-h7-QO1"/>
-                    </connections>
-                </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="-788" y="5200"/>
         </scene>
