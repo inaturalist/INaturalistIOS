@@ -10,8 +10,6 @@
 #import <CoreLocation/CoreLocation.h>
 
 @interface ProjectsViewController : UITableViewController <CLLocationManagerDelegate>
-@property (nonatomic, strong) UILabel *noContentLabel;
-//@property (nonatomic, strong) ProjectsSearchController *projectsSearchController;
 @property (nonatomic, strong) UISegmentedControl *listControl;
 @property (nonatomic, strong) UIBarButtonItem *syncActivityItem;
 @property (nonatomic, strong) CLLocationManager *locationManager;

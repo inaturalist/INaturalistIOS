@@ -127,39 +127,6 @@ static const int ListControlIndexNearby = 2;
     return [nearbyProjects sortedArrayUsingComparator:nearnessComparator];
 }
 
-- (void)checkEmpty
-{
-    if (self.projects.count == 0 && !self.searchController.isActive) {
-        if (self.noContentLabel) {
-            [self.noContentLabel removeFromSuperview];
-        } else {
-            self.noContentLabel = [[UILabel alloc] init];
-            self.noContentLabel.backgroundColor = [UIColor clearColor];
-            self.noContentLabel.textColor = [UIColor grayColor];
-            self.noContentLabel.textAlignment = NSTextAlignmentCenter;
-            self.noContentLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
-        }
-        
-        if (self.listControl.selectedSegmentIndex == ListControlIndexFeatured) {
-            self.noContentLabel.text = NSLocalizedString(@"No featured projects.", nil);
-        } else if (self.listControl.selectedSegmentIndex == ListControlIndexNearby) {
-            self.noContentLabel.text = NSLocalizedString(@"No nearby projects.",nil);
-        } else {
-            self.noContentLabel.text = NSLocalizedString(@"You haven't joined any projects yet.",nil);
-        }
-        self.noContentLabel.numberOfLines = 0;
-        [self.noContentLabel sizeToFit];
-        [self.noContentLabel setBounds:CGRectMake(0, 0, self.tableView.tableHeaderView.frame.size.width, 44)];
-        self.noContentLabel.center = CGPointMake(self.tableView.center.x, 
-                                                 self.tableView.tableHeaderView.frame.size.height +
-                                                 (self.tableView.rowHeight * 2) + (self.tableView.rowHeight / 2));
-        
-        [self.view addSubview:self.noContentLabel];
-    } else if (self.noContentLabel) {
-        [self.noContentLabel removeFromSuperview];
-    }
-}
-
 #pragma mark - sync* methods are fetching from inaturalist.org
 
 - (void)syncFeaturedProjects {
