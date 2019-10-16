@@ -37,7 +37,7 @@ static const int ListControlIndexNearby = 2;
 
 @implementation ProjectsViewController
 
-#pragma mark - load* methods are loading locally from core data
+#pragma mark - these methods are loading locally from core data
 
 - (NSArray *)projects {
     if (self.projectsFilterHasChanged) {
