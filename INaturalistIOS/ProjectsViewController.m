@@ -31,7 +31,8 @@ static const int ListControlIndexNearby = 2;
 
 @interface ProjectsViewController () <RKObjectLoaderDelegate, RKRequestDelegate, UISearchResultsUpdating>
 @property UISearchController *searchController;
-@property NSArray *searchResults;
+@property NSArray *cachedProjects;
+@property BOOL projectsFilterHasChanged;
 @end
 
 @implementation ProjectsViewController
@@ -39,23 +40,34 @@ static const int ListControlIndexNearby = 2;
 #pragma mark - load* methods are loading locally from core data
 
 - (NSArray *)projects {
+    if (self.projectsFilterHasChanged) {
+        self.cachedProjects = nil;
+        self.projectsFilterHasChanged = FALSE;
+    }
+    
+    if (self.cachedProjects) {
+        return self.cachedProjects;
+    }
+    
     if (self.searchController.isActive && self.searchController.searchBar.text.length > 0) {
         // show searched projects
-        return [self filteredProjects:self.searchController.searchBar.text];
+        self.cachedProjects = [self filteredProjects:self.searchController.searchBar.text];
     } else {
         // show projects for context
         switch (self.listControl.selectedSegmentIndex) {
             case ListControlIndexFeatured:
-                return [self featuredProjects];
+                self.cachedProjects = [self featuredProjects];
                 break;
             case ListControlIndexNearby:
-                return [self nearbyProjects];
+                self.cachedProjects = [self nearbyProjects];
                 break;
             default:
-                return [self userProjects];
+                self.cachedProjects = [self userProjects];
                 break;
         }
     }
+    
+    return self.cachedProjects;
 }
 
 - (NSArray *)titleSortDescriptors {
@@ -266,6 +278,7 @@ static const int ListControlIndexNearby = 2;
 }
 
 - (void)changedSelection {
+    self.projectsFilterHasChanged = YES;
     [self.tableView reloadData];
 }
 
@@ -313,9 +326,7 @@ static const int ListControlIndexNearby = 2;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.searchResults = [NSArray array];
-    
+        
     self.tableView.estimatedRowHeight = 60.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     
@@ -553,6 +564,7 @@ static const int ListControlIndexNearby = 2;
     
     [self syncFinished];
     
+    self.projectsFilterHasChanged = YES;
     [self.tableView reloadData];
 }
 
@@ -611,8 +623,11 @@ static const int ListControlIndexNearby = 2;
     }
 }
 
+#pragma mark - UISearchResultsUpdating
+
 -(void)updateSearchResultsForSearchController:(UISearchController *)searchController {
-    // fetch local results
+    // show local results
+    self.projectsFilterHasChanged = YES;
     [self.tableView reloadData];
     
     // fetch remote results
