@@ -26,6 +26,7 @@
 #import "INatReachability.h"
 #import "ExploreUserRealm.h"
 
+static const int ListControlIndexUser = 0;
 static const int ListControlIndexFeatured = 1;
 static const int ListControlIndexNearby = 2;
 
@@ -61,8 +62,11 @@ static const int ListControlIndexNearby = 2;
             case ListControlIndexNearby:
                 self.cachedProjects = [self nearbyProjects];
                 break;
-            default:
+            case ListControlIndexUser:
                 self.cachedProjects = [self userProjects];
+                break;
+            default:
+                self.cachedProjects = @[];
                 break;
         }
     }
