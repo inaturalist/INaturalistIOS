@@ -11,7 +11,6 @@
         <scene sceneID="1ae-8H-eF8">
             <objects>
                 <navigationController id="UPT-j8-FTq" userLabel="Projects" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Projects" id="f8w-lW-pBK"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="8Bv-lp-dVt">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -77,7 +76,6 @@
                             <outlet property="delegate" destination="WU4-PP-5v3" id="mu0-5O-UfT"/>
                         </connections>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="Projects" image="projects-tab.png" id="AeY-f8-V2Q"/>
                     <navigationItem key="navigationItem" title="Projects" id="erP-HQ-jwa">
                         <barButtonItem key="rightBarButtonItem" systemItem="search" id="sNg-eb-B9l">
                             <connections>
@@ -450,7 +448,4 @@
             <point key="canvasLocation" x="1890" y="4182"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="projects-tab.png" width="414" height="736"/>
-    </resources>
 </document>

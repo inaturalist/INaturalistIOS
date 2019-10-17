@@ -334,18 +334,7 @@ static const int ListControlIndexNearby = 2;
 
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    
-    self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
-
-    [self.tableView deselectRowAtIndexPath:[self.tableView.indexPathsForSelectedRows objectAtIndex:0] animated:YES];
-    self.navigationController.navigationBar.translucent = NO;
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
+- (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     
     [self syncFinished];
