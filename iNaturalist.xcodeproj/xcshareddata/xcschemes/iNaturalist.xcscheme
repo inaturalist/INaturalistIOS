@@ -27,6 +27,15 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "1927513214E9CCC9000ABAC4"
+            BuildableName = "iNaturalist.app"
+            BlueprintName = "iNaturalist"
+            ReferencedContainer = "container:iNaturalist.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <Testables>
          <TestableReference
             skipped = "NO">
@@ -39,17 +48,6 @@
             </BuildableReference>
          </TestableReference>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "1927513214E9CCC9000ABAC4"
-            BuildableName = "iNaturalist.app"
-            BlueprintName = "iNaturalist"
-            ReferencedContainer = "container:iNaturalist.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -71,8 +69,6 @@
             ReferencedContainer = "container:iNaturalist.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <AdditionalOptions>
-      </AdditionalOptions>
       <LocationScenarioReference
          identifier = "San Francisco, CA, USA"
          referenceType = "1">

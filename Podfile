@@ -6,6 +6,7 @@ inhibit_all_warnings!
 target :iNaturalist do
   pod 'Fabric'
   pod 'Crashlytics'
+  pod 'Firebase/Analytics'
   pod 'JWT', '2.2.0'
   pod 'FBSDKCoreKit', '4.37.0'
   pod 'FBSDKLoginKit', '4.37.0'

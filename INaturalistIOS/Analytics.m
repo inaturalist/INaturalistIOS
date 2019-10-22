@@ -6,6 +6,9 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
+#import <Firebase/Firebase.h>
+#import <Crashlytics/Crashlytics.h>
+
 #import "Analytics.h"
 
 @interface Analytics ()
@@ -27,19 +30,19 @@
 }
 
 - (void)event:(NSString *)name {
-    // do nothing - no analytics platform for now
+    [FIRAnalytics logEventWithName:name parameters:nil];
 }
 
 - (void)event:(NSString *)name withProperties:(NSDictionary *)properties {
-    // do nothing - no analytics platform for now
+    [FIRAnalytics logEventWithName:name parameters:properties];
 }
 
 - (void)debugLog:(NSString *)logMessage {
-    // do nothing - no analytics platform for now
+    // do nothing
 }
 
 - (void)registerUserWithIdentifier:(NSString *)userIdentifier {
-    // do nothing - no analytics platform for now
+    // do nothing
 }
 
 @end

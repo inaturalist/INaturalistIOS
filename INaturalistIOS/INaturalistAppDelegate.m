@@ -6,6 +6,9 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
+#import <Firebase/Firebase.h>
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
 #import <Realm/Realm.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <IFTTTLaunchImage/UIImage+IFTTTLaunchImage.h>
@@ -106,6 +109,9 @@
     [self showLoadingScreen];
     
     [self configureApplication];
+
+    // Use Firebase library to configure APIs
+    [FIRApp configure];
     
     return YES;
 }

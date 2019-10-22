@@ -50,6 +50,38 @@ PODS:
   - FBSDKLoginKit (4.37.0):
     - FBSDKCoreKit
   - FileMD5Hash (0.0.1)
+  - Firebase/Analytics (6.11.0):
+    - Firebase/Core
+  - Firebase/Core (6.11.0):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (= 6.1.3)
+  - Firebase/CoreOnly (6.11.0):
+    - FirebaseCore (= 6.3.2)
+  - FirebaseAnalytics (6.1.3):
+    - FirebaseCore (~> 6.3)
+    - FirebaseInstanceID (~> 4.2)
+    - GoogleAppMeasurement (= 6.1.3)
+    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
+    - GoogleUtilities/MethodSwizzler (~> 6.0)
+    - GoogleUtilities/Network (~> 6.0)
+    - "GoogleUtilities/NSData+zlib (~> 6.0)"
+    - nanopb (~> 0.3.901)
+  - FirebaseCore (6.3.2):
+    - FirebaseCoreDiagnostics (~> 1.0)
+    - FirebaseCoreDiagnosticsInterop (~> 1.0)
+    - GoogleUtilities/Environment (~> 6.2)
+    - GoogleUtilities/Logger (~> 6.2)
+  - FirebaseCoreDiagnostics (1.1.1):
+    - FirebaseCoreDiagnosticsInterop (~> 1.0)
+    - GoogleDataTransportCCTSupport (~> 1.0)
+    - GoogleUtilities/Environment (~> 6.2)
+    - GoogleUtilities/Logger (~> 6.2)
+    - nanopb (~> 0.3.901)
+  - FirebaseCoreDiagnosticsInterop (1.0.0)
+  - FirebaseInstanceID (4.2.6):
+    - FirebaseCore (~> 6.0)
+    - GoogleUtilities/Environment (~> 6.0)
+    - GoogleUtilities/UserDefaults (~> 6.0)
   - FontAwesomeKit (2.2.1):
     - FontAwesomeKit/Core (= 2.2.1)
     - FontAwesomeKit/FontAwesome (= 2.2.1)
@@ -72,6 +104,16 @@ PODS:
   - FontAwesomeKit/Zocial (2.2.1):
     - FontAwesomeKit/Core
   - GeoJSONSerialization (0.0.4)
+  - GoogleAppMeasurement (6.1.3):
+    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
+    - GoogleUtilities/MethodSwizzler (~> 6.0)
+    - GoogleUtilities/Network (~> 6.0)
+    - "GoogleUtilities/NSData+zlib (~> 6.0)"
+    - nanopb (~> 0.3.901)
+  - GoogleDataTransport (3.0.1)
+  - GoogleDataTransportCCTSupport (1.2.1):
+    - GoogleDataTransport (~> 3.0)
+    - nanopb (~> 0.3.901)
   - GoogleSignIn (4.4.0):
     - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
     - "GoogleToolboxForMac/NSString+URLArguments (~> 2.1)"
@@ -84,6 +126,24 @@ PODS:
     - GoogleToolboxForMac/Defines (= 2.2.0)
     - "GoogleToolboxForMac/NSString+URLArguments (= 2.2.0)"
   - "GoogleToolboxForMac/NSString+URLArguments (2.2.0)"
+  - GoogleUtilities/AppDelegateSwizzler (6.3.1):
+    - GoogleUtilities/Environment
+    - GoogleUtilities/Logger
+    - GoogleUtilities/Network
+  - GoogleUtilities/Environment (6.3.1)
+  - GoogleUtilities/Logger (6.3.1):
+    - GoogleUtilities/Environment
+  - GoogleUtilities/MethodSwizzler (6.3.1):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/Network (6.3.1):
+    - GoogleUtilities/Logger
+    - "GoogleUtilities/NSData+zlib"
+    - GoogleUtilities/Reachability
+  - "GoogleUtilities/NSData+zlib (6.3.1)"
+  - GoogleUtilities/Reachability (6.3.1):
+    - GoogleUtilities/Logger
+  - GoogleUtilities/UserDefaults (6.3.1):
+    - GoogleUtilities/Logger
   - GTMSessionFetcher/Core (1.2.1)
   - HexColors (2.3.0)
   - ICViewPager (1.5.1)
@@ -107,6 +167,11 @@ PODS:
     - Masonry
     - SDWebImage
     - TTTAttributedLabel (= 1.13.3)
+  - nanopb (0.3.901):
+    - nanopb/decode (= 0.3.901)
+    - nanopb/encode (= 0.3.901)
+  - nanopb/decode (0.3.901)
+  - nanopb/encode (0.3.901)
   - "NSData+Base64 (1.0.0)"
   - NSString_stripHtml (0.1.0)
   - NXOAuth2Client (1.2.8)
@@ -186,6 +251,7 @@ DEPENDENCIES:
   - FBSDKCoreKit (= 4.37.0)
   - FBSDKLoginKit (= 4.37.0)
   - FileMD5Hash (from `https://github.com/FutureWorkshops/FileMD5Hash.git`, commit `6864c180c010ab4b0514ba5c025091e12ab01199`)
+  - Firebase/Analytics
   - FontAwesomeKit (= 2.2.1)
   - GeoJSONSerialization (= 0.0.4)
   - GoogleSignIn (= 4.4.0)
@@ -236,10 +302,20 @@ SPEC REPOS:
     - Fabric
     - FBSDKCoreKit
     - FBSDKLoginKit
+    - Firebase
+    - FirebaseAnalytics
+    - FirebaseCore
+    - FirebaseCoreDiagnostics
+    - FirebaseCoreDiagnosticsInterop
+    - FirebaseInstanceID
     - FontAwesomeKit
     - GeoJSONSerialization
+    - GoogleAppMeasurement
+    - GoogleDataTransport
+    - GoogleDataTransportCCTSupport
     - GoogleSignIn
     - GoogleToolboxForMac
+    - GoogleUtilities
     - GTMSessionFetcher
     - HexColors
     - IFTTTLaunchImage
@@ -253,6 +329,7 @@ SPEC REPOS:
     - Mantle
     - Masonry
     - MBProgressHUD
+    - nanopb
     - "NSData+Base64"
     - NSString_stripHtml
     - NXOAuth2Client
@@ -330,10 +407,20 @@ SPEC CHECKSUMS:
   FBSDKCoreKit: fe5f3474499a81963e11e3f3a5c753d0a95ca2b4
   FBSDKLoginKit: 2f7249686d1e30ce8a5ef5400eedf50b3e3df332
   FileMD5Hash: 81918bf9f82de8bce6a2ae38584c2cc95b7b078c
+  Firebase: bc9cfc7a96c73268656d5aaab453ff1b4b530e0e
+  FirebaseAnalytics: 0e3ecff2c5d86070f7d4325e21f1edabfbd558dc
+  FirebaseCore: beeff42c07c30ea94702471d99db2089b594fbbd
+  FirebaseCoreDiagnostics: af29e43048607588c050889d19204f4d7b758c9f
+  FirebaseCoreDiagnosticsInterop: 6829da2b8d1fc795ff1bd99df751d3788035d2cb
+  FirebaseInstanceID: d0eafcd8bdbd3447cd694594734078c3e3e77d8b
   FontAwesomeKit: 3614979b3dbb0ec3f7fac1bd760b91f66c31db67
   GeoJSONSerialization: 55a3d24fe9af26508e3af76873114b39b13ba479
+  GoogleAppMeasurement: 434cc7be25e71dc04b8d0e3079125127b330e84a
+  GoogleDataTransport: 166f9b9f82cbf60a204e8fe2daa9db3e3ec1fb15
+  GoogleDataTransportCCTSupport: f6ab1962e9dc05ab1fb938b795e5b310209edeec
   GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
   GoogleToolboxForMac: ff31605b7d66400dcec09bed5861689aebadda4d
+  GoogleUtilities: f895fde57977df4e0233edda0dbeac490e3703b6
   GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
   HexColors: 6ad3947c3447a055a3aa8efa859def096351fe5f
   ICViewPager: 74e83c8bebd572b3baebac5959875d0fb5e70000
@@ -350,6 +437,7 @@ SPEC CHECKSUMS:
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
   MHVideoPhotoGallery: aa36cdd9b75c6d5a19b48005cddb9b730c2e27e8
+  nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   "NSData+Base64": 4e84902c4db907a15673474677e57763ef3903e4
   NSString_stripHtml: ba10acfb1c0f7f687055f8e4300a8a78e142f1ea
   NXOAuth2Client: 98c4d4c594edd2b289cfc34a8928653e1dab7adf
@@ -374,6 +462,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: b4a30589fde5663c369fbfe31e749797ae522009
+PODFILE CHECKSUM: 2e7005f4aa3d4c2fa5ec60e5529c519949dede55
 
 COCOAPODS: 1.8.4
