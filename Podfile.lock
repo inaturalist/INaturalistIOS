@@ -40,8 +40,11 @@ PODS:
   - Bolts/Tasks (1.9.0)
   - cocoa-oauth (0.0.1):
     - "NSData+Base64 (~> 1.0)"
+  - Crashlytics (3.14.0):
+    - Fabric (~> 1.10.2)
   - CustomIOSAlertView (0.9.3)
   - DCRoundSwitch (0.0.1)
+  - Fabric (1.10.2)
   - FBSDKCoreKit (4.37.0):
     - Bolts (~> 1.7)
   - FBSDKLoginKit (4.37.0):
@@ -110,9 +113,9 @@ PODS:
   - PDKTStickySectionHeadersCollectionViewLayout (0.1)
   - QBImagePickerController (3.4.0)
   - RaptureXML (1.0.1)
-  - Realm (3.9.0):
-    - Realm/Headers (= 3.9.0)
-  - Realm/Headers (3.9.0)
+  - Realm (3.20.0):
+    - Realm/Headers (= 3.20.0)
+  - Realm/Headers (3.20.0)
   - RestKit (0.10.3):
     - RestKit/JSON (= 0.10.3)
   - RestKit/JSON (0.10.3):
@@ -176,8 +179,10 @@ DEPENDENCIES:
   - ARSafariActivity
   - BlocksKit (= 2.2.5)
   - Bolts (= 1.9.0)
+  - Crashlytics
   - CustomIOSAlertView (= 0.9.3)
   - DCRoundSwitch (= 0.0.1)
+  - Fabric
   - FBSDKCoreKit (= 4.37.0)
   - FBSDKLoginKit (= 4.37.0)
   - FileMD5Hash (from `https://github.com/FutureWorkshops/FileMD5Hash.git`, commit `6864c180c010ab4b0514ba5c025091e12ab01199`)
@@ -200,7 +205,7 @@ DEPENDENCIES:
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
   - QBImagePickerController (from `https://github.com/alexshepard/QBImagePicker`, commit `9f3eb33fc63b3be4fd924b798115ef9dffa15729`)
   - RaptureXML (= 1.0.1)
-  - Realm (= 3.9.0)
+  - Realm (= 3.20.0)
   - RestKit (= 0.10.3)
   - RestKit/Testing (= 0.10.3)
   - SDWebImage (= 4.0.0)
@@ -225,8 +230,10 @@ SPEC REPOS:
     - BlocksKit
     - Bolts
     - cocoa-oauth
+    - Crashlytics
     - CustomIOSAlertView
     - DCRoundSwitch
+    - Fabric
     - FBSDKCoreKit
     - FBSDKLoginKit
     - FontAwesomeKit
@@ -316,8 +323,10 @@ SPEC CHECKSUMS:
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   cocoa-oauth: 1200a2170276a62a975f2786d505dab6e2db1fa8
+  Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
   CustomIOSAlertView: 94d2401e34fcfb0ac0134679d6947f5e251b0446
   DCRoundSwitch: 86d348f35be4d6ef18dbc9331c682aab6f85e980
+  Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
   FBSDKCoreKit: fe5f3474499a81963e11e3f3a5c753d0a95ca2b4
   FBSDKLoginKit: 2f7249686d1e30ce8a5ef5400eedf50b3e3df332
   FileMD5Hash: 81918bf9f82de8bce6a2ae38584c2cc95b7b078c
@@ -347,7 +356,7 @@ SPEC CHECKSUMS:
   PDKTStickySectionHeadersCollectionViewLayout: bedcfc09fa44ae3e232eab421c31286e3d2856ed
   QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   RaptureXML: b5c33c04c1a4adfd8ad0d5463329a31820596e82
-  Realm: 3d36f208bf3aff8335dc3298742140182bde4edb
+  Realm: 8b2ca5bc6479a91f379b6b42b5922e396cd5ba5a
   RestKit: 407abdcfcb1ea7a06b8f10bba23fecec8e1a5f99
   SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
   SOCKit: c7376ac262bea9115b8f749358f762522a47d392
@@ -365,6 +374,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 3157192479997d263a9f58ed67db92651881b383
+PODFILE CHECKSUM: b4a30589fde5663c369fbfe31e749797ae522009
 
 COCOAPODS: 1.8.4

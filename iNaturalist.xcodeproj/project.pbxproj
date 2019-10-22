@@ -274,6 +274,7 @@
 		FADDA3BC1DBABA9900FB054F /* NewsPagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FADDA3BB1DBABA9900FB054F /* NewsPagerViewController.m */; };
 		FADDA3BF1DBABAD500FB054F /* UpdatesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FADDA3BE1DBABAD500FB054F /* UpdatesViewController.m */; };
 		FADE674B1FD7B2B400AB4F09 /* IdentificationsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FADE674A1FD7B2B400AB4F09 /* IdentificationsAPI.m */; };
+		FADEF3F9235F97ED0025C580 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FADEF3F8235F97ED0025C580 /* GoogleService-Info.plist */; };
 		FAEB5C0F2069A19000BA3132 /* LoginSwitchContextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEB5C0E2069A19000BA3132 /* LoginSwitchContextButton.m */; };
 		FAEB5C132069A5B400BA3132 /* LoginSwitchContextButtonTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEB5C122069A5B400BA3132 /* LoginSwitchContextButtonTests.m */; };
 		FAEF232E1C7CD80300208F44 /* ProjectDetailV2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF232D1C7CD80300208F44 /* ProjectDetailV2ViewController.m */; };
@@ -977,6 +978,7 @@
 		FADE28B31B02D9AA00CA55FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FADE67491FD7B2B400AB4F09 /* IdentificationsAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IdentificationsAPI.h; sourceTree = "<group>"; };
 		FADE674A1FD7B2B400AB4F09 /* IdentificationsAPI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IdentificationsAPI.m; sourceTree = "<group>"; };
+		FADEF3F8235F97ED0025C580 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FAE9BFCB1AC1F23500478929 /* INaturalist2.6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.6.xcdatamodel; sourceTree = "<group>"; };
 		FAE9D0961D13807900137660 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		FAE9D0971D13807900137660 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1171,6 +1173,7 @@
 				1927513F14E9CCC9000ABAC4 /* INaturalistIOS-Info.plist */,
 				1927514314E9CCC9000ABAC4 /* main.m */,
 				1927514514E9CCC9000ABAC4 /* iNaturalist-Prefix.pch */,
+				FADEF3F8235F97ED0025C580 /* GoogleService-Info.plist */,
 				198552E914EF369E00DB55C5 /* constants.h */,
 				19A219F11707B8A50042A889 /* config.h */,
 				FA4C195F1B30EDB70066CA22 /* partners.plist */,
@@ -2025,6 +2028,7 @@
 				1927513114E9CCC9000ABAC4 /* Resources */,
 				FA88B7681ABCD34A0004B4C6 /* ShellScript */,
 				C110890B09E5A0D7B69DC989 /* [CP] Copy Pods Resources */,
+				FADEF3FA235F9D150025C580 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -2144,6 +2148,7 @@
 				FA394EB8218909AF004AE0FE /* ProjectObservationHeaderView.xib in Resources */,
 				19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */,
 				60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */,
+				FADEF3F9235F97ED0025C580 /* GoogleService-Info.plist in Resources */,
 				FA74A6221CB4C4EE002EBD0A /* RankedUserObsSpecies.xib in Resources */,
 				FAB6214D1D7397A70026FDC6 /* Onboarding.storyboard in Resources */,
 				60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */,
@@ -2344,6 +2349,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "cp \"${SRCROOT}/Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-acknowledgements.plist\" \"${CONFIGURATION_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Pods-acknowledgements.plist\"\n";
+		};
+		FADEF3FA235F9D150025C580 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/Fabric/run\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

@@ -4,6 +4,7 @@ INaturalist.xcodeproj/xcuserdata
 INaturalistIOS/config.h
 config.h
 Crashlytics.framework
+GoogleService-Info.plist
 
 # from https://github.com/github/gitignore/blob/master/Objective-C.gitignore
 *.pbxuser

@@ -4,6 +4,8 @@ platform :ios, :deployment_target => '9.3'
 inhibit_all_warnings!
 
 target :iNaturalist do
+  pod 'Fabric'
+  pod 'Crashlytics'
   pod 'JWT', '2.2.0'
   pod 'FBSDKCoreKit', '4.37.0'
   pod 'FBSDKLoginKit', '4.37.0'
@@ -39,7 +41,7 @@ target :iNaturalist do
   pod 'NSString_stripHtml', '0.1.0'
   pod 'Mantle', '1.5.8'
   pod 'ICViewPager', :git => 'https://github.com/alexshepard/ICViewPager.git', :commit => '4c45423b6a36fb38753af86a1050b6a3a1d548b8'
-  pod 'Realm', '3.9.0'
+  pod 'Realm', '3.20.0'
   pod 'ARSafariActivity'
   pod 'M13ProgressSuite'
   pod 'TOCropViewController', '~> 2.3.5'
