@@ -2352,13 +2352,13 @@
 		};
 		FADEF3FA235F9D150025C580 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
 			);
 			outputFileListPaths = (
 			);
@@ -2366,7 +2366,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/Fabric/run\" \n";
+			shellScript = "FABRIC_BUILDSECRET_FILE=\"${SRCROOT}/Resources/fabric.buildsecret\"\nFABRIC_APIKEY='7baaee0ca8a376b3d129b908c1e03be6ecbe5786'\nif test -f \"$FABRIC_BUILDSECRET_FILE\"; then\n  FABRIC_BUILDSECRET=$(cat \"$FABRIC_BUILDSECRET_FILE\")\n  \n  \"${PODS_ROOT}/Fabric/run\" \"$FABRIC_APIKEY\" \"$FABRIC_BUILDSECRET\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

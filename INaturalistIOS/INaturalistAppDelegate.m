@@ -110,9 +110,9 @@
     
     [self configureApplication];
 
-    // Use Firebase library to configure APIs
-    [FIRApp configure];
-    
+    // Use Crashlytics for crash reporting
+    [Fabric with:@[[Crashlytics class]]];
+
     return YES;
 }
 
