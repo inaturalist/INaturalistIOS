@@ -62,10 +62,9 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     [[INatReachability sharedClient] startMonitoring];
-
-    [self loadUpdatesWithCompletionHandler:nil];
     
-    [self clearOutdatedCaches];
+    // do nothing here
+    //[self loadUpdatesWithCompletionHandler:nil];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -93,7 +92,9 @@
 
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    [self loadUpdatesWithCompletionHandler:completionHandler];
+    
+    // do nothing
+    //[self loadUpdatesWithCompletionHandler:completionHandler];
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -589,14 +590,6 @@
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     UIViewController *onboardingVC = [storyboard instantiateInitialViewController];
     self.window.rootViewController = onboardingVC;
-}
-
-- (void)clearOutdatedCaches {
-    for (ObservationPhoto *op in [ObservationPhoto allObjects]) {
-        if ([op needsSync]) {
-            continue;
-        }
-    }
 }
 
 @end

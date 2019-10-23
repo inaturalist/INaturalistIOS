@@ -89,13 +89,7 @@ static char PROJECT_ASSOCIATED_KEY;
     UIImage *cameraImg = [[camera imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     ((UIViewController *)[self.viewControllers objectAtIndex:OBSERVE_TAB_INDEX]).tabBarItem.image = cameraImg;
     ((UIViewController *)[self.viewControllers objectAtIndex:OBSERVE_TAB_INDEX]).tabBarItem.title = NSLocalizedString(@"Observe", @"Title for New Observation Tab Bar Button");
-    
-    // make the delegate call to make sure our side effects execute
-    if ([self.delegate tabBarController:self shouldSelectViewController:[self viewControllers][ME_TAB_INDEX]]) {
-        // Me tab
-        self.selectedIndex = ME_TAB_INDEX;
-    }
-    
+        
     // don't allow the user to re-order the items in the tab bar
     self.customizableViewControllers = nil;
     
@@ -129,7 +123,9 @@ static char PROJECT_ASSOCIATED_KEY;
     // check for access to camera
     switch ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo]) {
         case AVAuthorizationStatusAuthorized:
-            [self newObservationForTaxon:taxon project:project];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self newObservationForTaxon:taxon project:project];
+            });
             break;
         case AVAuthorizationStatusDenied:
         case AVAuthorizationStatusRestricted:
@@ -326,19 +322,11 @@ static char PROJECT_ASSOCIATED_KEY;
         
         [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart withProperties:@{ @"From": @"TabBar" }];
         
-        [self triggerNewObservationFlowForTaxon:nil project:nil];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self triggerNewObservationFlowForTaxon:nil project:nil];
+        });
         
         return NO;
-    } else if ([tabBarController.viewControllers indexOfObject:viewController] == ME_TAB_INDEX) {
-        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-        if (appDelegate.loginController.meUserLocal.observationsCount == 0) {
-            if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey] && ![Observation hasAtLeastOneEntity]) {
-                // show the "make your first" tooltip
-                [self makeAndShowFirstObsTooltip];
-            }
-        }
-    } else {
-        [makeFirstObsTooltip hideAnimated:NO];
     }
     
     return YES;
