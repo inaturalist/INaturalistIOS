@@ -269,7 +269,7 @@ DEPENDENCIES:
   - NSString_stripHtml (= 0.1.0)
   - NXOAuth2Client (= 1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
-  - QBImagePickerController (from `https://github.com/alexshepard/QBImagePicker`, commit `9f3eb33fc63b3be4fd924b798115ef9dffa15729`)
+  - QBImagePickerController (from `https://github.com/alexshepard/QBImagePicker`, commit `a6e5c8ea669ebc16e5894235281519711cae3ffd`)
   - RaptureXML (= 1.0.1)
   - Realm (= 3.20.0)
   - RestKit (= 0.10.3)
@@ -366,7 +366,7 @@ EXTERNAL SOURCES:
     :commit: 0a343f12b60c8719a280db73b1e2b6d25fef164a
     :git: https://github.com/alexshepard/MHVideoPhotoGallery
   QBImagePickerController:
-    :commit: 9f3eb33fc63b3be4fd924b798115ef9dffa15729
+    :commit: a6e5c8ea669ebc16e5894235281519711cae3ffd
     :git: https://github.com/alexshepard/QBImagePicker
   YLMoment:
     :commit: 35521e9f80c23de6f885771f97a6c1febe245c00
@@ -386,7 +386,7 @@ CHECKOUT OPTIONS:
     :commit: 0a343f12b60c8719a280db73b1e2b6d25fef164a
     :git: https://github.com/alexshepard/MHVideoPhotoGallery
   QBImagePickerController:
-    :commit: 9f3eb33fc63b3be4fd924b798115ef9dffa15729
+    :commit: a6e5c8ea669ebc16e5894235281519711cae3ffd
     :git: https://github.com/alexshepard/QBImagePicker
   YLMoment:
     :commit: 35521e9f80c23de6f885771f97a6c1febe245c00
@@ -462,6 +462,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 2e7005f4aa3d4c2fa5ec60e5529c519949dede55
+PODFILE CHECKSUM: 024cfc0c7b9d2a29e1e87e1c7aee8af6bbab75b0
 
 COCOAPODS: 1.8.4
