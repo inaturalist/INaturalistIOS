@@ -46,7 +46,6 @@ target :iNaturalist do
   pod 'ARSafariActivity'
   pod 'M13ProgressSuite'
   pod 'TOCropViewController', '~> 2.3.5'
-  pod 'QBImagePickerController', :git => 'https://github.com/alexshepard/QBImagePicker', :commit => 'a6e5c8ea669ebc16e5894235281519711cae3ffd'
   pod 'MHVideoPhotoGallery', :git => 'https://github.com/alexshepard/MHVideoPhotoGallery', :commit => '0a343f12b60c8719a280db73b1e2b6d25fef164a'
   pod 'JSONKit', :git => 'https://github.com/alexshepard/JSONKit.git', :commit => '46343e0e46fa8390fed0e8fff6367adb745d7fdd'
   pod 'FileMD5Hash', :git => 'https://github.com/FutureWorkshops/FileMD5Hash.git', :commit => '6864c180c010ab4b0514ba5c025091e12ab01199'

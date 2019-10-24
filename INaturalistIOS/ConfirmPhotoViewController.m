@@ -55,6 +55,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.view.backgroundColor = [UIColor blackColor];
+    
     // fetch location to insert into image exif when we save it
     self.locationManager = [[CLLocationManager alloc] init];
     [self.locationManager startUpdatingLocation];
@@ -320,7 +322,10 @@
     confirm.hidden = YES;
     retake.hidden = YES;
     
-    if (self.image) {
+    if (self.isSelectingFromLibrary) {
+        // can proceed directly to followup
+        [self moveOnToSaveNewObservation];
+    } else {
         // we need to save to the Photos library
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.labelText = NSLocalizedString(@"Saving new photo...", @"status while saving your image");
@@ -374,10 +379,6 @@
             });
 
         }];
-        
-    } else if (self.downloadedImages) {
-        // can proceed directly to followup
-        [self moveOnToSaveNewObservation];
     }
 }
 

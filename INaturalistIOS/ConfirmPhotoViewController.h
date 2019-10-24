@@ -18,6 +18,7 @@
 @property NSDictionary *metadata;
 @property NSArray *assets;
 @property BOOL shouldContinueUpdatingLocation;
+@property BOOL isSelectingFromLibrary;
 
 @property Taxon *taxon;
 @property Project *project;

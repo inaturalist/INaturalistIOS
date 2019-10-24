@@ -13,7 +13,6 @@
 #import <ActionSheetPicker-3.0/ActionSheetDatePicker.h>
 #import <ActionSheetPicker-3.0/ActionSheetStringPicker.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
-#import <QBImagePickerController/QBImagePickerController.h>
 #import <ImageIO/ImageIO.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import <JDStatusBarNotification/JDStatusBarNotification.h>
@@ -66,11 +65,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionDelete,
 };
 
-@interface QBImagePickerController ()
-@property (nonatomic, strong) UINavigationController *albumsNavigationController;
-@end
-
-@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, QBImagePickerControllerDelegate, TaxaSearchViewControllerDelegate, ProjectChooserViewControllerDelegate, CLLocationManagerDelegate> {
+@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, TaxaSearchViewControllerDelegate, ProjectChooserViewControllerDelegate, CLLocationManagerDelegate> {
     
     CLLocationManager *_locationManager;
 }
@@ -79,7 +74,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 @property (readonly) CLLocationManager *locationManager;
 @property UITapGestureRecognizer *tapDismissTextViewGesture;
 @property CLGeocoder *geoCoder;
-@property QBImagePickerController *imagePicker;
 @end
 
 @implementation ObsEditV2ViewController
@@ -430,21 +424,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 
 - (void)pushLibrary {
-    // qbimagepicker for library multi-select
-    self.imagePicker = [[QBImagePickerController alloc] init];
-    self.imagePicker.delegate = self;
-    self.imagePicker.allowsMultipleSelection = YES;
-    self.imagePicker.maximumNumberOfSelection = 4;     // arbitrary
-    self.imagePicker.mediaType = QBImagePickerMediaTypeImage;
-    self.imagePicker.assetCollectionSubtypes = [ImageStore assetCollectionSubtypes];
+    // select from photo library
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     
-    if (self.presentedViewController) {
-        UINavigationController *nav = (UINavigationController *)self.presentedViewController;
-        [nav pushViewController:self.imagePicker.albumsNavigationController.topViewController animated:YES];
-        [nav setNavigationBarHidden:NO animated:YES];
-    } else {
-        [self presentViewController:self.imagePicker animated:YES completion:nil];
-    }
+    UIViewController *presentedVC = self.presentedViewController;
+    [presentedVC presentViewController:picker animated:YES completion:nil];
 }
 
 - (void)pushCamera {
@@ -518,65 +504,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self presentViewController:picker animated:YES completion:nil];
 }
 
-#pragma mark - QBImagePicker delegate
-
-- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
-    ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
-    confirm.assets = assets;
-    __weak typeof(self) weakSelf = self;
-    confirm.confirmFollowUpAction = ^(NSArray *confirmedAssets) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        
-        NSInteger idx = 0;
-        ObservationPhoto *op = self.observation.sortedObservationPhotos.lastObject;
-        if (op) {
-            idx = op.position.integerValue + 1;
-        }
-        for (UIImage *image in confirmedAssets) {
-            ObservationPhoto *op = [ObservationPhoto object];
-            op.position = @(idx);
-            [op setObservation:strongSelf.observation];
-            [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-            
-            NSError *saveError = nil;
-            BOOL saved = [[ImageStore sharedImageStore] storeImage:image
-                                                            forKey:op.photoKey
-                                                             error:&saveError];
-            if (saveError) {
-                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg")
-                                            message:saveError.localizedDescription
-                                           delegate:nil
-                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                  otherButtonTitles:nil] show];
-                [op destroy];
-                return;
-            } else if (!saved) {
-                [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg")
-                                            message:NSLocalizedString(@"Unknown error", @"Message body when we don't know the error")
-                                           delegate:nil
-                                  cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                  otherButtonTitles:nil] show];
-                [op destroy];
-                return;
-            }
-            
-            op.localCreatedAt = [NSDate date];
-            op.localUpdatedAt = [NSDate date];
-            
-            idx++;
-        }
-        
-        [strongSelf dismissViewControllerAnimated:YES completion:nil];
-    };
-    
-    UINavigationController *nav = (UINavigationController *)self.presentedViewController;
-    [nav pushViewController:confirm animated:YES];
-}
-
-- (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
 #pragma mark - UIImagePickerControllerDelegate methods
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
@@ -590,6 +517,18 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                       @"Source": @"Camera",
                                       @"Count": @(1)
                                       }];
+    
+    BOOL selectedFromLibrary = NO;
+    if (@available(iOS 11.0, *)) {
+        if ([info valueForKey:UIImagePickerControllerPHAsset]) {
+            selectedFromLibrary = YES;
+        }
+    } else {
+        if ([info valueForKey:UIImagePickerControllerReferenceURL]) {
+            selectedFromLibrary = YES;
+        }
+    }
+    confirm.isSelectingFromLibrary = selectedFromLibrary;
     
     // set the follow up action
     __weak typeof(self)weakSelf = self;
@@ -898,7 +837,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     [self triggerAutoUpload];
     
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.view.window.rootViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Project Chooser

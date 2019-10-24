@@ -176,7 +176,6 @@ PODS:
   - NSString_stripHtml (0.1.0)
   - NXOAuth2Client (1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (0.1)
-  - QBImagePickerController (3.4.0)
   - RaptureXML (1.0.1)
   - Realm (3.20.0):
     - Realm/Headers (= 3.20.0)
@@ -269,7 +268,6 @@ DEPENDENCIES:
   - NSString_stripHtml (= 0.1.0)
   - NXOAuth2Client (= 1.2.8)
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
-  - QBImagePickerController (from `https://github.com/alexshepard/QBImagePicker`, commit `a6e5c8ea669ebc16e5894235281519711cae3ffd`)
   - RaptureXML (= 1.0.1)
   - Realm (= 3.20.0)
   - RestKit (= 0.10.3)
@@ -365,9 +363,6 @@ EXTERNAL SOURCES:
   MHVideoPhotoGallery:
     :commit: 0a343f12b60c8719a280db73b1e2b6d25fef164a
     :git: https://github.com/alexshepard/MHVideoPhotoGallery
-  QBImagePickerController:
-    :commit: a6e5c8ea669ebc16e5894235281519711cae3ffd
-    :git: https://github.com/alexshepard/QBImagePicker
   YLMoment:
     :commit: 35521e9f80c23de6f885771f97a6c1febe245c00
     :git: https://github.com/inaturalist/YLMoment.git
@@ -385,9 +380,6 @@ CHECKOUT OPTIONS:
   MHVideoPhotoGallery:
     :commit: 0a343f12b60c8719a280db73b1e2b6d25fef164a
     :git: https://github.com/alexshepard/MHVideoPhotoGallery
-  QBImagePickerController:
-    :commit: a6e5c8ea669ebc16e5894235281519711cae3ffd
-    :git: https://github.com/alexshepard/QBImagePicker
   YLMoment:
     :commit: 35521e9f80c23de6f885771f97a6c1febe245c00
     :git: https://github.com/inaturalist/YLMoment.git
@@ -442,7 +434,6 @@ SPEC CHECKSUMS:
   NSString_stripHtml: ba10acfb1c0f7f687055f8e4300a8a78e142f1ea
   NXOAuth2Client: 98c4d4c594edd2b289cfc34a8928653e1dab7adf
   PDKTStickySectionHeadersCollectionViewLayout: bedcfc09fa44ae3e232eab421c31286e3d2856ed
-  QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   RaptureXML: b5c33c04c1a4adfd8ad0d5463329a31820596e82
   Realm: 8b2ca5bc6479a91f379b6b42b5922e396cd5ba5a
   RestKit: 407abdcfcb1ea7a06b8f10bba23fecec8e1a5f99
@@ -462,6 +453,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 024cfc0c7b9d2a29e1e87e1c7aee8af6bbab75b0
+PODFILE CHECKSUM: 8a777be486c3d1e11ae7ce0788a3854b9a26bdc5
 
 COCOAPODS: 1.8.4

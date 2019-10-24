@@ -6,7 +6,6 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <QBImagePickerController/QBImagePickerController.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <AVFoundation/AVFoundation.h>
 #import <BlocksKit+UIKit.h>
@@ -52,15 +51,9 @@ NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
 static char TAXON_ASSOCIATED_KEY;
 static char PROJECT_ASSOCIATED_KEY;
 
-@interface QBImagePickerController ()
-@property (nonatomic, strong) UINavigationController *albumsNavigationController;
-@end
-
-
-@interface INatUITabBarController () <UITabBarControllerDelegate, QBImagePickerControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
+@interface INatUITabBarController () <UITabBarControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     INatTooltipView *makeFirstObsTooltip;
 }
-@property QBImagePickerController *imagePicker;
 @end
 
 @implementation INatUITabBarController
@@ -293,22 +286,19 @@ static char PROJECT_ASSOCIATED_KEY;
         [[Analytics sharedClient] event:kAnalyticsEventNewObservationLibraryStart];
         
         // no camera available
-        QBImagePickerController *imagePickerController = [[QBImagePickerController alloc] init];
-        imagePickerController.delegate = self;
-        imagePickerController.allowsMultipleSelection = YES;
-        imagePickerController.maximumNumberOfSelection = 4;     // arbitrary
-        imagePickerController.mediaType = QBImagePickerMediaTypeImage;
-        imagePickerController.assetCollectionSubtypes = [ImageStore assetCollectionSubtypes];
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.delegate = self;
+        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         
         if (taxon) {
-            objc_setAssociatedObject(imagePickerController, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
+            objc_setAssociatedObject(picker, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
         }
         
         if (project) {
-            objc_setAssociatedObject(imagePickerController, &PROJECT_ASSOCIATED_KEY, project, OBJC_ASSOCIATION_RETAIN);
+            objc_setAssociatedObject(picker, &PROJECT_ASSOCIATED_KEY, project, OBJC_ASSOCIATION_RETAIN);
         }
         
-        [self presentViewController:imagePickerController animated:YES completion:nil];
+        [self presentViewController:picker animated:YES completion:nil];
     }
 }
 
@@ -337,7 +327,25 @@ static char PROJECT_ASSOCIATED_KEY;
     ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
     confirm.image = [info valueForKey:UIImagePickerControllerOriginalImage];
     confirm.metadata = [info valueForKey:UIImagePickerControllerMediaMetadata];
-    confirm.shouldContinueUpdatingLocation = YES;
+    
+    BOOL selectedFromLibrary = NO;
+    if (@available(iOS 11.0, *)) {
+        if ([info valueForKey:UIImagePickerControllerPHAsset]) {
+            selectedFromLibrary = YES;
+        }
+    } else {
+        if ([info valueForKey:UIImagePickerControllerReferenceURL]) {
+            selectedFromLibrary = YES;
+        }
+    }
+    
+    if (selectedFromLibrary) {
+        confirm.shouldContinueUpdatingLocation = NO;
+        confirm.isSelectingFromLibrary = YES;
+    } else {
+        confirm.shouldContinueUpdatingLocation = YES;
+        confirm.isSelectingFromLibrary = NO;
+    }
     
     Taxon *taxon = objc_getAssociatedObject(picker, &TAXON_ASSOCIATED_KEY);
     if (taxon) {
@@ -350,6 +358,7 @@ static char PROJECT_ASSOCIATED_KEY;
     
     [picker pushViewController:confirm animated:NO];
 }
+
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -389,25 +398,21 @@ static char PROJECT_ASSOCIATED_KEY;
             break;
     }
 
-    // qbimagepicker for library multi-select
-    self.imagePicker = [[QBImagePickerController alloc] init];
-    self.imagePicker.delegate = self;
-    self.imagePicker.allowsMultipleSelection = YES;
-    self.imagePicker.maximumNumberOfSelection = 4;     // arbitrary
-    self.imagePicker.mediaType = QBImagePickerMediaTypeImage;
-    self.imagePicker.assetCollectionSubtypes = [ImageStore assetCollectionSubtypes];
+    // select from photo library
+    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+    picker.delegate = self;
+    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
 
     if (taxon) {
-        objc_setAssociatedObject(self.imagePicker, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
+        objc_setAssociatedObject(picker, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
     }
     
     if (project) {
-        objc_setAssociatedObject(self.imagePicker, &PROJECT_ASSOCIATED_KEY, project, OBJC_ASSOCIATION_RETAIN);
+        objc_setAssociatedObject(picker, &PROJECT_ASSOCIATED_KEY, project, OBJC_ASSOCIATION_RETAIN);
     }
     
-    UINavigationController *nav = (UINavigationController *)self.presentedViewController;
-    [nav pushViewController:self.imagePicker.albumsNavigationController.topViewController animated:YES];
-    [nav setNavigationBarHidden:NO animated:YES];
+    UIViewController *presentedVC = self.presentedViewController;
+    [presentedVC presentViewController:picker animated:YES completion:nil];
 }
 
 
@@ -441,36 +446,6 @@ static char PROJECT_ASSOCIATED_KEY;
     UINavigationController *nav = (UINavigationController *)self.presentedViewController;
     [nav setNavigationBarHidden:NO animated:YES];
     [nav pushViewController:confirmObs animated:YES];
-}
-
-#pragma mark - QBImagePicker delegate
-
-- (void)qb_imagePickerController:(QBImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
-    [[Analytics sharedClient] event:kAnalyticsEventNewObservationLibraryPicked
-                     withProperties:@{ @"numPics": @(assets.count) }];
-    ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
-    confirm.assets = assets;
-    
-    Taxon *taxon = objc_getAssociatedObject(imagePickerController, &TAXON_ASSOCIATED_KEY);
-    if (taxon) {
-        confirm.taxon = taxon;
-    }
-    
-    Project *project = objc_getAssociatedObject(imagePickerController, &PROJECT_ASSOCIATED_KEY);
-    if (project) {
-        confirm.project = project;
-    }
-    
-    if (self.presentedViewController == imagePickerController) {
-        [imagePickerController.albumsNavigationController pushViewController:confirm animated:NO];
-    } else {
-        UINavigationController *nav = (UINavigationController *)self.presentedViewController;
-        [nav pushViewController:confirm animated:NO];
-    }
-}
-
-- (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark lifecycle
