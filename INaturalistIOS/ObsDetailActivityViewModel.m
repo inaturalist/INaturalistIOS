@@ -534,7 +534,6 @@
         [results setValue:@(YES) forKey:@"viewed"];
         [results setValue:@(YES) forKey:@"viewedLocally"];
     }];
-    [self.delegate setUpdatesBadge];
 }
 
 - (BOOL)loggedInUserProducedActivity:(id <ActivityVisualization>)activity {

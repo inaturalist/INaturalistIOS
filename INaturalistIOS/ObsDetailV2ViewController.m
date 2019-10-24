@@ -291,10 +291,6 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)setUpdatesBadge {
-    [(INatUITabBarController *)self.tabBarController setUpdatesBadge];
-}
-
 - (void)showProgressHud {
     dispatch_async(dispatch_get_main_queue(), ^{
         self.progressHud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];

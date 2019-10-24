@@ -123,10 +123,7 @@
     [[RLMRealm defaultRealm] transactionWithBlock:^{
         [self.updates setValue:@(YES) forKey:@"viewed"];
     }];
-    
-    // set application and tab bar badge
-    [((INatUITabBarController *)self.tabBarController) setUpdatesBadge];
-    
+        
     for (NSNumber *obsId in obsIds) {
         [[self observationApi] seenUpdatesForObservationId:obsId.integerValue handler:^(NSArray *results, NSInteger count, NSError *error) {
             // update hasUnviewedActivity flag
@@ -173,7 +170,6 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self markSeenObservations];
                 [self.tableView.pullToRefreshView stopAnimating];
-                [(INatUITabBarController *)self.tabBarController setUpdatesBadge];
             });
         }
         
