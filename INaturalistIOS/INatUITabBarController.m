@@ -122,11 +122,12 @@ static char PROJECT_ASSOCIATED_KEY;
     
     // check for access to camera
     switch ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo]) {
-        case AVAuthorizationStatusAuthorized:
+        case AVAuthorizationStatusAuthorized: {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self newObservationForTaxon:taxon project:project];
             });
             break;
+        }
         case AVAuthorizationStatusDenied:
         case AVAuthorizationStatusRestricted:
             [self presentAuthAlertForSource:INatPhotoSourceCamera];
