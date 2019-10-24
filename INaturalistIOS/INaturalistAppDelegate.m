@@ -62,9 +62,6 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     [[INatReachability sharedClient] startMonitoring];
-    
-    // do nothing here
-    //[self loadUpdatesWithCompletionHandler:nil];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
@@ -90,13 +87,6 @@
     return handled;
 }
 
-
-- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    
-    // do nothing
-    //[self loadUpdatesWithCompletionHandler:completionHandler];
-}
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [self setupAnalytics];
         
@@ -116,102 +106,6 @@
 
     return YES;
 }
-
-- (void)loadUpdatesWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
-    UIApplication *application = [UIApplication sharedApplication];
-    
-    if (!self.loginController) {
-        self.loginController = [[LoginController alloc] init];
-    }
-    
-    if (!self.loginController.isLoggedIn) {
-        if (completionHandler) {
-            completionHandler(UIBackgroundFetchResultNoData);
-        }
-    } else {
-        NSNumber *userIdObj = nil;
-        if ([[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey]) {
-            userIdObj = [[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey];
-        }
-        
-        if (!userIdObj) {
-            if (completionHandler) {
-                completionHandler(UIBackgroundFetchResultNoData);
-            }
-        } else {
-            NSInteger userId = userIdObj.integerValue;
-            
-            self.backgroundFetchTask = [application beginBackgroundTaskWithExpirationHandler:^{
-                [application endBackgroundTask:self.backgroundFetchTask];
-                self.backgroundFetchTask = UIBackgroundTaskInvalid;
-            }];
-            
-            __weak typeof(self)weakSelf = self;
-            ObservationAPI *api = [[ObservationAPI alloc] init];
-            [api updatesWithHandler:^(NSArray *results, NSInteger count, NSError *error) {
-                
-                if (error) {
-                    if (completionHandler) {
-                        [[Analytics sharedClient] event:kAnalyticsEventBackgroundFetchFailed
-                                         withProperties:@{
-                                                          @"reason": error.localizedDescription,
-                                                          }];
-                        completionHandler(UIBackgroundFetchResultFailed);
-                    }
-                    [application endBackgroundTask:weakSelf.backgroundFetchTask];
-                    weakSelf.backgroundFetchTask = UIBackgroundTaskInvalid;
-                    return;
-                }
-                
-                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"resourceOwnerId == %d", userId];
-                NSArray *myResults = [results filteredArrayUsingPredicate:predicate];
-                
-                NSMutableSet *obsIds = [NSMutableSet set];
-                for (ExploreUpdate *eu in myResults) {
-                    [obsIds addObject:@(eu.resourceId)];
-                }
-                [weakSelf loadObservationsForIds:[obsIds allObjects]];
-                
-                RLMRealm *realm = [RLMRealm defaultRealm];
-                [realm beginWriteTransaction];
-                // all results get written to Realm
-                for (ExploreUpdate *eu in results) {
-                    ExploreUpdateRealm *eur = [[ExploreUpdateRealm alloc] initWithMantleModel:eu];
-                    [realm addOrUpdateObject:eur];
-                }
-                [realm commitWriteTransaction];
-                UIViewController *rootVC = [[[UIApplication sharedApplication] keyWindow] rootViewController];
-                if ([rootVC isKindOfClass:[INatUITabBarController class]]) {
-                    [((INatUITabBarController *)rootVC) setUpdatesBadge];
-                }
-                
-                if (completionHandler) {
-                    completionHandler(UIBackgroundFetchResultNewData);
-                }
-                
-                [application endBackgroundTask:weakSelf.backgroundFetchTask];
-                weakSelf.backgroundFetchTask = UIBackgroundTaskInvalid;
-            }];
-        }
-    }
-}
-
-- (void)loadObservationsForIds:(NSArray *)obsIds {
-    for (NSNumber *obsId in obsIds) {
-        NSString *resourcePath = [NSString stringWithFormat:@"/observations/%ld.json",
-                                  (unsigned long)obsId.integerValue];
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:resourcePath usingBlock:^(RKObjectLoader *loader) {
-            loader.objectMapping = [Observation mapping];
-            loader.onDidLoadObject = ^(Observation *obs) {
-                [[[RKObjectManager sharedManager] objectStore] save:nil];
-            };
-            loader.onDidFailWithError = ^(NSError *error) {
-                // do nothing?
-            };
-        }];
-    }
-}
-
 
 - (void)setupAnalytics {
     // setup analytics

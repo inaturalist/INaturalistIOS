@@ -92,8 +92,6 @@ static char PROJECT_ASSOCIATED_KEY;
         
     // don't allow the user to re-order the items in the tab bar
     self.customizableViewControllers = nil;
-    
-    [self setUpdatesBadge];
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
@@ -333,42 +331,6 @@ static char PROJECT_ASSOCIATED_KEY;
     return YES;
 }
 
-#pragma mark - Tooltip Helper
-
-- (void)makeAndShowFirstObsTooltip {
-    if ([makeFirstObsTooltip superview]) {
-        [makeFirstObsTooltip hideAnimated:NO];
-    }
-    
-    NSString *firstObsText = NSLocalizedString(@"Make your first observation", @"Tooltip prompting users to make their first observation");
-    
-    // ugly but how else to get the frame of a UITabBarItem?
-    CGPoint origin;
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        origin = CGPointMake(self.view.bounds.size.width * 3.0 / 7.0,
-                             self.view.bounds.size.height - self.tabBar.frame.size.height - 5);
-    } else {
-        origin = CGPointMake(self.view.bounds.size.width / 2,
-                             self.view.bounds.size.height - self.tabBar.frame.size.height - 5);
-        
-    }
-    makeFirstObsTooltip = [[INatTooltipView alloc] initWithTargetPoint:origin
-                                                              hostView:self.view
-                                                           tooltipText:firstObsText
-                                                        arrowDirection:JDFTooltipViewArrowDirectionDown
-                                                                 width:200];
-    
-    makeFirstObsTooltip.tooltipBackgroundColour = [UIColor inatTint];
-    makeFirstObsTooltip.shouldCenter = YES;
-    
-    __weak typeof(self) weakSelf = self;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        __strong typeof(weakSelf)strongSelf = weakSelf;
-        if (strongSelf.selectedIndex == ME_TAB_INDEX)
-            [makeFirstObsTooltip show];
-    });
-}
-
 #pragma mark - UIImagePickerController delegate
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
@@ -509,26 +471,6 @@ static char PROJECT_ASSOCIATED_KEY;
 
 - (void)qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {
     [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-#pragma mark badging
-
-- (void)setUpdatesBadge {
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
-    if (me) {
-        NSPredicate *myNewPredicate = [NSPredicate predicateWithFormat:@"viewed == false and resourceOwnerId == %ld",
-                                       me.userId];
-        
-        RLMResults *myNewResults = [ExploreUpdateRealm objectsWithPredicate:myNewPredicate];
-        UINavigationController *activity = [self.viewControllers objectAtIndex:1];
-        
-        if ([myNewResults count] > 0) {
-            activity.tabBarItem.badgeValue = [NSString stringWithFormat:@"%ld", (unsigned long)[myNewResults count]];
-        } else {
-            activity.tabBarItem.badgeValue = nil;
-        }
-    }
 }
 
 #pragma mark lifecycle
