@@ -82,7 +82,9 @@ static char PROJECT_ASSOCIATED_KEY;
     UIImage *cameraImg = [[camera imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     ((UIViewController *)[self.viewControllers objectAtIndex:OBSERVE_TAB_INDEX]).tabBarItem.image = cameraImg;
     ((UIViewController *)[self.viewControllers objectAtIndex:OBSERVE_TAB_INDEX]).tabBarItem.title = NSLocalizedString(@"Observe", @"Title for New Observation Tab Bar Button");
-        
+    
+    [self setSelectedIndex:ME_TAB_INDEX];
+    
     // don't allow the user to re-order the items in the tab bar
     self.customizableViewControllers = nil;
 }
