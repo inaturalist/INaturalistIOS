@@ -51,9 +51,7 @@ NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
 static char TAXON_ASSOCIATED_KEY;
 static char PROJECT_ASSOCIATED_KEY;
 
-@interface INatUITabBarController () <UITabBarControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
-    INatTooltipView *makeFirstObsTooltip;
-}
+@interface INatUITabBarController () <UITabBarControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @end
 
 @implementation INatUITabBarController
@@ -69,8 +67,7 @@ static char PROJECT_ASSOCIATED_KEY;
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     // tab bar delegate to intercept selection of the "observe" tab
@@ -88,15 +85,6 @@ static char PROJECT_ASSOCIATED_KEY;
     // don't allow the user to re-order the items in the tab bar
     self.customizableViewControllers = nil;
 }
-
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    
-    if ([makeFirstObsTooltip superview]) {
-        [makeFirstObsTooltip hideAnimated:NO];
-    }
-}
-
 
 - (void)triggerNewObservationFlowForTaxon:(Taxon *)taxon project:(Project *)project {
     
@@ -195,7 +183,6 @@ static char PROJECT_ASSOCIATED_KEY;
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:HasMadeAnObservationKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
-    [makeFirstObsTooltip hideAnimated:YES];
     
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
@@ -493,8 +480,6 @@ static char PROJECT_ASSOCIATED_KEY;
         // user has made an observation
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:HasMadeAnObservationKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        [makeFirstObsTooltip hideAnimated:NO];
     }
 }
 
