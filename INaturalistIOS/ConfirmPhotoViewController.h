@@ -16,14 +16,17 @@
 
 @property UIImage *image;
 @property NSDictionary *metadata;
-@property NSArray *assets;
+
+@property CLLocation *photoTakenLocation;
+@property NSDate *photoTakenDate;
+
 @property BOOL shouldContinueUpdatingLocation;
 @property BOOL isSelectingFromLibrary;
 
 @property Taxon *taxon;
 @property Project *project;
 
-@property (nonatomic, copy) void(^confirmFollowUpAction)(NSArray *confirmedAssets);
+@property (nonatomic, copy) void(^confirmFollowUpAction)(NSArray *confirmedImages);
 
 @property MultiImageView *multiImageView;
 

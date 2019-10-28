@@ -65,7 +65,7 @@
     
     if (!self.confirmFollowUpAction) {
         __weak typeof(self) weakSelf = self;
-        self.confirmFollowUpAction = ^(NSArray *confirmedAssets){
+        self.confirmFollowUpAction = ^(NSArray *confirmedImages){
             __strong typeof(weakSelf) strongSelf = weakSelf;
             
             // go straight to making the observation
@@ -97,7 +97,7 @@
             }
             
             NSInteger idx = 0;
-            for (UIImage *image in confirmedAssets) {
+            for (UIImage *image in confirmedImages) {
                 ObservationPhoto *op = [ObservationPhoto object];
                 op.position = @(idx);
                 [op setObservation:o];
@@ -183,8 +183,6 @@
             __strong typeof(weakSelf)strongSelf = weakSelf;
             [[Analytics sharedClient] event:kAnalyticsEventNewObservationRetakePhotos];
             [strongSelf.navigationController popViewControllerAnimated:YES];
-            if (strongSelf.assets)
-                [strongSelf.navigationController setNavigationBarHidden:NO];
         } forControlEvents:UIControlEventTouchUpInside];
         
         button;
@@ -297,22 +295,22 @@
 }
 
 - (void)moveOnToSaveNewObservation {
-    if (self.image) {
-        // embed geo
-        if (self.locationManager.location) {
-            self.obsLocation = self.locationManager.location;
+    if ([self isSelectingFromLibrary]) {
+        if (self.photoTakenLocation) {
+            self.obsLocation = self.photoTakenLocation;
         }
-        // embed photo date
+        if (self.photoTakenDate) {
+            self.obsDate = self.photoTakenDate;
+        }
+    } else {
+        self.obsLocation = self.locationManager.location;
         self.obsDate = [NSDate date];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.confirmFollowUpAction(@[ self.image ]);
-        });
-    } else if (self.downloadedImages) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.confirmFollowUpAction(self.downloadedImages);
-        });
     }
+    
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.confirmFollowUpAction(self.downloadedImages ?: @[ self.image ]);
+    });
 }
 
 - (void)savePhotoAndMoveOn {
@@ -385,98 +383,12 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    if (self.image) {
-        self.multiImageView.imageCount = 1;
-        UIImageView *iv = [[self.multiImageView imageViews] firstObject];
-        iv.image = self.image;
-        iv.contentMode = UIViewContentModeScaleAspectFit;
-        [self.downloadedImages addObject:self.image];
-        [self configureNextButton];
-    } else if (self.assets && self.assets.count > 0) {
-        self.multiImageView.imageCount = self.assets.count;
-        
-        // load images for assets
-        for (int i = 0; i < self.assets.count; i++) {
-            PHAsset *asset = self.assets[i];
-            if (asset.location && !self.obsLocation) {
-                self.obsLocation = asset.location;
-            }
-            if (asset.creationDate && !self.obsDate) {
-                self.obsDate = asset.creationDate;
-            }
-            
-            UIImageView *iv = self.multiImageView.imageViews[i];
-            M13ProgressViewPie *pie = self.multiImageView.progressViews[i];
-            UIView *alertDecoration = self.multiImageView.alertViews[i];
-            
-            PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-            
-            options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-            options.networkAccessAllowed = YES;
-            options.resizeMode = PHImageRequestOptionsResizeModeExact;
-            
-            __weak typeof(self)weakSelf = self;
-            options.progressHandler = ^(double progress, NSError *error, BOOL *stop, NSDictionary *info) {
-                if (error) {
-                    *stop = YES;
-                } else {
-                    pie.hidden = NO;
-                    [iv bringSubviewToFront:pie];
-                    [pie setProgress:progress animated:YES];
-                }
-            };
-            
-            if (asset.location && CLLocationCoordinate2DIsValid(asset.location.coordinate)) {
-                self.obsLocation = [self.obsLocation inat_locationByAddingAccuracy:asset.location.horizontalAccuracy];
-            }
-            
-            [[PHImageManager defaultManager] requestImageForAsset:asset
-                                                       targetSize:CGSizeMake(2048.0, 2048.0)
-                                                      contentMode:PHImageContentModeDefault
-                                                          options:options
-                                                    resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-                
-                __strong typeof(weakSelf)strongSelf = weakSelf;
-                BOOL isDegraded = [[info valueForKey:PHImageResultIsDegradedKey] boolValue];
-                NSError *error = [info valueForKey:PHImageErrorKey];
-                
-                if (result) {
-                    [iv setImage:result];
-                    
-                    if (isDegraded) {
-                        pie.hidden = NO;
-                    } else {
-                        pie.hidden = YES;
-                        
-                        [strongSelf.downloadedImages addObject:result];
-                        
-                        [self configureNextButton];
-                    }
-                } else if (error) {
-                    pie.hidden = YES;
-                    alertDecoration.hidden = NO;
-                    
-                    NSError *underlyingError = [[error userInfo] valueForKey:NSUnderlyingErrorKey];
-                    if (underlyingError) {
-                        error = underlyingError;
-                    }
-                    
-                    NSString *alertTitle = NSLocalizedString(@"Image Load Failed", nil);
-                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
-                                                                                   message:error.localizedDescription
-                                                                            preferredStyle:UIAlertControllerStyleAlert];
-                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                              style:UIAlertActionStyleDefault
-                                                            handler:nil]];
-                    [strongSelf presentViewController:alert animated:YES completion:nil];
-                }
-            }];
-            
-        }
-        self.multiImageView.hidden = NO;
-    }
-
-
+    self.multiImageView.imageCount = 1;
+    UIImageView *iv = [[self.multiImageView imageViews] firstObject];
+    iv.image = self.image;
+    iv.contentMode = UIViewContentModeScaleAspectFit;
+    [self.downloadedImages addObject:self.image];
+    [self configureNextButton];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -488,9 +400,7 @@
 }
 
 - (void)configureNextButton {
-    if (self.downloadedImages.count == self.assets.count) {
-        confirm.enabled = YES;
-    } else if (self.downloadedImages.count == 1 && self.image) {
+    if (self.image) {
         confirm.enabled = YES;
     } else {
         confirm.enabled = NO;

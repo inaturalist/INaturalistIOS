@@ -331,11 +331,23 @@ static char PROJECT_ASSOCIATED_KEY;
     BOOL selectedFromLibrary = NO;
     if (@available(iOS 11.0, *)) {
         if ([info valueForKey:UIImagePickerControllerPHAsset]) {
+            PHAsset *asset = [info valueForKey:UIImagePickerControllerPHAsset];
+            confirm.photoTakenLocation = asset.location;
+            confirm.photoTakenDate = asset.creationDate;
+            
             selectedFromLibrary = YES;
         }
     } else {
         if ([info valueForKey:UIImagePickerControllerReferenceURL]) {
-            selectedFromLibrary = YES;
+            NSURL *assetURL = [info valueForKey:UIImagePickerControllerReferenceURL];
+            PHFetchResult *assets = [PHAsset fetchAssetsWithALAssetURLs:@[ assetURL ] options:nil];
+            PHAsset *asset = [assets firstObject];
+            if (asset) {
+                confirm.photoTakenLocation = asset.location;
+                confirm.photoTakenDate = asset.creationDate;
+                
+                selectedFromLibrary = YES;
+            }
         }
     }
     
