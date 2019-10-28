@@ -2924,7 +2924,7 @@
 				INFOPLIST_FILE = "INaturalistIOS/INaturalistIOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 2.8.2;
+				MARKETING_VERSION = 2.8.3;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -2970,7 +2970,7 @@
 				INFOPLIST_FILE = "INaturalistIOS/INaturalistIOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MARKETING_VERSION = 2.8.2;
+				MARKETING_VERSION = 2.8.3;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
