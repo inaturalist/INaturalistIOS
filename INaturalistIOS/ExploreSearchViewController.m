@@ -348,7 +348,7 @@
         [self showActiveSearch];
     } else {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Oops", nil)
-                                                                       message:NSLocalizedString(@"Can't find search for your observations right now. Please try later.",
+                                                                       message:NSLocalizedString(@"Can't search for your observations right now. Please try later.",
                                                                                                  @"Error message for when we can't retrieve your observations on Explore")
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)

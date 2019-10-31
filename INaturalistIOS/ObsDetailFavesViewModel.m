@@ -172,7 +172,7 @@
         
         // delete to /votes/unvote/observation/{obs.recordID}.json
         requestPath = [NSString stringWithFormat:@"/votes/unvote/observation/%ld.json", (long)self.observation.inatRecordId];
-        hudText = NSLocalizedString(@"Un-faving...", nil);
+        hudText = NSLocalizedString(@"Un-faving...", @"Shown when your request to remove an observation from your favorites is loading");
         method = @"DELETE";
     } else {
         // need to fave it
