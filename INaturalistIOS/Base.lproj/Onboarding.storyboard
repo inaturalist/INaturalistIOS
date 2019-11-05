@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="zUI-iq-68M">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="zUI-iq-68M">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment version="2304" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -70,42 +68,38 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" misplaced="YES" axis="vertical" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="Nvg-kJ-bxo">
-                                <rect key="frame" x="148" y="-61" width="304" height="478"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="Nvg-kJ-bxo">
+                                <rect key="frame" x="20" y="161.5" width="335" height="244.5"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-logo" translatesAutoresizingMaskIntoConstraints="NO" id="287-Kd-BHQ">
-                                        <rect key="frame" x="0.0" y="0.0" width="304" height="290.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="335" height="63"/>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Explore and Connect with Nature" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RqF-E7-mYe">
-                                        <rect key="frame" x="26" y="320.5" width="252" height="20.5"/>
+                                        <rect key="frame" x="41.5" y="93" width="252" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Swipe ›" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L6Y-1o-yPc">
-                                        <rect key="frame" x="119" y="371" width="66.5" height="24"/>
+                                        <rect key="frame" x="134.5" y="143.5" width="66.5" height="24"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                         <color key="textColor" red="0.45490196078431372" green="0.67450980392156867" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="UGF-CT-rSM">
-                                        <rect key="frame" x="3" y="425" width="298" height="53"/>
-                                        <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo-cas" translatesAutoresizingMaskIntoConstraints="NO" id="xY9-2P-uSM">
-                                                <rect key="frame" x="0.0" y="0.0" width="134" height="53"/>
-                                            </imageView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo-natgeo" translatesAutoresizingMaskIntoConstraints="NO" id="Htn-VG-8u3">
-                                                <rect key="frame" x="164" y="0.0" width="134" height="53"/>
-                                            </imageView>
-                                        </subviews>
-                                    </stackView>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cas-ngs-logos" translatesAutoresizingMaskIntoConstraints="NO" id="xY9-2P-uSM">
+                                        <rect key="frame" x="31.5" y="197.5" width="272" height="47"/>
+                                    </imageView>
                                 </subviews>
                             </stackView>
                         </subviews>
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.93725490196078431" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="287-Kd-BHQ" secondAttribute="trailing" constant="20" id="H1b-7N-Rn6"/>
                             <constraint firstItem="Nvg-kJ-bxo" firstAttribute="centerX" secondItem="ZSy-K5-emj" secondAttribute="centerX" id="Rh8-cK-FaU"/>
-                            <constraint firstItem="Nvg-kJ-bxo" firstAttribute="centerY" secondItem="ZSy-K5-emj" secondAttribute="centerY" constant="-100" id="u8O-nP-tcv"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="xY9-2P-uSM" secondAttribute="trailing" constant="35" id="UhX-n9-CtK"/>
+                            <constraint firstItem="Nvg-kJ-bxo" firstAttribute="centerY" secondItem="ZSy-K5-emj" secondAttribute="centerY" constant="-50" id="u8O-nP-tcv"/>
+                            <constraint firstItem="287-Kd-BHQ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ZSy-K5-emj" secondAttribute="leading" constant="20" id="z5D-Ii-VQf"/>
+                            <constraint firstItem="xY9-2P-uSM" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ZSy-K5-emj" secondAttribute="leading" constant="35" id="zUM-hg-VPC"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -344,7 +338,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MC0-kW-bph">
-                                <rect key="frame" x="329" y="28" width="30" height="30"/>
+                                <rect key="frame" x="329" y="8" width="30" height="30"/>
                                 <state key="normal">
                                     <color key="titleColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
@@ -353,7 +347,7 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="31y-8d-eUf">
-                                <rect key="frame" x="42.5" y="40" width="290" height="363"/>
+                                <rect key="frame" x="42.5" y="20" width="290" height="363"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sign Up" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pbQ-o3-5Xy">
                                         <rect key="frame" x="0.0" y="0.0" width="290" height="29"/>
@@ -676,12 +670,11 @@
         </scene>
     </scenes>
     <resources>
+        <image name="cas-ngs-logos" width="272" height="47"/>
         <image name="img-contribute" width="304" height="290"/>
         <image name="img-discuss" width="304" height="290"/>
         <image name="img-identify" width="304" height="290"/>
-        <image name="img-logo" width="304" height="290"/>
+        <image name="img-logo" width="336" height="63"/>
         <image name="img-observe" width="304" height="290"/>
-        <image name="logo-cas" width="134" height="53"/>
-        <image name="logo-natgeo" width="134" height="48"/>
     </resources>
 </document>
