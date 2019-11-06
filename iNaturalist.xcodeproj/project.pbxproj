@@ -194,7 +194,7 @@
 		FA724AE31AB150D300D01773 /* AnonHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA724AE21AB150D300D01773 /* AnonHeaderView.m */; };
 		FA74A6221CB4C4EE002EBD0A /* RankedUserObsSpecies.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA74A6211CB4C4EE002EBD0A /* RankedUserObsSpecies.xib */; };
 		FA74A6251CB4C517002EBD0A /* RankedUserObsSpeciesCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA74A6241CB4C517002EBD0A /* RankedUserObsSpeciesCell.m */; };
-		FA753DBE1B7AC40E00EC13B7 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */; };
+		FA753DBE1B7AC40E00EC13B7 /* LaunchScreenRebrand.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA753DBD1B7AC40E00EC13B7 /* LaunchScreenRebrand.xib */; };
 		FA7558491B9A4BDF00762D7B /* ObsEditV2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7558481B9A4BDF00762D7B /* ObsEditV2ViewController.m */; };
 		FA75584C1B9A599800762D7B /* DisclosureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA75584B1B9A599800762D7B /* DisclosureCell.m */; };
 		FA7591D020F439ED0062DE7F /* SettingsDetailTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7591CF20F439ED0062DE7F /* SettingsDetailTextCell.m */; };
@@ -767,7 +767,7 @@
 		FA74A6211CB4C4EE002EBD0A /* RankedUserObsSpecies.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RankedUserObsSpecies.xib; sourceTree = "<group>"; };
 		FA74A6231CB4C517002EBD0A /* RankedUserObsSpeciesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RankedUserObsSpeciesCell.h; sourceTree = "<group>"; };
 		FA74A6241CB4C517002EBD0A /* RankedUserObsSpeciesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RankedUserObsSpeciesCell.m; sourceTree = "<group>"; };
-		FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = "Launch Screen.xib"; path = "INaturalistIOS/Launch Screen.xib"; sourceTree = "<group>"; };
+		FA753DBD1B7AC40E00EC13B7 /* LaunchScreenRebrand.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LaunchScreenRebrand.xib; path = INaturalistIOS/LaunchScreenRebrand.xib; sourceTree = "<group>"; };
 		FA7558471B9A4BDF00762D7B /* ObsEditV2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsEditV2ViewController.h; sourceTree = "<group>"; };
 		FA7558481B9A4BDF00762D7B /* ObsEditV2ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsEditV2ViewController.m; sourceTree = "<group>"; };
 		FA75584A1B9A599800762D7B /* DisclosureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisclosureCell.h; sourceTree = "<group>"; };
@@ -1705,7 +1705,7 @@
 				FA399AAE1DDBDC73007ABD3E /* Activity.storyboard */,
 				FA399AC31DDBDC88007ABD3E /* Guides.storyboard */,
 				FADD57E919FEFF2500E141C9 /* Images.xcassets */,
-				FA753DBD1B7AC40E00EC13B7 /* Launch Screen.xib */,
+				FA753DBD1B7AC40E00EC13B7 /* LaunchScreenRebrand.xib */,
 				FA6F87661B0E996B0019B157 /* fonts */,
 			);
 			name = "User Interface";
@@ -2153,7 +2153,7 @@
 				FAB6214D1D7397A70026FDC6 /* Onboarding.storyboard in Resources */,
 				60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */,
 				FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */,
-				FA753DBE1B7AC40E00EC13B7 /* Launch Screen.xib in Resources */,
+				FA753DBE1B7AC40E00EC13B7 /* LaunchScreenRebrand.xib in Resources */,
 				19D8342F17E7C211000A5C35 /* guide_taxon-local.xsl in Resources */,
 				FA399AC11DDBDC88007ABD3E /* Guides.storyboard in Resources */,
 				19F0A47E17F3F4340086455D /* guide_taxon-remote.xsl in Resources */,
