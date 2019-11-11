@@ -383,12 +383,14 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    self.multiImageView.imageCount = 1;
-    UIImageView *iv = [[self.multiImageView imageViews] firstObject];
-    iv.image = self.image;
-    iv.contentMode = UIViewContentModeScaleAspectFit;
-    [self.downloadedImages addObject:self.image];
-    [self configureNextButton];
+    if (self.image) {
+        self.multiImageView.imageCount = 1;
+        UIImageView *iv = [[self.multiImageView imageViews] firstObject];
+        iv.image = self.image;
+        iv.contentMode = UIViewContentModeScaleAspectFit;
+        [self.downloadedImages addObject:self.image];
+        [self configureNextButton];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {

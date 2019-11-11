@@ -507,8 +507,24 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - UIImagePickerControllerDelegate methods
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    UIImage *originalImage = [info valueForKey:UIImagePickerControllerOriginalImage];
+    if (!originalImage) {
+        
+        NSString *alertTitle = NSLocalizedString(@"Camera Problem", @"Title for failure to get a photo from photo picker or camera alert");
+        NSString *alertMsg = NSLocalizedString(@"Couldn't load data for the selected photo. Please try again.", @"Please try again message, in an alert view, for when we can't get a photo from the camera/library.");
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                       message:alertMsg
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [picker presentViewController:alert animated:YES completion:nil];
+        
+        return;
+    }
+
     ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
-    confirm.image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    confirm.image = originalImage;
     confirm.metadata = [info objectForKey:UIImagePickerControllerMediaMetadata];
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationAddPhoto
