@@ -239,11 +239,13 @@ static UIImage *briefcase;
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    [self.tableView beginUpdates];
+    // skip reload animation
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    [self.tableView endUpdates];
+    // skip reload animation
+    
+    [self.tableView reloadData];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller
@@ -252,30 +254,7 @@ static UIImage *briefcase;
      forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath {
     
-    switch (type) {
-        case NSFetchedResultsChangeInsert:
-            [self.tableView insertRowsAtIndexPaths:@[ newIndexPath ]
-                                  withRowAnimation:UITableViewRowAnimationAutomatic];
-            break;
-            
-        case NSFetchedResultsChangeDelete:
-            [self.tableView deleteRowsAtIndexPaths:@[ indexPath ]
-                                  withRowAnimation:UITableViewRowAnimationAutomatic];
-            break;
-            
-        case NSFetchedResultsChangeUpdate:
-            [self.tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                  withRowAnimation:UITableViewRowAnimationNone];
-            break;
-            
-        case NSFetchedResultsChangeMove:
-            [self.tableView moveRowAtIndexPath:indexPath
-                                   toIndexPath:newIndexPath];
-            break;
-            
-        default:
-            break;
-    }
+    // skip reload animation
 }
 
 #pragma mark - Fetched Results Controller helper
