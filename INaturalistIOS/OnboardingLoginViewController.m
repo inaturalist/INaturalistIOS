@@ -334,7 +334,7 @@
     if (self.textfieldStackView.arrangedSubviews.count == 3) {
         [self.textfieldStackView removeArrangedSubview:self.emailField];
         self.emailField.hidden = YES;
-        self.usernameField.placeholder = @"Username or email";
+        self.usernameField.placeholder = NSLocalizedString(@"Username or email", @"users can login with their username or their email address.");
         
         [self.iNatAuthStackView insertArrangedSubview:self.forgotButton
                                               atIndex:2];
@@ -352,7 +352,7 @@
         [self.textfieldStackView insertArrangedSubview:self.emailField
                                                atIndex:0];
         self.emailField.hidden = NO;
-        self.usernameField.placeholder = @"Username";
+        self.usernameField.placeholder = NSLocalizedString(@"Username", @"The desired username during signup.");
 
         [self.iNatAuthStackView removeArrangedSubview:self.forgotButton];
         self.forgotButton.hidden = YES;
