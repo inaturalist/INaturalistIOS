@@ -99,17 +99,18 @@
                                person;
                            }),
                            ];
+    
     NSArray *fields = @[ self.emailField, self.passwordField, self.usernameField ];
     [fields enumerateObjectsUsingBlock:^(UITextField *field, NSUInteger idx, BOOL * _Nonnull stop) {
         field.tag = idx;
         field.leftView = ({
             UILabel *label = [UILabel new];
             
+            // pin the width for padding
+            [label.widthAnchor constraintEqualToConstant:36.0f].active = YES;
             label.textAlignment = NSTextAlignmentCenter;
-            label.frame = CGRectMake(0, 0, 60, 44);
-            
             label.attributedText = [self.leftViewIcons[idx] attributedString];
-            
+                        
             label;
         });
         field.leftViewMode = UITextFieldViewModeAlways;
@@ -333,6 +334,7 @@
     if (self.textfieldStackView.arrangedSubviews.count == 3) {
         [self.textfieldStackView removeArrangedSubview:self.emailField];
         self.emailField.hidden = YES;
+        self.usernameField.placeholder = @"Username or email";
         
         [self.iNatAuthStackView insertArrangedSubview:self.forgotButton
                                               atIndex:2];
@@ -341,6 +343,8 @@
         self.titleLabel.text = NSLocalizedString(@"Log In", nil);
         [self.actionButton setTitle:NSLocalizedString(@"Log In", nil)
                            forState:UIControlStateNormal];
+        
+        
         self.licenseStackView.hidden = YES;
         self.passwordField.rightViewMode = UITextFieldViewModeUnlessEditing;
         [self.switchContextButton setContext:LoginContextLogin];
@@ -348,7 +352,8 @@
         [self.textfieldStackView insertArrangedSubview:self.emailField
                                                atIndex:0];
         self.emailField.hidden = NO;
-        
+        self.usernameField.placeholder = @"Username";
+
         [self.iNatAuthStackView removeArrangedSubview:self.forgotButton];
         self.forgotButton.hidden = YES;
         
