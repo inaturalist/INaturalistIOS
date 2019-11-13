@@ -156,5 +156,23 @@
 		<key>baseUrl</key>
 		<string>https://www.inaturalist.org</string>
 	</dict>
+	<dict>
+		<key>logoName</key>
+		<string>network_logo_ar</string>
+		<key>countryName</key>
+		<string>Argentina</string>
+		<key>identifier</key>
+		<string>16</string>
+		<key>name</key>
+		<string>ArgentiNat</string>
+		<key>shortName</key>
+		<string>ArgentiNat</string>
+		<key>baseUrl</key>
+		<string>https://www.argentinat.org</string>
+		<key>mobileCountryCodes</key>
+		<array>
+			<string>722</string>
+		</array>
+	</dict>
 </array>
 </plist>
