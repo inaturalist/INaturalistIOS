@@ -11,7 +11,7 @@
 @interface Partner : NSObject
 
 @property NSString *name;
-// see http://www.itu.int/dms_pub/itu-t/opb/sp/T-SP-E.212A-2012-PDF-E.pdf
+// see https://www.itu.int/dms_pub/itu-t/opb/sp/T-SP-E.212A-2017-PDF-E.pdf
 @property NSArray *mobileCountryCodes;
 @property NSURL *baseURL;
 @property NSInteger identifier;
