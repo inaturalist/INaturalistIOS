@@ -143,6 +143,8 @@
 
 - (void)configureApplication {
     
+    [self configureRestKit];
+    
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
 	config.schemaVersion = 14;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
@@ -205,9 +207,7 @@
     [self configureOAuth2Client];
     
     [self configureGlobalStyles];
-    
-    [self configureRestKit];
-    
+        
     // on every launch, do some housekeeping of deleted records
     [self cleanupDeletedRecords];
     
