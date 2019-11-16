@@ -144,9 +144,7 @@
 - (void)configureApplication {
     
     [self configureOAuth2Client];
-    
-    [self configureGlobalStyles];
-    
+    [self configureGlobalStyles];    
     [self configureRestKit];
 
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
