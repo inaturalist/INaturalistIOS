@@ -143,8 +143,12 @@
 
 - (void)configureApplication {
     
-    [self configureRestKit];
+    [self configureOAuth2Client];
     
+    [self configureGlobalStyles];
+    
+    [self configureRestKit];
+
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
 	config.schemaVersion = 14;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
@@ -193,6 +197,7 @@
             // migrate old core data guides to realm
             for (Guide *g in [Guide allObjects]) {
                 id value = [ExploreGuideRealm valueForCoreDataModel:g];
+                
                 @try {
                     [migration createObject:ExploreGuideRealm.className withValue:value];
                 } @catch (NSException *exception) {
@@ -204,10 +209,6 @@
     };
     [RLMRealmConfiguration setDefaultConfiguration:config];
     
-    [self configureOAuth2Client];
-    
-    [self configureGlobalStyles];
-        
     // on every launch, do some housekeeping of deleted records
     [self cleanupDeletedRecords];
     
