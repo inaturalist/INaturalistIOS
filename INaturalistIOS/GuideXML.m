@@ -6,8 +6,6 @@
 //  Copyright (c) 2013 iNaturalist. All rights reserved.
 //
 
-#import <RestKit/RestKit.h>
-
 #import "GuideXML.h"
 #import "RXMLElement+Helpers.h"
 
@@ -39,10 +37,12 @@
 + (void)setupFilesystem
 {
     NSString *dirPath = GuideXML.dirPath;
-    NSDictionary *staticResourcePathMappings = [NSDictionary dictionaryWithKeysAndObjects:
-                                             [NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"bootstrap.min.css"],
-                                             [dirPath stringByAppendingPathComponent:@"bootstrap.min.css"],
-                                             nil];
+    
+    NSDictionary *staticResourcePathMappings = @{
+        [NSBundle.mainBundle.bundlePath stringByAppendingPathComponent:@"bootstrap.min.css"]:
+        [dirPath stringByAppendingPathComponent:@"bootstrap.min.css"],
+    };
+
     NSFileManager *fm = [NSFileManager defaultManager];
     if (![fm fileExistsAtPath:GuideXML.dirPath]) {
         [fm createDirectoryAtPath:dirPath withIntermediateDirectories:YES attributes:nil error:nil];

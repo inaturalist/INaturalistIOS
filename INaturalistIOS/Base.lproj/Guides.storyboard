@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="U2b-ia-MFn">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="U2b-ia-MFn">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -37,11 +37,11 @@
                                 <rect key="frame" x="0.0" y="28" width="375" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="s3l-Ch-o5M" id="ZY1-1b-UZ9">
-                                    <rect key="frame" x="0.0" y="0.0" width="347.5" height="54"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="348" height="54"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="twx-bI-0kX">
-                                            <rect key="frame" x="5" y="5" width="337.5" height="44"/>
+                                            <rect key="frame" x="5" y="5" width="338" height="44"/>
                                             <subviews>
                                                 <view tag="1" contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="dOX-rj-1R5" customClass="UIImageView">
                                                     <rect key="frame" x="0.0" y="0.0" width="50" height="44"/>
@@ -52,7 +52,7 @@
                                                     </constraints>
                                                 </view>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="2" contentMode="left" text="Guide name" lineBreakMode="tailTruncation" numberOfLines="0" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="349-K6-4Od">
-                                                    <rect key="frame" x="55" y="0.0" width="282.5" height="44"/>
+                                                    <rect key="frame" x="55" y="0.0" width="283" height="44"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -69,16 +69,8 @@
                             </tableViewCell>
                         </prototypes>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="" id="oD3-aX-8WV"/>
-                    <navigationItem key="navigationItem" title="Guides" id="hhs-MN-AbZ">
-                        <barButtonItem key="rightBarButtonItem" systemItem="search" id="Brt-Lb-xFL">
-                            <connections>
-                                <action selector="tappedSearch:" destination="T0F-Pj-PEA" id="1qK-Au-v8w"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Guides" id="hhs-MN-AbZ"/>
                     <connections>
-                        <outlet property="searchButton" destination="Brt-Lb-xFL" id="hba-vm-p90"/>
                         <segue destination="Fem-T6-s3n" kind="show" identifier="GuideDetailSegue" id="hpf-2r-2cJ"/>
                     </connections>
                 </tableViewController>

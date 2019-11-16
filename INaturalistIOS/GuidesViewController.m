@@ -8,10 +8,8 @@
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
-#import <RestKit/RestKit.h>
 
 #import "GuidesViewController.h"
-#import "Guide.h"
 #import "GuideXML.h"
 #import "GuideCollectionViewController.h"
 #import "GuideViewController.h"
@@ -25,6 +23,9 @@
 #import "OnboardingLoginViewController.h"
 #import "INatReachability.h"
 #import "ExploreUserRealm.h"
+#import "GuidesAPI.h"
+#import "ExploreGuide.h"
+#import "ExploreGuideRealm.h"
 
 static const int GuideCellImageTag = 1;
 static const int GuideCellTitleTag = 2;
@@ -32,56 +33,54 @@ static const int GuideCellTitleTag = 2;
 static const int ListControlIndexUser = 0;
 static const int ListControlIndexNearby = 1;
 
-@interface GuidesViewController () <RKRequestDelegate, RKObjectLoaderDelegate, UISearchResultsUpdating>
+@interface GuidesViewController () <UISearchResultsUpdating>
 @property UISearchController *searchController;
-@property NSArray *cachedGuides;
-@property BOOL guidesFilterHasChanged;
+@property RLMResults *userRealmGuides;
 @end
 
 @implementation GuidesViewController
 
+- (GuidesAPI *)guidesApi {
+    static GuidesAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[GuidesAPI alloc] init];
+    });
+    return _api;
+}
+
 - (NSArray *)guides {
-    if (self.guidesFilterHasChanged) {
-        self.cachedGuides = nil;
-        self.guidesFilterHasChanged = FALSE;
-    }
-    
-    if (self.cachedGuides) {
-        return self.cachedGuides;
-    }
-    
     if (self.searchController.isActive && self.searchController.searchBar.text.length > 0) {
-        // show searched guide
-        self.cachedGuides = [self filteredGuides:self.searchController.searchBar.text];
+        return [self filteredGuides:self.searchController.searchBar.text];
     } else {
         // show guides for selected context
         switch (self.listControl.selectedSegmentIndex) {
             case ListControlIndexUser:
-                self.cachedGuides = [self userGuides];
+                return [self userGuides];
                 break;
             case ListControlIndexNearby:
-                self.cachedGuides = [self nearbyGuides];
+                return [self nearbyGuides];
                 break;
             default:
-                self.cachedGuides = @[];
+                return nil;
                 break;
         }
     }
-    
-    return self.cachedGuides;
 }
 
-- (NSArray *)titleSortDescriptors {
+- (NSArray <RLMSortDescriptor *> *)titleSortDescriptors {
     return @[
-        [NSSortDescriptor sortDescriptorWithKey:@"title"
-                                      ascending:YES],
+        [RLMSortDescriptor sortDescriptorWithKeyPath:@"title"
+                                           ascending:YES],
     ];
 }
 
 - (NSArray *)filteredGuides:(NSString *)searchTerm {
-    NSArray *guides = [Guide objectsWithPredicate:[NSPredicate predicateWithFormat:@"title contains[c] %@",
-                                                       searchTerm]];
-    return [guides sortedArrayUsingDescriptors:[self titleSortDescriptors]];
+    NSPredicate *titleSearchPredicate = [NSPredicate predicateWithFormat:@"title contains[c] %@", searchTerm];
+    RLMResults *results = [ExploreGuideRealm objectsWithPredicate:titleSearchPredicate];
+    RLMResults *sortedResults = [results sortedResultsUsingDescriptors:[self titleSortDescriptors]];
+    // convert RLMResults to array
+    return [sortedResults valueForKey:@"self"];
 }
 
 - (NSArray *)userGuides {
@@ -90,72 +89,83 @@ static const int ListControlIndexNearby = 1;
     if (me) {
         NSPredicate *userGuidePredicate = [NSPredicate predicateWithFormat:@"userLogin = %@ OR ngzDownloadedAt != nil",
                                            me.login];
-        NSArray *guides = [Guide objectsWithPredicate:userGuidePredicate];
-        return [guides sortedArrayUsingDescriptors:[self titleSortDescriptors]];
+        RLMResults *results = [ExploreGuideRealm objectsWithPredicate:userGuidePredicate];
+        RLMResults *sortedResults =  [results sortedResultsUsingDescriptors:[self titleSortDescriptors]];
+        // convert RLMResults to array
+        return [sortedResults valueForKey:@"self"];
     } else {
-        return @[ ];
+        return nil;
     }
 }
 
 - (NSArray *)nearbyGuides {
-    NSFetchRequest *request = [Guide fetchRequest];
-    request.predicate = [NSPredicate predicateWithFormat:@"latitude != nil && longitude != nil"];
-    request.fetchLimit = 500;
-    NSArray *unsortedGuides = [Guide objectsWithFetchRequest:request];
-    NSMutableArray *guides = [NSMutableArray arrayWithArray:[unsortedGuides sortedArrayUsingComparator:^NSComparisonResult(Guide *p1, Guide *p2) {
-        CLLocation *p1Location = [[CLLocation alloc] initWithLatitude:p1.latitude.doubleValue
-                                                            longitude:p1.longitude.doubleValue];
-        CLLocation *p2Location = [[CLLocation alloc] initWithLatitude:p2.latitude.doubleValue
-                                                            longitude:p2.longitude.doubleValue];
+    NSPredicate *validLocationPredicate = [NSPredicate predicateWithFormat:@"latitude != %f && longitude != %f",
+                                           kCLLocationCoordinate2DInvalid.latitude,
+                                           kCLLocationCoordinate2DInvalid.longitude];
+    
+    RLMResults *candidates = [ExploreGuideRealm objectsWithPredicate:validLocationPredicate];
+    // convert RLMResults to array, realm has no way to sort using computed values
+    NSArray *unsortedGuides = [candidates valueForKey:@"self"];
+    
+    
+    NSMutableArray *guides = [[unsortedGuides sortedArrayUsingComparator:^NSComparisonResult(ExploreGuideRealm *p1, ExploreGuideRealm *p2) {
+        CLLocation *p1Location = [[CLLocation alloc] initWithLatitude:p1.latitude
+                                                            longitude:p1.longitude];
+        CLLocation *p2Location = [[CLLocation alloc] initWithLatitude:p2.latitude
+                                                            longitude:p2.longitude];
         NSNumber *p1Distance = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:p1Location]];
         NSNumber *p2Distance = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:p2Location]];
         return [p1Distance compare:p2Distance];
-    }]];
-    [guides filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(Guide *p, NSDictionary *bindings) {
-        CLLocation *loc = [[CLLocation alloc] initWithLatitude:p.latitude.doubleValue
-                                                     longitude:p.longitude.doubleValue];
+    }] mutableCopy];
+    [guides filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(ExploreGuideRealm *p, NSDictionary *bindings) {
+        CLLocation *loc = [[CLLocation alloc] initWithLatitude:p.latitude
+                                                     longitude:p.longitude];
         NSNumber *d = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:loc]];
         return d.doubleValue < 500000; // meters
     }]];
+    
     return [NSArray arrayWithArray:guides];
 }
 
 #pragma mark - sync* methods fetch from inaturalist.org
 
 - (void)syncNearbyGuides {
-    NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    NSString *url =[NSString stringWithFormat:@"/guides.json?latitude=%f&longitude=%f&locale=%@-%@",
-                    self.lastLocation.coordinate.latitude,
-                    self.lastLocation.coordinate.longitude,
-                    language,
-                    countryCode];
-    
-    [self syncGuidesWithPath:url];
-}
-
-- (void)syncUserGuides {
-	INaturalistAppDelegate *delegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    ExploreUserRealm *me = [delegate.loginController meUserLocal];
-	if (me) {
-    	NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    	NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    	NSString *url =[NSString stringWithFormat:@"/guides/user/%@.json?locale=%@-%@",
-                    	me.login, language, countryCode];
-    	[self syncGuidesWithPath:url];
+    if (self.lastLocation) {
+        __weak typeof(self) weakSelf = self;
+        [[self guidesApi] guidesNearLocation:self.lastLocation.coordinate
+                                     handler:^(NSArray *results, NSInteger count, NSError *error) {
+            
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            for (ExploreGuide *eg in results) {
+                id value = [ExploreGuideRealm valueForMantleModel:eg];
+                [realm beginWriteTransaction];
+                [ExploreGuideRealm createOrUpdateInRealm:realm withValue:value];
+                [realm commitWriteTransaction];
+            }
+            [weakSelf.tableView reloadData];
+        }];
     } else {
         [self syncFinished];
     }
 }
 
-- (void)syncGuidesWithPath:(NSString *)urlString {
-    [[Analytics sharedClient] debugLog:@"Network - Sync guides"];
-    RKObjectManager *objectManager = [RKObjectManager sharedManager];
-    [objectManager loadObjectsAtResourcePath:urlString
-                                  usingBlock:^(RKObjectLoader *loader) {
-                                      loader.delegate = self;
-                                      loader.objectMapping = [Guide mapping];
-                                  }];
+- (void)syncUserGuides {
+	INaturalistAppDelegate *delegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+	if (delegate.loginController.isLoggedIn) {
+        __weak typeof(self) weakSelf = self;
+        [[self guidesApi] guidesForLoggedInUserHandler:^(NSArray *results, NSInteger count, NSError *error) {
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            for (ExploreGuide *eg in results) {
+                id value = [ExploreGuideRealm valueForMantleModel:eg];
+                [realm beginWriteTransaction];
+                [ExploreGuideRealm createOrUpdateInDefaultRealmWithValue:value];
+                [realm commitWriteTransaction];
+            }
+            [weakSelf.tableView reloadData];
+        }];
+    } else {
+        [self syncFinished];
+    }
 }
 
 - (void)syncFinished {
@@ -204,33 +214,16 @@ static const int ListControlIndexNearby = 1;
 }
 
 - (void)changedSelection {
-    self.guidesFilterHasChanged = YES;
     [self.tableView reloadData];
-}
-
-- (UIBarButtonItem *)syncActivityItem {
-    if (!_syncActivityItem) {
-        UIActivityIndicatorView *aiv = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(0, 0, 34, 25)];
-        aiv.color = [UIColor inatTint];
-        [aiv startAnimating];
-        _syncActivityItem = [[UIBarButtonItem alloc] initWithCustomView:aiv];
-    }
-    return _syncActivityItem;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"GuideDetailSegue"]) {
         GuideViewController *vc = [segue destinationViewController];
-        Guide *g;
-        if ([sender isKindOfClass:Guide.class]) {
-            g = (Guide *)sender;
-        } else {
-            g = [self.guides
-                          objectAtIndex:[[self.tableView
-                                          indexPathForSelectedRow] row]];
-        }
-        GuideXML *gx = [[GuideXML alloc] initWithIdentifier:[g.recordID stringValue]];
-        gx.xmlURL =[[NSURL URLWithString:[NSString stringWithFormat:@"/guides/%@.xml", g.recordID]
+        ExploreGuideRealm *g = [self.guides objectAtIndex:[[self.tableView indexPathForSelectedRow] row]];
+        NSString *guideIdString = [NSString stringWithFormat:@"%ld", (long)g.guideId];
+        GuideXML *gx = [[GuideXML alloc] initWithIdentifier:guideIdString];
+        gx.xmlURL =[[NSURL URLWithString:[NSString stringWithFormat:@"/guides/%ld.xml", (long)g.guideId]
                            relativeToURL:[NSURL inat_baseURL]] absoluteString];
         vc.guide = gx;
         vc.title = g.title;
@@ -288,16 +281,24 @@ static const int ListControlIndexNearby = 1;
         self.locationManager.distanceFilter = 1000;
     }
     
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+
     // try to sync nearby guides automatically
     if ([[INatReachability sharedClient] isNetworkReachable]) {
-        self.navigationItem.rightBarButtonItem = self.syncActivityItem;
         [self nearbyGuides];
 
         // if the user is logged in, try to sync user guides automatically
-        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         if ([appDelegate.loginController isLoggedIn]) {
             [self syncUserGuides];
         }
+    }
+    
+    // setup user guides
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+    if (me) {
+        NSPredicate *userGuidePredicate = [NSPredicate predicateWithFormat:@"userLogin = %@ OR ngzDownloadedAt != nil",
+                                           me.login];
+        self.userRealmGuides = [ExploreGuideRealm objectsWithPredicate:userGuidePredicate];
     }
 }
 
@@ -341,10 +342,6 @@ static const int ListControlIndexNearby = 1;
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
-- (void)dealloc {
-    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
-}
-
 #pragma mark - button targets
 
 - (IBAction)tappedSearch:(id)sender {
@@ -368,13 +365,13 @@ static const int ListControlIndexNearby = 1;
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
-    Guide *p = [self.guides objectAtIndex:[indexPath row]];
+    ExploreGuideRealm *guide = [self.guides objectAtIndex:[indexPath row]];
     UIImageView *imageView = (UIImageView *)[cell viewWithTag:GuideCellImageTag];
     [imageView cancelImageDownloadTask];
     UILabel *title = (UILabel *)[cell viewWithTag:GuideCellTitleTag];
-    title.text = p.title;
+    title.text = guide.title;
     title.textAlignment = NSTextAlignmentNatural;
-    [imageView setImageWithURL:[NSURL URLWithString:p.iconURL]
+    [imageView setImageWithURL:guide.iconURL
               placeholderImage:[UIImage inat_defaultGuideImage]];
     
     return cell;
@@ -439,108 +436,25 @@ static const int ListControlIndexNearby = 1;
 }
 
 #pragma mark - GuideViewControllerDelegate
-- (void)guideViewControllerDownloadedNGZForGuide:(GuideXML *)guide
-{
-    Guide *g = [Guide objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %@", guide.identifier]];
+- (void)guideViewControllerDownloadedNGZForGuide:(GuideXML *)guide {
+    ExploreGuideRealm *g = [ExploreGuideRealm objectForPrimaryKey:@( [[guide identifier] integerValue])];
     if (g) {
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
         g.ngzDownloadedAt = guide.ngzDownloadedAt;
-        [g save];
+        [realm commitWriteTransaction];
+        [self.tableView reloadData];
     }
 }
 
-- (void)guideViewControllerDeletedNGZForGuide:(GuideXML *)guide
-{
-    Guide *g = [Guide objectWithPredicate:[NSPredicate predicateWithFormat:@"recordID = %@", guide.identifier]];
+- (void)guideViewControllerDeletedNGZForGuide:(GuideXML *)guide {
+    ExploreGuideRealm *g = [ExploreGuideRealm objectForPrimaryKey:@( [[guide identifier] integerValue])];
     if (g) {
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
         g.ngzDownloadedAt = nil;
-        [g save];
-    }
-}
-
-#pragma mark - RKRequest and RKObjectLoader delegates
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    [self syncFinished];
-    
-    // KLUDGE!! RestKit doesn't seem to handle failed auth very well
-    BOOL jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
-    BOOL authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
-    NSString *errorMsg = error.localizedDescription;
-    
-    if (jsonParsingError || authFailure) {
-        [self presentSignupPrompt:nil];
-    } else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                                       message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
-    NSDate *now = [NSDate date];
-    for (INatModel *o in objects) {
-        Guide *g = (Guide *)o;
-        [g setSyncedAt:now];
-    }
-    
-    NSDate *yesterday = [now dateByAddingTimeInterval:-86400];
-    NSPredicate *pred = [NSPredicate predicateWithFormat:@"syncedAt < %@ AND ngzDownloadedAt == nil",
-                         yesterday];
-    
-    NSArray *rejects = [Guide objectsWithPredicate:pred];
-    
-    for (Guide *g in rejects) {
-        [g deleteEntity];
-    }
-    
-    NSError *error = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    if (error) {
-        NSString *logMsg = [NSString stringWithFormat:@"SAVE ERROR: %@",
-                            error.localizedDescription];
-        [[Analytics sharedClient] debugLog:logMsg];
-    }
-    
-    [self syncFinished];
-    
-    self.guidesFilterHasChanged = YES;
-    [self.tableView reloadData];
-}
-
-- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
-    bool authFailure = false;
-    NSString *errorMsg;
-    switch (response.statusCode) {
-        case 401:
-            // Unauthorized
-            authFailure = true;
-            break;
-        case 422:
-            // UNPROCESSABLE ENTITY
-            
-            errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
-            break;
-        default:
-            return;
-            break;
-    }
-    
-    if (authFailure) {
-        [self syncFinished];
-        [self presentSignupPrompt:nil];
-    } else if (errorMsg) {
-        [self syncFinished];
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                                       message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
+        [realm commitWriteTransaction];
+        [self.tableView reloadData];
     }
 }
 
@@ -548,16 +462,22 @@ static const int ListControlIndexNearby = 1;
 
 -(void)updateSearchResultsForSearchController:(UISearchController *)searchController {
     // show local results
-    self.guidesFilterHasChanged = YES;
     [self.tableView reloadData];
     
     // fetch remote results
     if (self.searchController.searchBar.text.length > 1) {
-        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-        NSString *path = [NSString stringWithFormat:@"/guides/search?locale=%@-%@&q=%@",
-                          language, countryCode, self.searchController.searchBar.text];
-        [self syncGuidesWithPath:path];
+        __weak typeof(self) weakSelf = self;
+        [[self guidesApi] guidesMatching:self.searchController.searchBar.text
+                                 handler:^(NSArray *results, NSInteger count, NSError *error) {
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            for (ExploreGuide *eg in results) {
+                id value = [ExploreGuideRealm valueForMantleModel:eg];
+                [realm beginWriteTransaction];
+                [ExploreGuideRealm createOrUpdateInRealm:realm withValue:value];
+                [realm commitWriteTransaction];
+            }
+            [weakSelf.tableView reloadData];
+        }];
     }
 }
 

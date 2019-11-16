@@ -239,6 +239,10 @@
 		FAA851911C2368030012C09D /* ObsCenteredLabelCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA851901C2368030012C09D /* ObsCenteredLabelCell.m */; };
 		FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CC1B13989D00366521 /* RoundedButtonCell.m */; };
 		FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CF1B1428C200366521 /* CheckboxCell.m */; };
+		FAB0B8E5237CE4E800E73681 /* ExploreGuide.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB0B8E4237CE4E800E73681 /* ExploreGuide.m */; };
+		FAB0B8E8237F17DE00E73681 /* GuidesAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB0B8E7237F17DE00E73681 /* GuidesAPI.m */; };
+		FAB0B8EB237F1B0300E73681 /* INatRailsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB0B8EA237F1B0300E73681 /* INatRailsAPI.m */; };
+		FAB0B8EE237F37C000E73681 /* ExploreGuideRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB0B8ED237F37C000E73681 /* ExploreGuideRealm.m */; };
 		FAB6214C1D73830E0026FDC6 /* IconAndTextControl.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */; };
 		FAB6214D1D7397A70026FDC6 /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAB6214F1D7397A70026FDC6 /* Onboarding.storyboard */; };
 		FAB7028821431BD600462F62 /* UIViewController+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB7028721431BD600462F62 /* UIViewController+INaturalist.m */; };
@@ -868,6 +872,14 @@
 		FAA872CC1B13989D00366521 /* RoundedButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundedButtonCell.m; sourceTree = "<group>"; };
 		FAA872CE1B1428C200366521 /* CheckboxCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckboxCell.h; sourceTree = "<group>"; };
 		FAA872CF1B1428C200366521 /* CheckboxCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckboxCell.m; sourceTree = "<group>"; };
+		FAB0B8E3237CE4E800E73681 /* ExploreGuide.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreGuide.h; sourceTree = "<group>"; };
+		FAB0B8E4237CE4E800E73681 /* ExploreGuide.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreGuide.m; sourceTree = "<group>"; };
+		FAB0B8E6237F17DE00E73681 /* GuidesAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GuidesAPI.h; sourceTree = "<group>"; };
+		FAB0B8E7237F17DE00E73681 /* GuidesAPI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GuidesAPI.m; sourceTree = "<group>"; };
+		FAB0B8E9237F1B0300E73681 /* INatRailsAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = INatRailsAPI.h; sourceTree = "<group>"; };
+		FAB0B8EA237F1B0300E73681 /* INatRailsAPI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = INatRailsAPI.m; sourceTree = "<group>"; };
+		FAB0B8EC237F37C000E73681 /* ExploreGuideRealm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreGuideRealm.h; sourceTree = "<group>"; };
+		FAB0B8ED237F37C000E73681 /* ExploreGuideRealm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreGuideRealm.m; sourceTree = "<group>"; };
 		FAB1FCA621405712001CE431 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		FAB1FCA721405713001CE431 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		FAB1FCA821405713001CE431 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Projects.strings; sourceTree = "<group>"; };
@@ -1863,6 +1875,8 @@
 				FAFED1FB1DB5A2680015CCBA /* ExploreCommentRealm.m */,
 				FA8EBCE5230DE48400C1D789 /* ExploreDeletedRecord.h */,
 				FA8EBCE6230DE48400C1D789 /* ExploreDeletedRecord.m */,
+				FAB0B8EC237F37C000E73681 /* ExploreGuideRealm.h */,
+				FAB0B8ED237F37C000E73681 /* ExploreGuideRealm.m */,
 				FAFED1FD1DB5A2730015CCBA /* ExploreIdentificationRealm.h */,
 				FAFED1FE1DB5A2730015CCBA /* ExploreIdentificationRealm.m */,
 				FA427EF01ECD1794003B26C3 /* ExploreTaxonPhotoRealm.h */,
@@ -1884,6 +1898,8 @@
 				FA4E72B119FAC93400A9AB5D /* ExploreComment.m */,
 				FAA6EB091C8F820000F43552 /* ExploreFave.h */,
 				FAA6EB0A1C8F820000F43552 /* ExploreFave.m */,
+				FAB0B8E3237CE4E800E73681 /* ExploreGuide.h */,
+				FAB0B8E4237CE4E800E73681 /* ExploreGuide.m */,
 				FA4E72B219FAC93400A9AB5D /* ExploreIdentification.h */,
 				FA4E72B319FAC93400A9AB5D /* ExploreIdentification.m */,
 				FA4E72B419FAC93400A9AB5D /* ExploreLocation.h */,
@@ -1891,6 +1907,7 @@
 				FA4E72B619FAC93400A9AB5D /* ExploreObservation.h */,
 				FA4E72B719FAC93400A9AB5D /* ExploreObservation.m */,
 				FA4E72CA19FACD7700A9AB5D /* ExploreObservationPhoto.h */,
+				FAEF234F1C7D2DBA00208F44 /* IdentifierCount.h */,
 				FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */,
 				FA4E72BA19FAC93400A9AB5D /* ExploreProject.h */,
 				FA4E72BB19FAC93400A9AB5D /* ExploreProject.m */,
@@ -1904,7 +1921,6 @@
 				FAFED1F21DB595C10015CCBA /* ExploreUpdate.m */,
 				FACEEB261D1C607600B2EC62 /* ExploreUser.h */,
 				FACEEB271D1C607600B2EC62 /* ExploreUser.m */,
-				FAEF234F1C7D2DBA00208F44 /* IdentifierCount.h */,
 				FAEF23501C7D2DBA00208F44 /* IdentifierCount.m */,
 				FAEF23521C7D2DC300208F44 /* ObserverCount.h */,
 				FAEF23531C7D2DC300208F44 /* ObserverCount.m */,
@@ -1972,6 +1988,8 @@
 			children = (
 				FA99BDC91FD794E300C9D985 /* CommentsAPI.h */,
 				FA99BDCA1FD794E300C9D985 /* CommentsAPI.m */,
+				FAB0B8E6237F17DE00E73681 /* GuidesAPI.h */,
+				FAB0B8E7237F17DE00E73681 /* GuidesAPI.m */,
 				FADE67491FD7B2B400AB4F09 /* IdentificationsAPI.h */,
 				FADE674A1FD7B2B400AB4F09 /* IdentificationsAPI.m */,
 				FAEF23331C7D00A600208F44 /* INatAPI.h */,
@@ -1984,6 +2002,8 @@
 				FA9437821C869AA400CB10F3 /* ProjectsAPI.m */,
 				FA2552111D1F4D62005D2128 /* TaxaAPI.h */,
 				FA2552121D1F4D62005D2128 /* TaxaAPI.m */,
+				FAB0B8E9237F1B0300E73681 /* INatRailsAPI.h */,
+				FAB0B8EA237F1B0300E73681 /* INatRailsAPI.m */,
 			);
 			name = "iNat Node API";
 			sourceTree = "<group>";
@@ -2382,6 +2402,7 @@
 				FAEF233B1C7D091F00208F44 /* ProjectDetailSpeciesViewController.m in Sources */,
 				1927514414E9CCC9000ABAC4 /* main.m in Sources */,
 				FA6B45031BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m in Sources */,
+				FAB0B8E8237F17DE00E73681 /* GuidesAPI.m in Sources */,
 				FA9EBE4C1ED50767001FE4AD /* TaxonMapViewController.m in Sources */,
 				1927514814E9CCC9000ABAC4 /* INaturalistAppDelegate.m in Sources */,
 				FAEF23411C7D093900208F44 /* ProjectDetailIdentifiersViewController.m in Sources */,
@@ -2422,6 +2443,7 @@
 				190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */,
 				FAA6EB0B1C8F820000F43552 /* ExploreFave.m in Sources */,
 				1905716014FDFF49007FBE30 /* EditLocationViewController.m in Sources */,
+				FAB0B8E5237CE4E800E73681 /* ExploreGuide.m in Sources */,
 				FA4E72F419FACF1800A9AB5D /* ExploreObservationsController.m in Sources */,
 				1922D9A114FEBF58003778B2 /* CrossHairView.m in Sources */,
 				FA6D69551B069031000983F8 /* NSAttributedString+InatHelpers.m in Sources */,
@@ -2475,6 +2497,7 @@
 				FA2552101D1F49A8005D2128 /* ExploreTaxonRealm.m in Sources */,
 				FACACA121BFBB17D002223D7 /* ObsDetailV2ViewController.m in Sources */,
 				FA9BC3771B332BEC003375A2 /* NSURL+INaturalist.m in Sources */,
+				FAB0B8EB237F1B0300E73681 /* INatRailsAPI.m in Sources */,
 				195F3248151A8AB60019CB85 /* Taxon.m in Sources */,
 				195F324B151A8AF70019CB85 /* TaxonPhoto.m in Sources */,
 				FAFED1F31DB595C10015CCBA /* ExploreUpdate.m in Sources */,
@@ -2540,6 +2563,7 @@
 				FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */,
 				FA4C19641B30EE890066CA22 /* Partner.m in Sources */,
 				FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */,
+				FAB0B8EE237F37C000E73681 /* ExploreGuideRealm.m in Sources */,
 				FA4E730919FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m in Sources */,
 				FA69822D1B2F49C900D9BD0F /* UIImage+INaturalist.m in Sources */,
 				FACCEB411ED4E5B6009C9A19 /* TaxonPhotoPageViewController.m in Sources */,

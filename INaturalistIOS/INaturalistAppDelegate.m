@@ -47,6 +47,8 @@
 #import "UpdatesViewController.h"
 #import "INatReachability.h"
 #import "ExploreDeletedRecord.h"
+#import "Guide.h"
+#import "ExploreGuideRealm.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -142,7 +144,7 @@
 - (void)configureApplication {
     
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
-	config.schemaVersion = 13;
+	config.schemaVersion = 14;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
         if (oldSchemaVersion < 1) {
             // add searchable (ie diacritic-less) taxon names
@@ -184,6 +186,18 @@
                     [migration deleteObject:newObject];
                 }
             }];
+        }
+        if (oldSchemaVersion < 14) {
+            // migrate old core data guides to realm
+            for (Guide *g in [Guide allObjects]) {
+                id value = [ExploreGuideRealm valueForCoreDataModel:g];
+                @try {
+                    [migration createObject:ExploreGuideRealm.className withValue:value];
+                } @catch (NSException *exception) {
+                    // not the end of the world if this migration fails
+                    continue;
+                }
+            }
         }
     };
     [RLMRealmConfiguration setDefaultConfiguration:config];

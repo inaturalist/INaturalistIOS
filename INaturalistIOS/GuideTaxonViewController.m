@@ -10,7 +10,6 @@
 #import <MHVideoPhotoGallery/MHGallery.h>
 #import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
-#import <RestKit/RestKit.h>
 
 #import "GuideTaxonViewController.h"
 #import "Observation.h"

@@ -20,6 +20,9 @@ typedef void(^INatAPIFetchCompletionCountHandler)(NSArray *results, NSInteger co
 - (void)fetch:(NSString *)path classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)delete:(NSString *)path handler:(INatAPIFetchCompletionCountHandler)done;
 
+- (void)requestMethod:(NSString *)method path:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)extractObjectsFromData:(NSData *)data classMapping:(Class)ClassForMapping handler:(INatAPIFetchCompletionCountHandler)done;
+
 - (NSString *)apiBaseUrl;
 
 @end
