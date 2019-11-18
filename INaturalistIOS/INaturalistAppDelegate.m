@@ -196,18 +196,14 @@
             for (Guide *g in [Guide allObjects]) {
                 id value = [ExploreGuideRealm valueForCoreDataModel:g];
                 if (!value) {
-                    NSLog(@"couldn't get value for guide %@", g);
-                    
+                    // not the end of the world if we can't migrate a core data guide
                     continue;
                 }
                 
                 @try {
-                    
                     [migration createObject:ExploreGuideRealm.className withValue:value];
                 } @catch (NSException *exception) {
                     // not the end of the world if this migration fails
-                    NSLog(@"exception is %@", exception);
-                    
                     continue;
                 }
             }
