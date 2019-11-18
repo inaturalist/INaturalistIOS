@@ -13,7 +13,6 @@
 #import "GuideTaxonViewController.h"
 #import "GuideViewController.h"
 #import "RXMLElement+Helpers.h"
-#import "SWRevealViewController.h"
 #import "GuidePageViewController.h"
 #import "INaturalistAppDelegate.h"
 #import "UIColor+INaturalist.h"
@@ -30,6 +29,7 @@ static const int GutterWidth  = 5;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+        
     [GuideXML setupFilesystem];
     if (!self.guide) {
         if (self.guideXMLPath) {
@@ -77,10 +77,7 @@ static const int GutterWidth  = 5;
     // the collectionview wants to sit under the status bar, but we don't want that
     // since we're adding a search bar
     self.collectionView.contentInset = UIEdgeInsetsMake(40.0, 0.0, 0.0, 0.0);
-    
-    SWRevealViewController *revealController = [self revealViewController];
-    [self.view addGestureRecognizer:revealController.panGestureRecognizer];
-    
+        
     if (!self.tags) {
         self.tags = [[NSMutableArray alloc] init];
     }
@@ -455,18 +452,13 @@ static const int GutterWidth  = 5;
     }
 }
 
-- (void)tintMenuButton
-{
-    UIBarButtonItem *button = self.revealViewController.navigationItem.rightBarButtonItem;
+- (void)tintMenuButton {
+    UIBarButtonItem *button = self.parentViewController.navigationItem.rightBarButtonItem;
     if (button) {
         if (self.tags.count > 0) {
             [button setTintColor:[UIColor inatTint]];
         } else {
-            if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-                [button setTintColor:[UIColor blackColor]];
-            } else {
-                [button setTintColor:[UIColor clearColor]];
-            }
+            [button setTintColor:[UIColor blackColor]];
         }
     }
 }

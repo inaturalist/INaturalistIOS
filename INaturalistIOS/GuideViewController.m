@@ -20,24 +20,26 @@
     if (self.guide.title) {
         self.title = self.guide.title;
     }
+    
+    self.rightViewRevealWidth = UIScreen.mainScreen.bounds.size.width * 0.90;
 }
 
-- (void)prepareForSegue:(SWRevealViewControllerSegueSetController *)segue sender:(id)sender
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     NSString *identifier = segue.identifier;
-    if ( [segue isKindOfClass:[SWRevealViewControllerSegueSetController class]] && sender == nil ) {
-        if ( [identifier isEqualToString:SWSegueFrontIdentifier] ) {
+    if ([segue isKindOfClass:[PBRevealViewControllerSegueSetController class]] && sender == nil) {
+        if ( [identifier isEqualToString:PBSegueMainIdentifier] ) {
             GuideCollectionViewController *vc = (GuideCollectionViewController *)segue.destinationViewController;
             vc.guide = self.guide;
-        } else if ( [identifier isEqualToString:SWSegueRightIdentifier] ) {
+        } else if ( [identifier isEqualToString:PBSegueRightIdentifier] ) {
             GuideMenuViewController *vc = (GuideMenuViewController *)segue.destinationViewController;
-            vc.delegate = (GuideCollectionViewController *)self.frontViewController;
+            vc.delegate = (GuideCollectionViewController *)self.mainViewController;
         }
     }
 }
 
 - (IBAction)clickedGuideMenuButton:(id)sender {
-    [self rightRevealToggleAnimated:YES];
+    [self revealRightView];
 }
 
 @end

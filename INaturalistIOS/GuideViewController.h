@@ -6,7 +6,8 @@
 //  Copyright (c) 2013 iNaturalist. All rights reserved.
 //
 
-#import "SWRevealViewController.h"
+#import <PBRevealViewController/PBRevealViewController.h>
+
 #import "GuideXML.h"
 
 @protocol GuideViewControllerDelegate <NSObject>
@@ -15,7 +16,7 @@
 - (void)guideViewControllerDeletedNGZForGuide:(GuideXML *)guide;
 @end
 
-@interface GuideViewController : SWRevealViewController
+@interface GuideViewController : PBRevealViewController
 @property (nonatomic, strong) GuideXML *guide;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *guideMenuButton;
 @property (nonatomic, weak) id <GuideViewControllerDelegate> guideDelegate;

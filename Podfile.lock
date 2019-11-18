@@ -175,6 +175,9 @@ PODS:
   - "NSData+Base64 (1.0.0)"
   - NSString_stripHtml (0.1.0)
   - NXOAuth2Client (1.2.8)
+  - PBRevealViewController (1.3.2):
+    - PBRevealViewController/ObjC (= 1.3.2)
+  - PBRevealViewController/ObjC (1.3.2)
   - PDKTStickySectionHeadersCollectionViewLayout (0.1)
   - RaptureXML (1.0.1)
   - Realm (3.20.0):
@@ -267,6 +270,7 @@ DEPENDENCIES:
   - MHVideoPhotoGallery (from `https://github.com/alexshepard/MHVideoPhotoGallery`, commit `0a343f12b60c8719a280db73b1e2b6d25fef164a`)
   - NSString_stripHtml (= 0.1.0)
   - NXOAuth2Client (= 1.2.8)
+  - PBRevealViewController
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
   - RaptureXML (= 1.0.1)
   - Realm (= 3.20.0)
@@ -331,6 +335,7 @@ SPEC REPOS:
     - "NSData+Base64"
     - NSString_stripHtml
     - NXOAuth2Client
+    - PBRevealViewController
     - PDKTStickySectionHeadersCollectionViewLayout
     - RaptureXML
     - Realm
@@ -433,6 +438,7 @@ SPEC CHECKSUMS:
   "NSData+Base64": 4e84902c4db907a15673474677e57763ef3903e4
   NSString_stripHtml: ba10acfb1c0f7f687055f8e4300a8a78e142f1ea
   NXOAuth2Client: 98c4d4c594edd2b289cfc34a8928653e1dab7adf
+  PBRevealViewController: 8532c1cc5837e7d9e1765f80567862a662c6e4e4
   PDKTStickySectionHeadersCollectionViewLayout: bedcfc09fa44ae3e232eab421c31286e3d2856ed
   RaptureXML: b5c33c04c1a4adfd8ad0d5463329a31820596e82
   Realm: 8b2ca5bc6479a91f379b6b42b5922e396cd5ba5a
@@ -453,6 +459,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 8a777be486c3d1e11ae7ce0788a3854b9a26bdc5
+PODFILE CHECKSUM: f79ef9aa8bee43ae09facc47da05c44934877b37
 
 COCOAPODS: 1.8.4

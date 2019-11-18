@@ -31,6 +31,7 @@ target :iNaturalist do
   pod 'YLProgressBar', '3.9.0'
   pod 'TapkuLibrary', '0.3.8'
   pod 'SWRevealViewController', '2.3.0'
+  pod 'PBRevealViewController'
   pod 'RestKit', '0.10.3'
   pod 'RestKit/Testing', '0.10.3'
   pod 'SDWebImage', '4.0.0'

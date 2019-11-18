@@ -263,13 +263,15 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 
     NSString *tag = [self tagForIndexPath:indexPath];
     if (tag && self.delegate) {
         [self.delegate guideMenuControllerAddedFilterByTag:tag];
         return;
     }
+    
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+
     NSInteger i = indexPath.section - self.tagPredicates.count;
     if (i == AboutSection && indexPath.row == DownloadRow) {
         if (self.guide.ngzDownloadedAt) {

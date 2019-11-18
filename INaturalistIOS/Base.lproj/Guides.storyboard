@@ -102,8 +102,8 @@
                     </navigationItem>
                     <connections>
                         <outlet property="guideMenuButton" destination="AT1-pc-Thc" id="6MS-Qu-Lq3"/>
-                        <segue destination="XGL-HN-Q4P" kind="custom" identifier="sw_front" customClass="SWRevealViewControllerSegueSetController" id="hw2-dQ-CCG"/>
-                        <segue destination="NeS-80-PMA" kind="custom" identifier="sw_right" customClass="SWRevealViewControllerSegueSetController" id="K3h-V5-eJa"/>
+                        <segue destination="XGL-HN-Q4P" kind="custom" identifier="pb_main" customClass="PBRevealViewControllerSegueSetController" id="hw2-dQ-CCG"/>
+                        <segue destination="NeS-80-PMA" kind="custom" identifier="pb_right" customClass="PBRevealViewControllerSegueSetController" id="K3h-V5-eJa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aok-6l-9vw" userLabel="First Responder" sceneMemberID="firstResponder"/>
