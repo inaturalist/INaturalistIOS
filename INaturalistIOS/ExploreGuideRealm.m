@@ -29,17 +29,27 @@
 + (NSDictionary *)valueForCoreDataModel:(Guide *)model {
     NSMutableDictionary *value = [NSMutableDictionary dictionary];
     
-    if (model.recordID) { value[@"guideId"] = model.recordID; }
-    if (model.title) { value[@"title"] = model.title; }
-    if (model.desc) { value[@"desc"] = model.desc; }
-    if (model.createdAt) { value[@"createdAt"] = model.createdAt; }
-    if (model.updatedAt) { value[@"updatedAt"] = model.updatedAt; }
-    if (model.iconURL) { value[@"iconUrlString"] = model.iconURL; }
-    if (model.taxonID) { value[@"taxonId"] = model.taxonID; }
-    if (model.latitude) { value[@"latitude"] = model.latitude; }
-    if (model.longitude) { value[@"longitude"] = model.longitude; }
-    if (model.ngzDownloadedAt) { value[@"ngsDownloadedAt"] = model.ngzDownloadedAt; }
+    // have to supply all values here, no nil options allowed
+    if (model.recordID) {
+        value[@"guideId"] = model.recordID;
+    } else {
+        // can't have a guide with no guide id
+        return nil;
+    }
     
+    // these values can be nil in the model
+    value[@"title"] = model.title;
+    value[@"desc"] = model.desc;
+    value[@"createdAt"] = model.createdAt;
+    value[@"updatedAt"] = model.updatedAt;
+    value[@"iconUrlString"] = model.iconURL;
+    value[@"ngzDownloadedAt"] = model.ngzDownloadedAt ?: nil;
+    
+    // primitive values can't be nil
+    value[@"taxonId"] = model.taxonID ?: @(0);
+    value[@"latitude"] = model.latitude ?: @(kCLLocationCoordinate2DInvalid.latitude);
+    value[@"longitude"] = model.longitude ?: @(kCLLocationCoordinate2DInvalid.longitude);
+        
     return [NSDictionary dictionaryWithDictionary:value];
 }
 
