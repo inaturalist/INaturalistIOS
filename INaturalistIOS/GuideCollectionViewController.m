@@ -8,7 +8,6 @@
 
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
-#import <RestKit/RestKit.h>
 
 #import "GuideCollectionViewController.h"
 #import "GuideTaxonViewController.h"
@@ -26,14 +25,6 @@ static const int CellLabelTag = 200;
 static const int GutterWidth  = 5;
 
 @implementation GuideCollectionViewController
-@synthesize guide = _guide;
-@synthesize guideXMLPath = _guideXMLPath;
-@synthesize guideXMLURL = _guideXMLURL;
-@synthesize scale = _scale;
-@synthesize sort = _sort;
-@synthesize searchBar = _searchBar;
-@synthesize search = _search;
-@synthesize tags = _tags;
 
 #pragma mark - UIViewController
 - (void)viewDidLoad

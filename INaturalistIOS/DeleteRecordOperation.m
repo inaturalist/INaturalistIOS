@@ -6,8 +6,6 @@
 //  Copyright © 2018 iNaturalist. All rights reserved.
 //
 
-#import <RestKit/RestKit.h>
-
 #import "DeleteRecordOperation.h"
 #import "NSURL+INaturalist.h"
 #import "ExploreDeletedRecord.h"
@@ -18,8 +16,6 @@
     // notify the delegate about the sync status
     dispatch_async(dispatch_get_main_queue(), ^{
         if (syncError) {
-            NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];
-            NSError *contextError = nil;
             ExploreDeletedRecord *dr = [ExploreDeletedRecord deletedRecordId:self.recordId withModelName:self.modelName];
             [self.delegate deleteSessionFailedFor:dr error:syncError];
         }

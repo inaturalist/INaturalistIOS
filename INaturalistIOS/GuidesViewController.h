@@ -13,7 +13,6 @@
 @interface GuidesViewController : UITableViewController <CLLocationManagerDelegate, GuideViewControllerDelegate>
 @property (nonatomic, strong) UISegmentedControl *listControl;
 @property (nonatomic, strong) UIBarButtonItem *listControlItem;
-@property (nonatomic, strong) UIBarButtonItem *syncActivityItem;
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, strong) CLLocation *lastLocation;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *searchButton;
