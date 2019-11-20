@@ -67,7 +67,6 @@ NSInteger INatMinPasswordLength = 6;
 
 - (void)logout {
     self.jwtToken = nil;
-    self.jwtTokenExpiration = nil;
 }
 
 #pragma mark - Facebook
@@ -607,7 +606,6 @@ didSignInForUser:(GIDGoogleUser *)user
             } else {
                 if ([json valueForKey:@"api_token"]) {
                     strongSelf.jwtToken = [json valueForKey:@"api_token"];
-                    strongSelf.jwtTokenExpiration = [NSDate date];
                     if (success) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             success(@{ tokenKey: strongSelf.jwtToken });
@@ -624,6 +622,41 @@ didSignInForUser:(GIDGoogleUser *)user
             }
         }
     }] resume];
+}
+
+- (NSDate *)jwtTokenExpiration {
+    if (!self.jwtToken) {
+        return nil;
+    }
+    
+    NSArray *jwtParts = [self.jwtToken componentsSeparatedByString:@"."];
+    if (jwtParts.count != 3) {
+        // invalid JWT
+        return nil;
+    }
+    NSString *payload = jwtParts[1];
+    
+    // jwt payload is base64 encoded json
+    NSData *data = [[NSData alloc] initWithBase64EncodedString:payload options:0];
+    if (!data) {
+        // payload is invalid base64
+        return nil;
+    }
+    
+    // now get the json inside the data
+    NSError *error = nil;
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data
+                                                         options:NSJSONReadingAllowFragments
+                                                           error:&error];
+    if (error || !dict) {
+        return nil;
+    }
+    
+    if (dict[@"exp"] == nil || [dict[@"exp"] doubleValue] == 0) {
+        return nil;
+    }
+    
+    return [NSDate dateWithTimeIntervalSince1970:[dict[@"exp"] doubleValue]];
 }
 
 - (NSString *)anonymousJWT {
