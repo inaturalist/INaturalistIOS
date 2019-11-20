@@ -540,10 +540,9 @@ didSignInForUser:(GIDGoogleUser *)user
 - (void)getJWTTokenSuccess:(LoginSuccessBlock)success failure:(LoginErrorBlock)failure {
     static NSString *tokenKey = @"token";
     
-    // jwt tokens expire after 30 minutes
-    // if the token is more than 25 minutes old, fetch a new one
-    // in case the request we're making takes a looooong time
-    if (([self.jwtTokenExpiration timeIntervalSinceNow] < (25 * 60)) && self.jwtToken) {
+    // note: if self.jwtTokenExpiration fails to extract for any reason, it will be nil,
+    // so this check will fail and the JWT will be re-fetched
+    if (self.jwtToken && [self.jwtTokenExpiration timeIntervalSinceNow] > 3) {
         if (success) {
             success(@{ tokenKey: self.jwtToken });
             return;
