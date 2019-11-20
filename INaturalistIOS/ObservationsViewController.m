@@ -1769,19 +1769,15 @@
                                       @"Via": @"JWT Fetch Failed",
                                       }];
     
-    NSString *reasonMsg = NSLocalizedString(@"Fetching an authentication token failed. Please contact help@inaturalist.org.",
-                                            @"This is an explanation for when auth token fetch fails during upload/sync.");
+    NSString *title = NSLocalizedString(@"Upload Failed", @"upload failed alert title");
+    NSString *message = NSLocalizedString(@"Fetching an authentication token failed. Please contact help@inaturalist.org and try later.",
+                                          @"This is an explanation for when auth token fetch fails during upload/sync.");
     
-    // trace code for login failures - include some info about the JWT
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    LoginController *login = [appDelegate loginController];
-    NSString *jwtExists = (login.jwtToken && ![login.jwtToken isEqualToString:@""]) ? @"JWT" : @"JWT DNE";
-    NSString *jwtDate = [login.jwtTokenExpiration description];
-    NSString *furtherDetails = [NSString stringWithFormat:@"%@ %@", jwtExists, jwtDate];
-    
-    NSString *fullReasonMsg = [NSString stringWithFormat:@"%@ - %@", reasonMsg, furtherDetails];
-    [self presentSignupSplashWithReason:fullReasonMsg];
-
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)notifyUploadErrorAuthRequired {
@@ -1791,18 +1787,23 @@
                                       @"Via": @"Auth Required",
                                       }];
     
-    NSString *reasonMsg = NSLocalizedString(@"You must be logged in to upload to iNaturalist.org.",
-                                            @"This is an explanation for why the sync button triggers a login prompt.");
+    NSString *title = NSLocalizedString(@"Upload Failed", @"upload failed alert title");
+    NSString *baseMsg = NSLocalizedString(@"Unable to upload to iNaturalist, error 401 unauthenticated. Please contact help@inaturalist.org and try later.",
+                                          @"This is an explanation for when we get a 401 during upload/sync.");
     
-    // trace code for login failures - include some info about the JWT
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = [appDelegate loginController];
-    NSString *jwtExists = (login.jwtToken && ![login.jwtToken isEqualToString:@""]) ? @"JWT" : @"JWT DNE";
+    NSString *jwtExists = (login.jwtToken && ![login.jwtToken isEqualToString:@""]) ? @"JWT" : @"No JWT";
     NSString *jwtDate = [login.jwtTokenExpiration description];
     NSString *furtherDetails = [NSString stringWithFormat:@"%@ %@", jwtExists, jwtDate];
     
-    NSString *fullReasonMsg = [NSString stringWithFormat:@"%@ - %@", reasonMsg, furtherDetails];
-    [self presentSignupSplashWithReason:fullReasonMsg];
+    NSString *fullReasonMsg = [NSString stringWithFormat:@"%@ -  Debug: %@", baseMsg, furtherDetails];
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:fullReasonMsg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (void)notifyUploadErrorSuspended {
