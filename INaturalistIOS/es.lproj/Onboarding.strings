@@ -32,7 +32,7 @@
 "L6Y-1o-yPc.text" = "Deslizar >";
 
 /* Class = "UILabel"; text = "Get outside and observe an individual organism. Pick something wild, and take a clear, full frame photo."; ObjectID = "XWS-dF-hpb"; */
-"XWS-dF-hpb.text" = "Sal a la calle y observa un organismo. Escoge especies silvestres y toma una fotografía que ocupe completamente la imagen.";
+"XWS-dF-hpb.text" = "Sal al exterior y observa un organismo. Escoge una especie silvestre y toma una fotografía que ocupe completamente la imagen.";
 
 /* Class = "UILabel"; text = "By using iNaturalist you agree to the Terms of Service and Privacy Policy"; ObjectID = "YtY-We-SSc"; */
 "YtY-We-SSc.text" = "Al usar iNaturalist aceptas los términos y condiciones";

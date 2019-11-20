@@ -47,7 +47,7 @@
 "oro-uB-RY1.text" = "Ваши наблюдения могут быть проверены на соответствие Research Grade (класс исследований) и доведены до сведения ученых, работающими над тем, чтобы лучше понять и защитить природу. ";
 
 /* Class = "UILabel"; text = "Sign Up"; ObjectID = "pbQ-o3-5Xy"; */
-"pbQ-o3-5Xy.text" = "Зарегистироваться";
+"pbQ-o3-5Xy.text" = "Регистрация";
 
 /* Class = "UILabel"; text = "Contribute"; ObjectID = "sBd-1Y-eNL"; */
 "sBd-1Y-eNL.text" = "Внести вклад";
