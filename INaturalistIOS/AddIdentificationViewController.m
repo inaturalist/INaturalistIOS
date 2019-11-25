@@ -37,6 +37,15 @@
 
 @implementation AddIdentificationViewController
 
+- (IdentificationsAPI *)identificationsApi {
+    static IdentificationsAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[IdentificationsAPI alloc] init];
+    });
+    return _api;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -109,7 +118,6 @@
         return;
     }
     
-    IdentificationsAPI *api = [[IdentificationsAPI alloc] init];
     __weak typeof(self) weakSelf = self;
     
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.navigationController.view animated:YES];
@@ -117,27 +125,30 @@
     hud.dimBackground = YES;
     hud.labelText = NSLocalizedString(@"Saving...", nil);
 
-    [api addIdentificationTaxonId:weakSelf.taxon.taxonId
-                    observationId:weakSelf.observation.inatRecordId
-                             body:weakSelf.comment ?: nil
-                           vision:self.taxonViaVision
-                          handler:^(NSArray *results, NSInteger count, NSError *error) {
-                              if (weakSelf.navigationController.view) {
-                                  [MBProgressHUD hideAllHUDsForView:weakSelf.navigationController.view animated:YES];
-                              }
-                              
-                              if (error) {
-                                  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                                                                                                 message:error.localizedDescription
-                                                                                          preferredStyle:UIAlertControllerStyleAlert];
-                                  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                                            style:UIAlertActionStyleCancel
-                                                                          handler:nil]];
-                                  [weakSelf presentViewController:alert animated:YES completion:nil];
-                              } else {
-                                  [weakSelf.navigationController popViewControllerAnimated:YES];
-                              }
-                          }];
+    [[self identificationsApi] addIdentificationTaxonId:self.taxon.taxonId
+                                          observationId:self.observation.inatRecordId
+                                                   body:self.comment ?: nil
+                                                 vision:self.taxonViaVision
+                                                handler:^(NSArray *results, NSInteger count, NSError *error) {
+        
+        __strong typeof (weakSelf) strongSelf = weakSelf;
+
+        if (weakSelf.navigationController.view) {
+            [MBProgressHUD hideAllHUDsForView:strongSelf.navigationController.view animated:YES];
+        }
+        
+        if (error) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                                                           message:error.localizedDescription
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [strongSelf presentViewController:alert animated:YES completion:nil];
+        } else {
+            [strongSelf.navigationController popViewControllerAnimated:YES];
+        }
+    }];
 }
 
 - (IBAction)clickedSpeciesButton:(id)sender {

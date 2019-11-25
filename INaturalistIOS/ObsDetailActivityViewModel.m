@@ -49,6 +49,15 @@
 
 @implementation ObsDetailActivityViewModel
 
+- (IdentificationsAPI *)identificationsApi {
+    static IdentificationsAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[IdentificationsAPI alloc] init];
+    });
+    return _api;
+}
+
 - (TaxaAPI *)taxaApi {
     static TaxaAPI *_api = nil;
     static dispatch_once_t onceToken;
@@ -502,14 +511,19 @@
     [self.delegate showProgressHud];
     
     __weak typeof(self)weakSelf = self;
-    IdentificationsAPI *api = [[IdentificationsAPI alloc] init];
-    [api addIdentificationTaxonId:button.tag observationId:self.observation.inatRecordId body:nil vision:NO handler:^(NSArray *results, NSInteger count, NSError *error) {
-        [weakSelf.delegate hideProgressHud];
+    [[self identificationsApi] addIdentificationTaxonId:button.tag
+                                          observationId:self.observation.inatRecordId
+                                                   body:nil
+                                                 vision:NO
+                                                handler:^(NSArray *results, NSInteger count, NSError *error) {
+        
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        [strongSelf.delegate hideProgressHud];
         if (error) {
-            [weakSelf.delegate noticeWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                                       message:error.localizedDescription];
+            [strongSelf.delegate noticeWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
+                                         message:error.localizedDescription];
         } else {
-            [weakSelf.delegate reloadObservation];
+            [strongSelf.delegate reloadObservation];
         }
     }];
 }

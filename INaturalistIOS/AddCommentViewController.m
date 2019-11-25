@@ -26,6 +26,15 @@
 
 @implementation AddCommentViewController
 
+- (CommentsAPI *)commentsApi {
+    static CommentsAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[CommentsAPI alloc] init];
+    });
+    return _api;
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -51,13 +60,16 @@
     hud.dimBackground = YES;
     hud.labelText = NSLocalizedString(@"Saving...", nil);
 
-    CommentsAPI *api = [[CommentsAPI alloc] init];
-    __weak typeof(self) weakSelf = self;
-    
+    __weak typeof(self) weakSelf = self;    
     // send the comment
-    [api addComment:self.textView.text observationId:self.observation.inatRecordId handler:^(NSArray *results, NSInteger count, NSError *error) {
+    [[self commentsApi] addComment:self.textView.text
+                     observationId:self.observation.inatRecordId
+                           handler:^(NSArray *results, NSInteger count, NSError *error) {
+        
+        __strong typeof (weakSelf) strongSelf = weakSelf;
+        
         // hide the hud regardless of success
-        [MBProgressHUD hideAllHUDsForView:weakSelf.view animated:YES];
+        [MBProgressHUD hideAllHUDsForView:strongSelf.view animated:YES];
         
         if (error) {
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
@@ -66,9 +78,9 @@
             [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
                                                       style:UIAlertActionStyleCancel
                                                     handler:nil]];
-            [weakSelf presentViewController:alert animated:YES completion:nil];
+            [strongSelf presentViewController:alert animated:YES completion:nil];
         } else {
-            [weakSelf dismissViewControllerAnimated:YES completion:nil];
+            [strongSelf dismissViewControllerAnimated:YES completion:nil];
             
         }
     }];
