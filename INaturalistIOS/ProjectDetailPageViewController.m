@@ -22,7 +22,6 @@
 @end
 
 @interface ProjectDetailPageViewController () <ViewPagerDataSource, ViewPagerDelegate>
-@property ProjectsAPI *api;
 
 @property ProjectDetailObservationsViewController *projObservationsVC;
 @property ProjectDetailSpeciesViewController *projSpeciesVC;
@@ -37,6 +36,16 @@
 @end
 
 @implementation ProjectDetailPageViewController
+
+- (ProjectsAPI *)projectsApi {
+    static ProjectsAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[ProjectsAPI alloc] init];
+    });
+    return _api;
+}
+
 
 -(void)viewDidLoad {
     [super viewDidLoad];
@@ -65,9 +74,10 @@
     self.projIdentifiersVC.projectDetailDelegate = self.projectDetailDelegate;
     self.projIdentifiersVC.containedScrollViewDelegate = self.containedScrollViewDelegate;
         
-    self.api = [[ProjectsAPI alloc] init];
     __weak typeof(self)weakSelf = self;
-    [self.api observationsForProject:self.project handler:^(NSArray *results, NSInteger totalCount, NSError *error) {
+    [[self projectsApi] observationsForProject:self.project
+                                       handler:^(NSArray *results, NSInteger totalCount, NSError *error) {
+        
         __strong typeof(weakSelf)strongSelf = weakSelf;
         strongSelf.projObservationsVC.observations = results;
         strongSelf.numObservations = totalCount;
@@ -77,7 +87,9 @@
         });
     }];
     
-    [self.api speciesCountsForProject:self.project handler:^(NSArray *results, NSInteger totalCount, NSError *error) {
+    [[self projectsApi] speciesCountsForProject:self.project
+                                        handler:^(NSArray *results, NSInteger totalCount, NSError *error) {
+        
         __strong typeof(weakSelf)strongSelf = weakSelf;
         strongSelf.projSpeciesVC.speciesCounts = results;
         strongSelf.numSpecies = totalCount;
@@ -87,7 +99,9 @@
         });
     }];
     
-    [self.api observerCountsForProject:self.project handler:^(NSArray *results, NSInteger totalCount, NSError *error) {
+    [[self projectsApi] observerCountsForProject:self.project
+                                         handler:^(NSArray *results, NSInteger totalCount, NSError *error) {
+        
         __strong typeof(weakSelf)strongSelf = weakSelf;
         strongSelf.projObserversVC.observerCounts = results;
         strongSelf.numObservers = totalCount;
@@ -97,7 +111,9 @@
         });
     }];
     
-    [self.api identifierCountsForProject:self.project handler:^(NSArray *results, NSInteger totalCount, NSError *error) {
+    [[self projectsApi] identifierCountsForProject:self.project
+                                           handler:^(NSArray *results, NSInteger totalCount, NSError *error) {
+        
         __strong typeof(weakSelf)strongSelf = weakSelf;
         strongSelf.projIdentifiersVC.identifierCounts = results;
         strongSelf.numIdentifers = totalCount;

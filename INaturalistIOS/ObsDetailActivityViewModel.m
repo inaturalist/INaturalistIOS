@@ -67,6 +67,15 @@
     return _api;
 }
 
+- (ObservationAPI *)observationApi {
+    static ObservationAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[ObservationAPI alloc] init];
+    });
+    return _api;
+}
+
 #pragma mark - uiviewcontroller lifecycle
 
 - (void)dealloc {
@@ -536,10 +545,10 @@
         obs.hasUnviewedActivity = [NSNumber numberWithBool:NO];
         NSError *error = nil;
         [[[RKObjectManager sharedManager] objectStore] save:&error];
-
-        ObservationAPI *api = [[ObservationAPI alloc] init];
+        
         // the API won't take a nil callback at this point
-        [api seenUpdatesForObservationId:self.observation.inatRecordId handler:^(NSArray *results, NSInteger count, NSError *error) { }];
+        [[self observationApi] seenUpdatesForObservationId:self.observation.inatRecordId
+                                                   handler:^(NSArray *results, NSInteger count, NSError *error) { }];
     }
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"resourceId == %ld", [self.observation inatRecordId]];
