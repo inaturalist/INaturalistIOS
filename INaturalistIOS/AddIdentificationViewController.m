@@ -61,7 +61,7 @@
     if (!self.taxon) {
         if (viewHasPresented) {
             // user is trying to cancel adding an ID
-            [self.navigationController popViewControllerAnimated:YES];
+            [self.onlineEditingDelegate editorCancelled];
         } else {
             [self performSegueWithIdentifier:@"IdentificationTaxaSearchSegue" sender:nil];
         }
@@ -83,7 +83,7 @@
 }
 
 - (IBAction)cancelAction:(id)sender {
-    [self.navigationController popViewControllerAnimated:YES];
+    [self.onlineEditingDelegate editorCancelled];
 }
 
 - (IBAction)saveAction:(id)sender {
@@ -146,7 +146,7 @@
                                                     handler:nil]];
             [strongSelf presentViewController:alert animated:YES completion:nil];
         } else {
-            [strongSelf.navigationController popViewControllerAnimated:YES];
+            [strongSelf.onlineEditingDelegate editorEditedObservationOnline];
         }
     }];
 }
@@ -234,7 +234,7 @@
 }
 
 - (void)taxaSearchViewControllerCancelled {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.onlineEditingDelegate editorCancelled];
 }
 
 @end

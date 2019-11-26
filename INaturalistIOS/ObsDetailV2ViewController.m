@@ -179,9 +179,11 @@
     if ([segue.identifier isEqualToString:@"addComment"]) {
         AddCommentViewController *vc = [segue destinationViewController];
         vc.observation = self.observation;
+        vc.onlineEditingDelegate = self;
     } else if ([segue.identifier isEqualToString:@"addIdentification"]) {
         AddIdentificationViewController *vc = [segue destinationViewController];
         vc.observation = self.observation;
+        vc.onlineEditingDelegate = self;
     } else if ([segue.identifier isEqualToString:@"projects"]) {
         ProjectObservationsViewController *vc = [segue destinationViewController];
         vc.isReadOnly = YES;
@@ -256,6 +258,25 @@
                                       animated:YES];
         // clear the flag so we don't pin the user to the bottom of the view
         self.shouldScrollToNewestActivity = NO;
+    }
+}
+
+#pragma mark - ObservationOnlineEditingDelegate
+
+- (void)editorCancelled {
+    if (self.presentedViewController) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
+
+- (void)editorEditedObservationOnline {
+    [self reloadObservation];
+    if (self.presentedViewController) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
     }
 }
 

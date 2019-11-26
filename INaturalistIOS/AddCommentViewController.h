@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 
 #import "ObservationVisualization.h"
+#import "ObsDetailV2ViewController.h"
 
 @interface AddCommentViewController : UIViewController
 
 @property (nonatomic, strong) id <ObservationVisualization> observation;
+@property (assign) id <ObservationOnlineEditingDelegate> onlineEditingDelegate;
 
 @end

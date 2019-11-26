@@ -45,7 +45,7 @@
 }
 
 - (IBAction)clickedCancel:(id)sender {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.onlineEditingDelegate editorCancelled];
 }
 
 - (IBAction)clickedSave:(id)sender {
@@ -80,8 +80,7 @@
                                                     handler:nil]];
             [strongSelf presentViewController:alert animated:YES completion:nil];
         } else {
-            [strongSelf dismissViewControllerAnimated:YES completion:nil];
-            
+            [strongSelf.onlineEditingDelegate editorEditedObservationOnline];
         }
     }];
 }

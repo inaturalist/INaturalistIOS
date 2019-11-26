@@ -11,7 +11,13 @@
 #import "ObservationVisualization.h"
 #import "Uploadable.h"
 
-@interface ObsDetailV2ViewController : UIViewController
+@protocol ObservationOnlineEditingDelegate <NSObject>
+- (void)editorCancelled;
+- (void)editorEditedObservationOnline;
+@end
+
+
+@interface ObsDetailV2ViewController : UIViewController <ObservationOnlineEditingDelegate>
 
 @property id <ObservationVisualization, Uploadable> observation;
 @property NSInteger observationId;
