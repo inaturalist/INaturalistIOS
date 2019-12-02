@@ -41,10 +41,24 @@
         NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
         [[session dataTaskWithRequest:request
                     completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-            NSLog(@"error is %@", error);
-            NSLog(@"data is %@", data);
-            
-            [self extractObjectsFromData:data classMapping:classForMapping handler:done];
+            if (error) {
+                // check for errors
+                done(nil, 0, error);
+            } else if (((NSHTTPURLResponse *)response).statusCode != 200) {
+                // check for non success response code
+                NSError *error = [NSError errorWithDomain:@"org.inaturalist.rails.http"
+                                                     code:((NSHTTPURLResponse *)response).statusCode
+                                                 userInfo:nil];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    done(nil, 0, error);
+                });
+            } else if (data && data.length > 0 && classForMapping) {
+                // check for response body
+                [self extractObjectsFromData:data classMapping:classForMapping handler:done];
+            } else {
+                // if no response body
+                done(@[ ], 0, nil);
+            }
             
         }] resume];
     }
