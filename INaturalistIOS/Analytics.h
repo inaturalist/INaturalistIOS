@@ -109,6 +109,7 @@ extern NSString *kAnalyticsEventProfilePhotoRemoved;
 extern NSString *kAnalyticsEventProfileLoginChanged;
 extern NSString *kAnalyticsEventSettingsRateUs;
 extern NSString *kAnalyticsEventSettingsDonate;
+extern NSString *kAnalyticsEventSettingsOpenShop;
 extern NSString *kAnalyticsEventTutorial;
 
 // news

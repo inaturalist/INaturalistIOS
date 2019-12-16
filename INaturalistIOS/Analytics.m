@@ -133,6 +133,7 @@ NSString *kAnalyticsEventProfilePhotoRemoved = 					@"Profile Photo Removed";
 NSString *kAnalyticsEventProfileLoginChanged =                  @"Profile Username Changed";
 NSString *kAnalyticsEventSettingsRateUs =                       @"Settings Rate Us";
 NSString *kAnalyticsEventSettingsDonate =                       @"Settings Donate";
+NSString *kAnalyticsEventSettingsOpenShop =                     @"Settings Open Shop";
 NSString *kAnalyticsEventTutorial =                             @"Settings Tutorial";
 
 // news

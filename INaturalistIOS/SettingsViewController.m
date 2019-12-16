@@ -61,9 +61,10 @@ typedef NS_ENUM(NSInteger, SettingsHelpCell) {
     SettingsHelpCellTutorial = 0,
     SettingsHelpCellContact,
     SettingsHelpCellReview,
-    SettingsHelpCellDonate
+    SettingsHelpCellDonate,
+    SettingsHelpCellStore
 };
-static const int SettingsHelpRowCount = 4;
+static const int SettingsHelpRowCount = 5;
 
 typedef NS_ENUM(NSInteger, SettingsAppCell) {
     SettingsAppCellChangeUsername = 0,
@@ -527,6 +528,25 @@ static const int ChangePartnerMinimumInterval = 86400;
 #endif
 }
 
+- (void)launchStore {
+#ifdef INatStoreURL
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
+        [[Analytics sharedClient] event:kAnalyticsEventSettingsOpenShop];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:INatStoreURL]];
+    } else {
+        [self networkUnreachableAlert];
+    }
+#else
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot open store", @"Store launch failure message")
+                                                                   message:NSLocalizedString(@"No URL configured", nil)
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                              style:UIAlertActionStyleDefault
+                                            handler:nil]];
+    [self presentViewController:alert animated:YES completion:nil];
+#endif
+}
+
 - (void)launchCredits {
     AboutViewController *about = [AboutViewController acknowledgementsViewController];
     [self.navigationController pushViewController:about animated:YES];
@@ -775,8 +795,10 @@ static const int ChangePartnerMinimumInterval = 86400;
             return [self tableView:tableView contactUsCellForIndexPath:indexPath];
         } else if (indexPath.item == SettingsHelpCellReview) {
             return [self tableView:tableView rateUsCellForIndexPath:indexPath];
-        } else {
+        } else if (indexPath.item == SettingsHelpCellDonate) {
             return [self tableView:tableView donateCellForIndexPath:indexPath];
+        } else {
+            return [self tableView:tableView storeCellForIndexPath:indexPath];
         }
     } else {
         return [self tableView:tableView versionCellForIndexPath:indexPath];
@@ -852,8 +874,10 @@ static const int ChangePartnerMinimumInterval = 86400;
             [self sendSupportEmail];
         } else if (indexPath.item == SettingsHelpCellReview) {
             [self launchRateUs];
-        } else {
+        } else if (indexPath.item == SettingsHelpCellDonate) {
             [self launchDonate];
+        } else if (indexPath.item == SettingsHelpCellStore) {
+            [self launchStore];
         }
     } else if (indexPath.section == SettingsSectionAccount) {
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -1017,6 +1041,13 @@ static const int ChangePartnerMinimumInterval = 86400;
     SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
                                                                    forIndexPath:indexPath];
     cell.leadingTextLabel.text = NSLocalizedString(@"Donate to iNaturalist", @"label for donate action in settings.");
+    return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView storeCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
+                                                                   forIndexPath:indexPath];
+    cell.leadingTextLabel.text = NSLocalizedString(@"Shop the iNat Store", @"label for iNaturalist store (tshirts/etc) action in settings.");
     return cell;
 }
 
