@@ -90,7 +90,16 @@
                     distance = MAX([self.observation visiblePositionalAccuracy], 200);
                 }
                 
-                cell.mapView.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
+                @try {
+                    cell.mapView.region = MKCoordinateRegionMakeWithDistance(coords, distance, distance);
+                } @catch (NSException *exception) {
+                    if (exception.name == NSInvalidArgumentException) {
+                        // invalid region, just set the center
+                        cell.mapView.centerCoordinate = coords;
+                    } else {
+                        @throw exception;
+                    }
+                }
                 
                 MKPointAnnotation *pin = [[MKPointAnnotation alloc] init];
                 pin.coordinate = coords;
