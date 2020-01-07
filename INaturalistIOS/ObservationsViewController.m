@@ -617,6 +617,17 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
+#pragma mark - Year in Review stuff
+
+- (void)generateYearInReviewStats:(NSInteger)year {
+    // url is POST https://www.inaturalist.org/stats/generate_year?year=2019
+    
+}
+
+- (void)checkYearInReviewStats:(NSInteger)year {
+    // url is POST https://www.inaturalist.org/stats/generate_year?year=2019
+}
+
 #pragma mark - NSFetchedResultsControllerDelegate
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
