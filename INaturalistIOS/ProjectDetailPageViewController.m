@@ -14,7 +14,6 @@
 #import "ProjectDetailSpeciesViewController.h"
 #import "ProjectDetailObserversViewController.h"
 #import "ProjectDetailIdentifiersViewController.h"
-#import "ContainedScrollViewDelegate.h"
 #import "UIColor+INaturalist.h"
 
 @interface ViewPagerController ()
@@ -60,19 +59,15 @@
     
     self.projObservationsVC = [self.storyboard instantiateViewControllerWithIdentifier:@"projObservationsVC"];
     self.projObservationsVC.projectDetailDelegate = self.projectDetailDelegate;
-    self.projObservationsVC.containedScrollViewDelegate = self.containedScrollViewDelegate;
     
     self.projSpeciesVC = [self.storyboard instantiateViewControllerWithIdentifier:@"projSpeciesVC"];
     self.projSpeciesVC.projectDetailDelegate = self.projectDetailDelegate;
-    self.projSpeciesVC.containedScrollViewDelegate = self.containedScrollViewDelegate;
     
     self.projObserversVC = [self.storyboard instantiateViewControllerWithIdentifier:@"projObserversVC"];
     self.projObserversVC.projectDetailDelegate = self.projectDetailDelegate;
-    self.projObserversVC.containedScrollViewDelegate = self.containedScrollViewDelegate;
     
     self.projIdentifiersVC = [self.storyboard instantiateViewControllerWithIdentifier:@"projIdentifiersVC"];
     self.projIdentifiersVC.projectDetailDelegate = self.projectDetailDelegate;
-    self.projIdentifiersVC.containedScrollViewDelegate = self.containedScrollViewDelegate;
         
     __weak typeof(self)weakSelf = self;
     [[self projectsApi] observationsForProjectId:self.project.projectId
@@ -260,34 +255,22 @@
 }
 
 - (void)selectTabAtIndex:(NSUInteger)index didSwipe:(BOOL)didSwipe {
-    /*
-    self.projObservationsVC.containedScrollViewDelegate = nil;
-    self.projSpeciesVC.containedScrollViewDelegate = nil;
-    self.projObserversVC.containedScrollViewDelegate = nil;
-    self.projIdentifiersVC.containedScrollViewDelegate = nil;
-    
-    [self.containedScrollViewDelegate containedScrollViewDidReset:nil];
-    
     switch (index) {
         case 0:
             [self.projObservationsVC.collectionView setContentOffset:CGPointMake(0, 0) animated:NO];
-            self.projObservationsVC.containedScrollViewDelegate = self.containedScrollViewDelegate;
             break;
         case 1:
             [self.projSpeciesVC.tableView setContentOffset:CGPointMake(0, 0) animated:NO];
-            self.projSpeciesVC.containedScrollViewDelegate = self.containedScrollViewDelegate;
+            break;
         case 2:
             [self.projObserversVC.tableView setContentOffset:CGPointMake(0, 0) animated:NO];
-            self.projObserversVC.containedScrollViewDelegate = self.containedScrollViewDelegate;
-            
+            break;
         case 3:
             [self.projIdentifiersVC.tableView setContentOffset:CGPointMake(0, 0) animated:NO];
-            self.projIdentifiersVC.containedScrollViewDelegate = self.containedScrollViewDelegate;
-            
+            break;
         default:
             break;
     }
-     */
     
     [super selectTabAtIndex:index didSwipe:didSwipe];
 }

@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ContainedScrollViewDelegate.h"
 #import "ProjectDetailV2ViewController.h"
 
 @interface ProjectDetailObserversViewController : UITableViewController
@@ -16,7 +15,6 @@
 @property NSArray *observerCounts;
 @property BOOL hasFetchedObservers;
 
-@property (assign) id <ContainedScrollViewDelegate> containedScrollViewDelegate;
 @property (assign) id <ProjectDetailV2Delegate> projectDetailDelegate;
 
 - (void)reloadDataViews;

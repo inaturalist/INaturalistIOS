@@ -502,7 +502,6 @@
 		FA1B58CB1D626DFD00663150 /* ABSorter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABSorter.m; sourceTree = "<group>"; };
 		FA1F26271C20E25300CE73A8 /* ObsDetailDataQualityCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailDataQualityCell.h; sourceTree = "<group>"; };
 		FA1F26281C20E25300CE73A8 /* ObsDetailDataQualityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailDataQualityCell.m; sourceTree = "<group>"; };
-		FA2285601C8A49D700AC6FEA /* ContainedScrollViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContainedScrollViewDelegate.h; sourceTree = "<group>"; };
 		FA25520E1D1F49A8005D2128 /* ExploreTaxonRealm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreTaxonRealm.h; sourceTree = "<group>"; };
 		FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreTaxonRealm.m; sourceTree = "<group>"; };
 		FA2552111D1F4D62005D2128 /* TaxaAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxaAPI.h; sourceTree = "<group>"; };
@@ -1392,7 +1391,6 @@
 				FAA0A1971F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.m */,
 				FAEA0A4C229224EF004111A1 /* CLPlacemark+INat.h */,
 				FAEA0A4D229224EF004111A1 /* CLPlacemark+INat.m */,
-				FA2285601C8A49D700AC6FEA /* ContainedScrollViewDelegate.h */,
 				FA6F87681B0E99A20019B157 /* FAKINaturalist.h */,
 				FA6F87691B0E99A20019B157 /* FAKINaturalist.m */,
 				1902812314F308AD005AC8D2 /* ImageStore.h */,

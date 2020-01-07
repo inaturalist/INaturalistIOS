@@ -8,14 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-#import "ContainedScrollViewDelegate.h"
 #import "ProjectVisualization.h"
 
 @protocol ProjectDetailV2Delegate <NSObject>
 - (void)inat_performSegueWithIdentifier:(NSString *)identifier object:(id)object;
 @end
 
-@interface ProjectDetailV2ViewController : UIViewController <ProjectDetailV2Delegate, ContainedScrollViewDelegate>
+@interface ProjectDetailV2ViewController : UIViewController <ProjectDetailV2Delegate>
 
 @property id <ProjectVisualization> project;
 

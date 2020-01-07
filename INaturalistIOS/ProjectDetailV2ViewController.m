@@ -17,7 +17,6 @@
 #import "ProjectUser.h"
 #import "ProjectDetailPageViewController.h"
 #import "ObsDetailV2ViewController.h"
-#import "ContainedScrollViewDelegate.h"
 #import "TaxonDetailViewController.h"
 #import "INaturalistAppDelegate.h"
 #import "INaturalistAppDelegate.h"
@@ -30,12 +29,6 @@
 #import "ProjectsAPI.h"
 #import "ExploreProject.h"
 #import "ExploreProjectRealm.h"
-
-// At this offset the Header stops its transformations
-// 200 is the height of the header
-// 44 is the height of the navbar
-// 20 is the height of the status bar
-static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 
 @interface ProjectDetailV2ViewController () <RKObjectLoaderDelegate>
 
@@ -144,7 +137,6 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     if ([segue.identifier isEqualToString:@"containerSegueToViewPager"]) {
         ProjectDetailPageViewController *vc = [segue destinationViewController];
         vc.projectDetailDelegate = self;
-        //vc.containedScrollViewDelegate = self;
         vc.project = self.project;
     } else if ([segue.identifier isEqualToString:@"segueToObservationDetail"]) {
         ObsDetailV2ViewController *vc = [segue destinationViewController];
@@ -212,89 +204,6 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 
 - (void)dealloc {
     [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
-}
-
-#pragma mark - Contained Scroll View Delegate
-
-- (void)containedScrollViewDidStopScrolling:(UIScrollView *)scrollView {
-    CGFloat offset = scrollView.contentOffset.y;
-    
-    if (offset > 0 && offset < OffsetHeaderStop) {
-        [scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
-    }
-}
-
-- (void)containedScrollViewDidReset:(UIScrollView *)scrollView {
-    [UIView animateWithDuration:0.3 animations:^{
-        self.projectHeader.layer.transform = CATransform3DIdentity;
-        self.container.frame = CGRectMake(0,
-                                          200,
-                                          self.view.bounds.size.width,
-                                          self.view.bounds.size.height - self.projectHeader.frame.size.height);
-        for (UIButton *btn in @[ self.joinButton, self.newsButton, self.aboutButton ]) {
-            btn.alpha = 1.0f;
-            btn.userInteractionEnabled = YES;
-        }
-        
-        self.title = nil;
-        self.projectNameLabel.alpha = 1.0f;
-    }];
-}
-
-- (void)containedScrollViewDidScroll:(UIScrollView *)scrollView {
-    CGFloat offset = scrollView.contentOffset.y;
-    CATransform3D headerTransform = CATransform3DIdentity;
-    
-    if (offset <= 0) {
-        CGFloat newAlpha = 1.0f;
-        for (UIButton *btn in @[ self.joinButton, self.newsButton, self.aboutButton ]) {
-            btn.alpha = newAlpha;
-            btn.userInteractionEnabled = YES;
-        }
-        self.container.frame = CGRectMake(0,
-                                          200,
-                                          self.view.bounds.size.width,
-                                          self.view.bounds.size.height - self.projectHeader.frame.size.height);
-    } else {
-        CGFloat tz = MAX(-OffsetHeaderStop, -offset);
-        
-        // if offset is greater than 86, button alpha is 0.0
-        // if offset is less than 0, button alpha is 1.0
-        // if offset is between 0 and 86, button alpha is (1.0 - offset / 86)
-        
-        CGFloat newAlpha = 0.0;
-        if (offset > 86) {
-            newAlpha = 0.0f;
-        } else if (offset < 0.0f) {
-            newAlpha = 1.0f;
-        } else {
-            newAlpha = 1.0 - (offset / 86);
-        }
-        for (UIButton *btn in @[ self.joinButton, self.newsButton, self.aboutButton ]) {
-            btn.alpha = newAlpha;
-            btn.userInteractionEnabled = (newAlpha > 0.99f);
-        }
-        
-        // if offset is greater than 86, title center is equal to navbar center
-        if (offset > 86) {
-            if (self.projectNameLabel.alpha != 0) {
-                self.projectNameLabel.alpha = 0.0f;
-                self.title = self.projectNameLabel.text;
-            }
-        } else {
-            if (self.projectNameLabel.alpha != 1.0f) {
-                self.projectNameLabel.alpha = 1.0f;
-                self.title = nil;
-            }
-        }
-        
-        headerTransform = CATransform3DTranslate(headerTransform, 0, tz, 0);
-        self.container.frame = CGRectMake(0,
-                                          200 + tz,
-                                          self.view.bounds.size.width,
-                                          self.view.bounds.size.height - 200 - tz);
-    }
-    self.projectHeader.layer.transform = headerTransform;
 }
 
 #pragma mark - UIButton targets
