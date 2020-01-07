@@ -10,12 +10,13 @@
 #import <ICViewPager/ViewPagerController.h>
 
 #import "ProjectDetailV2ViewController.h"
+#import "ProjectVisualization.h"
 
 @class Project;
 
 @interface ProjectDetailPageViewController : ViewPagerController
 
-@property Project *project;
+@property id <ProjectVisualization> project;
 @property (assign) id <ProjectDetailV2Delegate> projectDetailDelegate;
 @property (assign) id <ContainedScrollViewDelegate> containedScrollViewDelegate;
 

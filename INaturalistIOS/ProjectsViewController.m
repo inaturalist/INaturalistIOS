@@ -8,7 +8,6 @@
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
-#import <RestKit/RestKit.h>
 
 #import "ProjectsViewController.h"
 #import "Project.h"
@@ -25,121 +24,85 @@
 #import "OnboardingLoginViewController.h"
 #import "INatReachability.h"
 #import "ExploreUserRealm.h"
+#import "ProjectsAPI.h"
+#import "ExploreProject.h"
+#import "ExploreProjectRealm.h"
 
 static const int ListControlIndexUser = 0;
 static const int ListControlIndexFeatured = 1;
 static const int ListControlIndexNearby = 2;
 
-@interface ProjectsViewController () <RKObjectLoaderDelegate, RKRequestDelegate, UISearchResultsUpdating>
+@interface ProjectsViewController () <UISearchResultsUpdating>
 @property UISearchController *searchController;
-@property NSArray *cachedProjects;
 @property BOOL projectsFilterHasChanged;
+
+@property RLMResults *joinedProjects;
+@property RLMNotificationToken *joinedToken;
+
+@property NSArray *featuredProjects;
+@property NSArray *nearbyProjects;
+@property NSArray *matchingProjects;
 @end
 
 @implementation ProjectsViewController
 
-#pragma mark - these methods are loading locally from core data
+- (ProjectsAPI *)projectsApi {
+    static ProjectsAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[ProjectsAPI alloc] init];
+    });
+    return _api;
+}
+
+#pragma mark - these methods are loading locally from memory or realm
 
 - (NSArray *)projects {
-    if (self.projectsFilterHasChanged) {
-        self.cachedProjects = nil;
-        self.projectsFilterHasChanged = FALSE;
-    }
-    
-    if (self.cachedProjects) {
-        return self.cachedProjects;
-    }
-    
-    if (self.searchController.isActive && self.searchController.searchBar.text.length > 0) {
+    if (self.searchController.isActive) {
         // show searched projects
-        self.cachedProjects = [self filteredProjects:self.searchController.searchBar.text];
+        return self.matchingProjects;
     } else {
         // show projects for context
         switch (self.listControl.selectedSegmentIndex) {
             case ListControlIndexFeatured:
-                self.cachedProjects = [self featuredProjects];
+                return [self featuredProjects];
                 break;
             case ListControlIndexNearby:
-                self.cachedProjects = [self nearbyProjects];
+                return [self nearbyProjects];
                 break;
             case ListControlIndexUser:
-                self.cachedProjects = [self userProjects];
+                return [self userProjects];
                 break;
             default:
-                self.cachedProjects = @[];
+                return @[];
                 break;
         }
     }
     
-    return self.cachedProjects;
-}
-
-- (NSArray *)titleSortDescriptors {
-    return @[
-        [NSSortDescriptor sortDescriptorWithKey:@"title"
-                                      ascending:YES],
-    ];
-}
-
-- (NSArray *)filteredProjects:(NSString *)searchTerm {
-    NSArray *projects = [Project objectsWithPredicate:[NSPredicate predicateWithFormat:@"title contains[c] %@",
-                                                       searchTerm]];
-    return [projects sortedArrayUsingDescriptors:[self titleSortDescriptors]];
+    return @[];
 }
 
 - (NSArray *)userProjects {
-    NSArray *projectUsers = [ProjectUser.all sortedArrayUsingComparator:^NSComparisonResult(ProjectUser *obj1, ProjectUser *obj2) {
-        return [obj1.project.title.lowercaseString compare:obj2.project.title.lowercaseString];
-    }];
-    // be defensive
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"project != nil"];
-    return [[projectUsers filteredArrayUsingPredicate:predicate] valueForKey:@"project"];
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+    if (me) {
+        // convert RLMResults to array
+        return [self.joinedProjects valueForKey:@"self"];
+    } else {
+        return nil;
+    }
 }
 
-- (NSArray *)featuredProjects {
-    NSArray *projects = [Project objectsWithPredicate:[NSPredicate predicateWithFormat:@"featuredAt != nil"]];
-    return [projects sortedArrayUsingDescriptors:[self titleSortDescriptors]];
-}
-
-- (NSArray *)nearbyProjects {
-    // get all projects with a location
-    NSFetchRequest *request = [Project fetchRequest];
-    request.predicate = [NSPredicate predicateWithFormat:@"latitude != nil && longitude != nil"];
-    request.fetchLimit = 500;
-    NSArray *projectsWithLocations = [Project objectsWithFetchRequest:request];
-    
-    // anything less than 310 miles away is "nearby"
-    NSPredicate *nearbyPredicate = [NSPredicate predicateWithBlock:^BOOL(Project *p, NSDictionary *bindings) {
-        CLLocation *loc = [[CLLocation alloc] initWithLatitude:p.latitude.doubleValue
-                                                     longitude:p.longitude.doubleValue];
-        NSNumber *d = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:loc]];
-        return d.doubleValue < 500000; // meters
-    }];
-    NSArray *nearbyProjects = [projectsWithLocations filteredArrayUsingPredicate:nearbyPredicate];
-    
-    // sort nearby projects by how near they are (self.lastLocation)
-    NSComparator nearnessComparator = ^NSComparisonResult(Project *p1, Project *p2) {
-        CLLocation *p1Location = [[CLLocation alloc] initWithLatitude:p1.latitude.doubleValue
-                                                            longitude:p1.longitude.doubleValue];
-        CLLocation *p2Location = [[CLLocation alloc] initWithLatitude:p2.latitude.doubleValue
-                                                            longitude:p2.longitude.doubleValue];
-        NSNumber *p1Distance = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:p1Location]];
-        NSNumber *p2Distance = [NSNumber numberWithDouble:[self.lastLocation distanceFromLocation:p2Location]];
-        return [p1Distance compare:p2Distance];
-    };
-    
-    return [nearbyProjects sortedArrayUsingComparator:nearnessComparator];
-}
 
 #pragma mark - sync* methods are fetching from inaturalist.org
 
 - (void)syncFeaturedProjects {
-    NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    NSString *path = [NSString stringWithFormat:@"/projects.json?featured=true&locale=%@-%@",
-                      language, countryCode];
-    
-    [self syncProjectsWithPath:path];
+    __weak typeof(self)weakSelf = self;
+    // TODO: handle per-site-id featuring
+    [[self projectsApi] featuredProjectsHandler:^(NSArray *results, NSInteger count, NSError *error) {
+        weakSelf.featuredProjects = results;
+        [weakSelf.tableView reloadData];
+    }];
 }
 
 - (void)syncNearbyProjects {
@@ -154,29 +117,39 @@ static const int ListControlIndexNearby = 2;
         [self syncFinished];
         return;
     }
-    NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    NSString *language = [[NSLocale preferredLanguages] firstObject];
-    NSString *path = [NSString stringWithFormat:@"/projects.json?latitude=%f&longitude=%f&locale=%@-%@",
-                      self.lastLocation.coordinate.latitude,
-                      self.lastLocation.coordinate.longitude,
-                      language,
-                      countryCode];
     
-    [self syncProjectsWithPath:path];
+    __weak typeof(self)weakSelf = self;
+    [[self projectsApi] projectsNearLocation:self.lastLocation.coordinate
+                                     handler:^(NSArray *results, NSInteger count, NSError *error) {
+        
+        weakSelf.nearbyProjects = results;
+        [weakSelf.tableView reloadData];
+    }];
 }
 
 - (void)syncUserProjects {
 	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 	if ([appDelegate.loginController isLoggedIn]) {
         ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
-        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-        NSString *language = [[NSLocale preferredLanguages] firstObject];
-        NSString *path = [NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
-                          me.login,
-                          language,
-                          countryCode];
         
-        [self syncProjectsWithPath:path];
+        __weak typeof(self)weakSelf = self;
+        [[self projectsApi] projectsForUser:me.userId handler:^(NSArray *results, NSInteger count, NSError *error) {
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            for (ExploreProject *eg in results) {
+                NSDictionary *value = [ExploreProjectRealm valueForMantleModel:eg];
+                NSMutableDictionary *mutableValue = [value mutableCopy];
+                mutableValue[@"joined"] = @(YES);
+                value = [NSDictionary dictionaryWithDictionary:mutableValue];
+                [realm beginWriteTransaction];
+                [ExploreProjectRealm createOrUpdateInDefaultRealmWithValue:value];
+                [realm commitWriteTransaction];
+            }
+
+            // update tableview
+            [weakSelf.tableView reloadData];
+            
+        }];
+        
     } else {
         [self syncFinished];
 
@@ -184,23 +157,6 @@ static const int ListControlIndexNearby = 2;
     }
 }
 
-- (void)syncProjectsWithPath:(NSString *)path {
-    
-    RKObjectMapping *mapping = nil;
-    if ([path rangeOfString:@"projects/user"].location != NSNotFound) {
-        mapping = [ProjectUser mapping];
-    } else {
-        mapping = [Project mapping];
-    }
-    
-    [[Analytics sharedClient] debugLog:@"Network - Load projects"];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
-                                                    usingBlock:^(RKObjectLoader *loader) {
-                                                        loader.objectMapping = mapping;
-                                                        loader.delegate = self;
-                                                    }];
-    
-}
 
 - (void)showSignupPrompt:(NSString *)reason {
     __weak typeof(self) weakSelf = self;
@@ -265,7 +221,21 @@ static const int ListControlIndexNearby = 2;
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"projectDetailSegue"]) {
         ProjectDetailV2ViewController *vc = [segue destinationViewController];
-        vc.project = [sender isKindOfClass:[Project class]] ? sender : nil;
+        if ([sender isKindOfClass:[ExploreProject class]]) {
+            // look for a (joined) project in realm, if one exists, pass _that_ to
+            // project detail VC. this way we correctly show joined state, even if the
+            // user is navigating to a project via via nearby or featured or searched
+            // projects.
+            ExploreProject *ep = (ExploreProject *)sender;
+            ExploreProjectRealm *epr = [ExploreProjectRealm objectForPrimaryKey:@(ep.projectId)];
+            if (epr) {
+                vc.project = epr;
+            } else {
+                vc.project = ep;
+            }
+        } else {
+            vc.project = sender;
+        }
     }
 }
 
@@ -329,8 +299,17 @@ static const int ListControlIndexNearby = 2;
         }
     }
     
-    
     self.tableView.separatorInset = UIEdgeInsetsMake(0, 15 + 29 + 15, 0, 0);
+    
+    // prime the joined projects results
+    // and set up a trigger to reload the tableview every time
+    // the joined projects list changes
+    self.joinedProjects = [ExploreProjectRealm joinedProjects];
+    __weak typeof(self)weakSelf = self;
+    self.joinedToken = [self.joinedProjects addNotificationBlock:^(RLMResults * _Nullable results, RLMCollectionChange * _Nullable change, NSError * _Nullable error) {
+        [weakSelf.tableView reloadData];
+    }];
+
 
 }
 
@@ -376,7 +355,7 @@ static const int ListControlIndexNearby = 2;
 }
 
 - (void)dealloc {
-    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
+    [self.joinedToken invalidate];
 }
 
 #pragma mark - button targets
@@ -397,17 +376,17 @@ static const int ListControlIndexNearby = 2;
     static NSString *CellIdentifier = @"ProjectCell";
     ProjectTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
-    Project *p = [self.projects objectAtIndex:[indexPath row]];
-    cell.titleLabel.text = p.title;
+    id <ProjectVisualization> project = [self.projects objectAtIndex:indexPath.row];
+    cell.titleLabel.text = project.title;
     [cell.projectImage cancelImageDownloadTask];
-    [cell.projectImage setImageWithURL:[NSURL URLWithString:p.iconURL]
+    [cell.projectImage setImageWithURL:[project iconUrl]
                       placeholderImage:[UIImage inat_defaultProjectImage]];
-    
+        
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    Project *selectedProject = nil;
+    id <ProjectVisualization> selectedProject = nil;
     
     // be defensive
     @try {
@@ -420,8 +399,9 @@ static const int ListControlIndexNearby = 2;
             @throw exception;
     }
     
-    if (selectedProject && [selectedProject isKindOfClass:[Project class]])
+    if (selectedProject && [selectedProject conformsToProtocol:@protocol(ProjectVisualization)]) {
         [self performSegueWithIdentifier:@"projectDetailSegue" sender:selectedProject];
+    }
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -473,109 +453,9 @@ static const int ListControlIndexNearby = 2;
         shouldSync = YES;
     }
     
+    
     if (shouldSync && [[INatReachability sharedClient] isNetworkReachable]) {
-        [self syncFeaturedProjects];
         [self syncNearbyProjects];
-    }
-}
-
-#pragma mark - RKRequest and RKObjectLoader delegates
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
-    NSDate *now = [NSDate date];
-    for (INatModel *o in objects) {
-        [o setSyncedAt:now];
-    }
-    
-    if ([objectLoader.URL.absoluteString rangeOfString:@"featured"].location != NSNotFound) {
-        
-        NSArray *rejects = [Project objectsWithPredicate:
-                            [NSPredicate predicateWithFormat:@"featuredAt != nil && syncedAt < %@", now]];
-        for (Project *p in rejects) {
-            if (p.projectUsers.count == 0) {
-                [p deleteEntity];
-            } else {
-                p.featuredAt = nil;
-                p.syncedAt = now;
-            }
-        }
-        
-        for (Project *p in objects) {
-            p.featuredAt = now;
-        }
-        
-    } else if ([objectLoader.URL.path rangeOfString:@"projects/user"].location != NSNotFound) {
-        NSArray *rejects = [ProjectUser objectsWithPredicate:[NSPredicate predicateWithFormat:@"syncedAt < %@", now]];
-        for (ProjectUser *pu in rejects) {
-            [pu deleteEntity];
-        }
-    }
-    
-    NSError *error = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    if (error) {
-        NSString *logMsg = [NSString stringWithFormat:@"SAVE ERROR: %@", error.localizedDescription];
-        [[Analytics sharedClient] debugLog:logMsg];
-    }
-    
-    [self syncFinished];
-    
-    self.projectsFilterHasChanged = YES;
-    [self.tableView reloadData];
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    [self syncFinished];
-    
-    // KLUDGE!! RestKit doesn't seem to handle failed auth very well
-    BOOL jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
-    BOOL authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
-    NSString *errorMsg = error.localizedDescription;
-    
-    if (jsonParsingError || authFailure) {
-        [self showSignupPrompt:nil];
-    } else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                                       message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
-}
-
-- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
-    bool authFailure = false;
-    NSString *errorMsg;
-    switch (response.statusCode) {
-        case 401:
-            // Unauthorized
-            authFailure = true;
-            break;
-        case 422:
-            // UNPROCESSABLE ENTITY
-            
-            errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
-            break;
-        default:
-            return;
-            break;
-    }
-    
-    if (authFailure) {
-        [self syncFinished];
-        [self showSignupPrompt:nil];
-    } else if (errorMsg) {
-        [self syncFinished];
-        
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                                       message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), errorMsg]
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
     }
 }
 
@@ -583,16 +463,17 @@ static const int ListControlIndexNearby = 2;
 
 -(void)updateSearchResultsForSearchController:(UISearchController *)searchController {
     // show local results
-    self.projectsFilterHasChanged = YES;
     [self.tableView reloadData];
     
     // fetch remote results
     if (self.searchController.searchBar.text.length > 1) {
-        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-        NSString *path = [NSString stringWithFormat:@"/projects/search?locale=%@-%@&q=%@",
-                          language, countryCode, self.searchController.searchBar.text];
-        [self syncProjectsWithPath:path];
+        __weak typeof(self)weakSelf = self;
+        [[self projectsApi] projectsMatching:self.searchController.searchBar.text
+                                     handler:^(NSArray *results, NSInteger count, NSError *error) {
+            
+            weakSelf.matchingProjects = results;
+            [weakSelf.tableView reloadData];
+        }];
     }
 }
 

@@ -7,11 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@class Project;
+#import "ProjectVisualization.h"
 
 @interface SiteNewsViewController : UIViewController
 
-@property Project *project;
+@property id <ProjectVisualization> project;
 
 @end

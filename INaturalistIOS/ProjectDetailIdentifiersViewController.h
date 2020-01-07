@@ -14,6 +14,11 @@
 
 @property (assign) NSInteger totalCount;
 @property NSArray *identifierCounts;
+@property BOOL hasFetchedIdentifiers;
+
 @property (assign) id <ContainedScrollViewDelegate> containedScrollViewDelegate;
 @property (assign) id <ProjectDetailV2Delegate> projectDetailDelegate;
+
+- (void)reloadDataViews;
+
 @end

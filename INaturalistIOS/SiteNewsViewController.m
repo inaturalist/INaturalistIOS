@@ -120,9 +120,9 @@ static UIImage *briefcase;
     
     if (self.project) {
         cell.newsCategoryTitle.text = self.project.title;
-        NSURL *iconURL = [NSURL URLWithString:self.project.iconURL];
-        if (iconURL) {
-            [cell.newsCategoryImageView setImageWithURL:iconURL];
+        
+        if (self.project.iconUrl) {
+            [cell.newsCategoryImageView setImageWithURL:self.project.iconUrl];
         } else {
             cell.newsCategoryImageView.image = briefcase;
         }
@@ -230,7 +230,7 @@ static UIImage *briefcase;
 - (NSString *)newsItemEndpoint {
     if (self.project) {
         return [NSString stringWithFormat:@"/projects/%ld/journal.json",
-                (long)self.project.recordID.integerValue];
+                (long)self.project.projectId];
     } else {
         return @"/posts/for_user.json";
     }
@@ -266,8 +266,8 @@ static UIImage *briefcase;
         NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"NewsItem"];
         
         if (self.project) {
-            request.predicate = [NSPredicate predicateWithFormat:@"parentTypeString == 'Project' AND parentRecordID == %@",
-                                 self.project.recordID];
+            request.predicate = [NSPredicate predicateWithFormat:@"parentTypeString == 'Project' AND parentRecordID == %ld",
+                                 (long)self.project.projectId];
         }
         
         // sort by common name, if available

@@ -26,6 +26,19 @@ static NSString *rankedUserObsSpeciesName = @"RankedUserObsSpecies";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.totalCount = 0;
+    self.tableView.tableFooterView = [UIView new];
+    
+    [self.tableView registerNib:[UINib nibWithNibName:rankedUserObsSpeciesName bundle:[NSBundle mainBundle]]
+         forCellReuseIdentifier:rankedUserObsSpeciesName];
+}
+
+- (void)reloadDataViews {
+    [self configureEmptyView];
+    [self.tableView reloadData];
+}
+
+- (void)configureEmptyView {
     self.tableView.backgroundView = ({
         UILabel *label = [UILabel new];
         label.numberOfLines = 0;
@@ -34,7 +47,11 @@ static NSString *rankedUserObsSpeciesName = @"RankedUserObsSpecies";
         label.attributedText = ({
             NSString *emptyTitle;
             if ([[INatReachability sharedClient] isNetworkReachable]) {
-                emptyTitle = NSLocalizedString(@"There are no observations for this project yet. Check back soon!", nil);
+                if (self.hasFetchedIdentifiers) {
+                    emptyTitle = NSLocalizedString(@"There are no observations for this project yet. Check back soon!", nil);
+                } else {
+                    emptyTitle = NSLocalizedString(@"Loading...", nil);
+                }
             } else {
                 emptyTitle = NSLocalizedString(@"No network connection. :(", nil);
             }
@@ -48,11 +65,6 @@ static NSString *rankedUserObsSpeciesName = @"RankedUserObsSpecies";
         
         label;
     });
-    self.totalCount = 0;
-    self.tableView.tableFooterView = [UIView new];
-    
-    [self.tableView registerNib:[UINib nibWithNibName:rankedUserObsSpeciesName bundle:[NSBundle mainBundle]]
-         forCellReuseIdentifier:rankedUserObsSpeciesName];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

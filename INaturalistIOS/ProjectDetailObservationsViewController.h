@@ -14,6 +14,11 @@
 
 @property (assign) NSInteger totalCount;
 @property NSArray *observations;
+@property BOOL hasFetchedObservations;
+
 @property (assign) id <ContainedScrollViewDelegate> containedScrollViewDelegate;
 @property (assign) id <ProjectDetailV2Delegate> projectDetailDelegate;
+
+- (void)reloadDataViews;
+
 @end

@@ -97,7 +97,6 @@
 		FA0F1AFE1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1AFD1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m */; };
 		FA0F1B011BBB412C00533ED5 /* ObservationViewErrorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1B001BBB412C00533ED5 /* ObservationViewErrorCell.m */; };
 		FA0F1B051BBB561600533ED5 /* ObservationViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1B041BBB561600533ED5 /* ObservationViewCell.m */; };
-		FA11A7771CBFF8740039481B /* ProjectNewsButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA11A7761CBFF8740039481B /* ProjectNewsButton.m */; };
 		FA176D9122FBBCF600A5560E /* CLPlacemark+INat.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEA0A4D229224EF004111A1 /* CLPlacemark+INat.m */; };
 		FA1B58CC1D626DFD00663150 /* ABSorter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1B58CB1D626DFD00663150 /* ABSorter.m */; };
 		FA1F26291C20E25300CE73A8 /* ObsDetailDataQualityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1F26281C20E25300CE73A8 /* ObsDetailDataQualityCell.m */; };
@@ -297,6 +296,7 @@
 		FAF73BE11E1B1FF2002456AF /* Gollum.json in Resources */ = {isa = PBXBuildFile; fileRef = FAF73BE01E1B1FF2002456AF /* Gollum.json */; };
 		FAF73BE41E1B2472002456AF /* PartnerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF73BE31E1B2472002456AF /* PartnerTests.m */; };
 		FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */; };
+		FAFA9C9A23C40A40002E22FD /* ExploreProjectRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFA9C9923C40A40002E22FD /* ExploreProjectRealm.m */; };
 		FAFAF7021BA0D64700CCADC2 /* SubtitleDisclosureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */; };
 		FAFED1F31DB595C10015CCBA /* ExploreUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFED1F21DB595C10015CCBA /* ExploreUpdate.m */; };
 		FAFED1F61DB59EA90015CCBA /* ExploreUpdateRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFED1F51DB59EA90015CCBA /* ExploreUpdateRealm.m */; };
@@ -489,8 +489,6 @@
 		FA0F1B031BBB561600533ED5 /* ObservationViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationViewCell.h; sourceTree = "<group>"; };
 		FA0F1B041BBB561600533ED5 /* ObservationViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationViewCell.m; sourceTree = "<group>"; };
 		FA11A7741CBDCE090039481B /* INaturalist2.14.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.14.xcdatamodel; sourceTree = "<group>"; };
-		FA11A7751CBFF8740039481B /* ProjectNewsButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectNewsButton.h; sourceTree = "<group>"; };
-		FA11A7761CBFF8740039481B /* ProjectNewsButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectNewsButton.m; sourceTree = "<group>"; };
 		FA1B37BA1AD88BBC002A00A5 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA1B37BB1AD88BCF002A00A5 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA1B37BC1AD88BE2002A00A5 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1031,6 +1029,9 @@
 		FAF73BE31E1B2472002456AF /* PartnerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PartnerTests.m; sourceTree = "<group>"; };
 		FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSinglePageViewController.h; sourceTree = "<group>"; };
 		FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSinglePageViewController.m; sourceTree = "<group>"; };
+		FAFA9C9823C40A40002E22FD /* ExploreProjectRealm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreProjectRealm.h; sourceTree = "<group>"; };
+		FAFA9C9923C40A40002E22FD /* ExploreProjectRealm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreProjectRealm.m; sourceTree = "<group>"; };
+		FAFA9C9B23C412EA002E22FD /* ProjectVisualization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProjectVisualization.h; sourceTree = "<group>"; };
 		FAFAF7001BA0D64700CCADC2 /* SubtitleDisclosureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubtitleDisclosureCell.h; sourceTree = "<group>"; };
 		FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubtitleDisclosureCell.m; sourceTree = "<group>"; };
 		FAFED1F11DB595C10015CCBA /* ExploreUpdate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreUpdate.h; sourceTree = "<group>"; };
@@ -1803,6 +1804,7 @@
 				FAA6EB081C8E61A300F43552 /* ActivityVisualization.h */,
 				FAA6EB0C1C8F821800F43552 /* FaveVisualization.h */,
 				FA4B096421116F5600E942B3 /* UserVisualization.h */,
+				FAFA9C9B23C412EA002E22FD /* ProjectVisualization.h */,
 			);
 			name = ViewProtocols;
 			sourceTree = "<group>";
@@ -1887,6 +1889,8 @@
 				FAFED1F51DB59EA90015CCBA /* ExploreUpdateRealm.m */,
 				FAFED1F71DB5A25C0015CCBA /* ExploreUserRealm.h */,
 				FAFED1F81DB5A25C0015CCBA /* ExploreUserRealm.m */,
+				FAFA9C9823C40A40002E22FD /* ExploreProjectRealm.h */,
+				FAFA9C9923C40A40002E22FD /* ExploreProjectRealm.m */,
 			);
 			name = Realm;
 			sourceTree = "<group>";
@@ -2020,8 +2024,6 @@
 				FA74A6211CB4C4EE002EBD0A /* RankedUserObsSpecies.xib */,
 				FA74A6231CB4C517002EBD0A /* RankedUserObsSpeciesCell.h */,
 				FA74A6241CB4C517002EBD0A /* RankedUserObsSpeciesCell.m */,
-				FA11A7751CBFF8740039481B /* ProjectNewsButton.h */,
-				FA11A7761CBFF8740039481B /* ProjectNewsButton.m */,
 			);
 			name = "Project Details";
 			sourceTree = "<group>";
@@ -2564,13 +2566,13 @@
 				FA4C19641B30EE890066CA22 /* Partner.m in Sources */,
 				FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */,
 				FAB0B8EE237F37C000E73681 /* ExploreGuideRealm.m in Sources */,
+				FAFA9C9A23C40A40002E22FD /* ExploreProjectRealm.m in Sources */,
 				FA4E730919FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m in Sources */,
 				FA69822D1B2F49C900D9BD0F /* UIImage+INaturalist.m in Sources */,
 				FACCEB411ED4E5B6009C9A19 /* TaxonPhotoPageViewController.m in Sources */,
 				FAEF233E1C7D092D00208F44 /* ProjectDetailObserversViewController.m in Sources */,
 				FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */,
 				FA2A07991C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m in Sources */,
-				FA11A7771CBFF8740039481B /* ProjectNewsButton.m in Sources */,
 				FA6B45061BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m in Sources */,
 				FA4D56BC1C1A3A2900C5C5AE /* ObsDetailSelectorButton.m in Sources */,
 				FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */,

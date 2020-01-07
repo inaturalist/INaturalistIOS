@@ -14,34 +14,77 @@
 #import "SpeciesCount.h"
 #import "Analytics.h"
 #import "NSLocale+INaturalist.h"
+#import "ExploreProject.h"
 
 @implementation ProjectsAPI
 
-- (void)observationsForProject:(Project *)project handler:(INatAPIFetchCompletionCountHandler)done {
+- (void)projectsForUser:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - fetch user projects from node"];
+    NSString *path =[NSString stringWithFormat:@"users/%ld/projects?per_page=100", (long)userId];
+    [self fetch:path classMapping:ExploreProject.class handler:done];
+}
+
+-(void)featuredProjectsHandler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - fetch featured projects from node"];
+    NSString *path = @"projects?featured=true&per_page=50";
+    [self fetch:path classMapping:ExploreProject.class handler:done];
+}
+
+- (void)projectsNearLocation:(CLLocationCoordinate2D)coordinate handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - fetch nearby projects from node"];
+    NSString *path =[NSString stringWithFormat:@"projects?per_page=100&lat=%f&lng=%f&order_by=distance",
+                     coordinate.latitude, coordinate.longitude];
+    [self fetch:path classMapping:ExploreProject.class handler:done];
+}
+
+- (void)projectsMatching:(NSString *)searchTerm handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - search for projects from node"];
+    NSString *path =[NSString stringWithFormat:@"projects?per_page=100&q=%@",
+                     searchTerm];
+    [self fetch:path classMapping:ExploreProject.class handler:done];
+}
+
+- (void)joinProject:(NSInteger)projectId handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - join project via node"];
+    NSString *path =[NSString stringWithFormat:@"projects/%ld/join",
+                     (long)projectId];
+    [self post:path params:nil classMapping:ExploreProject.class handler:done];
+}
+
+- (void)leaveProject:(NSInteger)projectId handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - join project via node"];
+    NSString *path =[NSString stringWithFormat:@"projects/%ld/leave",
+                     (long)projectId];
+    [self delete:path handler:done];
+}
+
+
+
+- (void)observationsForProjectId:(NSInteger)projectId handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch observations for project from node"];
     NSString *path = [NSString stringWithFormat:@"observations?project_id=%ld&per_page=200",
-                      (long)project.recordID.integerValue];
+                      (long)projectId];
     [self fetch:path classMapping:[ExploreObservation class] handler:done];
 }
 
-- (void)speciesCountsForProject:(Project *)project handler:(INatAPIFetchCompletionCountHandler)done {
+- (void)speciesCountsForProjectId:(NSInteger)projectId handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch species counts for project from node"];
     NSString *path = [NSString stringWithFormat:@"observations/species_counts?project_id=%ld",
-                      (long)project.recordID.integerValue];
+                      (long)projectId];
     [self fetch:path classMapping:[SpeciesCount class] handler:done];
 }
 
-- (void)observerCountsForProject:(Project *)project handler:(INatAPIFetchCompletionCountHandler)done {
+- (void)observerCountsForProjectId:(NSInteger)projectId handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch observer counts for project from node"];
     NSString *path = [NSString stringWithFormat:@"observations/observers?project_id=%ld",
-                      (long)project.recordID.integerValue];
+                      (long)projectId];
     [self fetch:path classMapping:[ObserverCount class] handler:done];
 }
 
-- (void)identifierCountsForProject:(Project *)project handler:(INatAPIFetchCompletionCountHandler)done {
+- (void)identifierCountsForProjectId:(NSInteger)projectId handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch identifier counts for project from node"];
     NSString *path = [NSString stringWithFormat:@"observations/identifiers?project_id=%ld",
-                      (long)project.recordID.integerValue];
+                      (long)projectId];
     [self fetch:path classMapping:[IdentifierCount class] handler:done];
 }
 

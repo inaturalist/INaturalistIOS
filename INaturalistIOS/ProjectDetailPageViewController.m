@@ -75,7 +75,7 @@
     self.projIdentifiersVC.containedScrollViewDelegate = self.containedScrollViewDelegate;
         
     __weak typeof(self)weakSelf = self;
-    [[self projectsApi] observationsForProject:self.project
+    [[self projectsApi] observationsForProjectId:self.project.projectId
                                        handler:^(NSArray *results, NSInteger totalCount, NSError *error) {
         
         __strong typeof(weakSelf)strongSelf = weakSelf;
@@ -83,11 +83,12 @@
         strongSelf.numObservations = totalCount;
         dispatch_async(dispatch_get_main_queue(), ^{
             [strongSelf reloadData];
-            [strongSelf.projObservationsVC.collectionView reloadData];
+            strongSelf.projObservationsVC.hasFetchedObservations = YES;
+            [strongSelf.projObservationsVC reloadDataViews];
         });
     }];
     
-    [[self projectsApi] speciesCountsForProject:self.project
+    [[self projectsApi] speciesCountsForProjectId:self.project.projectId
                                         handler:^(NSArray *results, NSInteger totalCount, NSError *error) {
         
         __strong typeof(weakSelf)strongSelf = weakSelf;
@@ -95,11 +96,12 @@
         strongSelf.numSpecies = totalCount;
         dispatch_async(dispatch_get_main_queue(), ^{
             [strongSelf reloadData];
-            [strongSelf.projSpeciesVC.tableView reloadData];
+            strongSelf.projSpeciesVC.hasFetchedSpecies = YES;
+            [strongSelf.projSpeciesVC reloadDataViews];
         });
     }];
     
-    [[self projectsApi] observerCountsForProject:self.project
+    [[self projectsApi] observerCountsForProjectId:self.project.projectId
                                          handler:^(NSArray *results, NSInteger totalCount, NSError *error) {
         
         __strong typeof(weakSelf)strongSelf = weakSelf;
@@ -107,11 +109,12 @@
         strongSelf.numObservers = totalCount;
         dispatch_async(dispatch_get_main_queue(), ^{
             [strongSelf reloadData];
-            [strongSelf.projObserversVC.tableView reloadData];
+            strongSelf.projObserversVC.hasFetchedObservers = YES;
+            [strongSelf.projObserversVC reloadDataViews];
         });
     }];
     
-    [[self projectsApi] identifierCountsForProject:self.project
+    [[self projectsApi] identifierCountsForProjectId:self.project.projectId
                                            handler:^(NSArray *results, NSInteger totalCount, NSError *error) {
         
         __strong typeof(weakSelf)strongSelf = weakSelf;
@@ -119,7 +122,8 @@
         strongSelf.numIdentifers = totalCount;
         dispatch_async(dispatch_get_main_queue(), ^{
             [strongSelf reloadData];
-            [strongSelf.projIdentifiersVC.tableView reloadData];
+            strongSelf.projIdentifiersVC.hasFetchedIdentifiers = YES;
+            [strongSelf.projIdentifiersVC reloadDataViews];
         });
     }];
 }
@@ -256,6 +260,7 @@
 }
 
 - (void)selectTabAtIndex:(NSUInteger)index didSwipe:(BOOL)didSwipe {
+    /*
     self.projObservationsVC.containedScrollViewDelegate = nil;
     self.projSpeciesVC.containedScrollViewDelegate = nil;
     self.projObserversVC.containedScrollViewDelegate = nil;
@@ -282,6 +287,7 @@
         default:
             break;
     }
+     */
     
     [super selectTabAtIndex:index didSwipe:didSwipe];
 }

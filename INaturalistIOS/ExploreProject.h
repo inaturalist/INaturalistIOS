@@ -10,21 +10,19 @@
 #import <MapKit/MapKit.h>
 #import <Mantle/Mantle.h>
 
-typedef NS_ENUM(NSInteger, ExploreProjectType) {
-    ExploreProjectTypeCollection,
-    ExploreProjectTypeUmbrella,
-    ExploreProjectTypeOldStyle
-};
+#import "ProjectVisualization.h"
 
-
-@interface ExploreProject : MTLModel <MTLJSONSerializing>
+@interface ExploreProject : MTLModel <MTLJSONSerializing, ProjectVisualization>
 
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, assign) NSInteger projectId;
 @property (nonatomic, assign) NSInteger locationId;
 @property (nonatomic, assign) CLLocationDegrees latitude;
 @property (nonatomic, assign) CLLocationDegrees longitude;
-@property (nonatomic, copy) NSString *iconUrl;
+@property (nonatomic, copy) NSURL *iconUrl;
+@property (nonatomic, copy) NSURL *bannerImageUrl;
+@property (nonatomic, copy) NSString *bannerColorString;
 @property (nonatomic, assign) ExploreProjectType type;
+@property (nonatomic, copy) NSString *inatDescription;
 
 @end

@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ProjectVisualization.h"
 
-@class Project;
 
 @interface ProjectAboutViewController : UITableViewController
 
-@property Project *project;
+@property id <ProjectVisualization> project;
 
 @end

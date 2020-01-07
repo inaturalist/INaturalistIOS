@@ -16,6 +16,10 @@
 
 @implementation INatAPI
 
+- (void)delete:(NSString *)path handler:(INatAPIFetchCompletionCountHandler)done {
+    [self requestMethod:@"DELETE" path:path params:nil classMapping:nil handler:done];
+}
+
 - (void)post:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
     [self requestMethod:@"POST" path:path params:params classMapping:classForMapping handler:done];
 }

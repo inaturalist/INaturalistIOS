@@ -21,6 +21,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [self configureEmptyView];
+    
+    self.totalCount = 0;
+    self.tableView.tableFooterView = [UIView new];
+}
+
+- (void)reloadDataViews {
+    [self configureEmptyView];
+    [self.tableView reloadData];
+}
+
+- (void)configureEmptyView {
     self.tableView.backgroundView = ({
         UILabel *label = [UILabel new];
         label.numberOfLines = 0;
@@ -29,7 +41,11 @@
         label.attributedText = ({
             NSString *emptyTitle;
             if ([[INatReachability sharedClient] isNetworkReachable]) {
-                emptyTitle = NSLocalizedString(@"There are no observations for this project yet. Check back soon!", nil);
+                if (self.hasFetchedSpecies) {
+                    emptyTitle = NSLocalizedString(@"There are no observations for this project yet. Check back soon!", nil);
+                } else {
+                    emptyTitle = NSLocalizedString(@"Loading...", nil);
+                }
             } else {
                 emptyTitle = NSLocalizedString(@"No network connection. :(", nil);
             }
@@ -43,8 +59,6 @@
         });
         label;
     });
-    self.totalCount = 0;
-    self.tableView.tableFooterView = [UIView new];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

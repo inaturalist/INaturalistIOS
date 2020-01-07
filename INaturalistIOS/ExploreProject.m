@@ -7,6 +7,7 @@
 //
 
 #import "ExploreProject.h"
+#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 
 @implementation ExploreProject
 
@@ -17,12 +18,19 @@
              @"locationId": @"place_id",
              @"latitude": @"latitude",
              @"longitude": @"longitude",
-             @"iconUrl": @"icon_url",
+             @"iconUrl": @"icon",
              @"type": @"project_type",
+             @"bannerColorString": @"banner_color",
+             @"bannerImageUrl": @"header_image_url",
+             @"inatDescription": @"description",
              };
 }
 
 + (NSValueTransformer *)iconUrlJSONTransformer {
+    return [NSValueTransformer valueTransformerForName:MTLURLValueTransformerName];
+}
+
++ (NSValueTransformer *)bannerImageUrlJSONTransformer {
     return [NSValueTransformer valueTransformerForName:MTLURLValueTransformerName];
 }
 
@@ -41,11 +49,25 @@
     if ([key isEqualToString:@"locationId"]) {
         self.locationId = 0;
     } else if ([key isEqualToString:@"latitude"]) {
-        self.latitude = 0.0;
+        self.latitude = kCLLocationCoordinate2DInvalid.latitude;
     } else if ([key isEqualToString:@"longitude"]) {
-        self.longitude = 0.0;
+        self.longitude = kCLLocationCoordinate2DInvalid.longitude;
+    } else if ([key isEqualToString:@"type"]) {
+        self.type = ExploreProjectTypeOldStyle;
     } else {
         [super setNilValueForKey:key];
+    }
+}
+
+- (BOOL)joined {
+    return NO;
+}
+
+- (UIColor *)bannerColor {
+    if (self.bannerColorString) {
+        return [UIColor colorWithHexString:self.bannerColorString];
+    } else {
+        return [UIColor clearColor];
     }
 }
 

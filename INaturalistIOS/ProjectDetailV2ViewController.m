@@ -25,9 +25,11 @@
 #import "ProjectAboutViewController.h"
 #import "SiteNewsViewController.h"
 #import "UIImage+INaturalist.h"
-#import "ProjectNewsButton.h"
 #import "OnboardingLoginViewController.h"
 #import "INatReachability.h"
+#import "ProjectsAPI.h"
+#import "ExploreProject.h"
+#import "ExploreProjectRealm.h"
 
 // At this offset the Header stops its transformations
 // 200 is the height of the header
@@ -35,7 +37,7 @@
 // 20 is the height of the status bar
 static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 
-@interface ProjectDetailV2ViewController () <ContainedScrollViewDelegate, RKObjectLoaderDelegate>
+@interface ProjectDetailV2ViewController () <RKObjectLoaderDelegate>
 
 @property IBOutlet UIView *projectHeader;
 @property IBOutlet UILabel *projectNameLabel;
@@ -43,16 +45,23 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 @property IBOutlet UIImageView *projectHeaderBackground;
 
 @property IBOutlet UIButton *joinButton;
-@property IBOutlet ProjectNewsButton *newsButton;
+@property IBOutlet UIButton *newsButton;
 @property IBOutlet UIButton *aboutButton;
 
 @property IBOutlet UIView *container;
 
-@property ProjectUser *projectUser;
-
 @end
 
 @implementation ProjectDetailV2ViewController
+
+- (ProjectsAPI *)projectsApi {
+    static ProjectsAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[ProjectsAPI alloc] init];
+    });
+    return _api;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -83,20 +92,25 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
                       forState:UIControlStateNormal];
     self.aboutButton.layer.cornerRadius = 15.0f;
     
-    self.newsButton.newsTextLabel.text = [NSLocalizedString(@"News",a @"News project button") uppercaseString];
+    [self.newsButton setTitle:[NSLocalizedString(@"News",a @"News project button") uppercaseString]
+                     forState:UIControlStateNormal];
     self.newsButton.layer.cornerRadius = 15.0f;
-    [self configureNewsButton];
     
-    NSURL *projectThumbUrl = [NSURL URLWithString:self.project.iconURL];
-    if (projectThumbUrl) {
-        [self.projectThumbnail setImageWithURL:projectThumbUrl];
-        [self.projectHeaderBackground setImageWithURL:projectThumbUrl];
+    if (self.project.iconUrl) {
+        [self.projectThumbnail setImageWithURL:self.project.iconUrl];
     } else {
         self.projectThumbnail.image = [UIImage inat_defaultProjectImage];
-        self.projectThumbnail.backgroundColor = [UIColor whiteColor];
     }
     
-    self.projectHeader.backgroundColor = [UIColor whiteColor];
+    if (self.project.bannerImageUrl) {
+        [self.projectHeaderBackground setImageWithURL:self.project.bannerImageUrl];
+    }
+    
+    if (self.project.bannerColor) {
+        self.projectHeader.backgroundColor = self.project.bannerColor;
+    } else {
+        self.projectHeader.backgroundColor = [UIColor whiteColor];
+    }
     
     self.projectNameLabel.text = self.project.title;
     
@@ -115,8 +129,6 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
                                                                             target:self
                                                                             action:@selector(myBack)];
     
-    self.projectUser = [ProjectUser objectWithPredicate:[NSPredicate predicateWithFormat:@"projectID = %@", self.project.recordID]];
-    
     [self.joinButton addTarget:self
                         action:@selector(joinTapped:)
               forControlEvents:UIControlEventTouchUpInside];
@@ -132,7 +144,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
     if ([segue.identifier isEqualToString:@"containerSegueToViewPager"]) {
         ProjectDetailPageViewController *vc = [segue destinationViewController];
         vc.projectDetailDelegate = self;
-        vc.containedScrollViewDelegate = self;
+        //vc.containedScrollViewDelegate = self;
         vc.project = self.project;
     } else if ([segue.identifier isEqualToString:@"segueToObservationDetail"]) {
         ObsDetailV2ViewController *vc = [segue destinationViewController];
@@ -157,30 +169,8 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    // re-fetch the project to make sure we're getting an updated news item count
-    NSString *path = [NSString stringWithFormat:@"/projects/%ld.json", (long)self.project.recordID.integerValue];
-    __weak typeof(self) weakSelf = self;
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path usingBlock:^(RKObjectLoader *loader) {
         
-        loader.objectMapping = [Project mapping];
-        loader.onDidLoadObject = ^(id object) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            NSDate *now = [NSDate date];
-            [object setSyncedAt:now];
-            
-            NSError *error = nil;
-            [[[RKObjectManager sharedManager] objectStore] save:&error];
-            if (error) {
-                NSString *logMsg = [NSString stringWithFormat:@"SAVE ERROR: %@", error.localizedDescription];
-                [[Analytics sharedClient] debugLog:logMsg];
-            }
-            
-            strongSelf.project = (Project *)object;
-            [strongSelf configureNewsButton];
-        };
-    }];
-    
+    // our extremely custom navbar styling, just for this screen
     [UIView animateWithDuration:0.3f
                      animations:^{
                          [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
@@ -208,7 +198,12 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
                                                                       NSFontAttributeName: [UIFont boldSystemFontOfSize:17],
                                                                       NSForegroundColorAttributeName: [UIColor blackColor],
                                                                       }];
+    
+    // reset our non-standard navbar
     self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+    [self.navigationController.navigationBar setBackgroundImage:nil
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = nil;
 }
 
 - (void)inat_performSegueWithIdentifier:(NSString *)identifier object:(id)object {
@@ -316,7 +311,7 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
         return;
     }
     
-    if (self.projectUser && self.projectUser.syncedAt) {
+    if (self.project.joined) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Are you sure you want to leave this project?", nil)
                                                                        message:NSLocalizedString(@"This will also remove your observations from this project.",nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -347,18 +342,13 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 }
 
 - (void)configureJoinButton {
-    if (self.projectUser) {
+    if (self.project.joined) {
         [self.joinButton setTitle:[NSLocalizedString(@"Leave", @"Leave project button") uppercaseString]
                          forState:UIControlStateNormal];
     } else {
         [self.joinButton setTitle:[NSLocalizedString(@"Join", @"Join project button") uppercaseString]
                          forState:UIControlStateNormal];
     }
-}
-
-- (void)configureNewsButton {
-    self.newsButton.countLabel.text = [NSString stringWithFormat:@"%ld", (long)self.project.newsItemCount.integerValue];
-    self.newsButton.enabled = (self.project.newsItemCount.integerValue > 0);
 }
 
 - (void)presentSignupPrompt:(NSString *)reason {
@@ -374,83 +364,89 @@ static CGFloat OffsetHeaderStop = 200 - 44 - 20;
 #pragma mark - Project Actions
 
 - (void)join {
-    [[Analytics sharedClient] debugLog:@"Network - Join a project"];
     
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = NSLocalizedString(@"Joining...",nil);
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
-    
-    if (!self.projectUser) {
-        self.projectUser = [ProjectUser object];
-        self.projectUser.project = self.project;
-        self.projectUser.projectID = self.project.recordID;
-    }
-    [[RKObjectManager sharedManager] postObject:self.projectUser usingBlock:^(RKObjectLoader *loader) {
-        loader.delegate = self;
-        loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/join", self.project.recordID.intValue];
-        loader.objectMapping = [ProjectUser mapping];
+
+    __weak typeof(self) weakSelf = self;
+    [[self projectsApi] joinProject:self.project.projectId
+                            handler:^(NSArray *results, NSInteger count, NSError *error) {
+        
+        [hud hide:YES];
+        
+        if (error) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error", nil)
+                                                                           message:error.localizedDescription
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:nil]];
+            [weakSelf presentViewController:alert animated:YES completion:nil];
+        } else {
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            
+            if ([weakSelf.project isKindOfClass:[ExploreProject class]]) {
+                ExploreProject *ep = (ExploreProject *)weakSelf.project;
+                // make this project in realm, set joined to true
+                NSDictionary *value = [ExploreProjectRealm valueForMantleModel:ep];
+                NSMutableDictionary *mutableValue = [value mutableCopy];
+                mutableValue[@"joined"] = @(YES);
+                value = [NSDictionary dictionaryWithDictionary:mutableValue];
+                [realm beginWriteTransaction];
+                ExploreProjectRealm *epr = [ExploreProjectRealm createOrUpdateInDefaultRealmWithValue:value];
+                [realm commitWriteTransaction];
+
+                // set self.project pointer to the new realm project
+                weakSelf.project = epr;
+            } else if ([weakSelf.project isKindOfClass:[ExploreProjectRealm class]]) {
+                // update this project in realm
+                RLMRealm *realm = [RLMRealm defaultRealm];
+                [realm beginWriteTransaction];
+                [self.project setJoined:YES];
+                [realm commitWriteTransaction];
+            }
+            
+            [self configureJoinButton];
+        }
+        
     }];
 }
 
 - (void)leave {
-    [[Analytics sharedClient] debugLog:@"Network - Leave a project"];
     
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = NSLocalizedString(@"Leaving...",nil);
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
-    
-    [[RKObjectManager sharedManager] deleteObject:self.projectUser usingBlock:^(RKObjectLoader *loader) {
-        loader.delegate = self;
-        loader.resourcePath = [NSString stringWithFormat:@"/projects/%d/leave", self.project.recordID.intValue];
-    }];
-}
 
-#pragma mark - RKObjectLoaderDelegate && RKRequestDelegate
-
-- (void)request:(RKRequest *)request didReceiveResponse:(RKResponse *)response {
-    if (request.method == RKRequestMethodDELETE) {
-        if (response.statusCode == 200) {
-            self.projectUser = nil;
+    __weak typeof(self) weakSelf = self;
+    [[self projectsApi] leaveProject:self.project.projectId
+                             handler:^(NSArray *results, NSInteger count, NSError *error) {
+        
+        [hud hide:YES];
+        
+        if (error) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error", nil)
+                                                                           message:error.localizedDescription
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:nil]];
+            [weakSelf presentViewController:alert animated:YES completion:nil];
+        } else {
+            // this will almost certainly be happening on a realm project, so
+            // do it in a realm transaction
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            [realm beginWriteTransaction];
+            [self.project setJoined:NO];
+            [realm commitWriteTransaction];
+            
             [self configureJoinButton];
         }
-    }
+    }];
 }
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObject:(id)object {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-    });
-    
-    ProjectUser *pu = object;
-    if (pu) {
-        pu.syncedAt = [NSDate date];
-        [pu save];
-    }
-    self.projectUser = pu;
-    
-    [self configureJoinButton];
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-    });
-    
-    if (objectLoader.response.statusCode == 401) {
-        [self presentSignupPrompt:NSLocalizedString(@"You must be signed in to do that.", @"Reason text for signup prompt while trying to sync a project.")];
-    } else {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Whoops!",nil)
-                                                                       message:[NSString stringWithFormat:NSLocalizedString(@"Looks like there was an error: %@",nil), error.localizedDescription]
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
-}
-
 
 
 @end
