@@ -12,10 +12,6 @@
 
 @implementation GuidesAPI
 
-- (void)guideWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
-    
-}
-
 - (void)guidesForLoggedInUserHandler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch user guides from rails"];
     

@@ -12,7 +12,6 @@
 
 @interface GuidesAPI : INatRailsAPI
 
-- (void)guideWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)guidesForLoggedInUserHandler:(INatAPIFetchCompletionCountHandler)done;
 - (void)guidesNearLocation:(CLLocationCoordinate2D)coordinate handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)guidesMatching:(NSString *)searchTerm handler:(INatAPIFetchCompletionCountHandler)done;
