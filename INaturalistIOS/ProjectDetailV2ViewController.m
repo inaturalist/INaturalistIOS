@@ -10,7 +10,6 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
-#import <RestKit/RestKit.h>
 
 #import "ProjectDetailV2ViewController.h"
 #import "Project.h"
@@ -30,7 +29,7 @@
 #import "ExploreProject.h"
 #import "ExploreProjectRealm.h"
 
-@interface ProjectDetailV2ViewController () <RKObjectLoaderDelegate>
+@interface ProjectDetailV2ViewController ()
 
 @property IBOutlet UIView *projectHeader;
 @property IBOutlet UILabel *projectNameLabel;
@@ -200,10 +199,6 @@
 
 - (void)inat_performSegueWithIdentifier:(NSString *)identifier object:(id)object {
     [self performSegueWithIdentifier:identifier sender:object];
-}
-
-- (void)dealloc {
-    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 #pragma mark - UIButton targets
