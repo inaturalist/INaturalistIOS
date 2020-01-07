@@ -20,6 +20,7 @@
     if (model.iconUrl) { value[@"iconUrlString"] = model.iconUrl.absoluteString; }
     if (model.bannerImageUrl) { value[@"bannerImageUrlString"] = model.bannerImageUrl.absoluteString; }
     if (model.bannerColorString) { value[@"bannerColorString"] = model.bannerColorString; }
+    if (model.inatDescription) { value[@"inatDescription"] = model.inatDescription; }
 
     value[@"latitude"] = @(model.latitude);
     value[@"longitude"] = @(model.longitude);
@@ -49,6 +50,7 @@
         self.bannerImageUrlString = model.bannerImageUrl.absoluteString;
         self.type = model.type;
         self.joined = NO;
+        self.inatDescription = model.inatDescription;
     }
     return self;
 }
