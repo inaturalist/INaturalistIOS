@@ -12,7 +12,6 @@
 
 - (NSString *)apiBaseUrl {
     return @"https://www.inaturalist.org/";
-    //return @"https://enb6zhuuol63e.x.pipedream.net";
 }
 
 - (NSString *)authToken {
