@@ -12,7 +12,10 @@
 
 @interface ProjectsAPI : INatAPI
 
-- (void)projectsForUser:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
+@property (readonly) NSInteger projectsPerPage;
+@property (readonly) NSInteger observationsProjectPerPage;
+
+- (void)projectsForUser:(NSInteger)userId page:(NSInteger)page handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)featuredProjectsHandler:(INatAPIFetchCompletionCountHandler)done;
 - (void)projectsNearLocation:(CLLocationCoordinate2D)coordinate handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)projectsMatching:(NSString *)searchTerm handler:(INatAPIFetchCompletionCountHandler)done;

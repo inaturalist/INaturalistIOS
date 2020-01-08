@@ -18,29 +18,40 @@
 
 @implementation ProjectsAPI
 
-- (void)projectsForUser:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
-    [[Analytics sharedClient] debugLog:@"Network - fetch user projects from node"];
-    NSString *path =[NSString stringWithFormat:@"users/%ld/projects?per_page=100", (long)userId];
+- (NSInteger)projectsPerPage {
+    return 100;
+}
+
+- (NSInteger)observationsProjectPerPage {
+    return 200;
+}
+
+- (void)projectsForUser:(NSInteger)userId page:(NSInteger)page handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - fetch a page of user projects from node"];
+    NSString *path =[NSString stringWithFormat:@"users/%ld/projects?per_page=%ld&page=%ld",
+                     (long)userId, (long)self.projectsPerPage, (long)page];
     [self fetch:path classMapping:ExploreProject.class handler:done];
+
 }
 
 -(void)featuredProjectsHandler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch featured projects from node"];
-    NSString *path = @"projects?featured=true&per_page=50";
+    NSString *path =[NSString stringWithFormat:@"projects?featured=true&per_page=%ld",
+                     (long)self.projectsPerPage];
     [self fetch:path classMapping:ExploreProject.class handler:done];
 }
 
 - (void)projectsNearLocation:(CLLocationCoordinate2D)coordinate handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch nearby projects from node"];
-    NSString *path =[NSString stringWithFormat:@"projects?per_page=100&lat=%f&lng=%f&order_by=distance",
-                     coordinate.latitude, coordinate.longitude];
+    NSString *path =[NSString stringWithFormat:@"projects?per_page=%ld&lat=%f&lng=%f&order_by=distance",
+                     (long)self.projectsPerPage, coordinate.latitude, coordinate.longitude];
     [self fetch:path classMapping:ExploreProject.class handler:done];
 }
 
 - (void)projectsMatching:(NSString *)searchTerm handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - search for projects from node"];
-    NSString *path =[NSString stringWithFormat:@"projects?per_page=100&q=%@",
-                     searchTerm];
+    NSString *path =[NSString stringWithFormat:@"projects?per_page=%ld&q=%@",
+                     (long)self.projectsPerPage, searchTerm];
     [self fetch:path classMapping:ExploreProject.class handler:done];
 }
 
@@ -62,8 +73,8 @@
 
 - (void)observationsForProjectId:(NSInteger)projectId handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch observations for project from node"];
-    NSString *path = [NSString stringWithFormat:@"observations?project_id=%ld&per_page=200",
-                      (long)projectId];
+    NSString *path = [NSString stringWithFormat:@"observations?project_id=%ld&per_page=%ld",
+                      (long)projectId, (long)self.observationsProjectPerPage];
     [self fetch:path classMapping:[ExploreObservation class] handler:done];
 }
 

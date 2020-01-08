@@ -128,33 +128,50 @@ static const int ListControlIndexNearby = 2;
 }
 
 - (void)syncUserProjects {
+    // start by deleting all projects stored in realm
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    [realm deleteObjects:[ExploreProjectRealm allObjects]];
+    [realm commitWriteTransaction];
+    
+    // empty the UI
+    [self.tableView reloadData];
+    
+    // fetch first page of joined projects, if we can
 	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 	if ([appDelegate.loginController isLoggedIn]) {
         ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
-        
-        __weak typeof(self)weakSelf = self;
-        [[self projectsApi] projectsForUser:me.userId handler:^(NSArray *results, NSInteger count, NSError *error) {
-            RLMRealm *realm = [RLMRealm defaultRealm];
-            for (ExploreProject *eg in results) {
-                NSDictionary *value = [ExploreProjectRealm valueForMantleModel:eg];
-                NSMutableDictionary *mutableValue = [value mutableCopy];
-                mutableValue[@"joined"] = @(YES);
-                value = [NSDictionary dictionaryWithDictionary:mutableValue];
-                [realm beginWriteTransaction];
-                [ExploreProjectRealm createOrUpdateInDefaultRealmWithValue:value];
-                [realm commitWriteTransaction];
-            }
-
-            // update tableview
-            [weakSelf.tableView reloadData];
-            
-        }];
-        
+        [self syncUserProjectsUserId:me.userId page:1];
     } else {
         [self syncFinished];
 
         [self showSignupPrompt:NSLocalizedString(@"You must be logged in to sync user projects.", @"Signup prompt reason when user tries to sync user projects.")];
     }
+}
+
+- (void)syncUserProjectsUserId:(NSInteger)userId page:(NSInteger)page {
+    __weak typeof(self)weakSelf = self;
+    [[self projectsApi] projectsForUser:userId page:page handler:^(NSArray *results, NSInteger totalCount, NSError *error) {
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        for (ExploreProject *eg in results) {
+            NSDictionary *value = [ExploreProjectRealm valueForMantleModel:eg];
+            NSMutableDictionary *mutableValue = [value mutableCopy];
+            mutableValue[@"joined"] = @(YES);
+            value = [NSDictionary dictionaryWithDictionary:mutableValue];
+            [realm beginWriteTransaction];
+            [ExploreProjectRealm createOrUpdateInDefaultRealmWithValue:value];
+            [realm commitWriteTransaction];
+        }
+
+        // update tableview
+        [weakSelf.tableView reloadData];
+        
+        NSInteger totalReceived = results.count + ((page-1) * [[self projectsApi] projectsPerPage]);
+        if (totalReceived < totalCount) {
+            // recursively fetch another page of joined projects
+            [self syncUserProjectsUserId:userId page:page+1];
+        }
+    }];
 }
 
 
