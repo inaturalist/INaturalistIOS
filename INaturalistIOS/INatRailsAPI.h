@@ -10,4 +10,6 @@
 
 @interface INatRailsAPI : INatAPI
 
+- (NSString *)authToken;
+
 @end

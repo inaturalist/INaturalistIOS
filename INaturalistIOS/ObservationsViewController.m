@@ -52,6 +52,7 @@
 #import "INatReachability.h"
 #import "NSLocale+INaturalist.h"
 #import "ExploreDeletedRecord.h"
+#import "YearInReviewAPI.h"
 
 @interface ObservationsViewController () <NSFetchedResultsControllerDelegate, UploadManagerNotificationDelegate, RKObjectLoaderDelegate, RKRequestDelegate, RKObjectMapperDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
     
@@ -59,14 +60,26 @@
 
     NSFetchedResultsController *_fetchedResultsController;
 }
-@property RKObjectLoader *meObjectLoader;
+
 @property MeHeaderView *meHeader;
+@property AnonHeaderView *anonHeader;
+@property RKObjectLoader *meObjectLoader;
 @property (nonatomic, strong) NSDate *lastRefreshAt;
 @property (readonly) NSFetchedResultsController *fetchedResultsController;
 @property NSMutableDictionary *uploadProgress;
 @end
 
 @implementation ObservationsViewController
+
+- (YearInReviewAPI *)yearInReviewApi {
+    static YearInReviewAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[YearInReviewAPI alloc] init];
+    });
+    return _api;
+}
+
 
 - (PeopleAPI *)peopleApi {
     static PeopleAPI *_api = nil;
@@ -619,13 +632,74 @@
 
 #pragma mark - Year in Review stuff
 
-- (void)generateYearInReviewStats:(NSInteger)year {
-    // url is POST https://www.inaturalist.org/stats/generate_year?year=2019
+- (void)checkIfYearInReviewAlreadyGeneratedYear:(NSInteger)year {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (appDelegate.loggedIn) {
+        NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:[NSDate date]];
+        NSInteger lastYear = components.year - 1;
+        if (![[self yearInReviewApi] loggedInUserHasGeneratedStatsForYear:lastYear]) {
+            NSString *loggedInUsername = appDelegate.loginController.meUserLocal.login;
+            if (loggedInUsername) {
+                // this is fire and forget
+                [[self yearInReviewApi] checkIfYiRStatsGeneratedForUser:loggedInUsername year:year];
+            }
+        }
+    }
+}
     
+- (void)tappedINatYearInReview {
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:[NSDate date]];
+    NSInteger lastYear = components.year - 1;
+    NSString *yirUrlString = [NSString stringWithFormat:@"https://www.inaturalist.org/stats/%ld",
+                              (long)lastYear];
+    NSURL *yirUrl = [NSURL URLWithString:yirUrlString];
+    [[UIApplication sharedApplication] openURL:yirUrl];
 }
 
-- (void)checkYearInReviewStats:(NSInteger)year {
-    // url is POST https://www.inaturalist.org/stats/generate_year?year=2019
+- (void)tappedMeYearInReview {
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:[NSDate date]];
+    NSInteger lastYear = components.year - 1;
+
+    if ([[self yearInReviewApi] loggedInUserHasGeneratedStatsForYear:lastYear]) {
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        NSString *loggedInUsername = appDelegate.loginController.meUserLocal.login;
+        if (loggedInUsername) {
+            NSString *myYirUrlString = [NSString stringWithFormat:@"https://www.inaturalist.org/stats/%ld/%@",
+                                        (long)lastYear, loggedInUsername];
+            NSURL *myYirUrl = [NSURL URLWithString:myYirUrlString];
+            [[UIApplication sharedApplication] openURL:myYirUrl];
+        }
+    } else {
+        // trigger generation
+        [self generateYearInReviewStats];
+    }
+}
+
+- (void)generateYearInReviewStats {
+    self.meHeader.meYiRButton.enabled = FALSE;
+    [self.meHeader.meYiRButton setTitle:NSLocalizedString(@"Generating...", @"when we're generating yir stats on the server")
+                               forState:UIControlStateNormal];
+    
+    __weak typeof(self)weakSelf = self;
+    
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:[NSDate date]];
+    NSInteger lastYear = components.year - 1;
+
+    [[self yearInReviewApi] generateYiRStatsForYear:lastYear handler:^(BOOL generated, NSError *error) {
+        if (generated) {
+            // reactivate the button and change the text back
+            weakSelf.meHeader.meYiRButton.enabled = TRUE;
+            [weakSelf.meHeader.meYiRButton setTitle:NSLocalizedString(@"My Year in Review", nil)
+                                           forState:UIControlStateNormal];
+        } else if (error) {
+            // TODO: show a popup with the error
+        } else {
+            // check again in 5 seconds
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [weakSelf generateYearInReviewStats];
+            });
+        }
+    }];
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
@@ -700,45 +774,6 @@
     return 54.0f;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 100.0f;
-}
-
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-	if ([appDelegate.loginController isLoggedIn]) {
-        if (!self.meHeader) {
-            self.meHeader = [[MeHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
-        }
-        
-        [self.meHeader.iconButton addTarget:self
-                                     action:@selector(meTapped:)
-                           forControlEvents:UIControlEventTouchUpInside];
-
-        [self configureHeaderForLoggedInUser];
-
-        return self.meHeader;
-        
-    } else {
-        AnonHeaderView *header = [[AnonHeaderView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 100.0f)];
-        header.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-        
-        [header.signupButton bk_addEventHandler:^(id sender) {
-            
-            [self presentSignupSplashWithReason:nil];
-            
-        } forControlEvents:UIControlEventTouchUpInside];
-        
-        [header.loginButton bk_addEventHandler:^(id sender) {
-            
-            [self presentLoginSplashWithReason:nil];
-
-        } forControlEvents:UIControlEventTouchUpInside];
-        
-        return header;
-    }
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
@@ -749,6 +784,19 @@
         return;
     } else {
         [self performSegueWithIdentifier:@"obsDetailV2" sender:o];
+    }
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 160;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (appDelegate.loggedIn) {
+        return self.meHeader;
+    } else {
+        return self.anonHeader;
     }
 }
 
@@ -1082,6 +1130,7 @@
 - (void)loadUserForHeader {
 	INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 	if ([appDelegate.loginController isLoggedIn]) {
+
         ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
         self.navigationItem.title = me.login;
         
@@ -1093,6 +1142,7 @@
         }
     } else {
         self.navigationItem.title = NSLocalizedString(@"Me", @"Placeholder text for not logged title on me tab.");
+
     }
 }
 
@@ -1112,6 +1162,17 @@
         [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Fetch Error: %@", error.localizedDescription]];
     }
     [self refreshRequestedNotify:YES];
+    
+    [self loadUserForHeader];
+    
+    // check if year in review was generated for this user
+    NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:[NSDate date]];
+    NSInteger lastYear = components.year - 1;
+
+    [self checkIfYearInReviewAlreadyGeneratedYear:lastYear];
+            
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
 }
 
 - (void)coreDataRebuilt {
@@ -1181,7 +1242,20 @@
 {
     [super viewDidLoad];
     
+    self.meHeader = [[[NSBundle mainBundle] loadNibNamed:@"MeHeaderView"
+                                                   owner:nil
+                                                 options:nil] firstObject];
     
+    self.anonHeader = [[[NSBundle mainBundle] loadNibNamed:@"AnonHeaderView"
+                                                     owner:nil
+                                                   options:nil] firstObject];
+
+    [self.meHeader.iconButton addTarget:self
+                                 action:@selector(meTapped:)
+                       forControlEvents:UIControlEventTouchUpInside];
+    
+    [self configureHeaderForLoggedInUser];
+        
     self.tableView.backgroundView = ({
         UIView *view = [UIView new];
         
@@ -1347,6 +1421,42 @@
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.loginController.uploadManager setDelegate:self];
+    
+    if (appDelegate.loggedIn) {
+        NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:[NSDate date]];
+        NSInteger lastYear = components.year - 1;
+
+        [self checkIfYearInReviewAlreadyGeneratedYear:lastYear];
+    } else {
+        
+    }
+    
+    
+    
+    [self.meHeader.meYiRButton addTarget:self
+                                  action:@selector(tappedMeYearInReview)
+                        forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.meHeader.inatYiRButton addTarget:self
+                                    action:@selector(tappedINatYearInReview)
+                          forControlEvents:UIControlEventTouchUpInside];
+        
+    [self.anonHeader.loginButton addTarget:self
+                                  action:@selector(login)
+                        forControlEvents:UIControlEventTouchUpInside];
+    
+    [self.anonHeader.signupButton addTarget:self
+                                   action:@selector(signup)
+                         forControlEvents:UIControlEventTouchUpInside];
+    
+}
+
+- (void)login {
+    [self presentLoginSplashWithReason:nil];
+}
+
+- (void)signup {
+    [self presentSignupSplashWithReason:nil];
 }
 
 - (void)settings {
@@ -1744,6 +1854,8 @@
     // dirty the me user to force re-fetching
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.loginController dirtyLocalMeUser];
+    [self configureHeaderForLoggedInUser];
+    [self.meHeader stopAnimatingUpload];
 
     [self syncStopped];
 }

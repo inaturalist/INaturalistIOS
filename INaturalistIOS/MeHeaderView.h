@@ -12,9 +12,12 @@
 
 @interface MeHeaderView : UIView
 
-@property UIButton *iconButton;
-@property UILabel *obsCountLabel;
-@property UIActivityIndicatorView *uploadingSpinner;
+@property IBOutlet UIButton *iconButton;
+@property IBOutlet UILabel *obsCountLabel;
+@property IBOutlet UIActivityIndicatorView *uploadingSpinner;
+
+@property IBOutlet UIButton *inatYiRButton;
+@property IBOutlet UIButton *meYiRButton;
 
 - (void)startAnimatingUpload;
 - (void)stopAnimatingUpload;

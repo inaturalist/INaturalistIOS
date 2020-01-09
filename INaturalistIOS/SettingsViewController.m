@@ -379,14 +379,18 @@ static const int ChangePartnerMinimumInterval = 86400;
 
 - (void)localSignOut
 {
-    // clear preference cached signin info & preferences
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults removeObjectForKey:INatUsernamePrefKey];
-    [defaults removeObjectForKey:kINatUserIdPrefKey];
-    [defaults removeObjectForKey:INatPasswordPrefKey];
-    [defaults removeObjectForKey:INatTokenPrefKey];
-    [defaults removeObjectForKey:kInatCustomBaseURLStringKey];
-    [defaults synchronize];
+    // clear all preferences
+    [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:NSBundle.mainBundle.bundleIdentifier];
+    
+    // also resets this stuff to defaults (all on)
+    [[NSUserDefaults standardUserDefaults] setBool:YES
+                                            forKey:kINatAutocompleteNamesPrefKey];
+    [[NSUserDefaults standardUserDefaults] setBool:YES
+                                            forKey:kInatAutouploadPrefKey];
+    [[NSUserDefaults standardUserDefaults] setBool:YES
+                                            forKey:kINatSuggestionsPrefKey];
+
+    [[NSUserDefaults standardUserDefaults] synchronize];
     
     // clear google signin
     if ([[GIDSignIn sharedInstance] hasAuthInKeychain]) {
