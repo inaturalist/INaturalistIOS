@@ -434,23 +434,33 @@
         }
     }
     
+    // upon cell re-use, these attrs aren't always cleared :(
+    // so we explicitly set the strikethrough to none or single
+    // line every dequeue :/
+    NSDictionary *attrs = @{
+        NSStrikethroughStyleAttributeName: @(NSUnderlineStyleNone)
+    };
     if (![identification isCurrent]) {
-        NSDictionary *attrs = @{
-                                NSStrikethroughStyleAttributeName: @(NSUnderlineStyleSingle)
-                                };
-        
-        
-        NSAttributedString* attrText = [[NSAttributedString alloc] initWithString:cell.taxonNameLabel.text
-                                                                       attributes:attrs];
-        cell.taxonNameLabel.attributedText = attrText;
-        
-        if (cell.taxonSecondaryNameLabel.text) {
-            attrText = [[NSAttributedString alloc] initWithString:cell.taxonSecondaryNameLabel.text
-                                                       attributes:attrs];
-            cell.taxonSecondaryNameLabel.attributedText = attrText;
-        }
+        attrs = @{
+            NSStrikethroughStyleAttributeName: @(NSUnderlineStyleSingle)
+        };
     }
     
+    // do the primary name label
+    NSAttributedString* attrText = [[NSAttributedString alloc] initWithString:cell.taxonNameLabel.text
+                                                                   attributes:attrs];
+    cell.taxonNameLabel.attributedText = attrText;
+    
+    // if necessary, do the secondary name label, too
+    if (cell.taxonSecondaryNameLabel.text) {
+        attrText = [[NSAttributedString alloc] initWithString:cell.taxonSecondaryNameLabel.text
+                                                   attributes:attrs];
+        cell.taxonSecondaryNameLabel.attributedText = attrText;
+    }
+    
+    // cancel any existing download task
+    [cell.taxonImageView cancelImageDownloadTask];
+    cell.taxonImageView.image = nil;
     
     if ([identification taxonIconUrl]) {
         [cell.taxonImageView setImageWithURL:[identification taxonIconUrl]];
