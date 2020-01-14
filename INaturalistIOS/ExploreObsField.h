@@ -26,7 +26,4 @@ typedef NS_ENUM(NSInteger, ExploreObsFieldDataType) {
 @property (assign) NSInteger obsFieldId;
 @property (assign) ExploreObsFieldDataType dataType;
 
-// TODO: datatype - make an enum for it
-
-
 @end
