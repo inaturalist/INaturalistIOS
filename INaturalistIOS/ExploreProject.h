@@ -25,4 +25,7 @@
 @property (nonatomic, assign) ExploreProjectType type;
 @property (nonatomic, copy) NSString *inatDescription;
 
+@property (nonatomic, copy) NSArray *projectObsFields;
+@property (readonly) NSArray *sortedProjectObsFields;
+
 @end

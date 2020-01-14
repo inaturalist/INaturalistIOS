@@ -8,6 +8,7 @@
 
 #import "ExploreProject.h"
 #import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+#import "ExploreProjectObsField.h"
 
 @implementation ExploreProject
 
@@ -23,6 +24,7 @@
              @"bannerColorString": @"banner_color",
              @"bannerImageUrl": @"header_image_url",
              @"inatDescription": @"description",
+             @"projectObsFields": @"project_observation_fields",
              };
 }
 
@@ -32,6 +34,10 @@
 
 + (NSValueTransformer *)bannerImageUrlJSONTransformer {
     return [NSValueTransformer valueTransformerForName:MTLURLValueTransformerName];
+}
+
++ (NSValueTransformer *)projectObsFieldsJSONTransformer {
+    return [MTLValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreProjectObsField.class];
 }
 
 + (NSValueTransformer *)typeJSONTransformer {
@@ -69,6 +75,12 @@
     } else {
         return [UIColor clearColor];
     }
+}
+
+- (NSArray *)sortedProjectObsFields {
+    NSSortDescriptor *position = [NSSortDescriptor sortDescriptorWithKey:@"position"
+                                                               ascending:YES];
+    return [self.projectObsFields sortedArrayUsingDescriptors:@[ position ]];
 }
 
 @end
