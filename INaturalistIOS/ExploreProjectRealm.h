@@ -11,6 +11,7 @@
 #import "ExploreProject.h"
 #import "Project.h"
 #import "ProjectVisualization.h"
+#import "ExploreProjectObsFieldRealm.h"
 
 @interface ExploreProjectRealm : RLMObject <ProjectVisualization>
 
@@ -27,6 +28,9 @@
 @property NSString *inatDescription;
 
 - (instancetype)initWithMantleModel:(ExploreProject *)model;
+
+// to-many relationships
+@property RLMArray<ExploreProjectObsFieldRealm *><ExploreProjectObsFieldRealm> *projectObsFields;
 
 + (NSDictionary *)valueForMantleModel:(ExploreProject *)model;
 + (NSDictionary *)valueForCoreDataModel:(Project *)model;

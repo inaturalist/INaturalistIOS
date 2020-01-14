@@ -212,6 +212,8 @@
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
 		FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872701A2D048300D2168E /* RestrictedListHeader.m */; };
 		FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */; };
+		FA8B8DD523CE7266007FBA63 /* ExploreObsFieldRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8B8DD423CE7266007FBA63 /* ExploreObsFieldRealm.m */; };
+		FA8B8DD823CE7279007FBA63 /* ExploreProjectObsFieldRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8B8DD723CE7279007FBA63 /* ExploreProjectObsFieldRealm.m */; };
 		FA8EBCE4230DC6E100C1D789 /* UIImage+MapAnnotations.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8EBCE3230DC6E100C1D789 /* UIImage+MapAnnotations.m */; };
 		FA8EBCE7230DE48400C1D789 /* ExploreDeletedRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8EBCE6230DE48400C1D789 /* ExploreDeletedRecord.m */; };
 		FA9249821EF85FD000E0C387 /* ExploreTaxonScore.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9249811EF85FD000E0C387 /* ExploreTaxonScore.m */; };
@@ -812,6 +814,10 @@
 		FA88B6781AB8E1660004B4C6 /* ObsCameraOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsCameraOverlay.h; sourceTree = "<group>"; };
 		FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsCameraOverlay.m; sourceTree = "<group>"; };
 		FA89FF221AFD4A8B00B0611A /* INatPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatPhoto.h; sourceTree = "<group>"; };
+		FA8B8DD323CE7266007FBA63 /* ExploreObsFieldRealm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreObsFieldRealm.h; sourceTree = "<group>"; };
+		FA8B8DD423CE7266007FBA63 /* ExploreObsFieldRealm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreObsFieldRealm.m; sourceTree = "<group>"; };
+		FA8B8DD623CE7279007FBA63 /* ExploreProjectObsFieldRealm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreProjectObsFieldRealm.h; sourceTree = "<group>"; };
+		FA8B8DD723CE7279007FBA63 /* ExploreProjectObsFieldRealm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreProjectObsFieldRealm.m; sourceTree = "<group>"; };
 		FA8BC5E21D5011BB001355F5 /* INaturalist2.15.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.15.xcdatamodel; sourceTree = "<group>"; };
 		FA8EBCE2230DC6E100C1D789 /* UIImage+MapAnnotations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+MapAnnotations.h"; sourceTree = "<group>"; };
 		FA8EBCE3230DC6E100C1D789 /* UIImage+MapAnnotations.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+MapAnnotations.m"; sourceTree = "<group>"; };
@@ -1902,6 +1908,12 @@
 				FAB0B8ED237F37C000E73681 /* ExploreGuideRealm.m */,
 				FAFED1FD1DB5A2730015CCBA /* ExploreIdentificationRealm.h */,
 				FAFED1FE1DB5A2730015CCBA /* ExploreIdentificationRealm.m */,
+				FA8B8DD323CE7266007FBA63 /* ExploreObsFieldRealm.h */,
+				FA8B8DD423CE7266007FBA63 /* ExploreObsFieldRealm.m */,
+				FA8B8DD623CE7279007FBA63 /* ExploreProjectObsFieldRealm.h */,
+				FA8B8DD723CE7279007FBA63 /* ExploreProjectObsFieldRealm.m */,
+				FAFA9C9823C40A40002E22FD /* ExploreProjectRealm.h */,
+				FAFA9C9923C40A40002E22FD /* ExploreProjectRealm.m */,
 				FA427EF01ECD1794003B26C3 /* ExploreTaxonPhotoRealm.h */,
 				FA427EF11ECD1794003B26C3 /* ExploreTaxonPhotoRealm.m */,
 				FA25520E1D1F49A8005D2128 /* ExploreTaxonRealm.h */,
@@ -1910,8 +1922,6 @@
 				FAFED1F51DB59EA90015CCBA /* ExploreUpdateRealm.m */,
 				FAFED1F71DB5A25C0015CCBA /* ExploreUserRealm.h */,
 				FAFED1F81DB5A25C0015CCBA /* ExploreUserRealm.m */,
-				FAFA9C9823C40A40002E22FD /* ExploreProjectRealm.h */,
-				FAFA9C9923C40A40002E22FD /* ExploreProjectRealm.m */,
 			);
 			name = Realm;
 			sourceTree = "<group>";
@@ -2453,6 +2463,7 @@
 				FA0F1AFB1BBB410000533ED5 /* ObservationViewUploadingCell.m in Sources */,
 				FA4C19671B30EEE60066CA22 /* PartnerController.m in Sources */,
 				FAFAF7021BA0D64700CCADC2 /* SubtitleDisclosureCell.m in Sources */,
+				FA8B8DD523CE7266007FBA63 /* ExploreObsFieldRealm.m in Sources */,
 				FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */,
 				1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */,
 				FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */,
@@ -2614,6 +2625,7 @@
 				FADDA3BC1DBABA9900FB054F /* NewsPagerViewController.m in Sources */,
 				FA3F20311A141AEE00928102 /* ShortcutSearchItem.m in Sources */,
 				FA78DFBD1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m in Sources */,
+				FA8B8DD823CE7279007FBA63 /* ExploreProjectObsFieldRealm.m in Sources */,
 				FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */,
 				FA3F1F8D1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m in Sources */,
 				196E4E1F18D23C22009CE429 /* UIColor+INaturalist.m in Sources */,

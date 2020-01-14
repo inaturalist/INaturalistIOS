@@ -21,6 +21,14 @@
     if (model.bannerImageUrl) { value[@"bannerImageUrlString"] = model.bannerImageUrl.absoluteString; }
     if (model.bannerColorString) { value[@"bannerColorString"] = model.bannerColorString; }
     if (model.inatDescription) { value[@"inatDescription"] = model.inatDescription; }
+    
+    if (model.projectObsFields) {
+        NSMutableArray *pofs = [NSMutableArray array];
+        for (ExploreProjectObsField *projectObsField in model.projectObsFields) {
+            [pofs addObject:[ExploreProjectObsFieldRealm valueForMantleModel:projectObsField]];
+        }
+        value[@"projectObsFields"] = [NSArray arrayWithArray:pofs];
+    }
 
     value[@"latitude"] = @(model.latitude);
     value[@"longitude"] = @(model.longitude);
