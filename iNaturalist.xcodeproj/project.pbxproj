@@ -17,7 +17,6 @@
 		190687CA151D1EC400D5B6E4 /* TaxonDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */; };
 		190AF2D714FC258F00F73F2B /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190AF2D614FC258F00F73F2B /* SettingsViewController.m */; };
 		191426EB180DC20F005165D8 /* GuidePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191426EA180DC20F005165D8 /* GuidePageViewController.m */; };
-		191490A41513C7C300231C80 /* ProjectChooserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191490A31513C7C300231C80 /* ProjectChooserViewController.m */; };
 		191B0B32150015EA00F2508E /* AccuracyCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 191B0B31150015EA00F2508E /* AccuracyCircleView.m */; };
 		191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 191B0B341500A8D900F2508E /* EditLocationAnnoView.m */; };
 		191C5C6A17D3F5660086DBEB /* GuidesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 191C5C6917D3F5660086DBEB /* GuidesViewController.m */; };
@@ -344,8 +343,6 @@
 		190C3205153CCE98000257E0 /* INaturalist2.1.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.1.xcdatamodel; sourceTree = "<group>"; };
 		191426E9180DC20F005165D8 /* GuidePageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuidePageViewController.h; sourceTree = "<group>"; };
 		191426EA180DC20F005165D8 /* GuidePageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GuidePageViewController.m; sourceTree = "<group>"; };
-		191490A21513C7C300231C80 /* ProjectChooserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectChooserViewController.h; sourceTree = "<group>"; };
-		191490A31513C7C300231C80 /* ProjectChooserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectChooserViewController.m; sourceTree = "<group>"; };
 		191B0B30150015EA00F2508E /* AccuracyCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccuracyCircleView.h; sourceTree = "<group>"; };
 		191B0B31150015EA00F2508E /* AccuracyCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccuracyCircleView.m; sourceTree = "<group>"; };
 		191B0B331500A8D900F2508E /* EditLocationAnnoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditLocationAnnoView.h; sourceTree = "<group>"; };
@@ -1297,8 +1294,6 @@
 				19640DE51508100A003BF888 /* MapTypeViewController.m */,
 				1927514C14E9CCC9000ABAC4 /* ObservationsViewController.h */,
 				1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */,
-				191490A21513C7C300231C80 /* ProjectChooserViewController.h */,
-				191490A31513C7C300231C80 /* ProjectChooserViewController.m */,
 				FA78DFBB1BC5C0D4002DCCB1 /* ProjectObservationsViewController.h */,
 				FA78DFBC1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m */,
 				FA7C534F1BCD9D3100A0D5AA /* ProjectObsFieldViewController.h */,
@@ -2526,7 +2521,6 @@
 				FA75584C1B9A599800762D7B /* DisclosureCell.m in Sources */,
 				FAD05EA41B9A911400C14085 /* TextViewCell.m in Sources */,
 				FAEF234E1C7D2B3400208F44 /* SpeciesCountCell.m in Sources */,
-				191490A41513C7C300231C80 /* ProjectChooserViewController.m in Sources */,
 				FAA8D26323CD267200757A1E /* ExploreObsField.m in Sources */,
 				FA3F1F911A12B42E00928102 /* ExploreTaxon+SearchResultsHelper.m in Sources */,
 				FA2552131D1F4D62005D2128 /* TaxaAPI.m in Sources */,
