@@ -21,6 +21,56 @@
     [self fetch:path classMapping:ExploreUser.class handler:done];
 }
 
+- (void)setSiteId:(NSInteger)siteId forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - set user site via node"];
+    NSDictionary *params = @{
+                             @"user": @{ @"site_id": @(siteId) },
+                             };
+    NSString *path = [NSString stringWithFormat:@"users/%ld", (long)userId];
+    [self put:path params:params classMapping:nil handler:done];
+}
+
+- (void)createUserEmail:(NSString *)email login:(NSString *)login password:(NSString *)password siteId:(NSInteger)siteId license:(NSString *)license localeStr:(NSString *)localeStr handler:(INatAPIFetchCompletionCountHandler) done {
+    
+    NSDictionary *newUserDict = @{
+        @"user[email]": email,
+        @"user[login]": login,
+        @"user[password]": password,
+        @"user[password_confirmation]": password,
+        @"user[site_id]": @(siteId),
+        @"user[preferred_observation_license]": license,
+        @"user[preferred_photo_license]": license,
+        @"user[preferred_sound_license]": license,
+        @"user[locale]": localeStr,
+    };
+    
+    NSURL *url = [NSURL URLWithString:@"/users.json" relativeToURL:[NSURL inat_baseURL]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    request.HTTPMethod = @"POST";
+    
+    NSError *error = nil;
+    NSData *JSONData = [NSJSONSerialization dataWithJSONObject:newUserDict options:0 error:nil];
+    if (error) {
+        done(nil, 0, error);
+    } else {
+        request.HTTPBody = JSONData;
+        [request addValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
+       forHTTPHeaderField:@"Authorization"];
+        [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        
+        NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+        [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    done(nil, 0, error);
+                } else {
+                    done(@[], 0, nil);
+                }
+            });
+        }] resume];
+    }
+}
+
 - (void)removeProfilePhotoForUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"/users/%ld.json", (long)userId]
                         relativeToURL:[NSURL inat_baseURL]];

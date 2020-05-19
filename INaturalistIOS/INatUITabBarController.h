@@ -8,12 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@class Taxon;
-@class Project;
+#import "TaxonVisualization.h"
 
 @interface INatUITabBarController : UITabBarController
 
-- (void)triggerNewObservationFlowForTaxon:(Taxon *)taxon project:(Project *)project;
+- (void)triggerNewObservationFlowForTaxon:(id <TaxonVisualization>)taxon;
 @end
 
 extern NSString *HasMadeAnObservationKey;

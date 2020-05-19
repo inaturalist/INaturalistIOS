@@ -12,7 +12,10 @@
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
 	return @{
-		@"url": @"url",
+		@"url": @"photo.url",
+        @"observationPhotoId": @"id",
+        @"uuid": @"uuid",
+        @"position": @"position",
 	};
 }
 

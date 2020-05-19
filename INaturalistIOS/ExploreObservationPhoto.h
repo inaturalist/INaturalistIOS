@@ -19,5 +19,8 @@
 @property (nonatomic, readonly) NSString *smallURL;
 @property (nonatomic, readonly) NSString *largeURL;
 @property (nonatomic, copy) NSString *url;
+@property (nonatomic, assign) NSInteger observationPhotoId;
+@property (nonatomic, assign) NSInteger position;
+@property (nonatomic, copy) NSString *uuid;
 
 @end

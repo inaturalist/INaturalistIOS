@@ -401,7 +401,7 @@ static NSDateFormatter *shortFormatter;
     
     observerNameLabel.text = observation.user.name;
     
-    NSDate *date = [observation timeObservedAt];
+    NSDate *date = [observation timeObserved];
     // looks like time_observed_at_utc can be null?
     if (!date)
         date = [observation observedOn];

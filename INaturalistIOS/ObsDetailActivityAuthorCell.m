@@ -6,8 +6,8 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <AFNetworking/UIImageView+AFNetworking.h>
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+@import AFNetworking;
+@import UIColor_HTMLColors;
 
 #import "ObsDetailActivityAuthorCell.h"
 

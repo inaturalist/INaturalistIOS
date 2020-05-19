@@ -31,7 +31,6 @@
     NSString *path =[NSString stringWithFormat:@"users/%ld/projects?per_page=%ld&page=%ld",
                      (long)userId, (long)self.projectsPerPage, (long)page];
     [self fetch:path classMapping:ExploreProject.class handler:done];
-
 }
 
 -(void)featuredProjectsHandler:(INatAPIFetchCompletionCountHandler)done {

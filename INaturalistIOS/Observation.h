@@ -70,8 +70,6 @@
 - (NSNumber *)visibleLatitude;
 - (NSNumber *)visibleLongitude;
 - (NSInteger)activityCount;
-- (Observation *)prevObservation;
-- (Observation *)nextObservation;
 + (NSFetchRequest *)defaultAscendingSortedFetchRequest;
 + (NSFetchRequest *)defaultDescendingSortedFetchRequest;
 

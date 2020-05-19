@@ -9,7 +9,6 @@
 #import <Realm/Realm.h>
 
 #import "ExploreProject.h"
-#import "Project.h"
 #import "ProjectVisualization.h"
 #import "ExploreProjectObsFieldRealm.h"
 
@@ -24,8 +23,9 @@
 @property NSString *bannerImageUrlString;
 @property NSString *bannerColorString;
 @property ExploreProjectType type;
-@property BOOL joined;
 @property NSString *inatDescription;
+
+- (BOOL)isNewStyleProject;
 
 - (instancetype)initWithMantleModel:(ExploreProject *)model;
 
@@ -33,9 +33,12 @@
 @property RLMArray<ExploreProjectObsFieldRealm *><ExploreProjectObsFieldRealm> *projectObsFields;
 
 + (NSDictionary *)valueForMantleModel:(ExploreProject *)model;
-+ (NSDictionary *)valueForCoreDataModel:(Project *)model;
++ (NSDictionary *)valueForCoreDataModel:(id)model;
 
-+ (RLMResults *)joinedProjects;
+- (NSString *)titleForTypeOfProject;
+
 
 @end
+
+RLM_ARRAY_TYPE(ExploreProjectRealm)
 

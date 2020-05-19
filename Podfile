@@ -2,8 +2,10 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, :deployment_target => '9.3'
 
 inhibit_all_warnings!
+use_frameworks!
 
 target :iNaturalist do
+  pod 'Gallery'
   pod 'Fabric'
   pod 'Crashlytics'
   pod 'Firebase/Analytics'
@@ -32,8 +34,6 @@ target :iNaturalist do
   pod 'TapkuLibrary', '0.3.8'
   pod 'SWRevealViewController', '2.3.0'
   pod 'PBRevealViewController'
-  pod 'RestKit', '0.10.3'
-  pod 'RestKit/Testing', '0.10.3'
   pod 'SDWebImage', '4.0.0'
   pod 'IFTTTLaunchImage', '0.4.4'
   pod 'JDStatusBarNotification', '1.5.2'
@@ -51,10 +51,13 @@ target :iNaturalist do
   pod 'JSONKit', :git => 'https://github.com/alexshepard/JSONKit.git', :commit => '46343e0e46fa8390fed0e8fff6367adb745d7fdd'
   pod 'FileMD5Hash', :git => 'https://github.com/FutureWorkshops/FileMD5Hash.git', :commit => '6864c180c010ab4b0514ba5c025091e12ab01199'
   pod 'YLMoment', :git => 'https://github.com/inaturalist/YLMoment.git', :commit => '35521e9f80c23de6f885771f97a6c1febe245c00'
+  pod 'Down', :git => 'https://github.com/ocshing/Down-gfm'
+
+  target :iNaturalistTests do
+    inherit! :search_paths
+  end
 end
 
-target :iNaturalistTests do
-end
 
 # Append to your Podfile
 post_install do |installer_representation|

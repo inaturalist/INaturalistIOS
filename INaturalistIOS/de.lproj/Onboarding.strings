@@ -32,19 +32,19 @@
 "L6Y-1o-yPc.text" = "Wischen >";
 
 /* Class = "UILabel"; text = "Get outside and observe an individual organism. Pick something wild, and take a clear, full frame photo."; ObjectID = "XWS-dF-hpb"; */
-"XWS-dF-hpb.text" = "Geh nach draussen und beobachte ein einzelnes Tier oder eine Pflanze. Wähle etwas wildes und schiess ein klares, vollständiges Foto.";
+"XWS-dF-hpb.text" = "Geh nach draussen und beobachte ein einzelnes Tier oder eine Pflanze. Mache davon ein gutes, vollständiges Foto.";
 
 /* Class = "UILabel"; text = "By using iNaturalist you agree to the Terms of Service and Privacy Policy"; ObjectID = "YtY-We-SSc"; */
-"YtY-We-SSc.text" = "Durch die Nutzung von iNaturalist stimmen Sie den Nutzungsbestimmungen und Datenschutzrichtlinien zu";
+"YtY-We-SSc.text" = "Durch die Nutzung von iNaturalist stimmst du den Nutzungsbestimmungen und Datenschutzrichtlinien zu";
 
 /* Class = "UITextField"; placeholder = "Username"; ObjectID = "dSw-gs-zGG"; */
 "dSw-gs-zGG.placeholder" = "Benutzername";
 
 /* Class = "UILabel"; text = "Share your observation with the community to discuss and confirm your findings."; ObjectID = "ixn-0U-lJ7"; */
-"ixn-0U-lJ7.text" = "Teilen Sie Ihre Beobachtung mit der Gemeinschaft, um Ihre Ergebnisse zu besprechen und zu bestätigen.";
+"ixn-0U-lJ7.text" = "Teile deine Beobachtungen mit der Gemeinschaft, um deine Funde zu besprechen und zu bestätigen.";
 
 /* Class = "UILabel"; text = "Your observation may be vetted as Research Grade and shared with scientists working to better understand and protect nature. "; ObjectID = "oro-uB-RY1"; */
-"oro-uB-RY1.text" = "Ihre Beobachtung kann als \"Forschungsqualität\" überprüft und Forschern zur Verfügung gestellt werden, die die Natur erforschen und schützen. ";
+"oro-uB-RY1.text" = "Deine Beobachtung kann als \"Forschungsqualität\" überprüft und Forschern zur Verfügung gestellt werden, die die Natur erforschen und schützen. ";
 
 /* Class = "UILabel"; text = "Sign Up"; ObjectID = "pbQ-o3-5Xy"; */
 "pbQ-o3-5Xy.text" = "Registrieren";
@@ -53,13 +53,13 @@
 "sBd-1Y-eNL.text" = "Beitragen";
 
 /* Class = "UIButton"; normalTitle = "Already have an account?"; ObjectID = "uop-S8-3lF"; */
-"uop-S8-3lF.normalTitle" = "Sie haben bereits ein Konto?";
+"uop-S8-3lF.normalTitle" = "Hast du bereits einen Account?";
 
 /* Class = "UILabel"; text = "Identify"; ObjectID = "vCH-CP-6hM"; */
 "vCH-CP-6hM.text" = "Bestimmen";
 
 /* Class = "UILabel"; text = "Yes, license my content so scientists can use my data! Learn More"; ObjectID = "xUc-8o-XIN"; */
-"xUc-8o-XIN.text" = "Ja, lizenzieren Sie meine Beiträge so, dass Wissenschaftler meine Daten verwenden können! Mehr darüber";
+"xUc-8o-XIN.text" = "Ja, meine Beiträge so lizenzieren, dass Wissenschaftler meine Daten verwenden können! Mehr darüber";
 
 /* Class = "UIButton"; normalTitle = "Button"; ObjectID = "yxB-jO-b09"; */
 "yxB-jO-b09.normalTitle" = "Knopf";

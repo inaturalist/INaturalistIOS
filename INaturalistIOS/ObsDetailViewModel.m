@@ -6,10 +6,9 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <AFNetworking/UIImageView+AFNetworking.h>
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
-#import <FontAwesomeKit/FAKIonIcons.h>
-#import <RestKit/RestKit.h>
+@import AFNetworking;
+@import UIColor_HTMLColors;
+@import FontAwesomeKit;
 
 #import "ObsDetailViewModel.h"
 #import "Observation.h"
@@ -52,10 +51,6 @@
     }
     
     return self;
-}
-
-- (void)dealloc {
-    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:(id <RKRequestDelegate>)self];
 }
 
 #pragma mark - UITableView datasource/delegate

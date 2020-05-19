@@ -10,6 +10,7 @@
 
 #import "ExploreUser.h"
 #import "UserVisualization.h"
+#import "ExploreProjectRealm.h"
 
 @interface ExploreUserRealm : RLMObject <UserVisualization>
 
@@ -22,9 +23,13 @@
 @property NSInteger siteId;
 @property NSDate *syncedAt;
 
+@property RLMArray<ExploreProjectRealm *><ExploreProjectRealm> *joinedProjects;
+
 @property (readonly) NSURL *userIcon;
 @property (readonly) NSURL *userIconMedium;
 
 - (instancetype)initWithMantleModel:(ExploreUser *)model;
++ (NSDictionary *)valueForMantleModel:(ExploreUser *)model;
++ (NSDictionary *)valueForCoreDataModel:(id)cdModel;
 
 @end

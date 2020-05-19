@@ -106,56 +106,26 @@ NSInteger INatMinPasswordLength = 6;
     localeString = [localeString stringByReplacingOccurrencesOfString:@"_" withString:@"-"];
     // default to english
     if (!localeString) { localeString = @"en-US"; }
-    
-    [[Analytics sharedClient] debugLog:@"Network - Post Users"];
-    [[RKClient sharedClient] post:@"/users.json"
-                       usingBlock:^(RKRequest *request) {
-                           request.params = @{
-                                              @"user[email]": email,
-                                              @"user[login]": username,
-                                              @"user[password]": password,
-                                              @"user[password_confirmation]": password,
-                                              @"user[site_id]": @(siteId),
-                                              @"user[preferred_observation_license]": license,
-                                              @"user[preferred_photo_license]": license,
-                                              @"user[preferred_sound_license]": license,
-                                              @"user[locale]": localeString,
-                                              };
-                           
-                           request.onDidLoadResponse = ^(RKResponse *response) {
-                               NSError *error = nil;
-                               id respJson = [NSJSONSerialization JSONObjectWithData:response.body
-                                                                             options:NSJSONReadingAllowFragments
-                                                                               error:&error];
-                               
-                               if (error) {
-                                   [self.delegate loginFailedWithError:error];
-                                   return;
-                               }
-                               
-                               if ([respJson valueForKey:@"errors"]) {
-                                   // TODO: extract error from json and notify user
-                                   NSArray *errors = [respJson valueForKey:@"errors"];
-                                   NSError *newError = [NSError errorWithDomain:@"org.inaturalist"
-                                                                           code:response.statusCode
-                                                                       userInfo:@{
-                                                                                  NSLocalizedDescriptionKey: errors.firstObject
-                                                                                  }];
-                                   [self.delegate loginFailedWithError:newError];
-                                   return;
-                               }
 
-                               [[Analytics sharedClient] event:kAnalyticsEventSignup];
-                               
-                               [self loginWithUsername:username
-                                              password:password];
-                               
-                           };
-                           
-                           request.onDidFailLoadWithError = ^(NSError *error) {
-                               [self.delegate loginFailedWithError:error];
-                           };
-                       }];
+    __weak typeof(self)weakSelf = self;
+    [[self peopleApi] createUserEmail:email
+                                login:username
+                             password:password
+                               siteId:siteId
+                              license:license
+                            localeStr:localeString
+                              handler:^(NSArray *results, NSInteger count, NSError *error) {
+        
+        if (error) {
+            [weakSelf.delegate loginFailedWithError:error];
+        } else {
+            [[Analytics sharedClient] event:kAnalyticsEventSignup];
+            
+            [weakSelf loginWithUsername:username
+                               password:password];
+        }
+
+    }];    
 }
 
 - (void)loginWithUsername:(NSString *)username
@@ -216,79 +186,36 @@ NSInteger INatMinPasswordLength = 6;
                                                  forKey:INatTokenPrefKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        INaturalistAppDelegate *app = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-        [RKClient.sharedClient setValue:iNatAccessToken forHTTPHeaderField:@"Authorization"];
-        [RKClient.sharedClient setAuthenticationType:RKRequestAuthenticationTypeNone];
-        [app.photoObjectManager.client setValue:iNatAccessToken forHTTPHeaderField:@"Authorization"];
-        [app.photoObjectManager.client setAuthenticationType: RKRequestAuthenticationTypeNone];
         [self removeOAuth2Observers];
         
-        // because we're in the midst of switching the default URL, and adding access tokens,
-        // we can't seem to make an object loader fetch here. so instead we do the ugly GET
-        // and do the User object mapping manually. admittedly not ideal, and worth another
-        // look when we upgrade to RK 0.2x
-        [[Analytics sharedClient] debugLog:@"Network - Get Me User"];
-        [[RKClient sharedClient] get:@"/users/edit.json"
-                          usingBlock:^(RKRequest *request) {
-                              
-                              request.onDidFailLoadWithError = ^(NSError *error) {
-                                  [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
-                                                   withProperties:@{ @"from": @"iNaturalist",
-                                                                     @"error": error.localizedDescription,
-                                                                     }];
-                                  
-                                  [self.delegate loginFailedWithError:error];
-                              };
-                              
-                              request.onDidLoadResponse = ^(RKResponse *response) {
-                                  NSError *error = nil;
-                                  id parsedData = [NSJSONSerialization JSONObjectWithData:response.body
-                                                                                  options:NSJSONReadingAllowFragments
-                                                                                    error:&error];
-                                  if (error) {
-                                      [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
-                                                       withProperties:@{ @"from": @"iNaturalist",
-                                                                         @"error": error.localizedDescription,
-                                                                         }];
-
-                                      [self.delegate loginFailedWithError:error];
-                                  } else if (!parsedData) {
-                                      [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
-                                                       withProperties:@{ @"from": @"iNaturalist",
-                                                                         @"error": @"no data from server",
-                                                                         }];
-                                      
-                                      [self.delegate loginFailedWithError:nil];
-                                  } else {
-                                      ExploreUserRealm *me = [[ExploreUserRealm alloc] init];
-                                      me.login = [parsedData objectForKey:@"login"] ?: @"";
-                                      me.userId = [[parsedData objectForKey:@"id"] integerValue];
-                                      me.observationsCount = [[parsedData objectForKey:@"observations_count"] integerValue];
-                                      me.siteId = [[parsedData objectForKey:@"site_id"] integerValue];
-                                      me.siteId = [parsedData objectForKey:@"site_id"] ?: @(1);
-                                      me.syncedAt = [NSDate distantPast];
-                                      
-                                      RLMRealm *realm = [RLMRealm defaultRealm];
-                                      [realm beginWriteTransaction];
-                                      [realm addOrUpdateObject:me];
-                                      [realm commitWriteTransaction];
-                                      
-                                      NSString *identifier = [NSString stringWithFormat:@"%ld", (long)me.userId];
-                                      [[Analytics sharedClient] registerUserWithIdentifier:identifier];
-                                      
-                                      [[NSUserDefaults standardUserDefaults] setValue:@(me.userId)
-                                                                               forKey:kINatUserIdPrefKey];
-                                      [[NSUserDefaults standardUserDefaults] setValue:iNatAccessToken
-                                                                               forKey:INatTokenPrefKey];
-                                      [[NSUserDefaults standardUserDefaults] synchronize];
-                                      
-                                      [self.delegate loginSuccess];
-                                      
-                                      [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
-                                                                                          object:nil];
-                                  }
-                              };
-                          }];        
+        __weak typeof(self)weakSelf = self;
+        [[self peopleApi] fetchMeHandler:^(NSArray *results, NSInteger count, NSError *error) {
+            if (error) {
+                [weakSelf.delegate loginFailedWithError:error];
+            } else {
+                ExploreUserRealm *me = [[ExploreUserRealm alloc] initWithMantleModel:results.firstObject];
+                me.syncedAt = [NSDate distantPast];
+                
+                RLMRealm *realm = [RLMRealm defaultRealm];
+                [realm beginWriteTransaction];
+                [realm addOrUpdateObject:me];
+                [realm commitWriteTransaction];
+                
+                NSString *identifier = [NSString stringWithFormat:@"%ld", (long)me.userId];
+                [[Analytics sharedClient] registerUserWithIdentifier:identifier];
+                
+                [[NSUserDefaults standardUserDefaults] setValue:@(me.userId)
+                                                         forKey:kINatUserIdPrefKey];
+                [[NSUserDefaults standardUserDefaults] setValue:iNatAccessToken
+                                                         forKey:INatTokenPrefKey];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                [weakSelf.delegate loginSuccess];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
+                                                                    object:nil];
+            }
+        }];
     } else {
         [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
                          withProperties:@{ @"from": @"iNaturalist",
@@ -381,39 +308,19 @@ didSignInForUser:(GIDGoogleUser *)user
     [realm beginWriteTransaction];
     me.siteId = partner.identifier;
     [realm commitWriteTransaction];
-    
-    // delete any stashed taxa from core data
-    [Taxon deleteAll];
-    
-    NSError *saveError = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-    if (saveError) {
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving: %@",
-                                            saveError.localizedDescription]];
-    }
-    
+        
     // delete any stashed taxa from realm
-    RLMResults *allExploreTaxa = [ExploreTaxonRealm allObjects];
+    RLMResults *allTaxa = [ExploreTaxonRealm allObjects];
     [realm beginWriteTransaction];
-    [realm deleteObjects:allExploreTaxa];
+    [realm deleteObjects:allTaxa];
     [realm commitWriteTransaction];
     
-    // can't do this in node yet
-    [[Analytics sharedClient] debugLog:@"Network - Put Me User"];
-    [[RKClient sharedClient] put:[NSString stringWithFormat:@"/users/%ld", (long)me.userId]
-                      usingBlock:^(RKRequest *request) {
-                          request.params = @{
-                                             @"user[site_id]": @(partner.identifier),
-                                             };
-                          request.onDidFailLoadWithError = ^(NSError *error) {
-                              NSLog(@"error");
-                          };
-                          request.onDidLoadResponse = ^(RKResponse *response) {
-                              if (completion) {
-                                  completion();
-                              }
-                          };
-                      }];
+    // send this to the server
+    [[self peopleApi] setSiteId:partner.identifier forUserId:me.userId handler:^(NSArray *results, NSInteger count, NSError *error) {
+        if (completion) {
+            completion();
+        }
+    }];
 }
 
 #pragma mark - Convenience methods for working with the logged in User
@@ -495,6 +402,8 @@ didSignInForUser:(GIDGoogleUser *)user
 }
 
 - (User *)fetchMeFromCoreData {
+    return nil;
+    /*
 	NSNumber *userId = nil;
 	NSString *username = nil;
 	if ([[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey]) {
@@ -530,6 +439,7 @@ didSignInForUser:(GIDGoogleUser *)user
     } else {
         return nil;
     }
+     */
 }
 
 - (BOOL)isLoggedIn {
@@ -543,7 +453,10 @@ didSignInForUser:(GIDGoogleUser *)user
     // if the JWT will expire within the next 30 seconds, re-fetch it first
     // note: if self.jwtTokenExpiration fails to extract for any reason, it will be nil,
     // so this check will fail and the JWT will be re-fetched
-    if (self.jwtToken && [self.jwtTokenExpiration timeIntervalSinceNow] > 30) {
+    
+    // jwtexpiration timeIntervalSinceNow starts at 86400 and decrements down to zero
+    // eventually becoming negative. refetch if it's less than 30 seconds from now.
+    if (self.jwtToken && [self.jwtTokenExpiration timeIntervalSinceNow] < 30) {
         if (success) {
             success(@{ tokenKey: self.jwtToken });
             return;

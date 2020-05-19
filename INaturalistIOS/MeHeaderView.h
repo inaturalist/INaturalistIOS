@@ -22,4 +22,6 @@
 - (void)startAnimatingUpload;
 - (void)stopAnimatingUpload;
 
+@property BOOL showsYearInReview;
+
 @end

@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
-#import <FontAwesomeKit/FAKIonicons.h>
+@import FontAwesomeKit;
 
 #import "ObservationViewErrorCell.h"
 

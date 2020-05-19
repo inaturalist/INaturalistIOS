@@ -6,11 +6,10 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <AFNetworking/UIImageView+AFNetworking.h>
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
-#import <MBProgressHUD/MBProgressHUD.h>
-#import <YLMoment/YLMoment.h>
-#import <RestKit/RestKit.h>
+@import AFNetworking;
+@import UIColor_HTMLColors;
+@import MBProgressHUD;
+@import YLMoment;
 
 #import "ObsDetailActivityViewModel.h"
 #import "Observation.h"
@@ -41,8 +40,10 @@
 #import "INatReachability.h"
 #import "IdentificationsAPI.h"
 #import "ObservationAPI.h"
+#import "iNaturalist-Swift.h"
 
-@interface ObsDetailActivityViewModel () <RKRequestDelegate> {
+
+@interface ObsDetailActivityViewModel () {
     BOOL hasSeenNewActivity;
 }
 @end
@@ -74,12 +75,6 @@
         _api = [[ObservationAPI alloc] init];
     });
     return _api;
-}
-
-#pragma mark - uiviewcontroller lifecycle
-
-- (void)dealloc {
-    [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 #pragma mark - uitableview datasource/delegate
@@ -312,22 +307,15 @@
     ObsDetailActivityBodyCell *cell = [tableView dequeueReusableCellWithIdentifier:@"activityBody"];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    NSError *err = nil;
-    NSDictionary *opts = @{
-                           NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-                           NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding),
-                           };
-    NSMutableAttributedString *body = [[[NSAttributedString alloc] initWithData:[bodyText dataUsingEncoding:NSUTF8StringEncoding]
-                                                                        options:opts
-                                                             documentAttributes:nil
-                                                                          error:&err] mutableCopy];
-    
-    // reading the text as HTML gives it a with-serif font
-    [body addAttribute:NSFontAttributeName
-                 value:[UIFont systemFontOfSize:14]
-                 range:NSMakeRange(0, body.length)];
-    
-    cell.bodyTextView.attributedText = body;
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"bootstrap" ofType:@"min.css"];
+    NSError *error = nil;
+    NSString *css = [NSString stringWithContentsOfFile:path
+                                              encoding:kCFStringEncodingUTF8
+                                                 error:&error];
+    DownWrapper *dw = [[DownWrapper alloc] init];
+    NSAttributedString *attrStr = [dw markdownToAttributedStringWithMarkdownStr:bodyText
+                                                                            css:css];
+    cell.bodyTextView.attributedText = attrStr;
     
     cell.bodyTextView.dataDetectorTypes = UIDataDetectorTypeLink;
     cell.bodyTextView.editable = NO;
@@ -550,23 +538,24 @@
 #pragma mark - misc helpers
 
 - (void)markActivityAsSeen {
-    if (self.observation.inatRecordId && self.observation.hasUnviewedActivityBool && [self.observation isKindOfClass:[Observation class]]) {
-        Observation *obs = (Observation *)self.observation;
-        obs.hasUnviewedActivity = [NSNumber numberWithBool:NO];
-        NSError *error = nil;
-        [[[RKObjectManager sharedManager] objectStore] save:&error];
+
+    if (self.observation.hasUnviewedActivityBool) {
         
-        // the API won't take a nil callback at this point
+        __weak typeof(self) weakSelf = self;
         [[self observationApi] seenUpdatesForObservationId:self.observation.inatRecordId
-                                                   handler:^(NSArray *results, NSInteger count, NSError *error) { }];
+                                                   handler:^(NSArray *results, NSInteger count, NSError *error) {
+            
+            RLMResults *updates = [ExploreUpdateRealm updatesForObservationId:self.observation.inatRecordId];
+
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            [realm beginWriteTransaction];
+            [updates setValue:@(YES) forKey:@"viewed"];
+            [updates setValue:@(YES) forKey:@"viewedLocally"];
+            [realm commitWriteTransaction];
+            
+            [weakSelf.delegate reloadTableView];
+        }];
     }
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"resourceId == %ld", [self.observation inatRecordId]];
-    RLMResults *results = [ExploreUpdateRealm objectsWithPredicate:predicate];
-    [[RLMRealm defaultRealm] transactionWithBlock:^{
-        [results setValue:@(YES) forKey:@"viewed"];
-        [results setValue:@(YES) forKey:@"viewedLocally"];
-    }];
 }
 
 - (BOOL)loggedInUserProducedActivity:(id <ActivityVisualization>)activity {
@@ -587,62 +576,14 @@
     LoginController *login = appDelegate.loginController;
     if (login.isLoggedIn) {
         ExploreUserRealm *loggedInUser = [login meUserLocal];
-        for (id <IdentificationVisualization> eachId in self.observation.identifications) {
-            if ([[eachId userName] isEqualToString:loggedInUser.login] && [eachId isCurrent]) {
-                
-                NSPredicate *taxonPredicate = [NSPredicate predicateWithFormat:@"recordID == %ld", [eachId taxonId]];
-                Taxon *taxon = [[Taxon objectsWithPredicate:taxonPredicate] firstObject];
-                
-                return [[taxon recordID] integerValue];
+        for (id <IdentificationVisualization> id in self.observation.identifications) {
+            if ([id userId] == loggedInUser.userId && [id isCurrent]) {
+                return id.taxonId;
             }
         }
     }
     return 0;
 
 }
-
-#pragma mark - RKRequestDelegate
-
-- (void)request:(RKRequest *)request didLoadResponse:(RKResponse *)response {
-    
-    [self.delegate hideProgressHud];
-    
-    
-    if (request.method ==RKRequestMethodGET) {
-        return;
-    }
-    
-    // set "seen" call returns 204 on success, add ID returns 200
-    if (response.statusCode == 200 || response.statusCode == 204) {
-        if ([response.URL.absoluteString rangeOfString:@"/identifications"].location != NSNotFound) {
-            // reload the observation after the user has agreed (thus made a new ID)
-            [self.delegate reloadObservation];
-        }
-    } else {
-        if ([response.URL.absoluteString rangeOfString:@"/identifications"].location != NSNotFound) {
-            // identification
-            [self.delegate noticeWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                                   message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding content")];
-        } else {
-            // comment
-            [self.delegate noticeWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
-                                   message:NSLocalizedString(@"An unknown error occured. Please try again.", @"unknown error adding content")];
-        }
-    }
-}
-
-- (void)request:(RKRequest *)request didFailLoadWithError:(NSError *)error {
-    [self.delegate hideProgressHud];
-    
-    if ([request.URL.absoluteString rangeOfString:@"/identifications"].location != NSNotFound) {
-        [self.delegate noticeWithTitle:NSLocalizedString(@"Add Identification Failure", @"Title for add ID failed alert")
-                               message:error.localizedDescription];
-    } else {
-        [self.delegate noticeWithTitle:NSLocalizedString(@"Add Comment Failure", @"Title for add comment failed alert")
-                               message:error.localizedDescription];
-    }
-}
-
-
 
 @end

@@ -6,8 +6,9 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
+@import UIColor_HTMLColors;
+
 #import "ExploreProject.h"
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
 #import "ExploreProjectObsField.h"
 
 @implementation ExploreProject

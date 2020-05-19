@@ -7,10 +7,9 @@
 //
 
 #import "ProjectObsFieldViewController.h"
-#import "Project.h"
-#import "ProjectObservationField.h"
-#import "ObservationField.h"
-#import "ObservationFieldValue.h"
+#import "ExploreProjectObsFieldRealm.h"
+#import "ExploreObsFieldValueRealm.h"
+#import "ExploreProjectRealm.h"
 
 @interface ProjectObsFieldViewController () <UITableViewDataSource, UITableViewDelegate>
 @property UITableView *tableView;
@@ -23,7 +22,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = self.projectObsField.project.title;
+    self.title = self.pof.project.title;
     
     self.tableView = ({
         UITableView *tv = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
@@ -60,21 +59,21 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *value = self.projectObsField.observationField.allowedValuesArray[indexPath.item];
+    NSString *valueForRow = [self.pof.obsField.allowedValues objectAtIndex:indexPath.item];
     
     NSDictionary *attrs = @{
                             NSFontAttributeName: [UIFont systemFontOfSize:14],
                             };
-    CGRect rect = [value boundingRectWithSize:CGSizeMake(self.view.bounds.size.width - 50, CGFLOAT_MAX)
-                                       options:NSStringDrawingUsesLineFragmentOrigin
-                                    attributes:attrs
-                                       context:nil];
+    CGRect rect = [valueForRow boundingRectWithSize:CGSizeMake(self.view.bounds.size.width - 50, CGFLOAT_MAX)
+                                            options:NSStringDrawingUsesLineFragmentOrigin
+                                         attributes:attrs
+                                            context:nil];
     
     return MAX(44, rect.size.height + 22);
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.projectObsField.observationField.allowedValuesArray.count;
+    return self.pof.obsField.allowedValues.count;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)selectedIndexPath {
@@ -89,24 +88,28 @@
     }
     
     // update model
-    self.obsFieldValue.value = self.projectObsField.observationField.allowedValuesArray[selectedIndexPath.item];
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    self.ofv.value = [self.pof.obsField.allowedValues objectAtIndex:selectedIndexPath.item];
+    [realm commitWriteTransaction];
     
     // pop
     [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    return self.projectObsField.observationField.desc ?: self.projectObsField.observationField.name;
+    return self.pof.obsField.inatDescription ?: self.pof.obsField.name;
 }
 
 #pragma mark - UITableView helpers
 
 - (void)configureCell:(UITableViewCell *)cell forIndexPath:(NSIndexPath *)indexPath {
-    NSString *value = self.projectObsField.observationField.allowedValuesArray[indexPath.item];
-    cell.textLabel.text = value;
+    NSString *valueForRow = [self.pof.obsField.allowedValues objectAtIndex:indexPath.item];
+
+    cell.textLabel.text = valueForRow;
     cell.textLabel.numberOfLines = 0;
     
-    if ([value isEqualToString:self.obsFieldValue.value]) {
+    if ([valueForRow isEqualToString:self.ofv.value]) {
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
     } else {
         cell.accessoryType = UITableViewCellAccessoryNone;

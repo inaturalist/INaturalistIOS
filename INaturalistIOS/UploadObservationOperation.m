@@ -6,12 +6,15 @@
 //  Copyright © 2018 iNaturalist. All rights reserved.
 //
 
+#import <Realm/Realm.h>
+
 #import "UploadObservationOperation.h"
-#import "Observation.h"
+#import "ExploreObservationRealm.h"
 #import "ProjectObservation.h"
 #import "Project.h"
 #import "ObservationFieldValue.h"
 #import "Analytics.h"
+#import "ExploreObservationRealm.h"
 
 @interface UploadObservationOperation ()
 @property NSInteger totalBytesToUpload;
@@ -32,19 +35,18 @@
 - (void)syncObservationFinishedSuccess:(BOOL)success syncError:(NSError *)syncError {
     // notify the delegate about the sync status
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];
-        NSError *contextError = nil;
-        Observation *o = [context existingObjectWithID:self.rootObjectId error:&contextError];
-        if (o && success) {
-            [self.delegate uploadSessionSuccessFor:o];
+        ExploreObservationRealm *o = [ExploreObservationRealm objectForPrimaryKey:self.rootObjectUUID];
+        // TODO: update uploader delegate for EOR/realm
+        if (o) {
+            [self.delegate uploadSessionSuccessFor:self.rootObjectUUID];
         } else {
             NSError *error = nil;
             if (syncError) {
                 error = syncError;
-            } else if (contextError) {
-                error = contextError;
+            } else {
+                // TODO: what happens here? can this reasonably happen?
             }
-            [self.delegate uploadSessionFailedFor:o error:error];
+            [self.delegate uploadSessionFailedFor:self.rootObjectUUID error:error];
         }
     });
     
@@ -59,21 +61,20 @@
         return;
     }
     
-    NSManagedObjectContext *context = [NSManagedObjectContext defaultContext];
-    NSError *contextError = nil;
-    Observation *o = [context existingObjectWithID:self.rootObjectId error:&contextError];
-    if (!o || contextError) {
-        [self syncObservationFinishedSuccess:NO syncError:contextError];
+    ExploreObservationRealm *o = [ExploreObservationRealm objectForPrimaryKey:self.rootObjectUUID];
+    if (!o) {
+        [self syncObservationFinishedSuccess:NO syncError:nil];
         return;
     }
     
     // clear any validation errors
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
     o.validationErrorMsg = nil;
-    // save the core data object store
-    [[[RKObjectManager sharedManager] objectStore] save:nil];
+    [realm commitWriteTransaction];
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegate uploadSessionStarted:o];
+        [self.delegate uploadSessionStarted:self.rootObjectUUID];
     });
     
     // figure out total bytes to upload
@@ -87,8 +88,8 @@
         }
     }
     
-    if (o.needsSync) {
-        NSString *httpMethod = o.syncedAt ? @"PUT" : @"POST";
+    if (o.needsUpload) {
+        NSString *httpMethod = o.timeSynced ? @"PUT" : @"POST";
         [self syncObservation:o method:httpMethod];
     } else if (o.childrenNeedingUpload.count > 0) {
         [self syncChildRecord:o.childrenNeedingUpload.firstObject
@@ -98,23 +99,26 @@
     }
 }
 
-- (void)syncObservation:(Observation *)observation method:(NSString *)HTTPMethod {
+- (void)syncObservation:(ExploreObservationRealm *)observation method:(NSString *)HTTPMethod {
     void (^successBlock)(NSURLSessionDataTask *, id _Nullable) = ^(NSURLSessionDataTask *task, id _Nullable responseObject) {
         // this observation has been synced
-        observation.syncedAt = [NSDate date];
+        ExploreObservationRealm *eor = [ExploreObservationRealm objectForPrimaryKey:self.rootObjectUUID];
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        eor.timeSynced = [NSDate date];
+        [realm commitWriteTransaction];
         
         // record ids come from the server
         if ([responseObject valueForKey:@"id"]) {
-            observation.recordID = @([[responseObject valueForKey:@"id"] integerValue]);
+            [realm beginWriteTransaction];
+            eor.observationId = [[responseObject valueForKey:@"id"] integerValue];
+            [realm commitWriteTransaction];
         }
-        
-        // save the core data object store
-        [[[RKObjectManager sharedManager] objectStore] save:nil];
-        
+                
         // if there are children to upload, upload first child
-        if (observation.childrenNeedingUpload.count > 0) {
-            [self syncChildRecord:observation.childrenNeedingUpload.firstObject
-                    ofObservation:observation];
+        if (eor.childrenNeedingUpload.count > 0) {
+            [self syncChildRecord:eor.childrenNeedingUpload.firstObject
+                    ofObservation:eor];
         } else {
             [self syncObservationFinishedSuccess:YES syncError:nil];
         }
@@ -127,8 +131,8 @@
     
     if ([HTTPMethod isEqualToString:@"PUT"]) {
         NSString *path = [NSString stringWithFormat:@"/v1/%@/%ld",
-                          NSStringFromClass(observation.class).underscore.pluralize,
-                          (long)observation.recordID.integerValue
+                          [[observation class] endpointName],
+                          (long)observation.observationId
                           ];
         [self.nodeSessionManager PUT:path
                           parameters:[observation uploadableRepresentation]
@@ -136,7 +140,7 @@
                              failure:failureBlock];
     } else {
         NSString *path = [NSString stringWithFormat:@"/v1/%@",
-                          NSStringFromClass(observation.class).underscore.pluralize];
+                          [[observation class] endpointName]];
         if (self.userSiteId != 0) {
             path = [path stringByAppendingString:[NSString stringWithFormat:@"?inat_site_id=%ld",
                                                   (long)self.userSiteId]];
@@ -149,42 +153,64 @@
     }
 }
 
-- (void)syncChildRecord:(INatModel <Uploadable> *)child ofObservation:(Observation *)observation {
-    NSString *HTTPMethod = child.syncedAt ? @"PUT" : @"POST";
+- (void)syncChildRecord:(id <Uploadable>)child ofObservation:(ExploreObservationRealm *)observation {
+    NSString *HTTPMethod = child.timeSynced ? @"PUT" : @"POST";
     
+    NSString *childUUID = [child uuid];
     NSDate *uploadStartTime = [NSDate date];
     
     void (^successBlock)(NSURLSessionDataTask *, id _Nullable) = ^(NSURLSessionDataTask *task, id _Nullable responseObject) {
+        
+        // refetch obs and child locally on this thread
+        ExploreObservationRealm *eor = [ExploreObservationRealm objectForPrimaryKey:self.rootObjectUUID];
+        id <Uploadable> localChild = nil;
+        for (id <Uploadable>child in [eor childrenNeedingUpload]) {
+            if ([child.uuid isEqualToString:childUUID]) {
+                localChild = child;
+            }
+        }
+        
+        RLMRealm *realm = [RLMRealm defaultRealm];
         // this observation has been synced
-        child.syncedAt = [NSDate date];
+        [realm beginWriteTransaction];
+        localChild.timeSynced = [NSDate date];
+        [realm commitWriteTransaction];
         
         // record ids come from the server
         if ([responseObject valueForKey:@"id"]) {
-            child.recordID = @([[responseObject valueForKey:@"id"] integerValue]);
+            [realm beginWriteTransaction];
+            [localChild setRecordId:[[responseObject valueForKey:@"id"] integerValue]];
+            [realm commitWriteTransaction];
         }
-        
-        // save the core data object store
-        [[[RKObjectManager sharedManager] objectStore] save:nil];
-        
-        if ([HTTPMethod isEqualToString:@"POST"] && [child respondsToSelector:@selector(fileUploadParameter)]) {
+                
+        if ([HTTPMethod isEqualToString:@"POST"] && [localChild respondsToSelector:@selector(fileUploadParameter)]) {
             // notify analytics about file upload performance
             NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:uploadStartTime];
             [[Analytics sharedClient] logMetric:@"PhotoUploadGauge" value:@(timeInterval)];
         }
 
         // if there are more children to upload, upload first child
-        if (observation.childrenNeedingUpload.count > 0) {
-            [self syncChildRecord:observation.childrenNeedingUpload.firstObject
-                    ofObservation:observation];
-        } else if (observation.needsSync && observation.syncedAt) {
+        if (eor.childrenNeedingUpload.count > 0) {
+            [self syncChildRecord:eor.childrenNeedingUpload.firstObject
+                    ofObservation:eor];
+        } else if (eor.needsUpload && eor.timeSynced) {
             // if the observation still needs sync via PUT, do it now
-            [self syncObservation:observation method:@"PUT"];
+            [self syncObservation:eor method:@"PUT"];
         } else {
             [self syncObservationFinishedSuccess:YES syncError:nil];
         }
     };
     
     void (^failureBlock)(NSURLSessionDataTask *, NSError *) = ^(NSURLSessionDataTask *task, NSError * _Nonnull error) {
+        // refetch obs and child locally on this thread
+        ExploreObservationRealm *eor = [ExploreObservationRealm objectForPrimaryKey:self.rootObjectUUID];
+        id <Uploadable> localChild = nil;
+        for (id <Uploadable>child in [eor childrenNeedingUpload]) {
+            if ([child.uuid isEqualToString:childUUID]) {
+                localChild = child;
+            }
+        }
+
         if ([[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey]) {
             NSHTTPURLResponse *response = [[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey];
             if (response.statusCode == 422) {
@@ -202,27 +228,28 @@
                     validationError = validationErrors.firstObject;
                 }
 
-                if ([child isKindOfClass:ProjectObservation.class]) {
+                RLMRealm *realm = [RLMRealm defaultRealm];
+                if ([localChild isKindOfClass:ProjectObservation.class]) {
                     // add project validation error notice
+                    ExploreObservationRealm *eor = [ExploreObservationRealm objectForPrimaryKey:self.rootObjectUUID];
+                    // TODO: update for realm po
                     ProjectObservation *po = (ProjectObservation *)child;
-                    Observation *o = po.observation;
                     NSString *baseErrMsg = NSLocalizedString(@"Couldn't be added to project %@. %@",
                                                              @"Project validation error. first string is project title, second is the specific error");
-                    o.validationErrorMsg = [NSString stringWithFormat:baseErrMsg,
-                                            po.project.title, validationError];
-                    // save the core data object store
-                    [[[RKObjectManager sharedManager] objectStore] save:nil];
+                    [realm beginWriteTransaction];
+                    eor.validationErrorMsg = [NSString stringWithFormat:baseErrMsg,
+                                              po.project.title, validationError];
+                    [realm commitWriteTransaction];
                     
                     // fall through to failing and reporting the error
-                } else if ([child isKindOfClass:ObservationFieldValue.class]) {
+                } else if ([localChild isKindOfClass:ObservationFieldValue.class]) {
                     // add observation field validation error notice
-                    ObservationFieldValue *po = (ObservationFieldValue *)child;
-                    Observation *o = po.observation;
+                    ExploreObservationRealm *eor = [ExploreObservationRealm objectForPrimaryKey:self.rootObjectUUID];
                     NSString *baseErrMsg = NSLocalizedString(@"Observation Field Validation error: %@",
                                                              @"Project validation error, with the specific error");
-                    o.validationErrorMsg = [NSString stringWithFormat:baseErrMsg, validationError];
-                    // save the core data object store
-                    [[[RKObjectManager sharedManager] objectStore] save:nil];
+                    [realm beginWriteTransaction];
+                    eor.validationErrorMsg = [NSString stringWithFormat:baseErrMsg, validationError];
+                    [realm commitWriteTransaction];
                     
                     // fall through to failing and reporting the error
                 }
@@ -233,29 +260,28 @@
     
     void (^progressBlock)(NSProgress *) = ^(NSProgress * _Nonnull uploadProgress) {
         // update the local counter for this particular upload operation
-        self.uploadedBytes[child.uuid] = @(uploadProgress.completedUnitCount);
+        self.uploadedBytes[childUUID] = @(uploadProgress.completedUnitCount);
         
         // notify the upload delegate about the total upload progress
         // for this observation
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.delegate uploadSessionProgress:[self totalFileUploadProgress]
-                                             for:observation];
+                                             for:self.rootObjectUUID];
         });
     };
 
     NSString *path = nil;
     if ([HTTPMethod isEqualToString:@"PUT"]) {
         path = [NSString stringWithFormat:@"/v1/%@/%ld",
-                NSStringFromClass(child.class).underscore.pluralize,
-                (long)child.recordID.integerValue];
+                [[child class] endpointName],
+                (long)[child recordId]];
         
         [self.nodeSessionManager PUT:path
                           parameters:[child uploadableRepresentation]
                              success:successBlock
                              failure:failureBlock];
     } else {
-        path = [NSString stringWithFormat:@"/v1/%@",
-                NSStringFromClass(child.class).underscore.pluralize];
+        path = [NSString stringWithFormat:@"/v1/%@", [[child class] endpointName]];
         
         if ([child respondsToSelector:@selector(fileUploadParameter)]) {
             if ([[NSFileManager defaultManager] fileExistsAtPath:[child fileUploadParameter]]) {

@@ -32,31 +32,7 @@
     
     self.obsCountLabel.font = [UIFont systemFontOfSize:18.0f];
     self.obsCountLabel.textColor = [UIColor whiteColor];
-    self.obsCountLabel.textAlignment = NSTextAlignmentNatural;
-    
-    self.inatYiRButton.layer.cornerRadius = 22.0f;
-    self.inatYiRButton.layer.borderWidth = 1.0f;
-    self.inatYiRButton.layer.borderColor = UIColor.whiteColor.CGColor;
-    self.inatYiRButton.clipsToBounds = YES;
-    self.inatYiRButton.backgroundColor = UIColor.clearColor;
-    self.inatYiRButton.tintColor = UIColor.whiteColor;
-    [self.inatYiRButton setTitle:NSLocalizedString(@"iNat Year in Review", nil)
-                        forState:UIControlStateNormal];
-    self.inatYiRButton.contentEdgeInsets = UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 10.0f);
-
-    
-    
-    self.meYiRButton.layer.cornerRadius = 22.0f;
-    self.meYiRButton.layer.borderWidth = 1.0f;
-    self.meYiRButton.layer.borderColor = UIColor.whiteColor.CGColor;
-    self.meYiRButton.clipsToBounds = YES;
-    self.meYiRButton.backgroundColor = UIColor.clearColor;
-    self.meYiRButton.tintColor = [UIColor whiteColor];
-    [self.meYiRButton setTitle:NSLocalizedString(@"My Year in Review", nil)
-                      forState:UIControlStateNormal];
-    self.meYiRButton.contentEdgeInsets = UIEdgeInsetsMake(0.0f, 10.0f, 0.0f, 10.0f);
-
-    
+    self.obsCountLabel.textAlignment = NSTextAlignmentNatural;    
 }
 
 - (void)startAnimatingUpload {

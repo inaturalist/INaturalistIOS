@@ -6,8 +6,6 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <RestKit/RestKit.h>
-
 #import "DeletedRecord.h"
 
 @implementation DeletedRecord
@@ -17,12 +15,12 @@
 
 + (NSArray *)needingSync
 {
-    return [self allObjects];
+    return @[ ];
 }
 
 + (NSInteger)needingSyncCount
 {
-    return self.needingSync.count;
+    return 0;
 }
 
 @end

@@ -7,12 +7,11 @@
 //
 
 @import MapKit;
-
-#import <FontAwesomeKit/FAKIonIcons.h>
-#import <AFNetworking/UIImageView+AFNetworking.h>
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
-#import <ARSafariActivity/ARSafariActivity.h>
-#import <JDFTooltips/JDFTooltips.h>
+@import FontAwesomeKit;
+@import AFNetworking;
+@import UIColor_HTMLColors;
+@import ARSafariActivity;
+@import JDFTooltips;
 
 #import "TaxonDetailViewController.h"
 #import "TaxaAPI.h"

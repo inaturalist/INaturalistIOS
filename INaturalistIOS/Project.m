@@ -11,9 +11,6 @@
 #import "ProjectObservationField.h"
 #import "ProjectUser.h"
 
-static RKManagedObjectMapping *defaultMapping = nil;
-//static RKManagedObjectMapping *defaultSerializationMapping = nil;
-
 @implementation Project
 
 @dynamic title;
@@ -38,36 +35,6 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic longitude;
 @dynamic group;
 @dynamic newsItemCount;
-
-+ (RKManagedObjectMapping *)mapping
-{
-    if (!defaultMapping) {
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[self class] inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
-        [defaultMapping mapKeyPathsToAttributes:
-         @"id", @"recordID",
-         @"created_at", @"createdAt",
-         @"updated_at", @"updatedAt",
-         @"title", @"title",
-         @"cached_slug", @"cachedSlug",
-         @"description", @"desc",
-         @"icon_url", @"iconURL",
-         @"project_type", @"projectType",
-         @"terms", @"terms",
-         @"project_observation_rule_terms", @"projectObservationRuleTerms",
-         @"featured_at_utc", @"featuredAt",
-         @"latitude", @"latitude",
-         @"longitude", @"longitude",
-         @"posts_count", @"newsItemCount",
-         @"group", @"group",
-         nil];
-        [defaultMapping mapKeyPath:@"project_observation_fields" 
-                    toRelationship:@"projectObservationFields" 
-                       withMapping:[ProjectObservationField mapping]
-                         serialize:NO];
-        defaultMapping.primaryKeyAttribute = @"recordID";
-    }
-    return defaultMapping;
-}
 
 - (BOOL)observationsRestrictedToList
 {

@@ -6,7 +6,7 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+@import UIColor_HTMLColors;
 
 #import "ProjectDetailPageViewController.h"
 #import "ProjectsAPI.h"

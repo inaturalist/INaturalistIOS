@@ -18,6 +18,8 @@
 #import "Analytics.h"
 #import "Taxon.h"
 #import "INatUITabBarController.h"
+#import "iNaturalist-Swift.h"
+#import "ExploreTaxonRealm.h"
 
 static const int WebViewTag = 1;
 
@@ -66,29 +68,15 @@ static const int WebViewTag = 1;
 - (IBAction)clickedObserve:(id)sender {
     // we're working from serialized taxon objects (GuideTaxonXML) but this API wants
     // regular Taxon objects.
-    INatUITabBarController *tabBar = (INatUITabBarController *)self.tabBarController;
-    Taxon *observedTaxon = nil;
+    INatTabBarController *tabBar = (INatTabBarController *)self.tabBarController;
+    
     if (self.guideTaxon.taxonID && self.guideTaxon.taxonID.length > 0) {
-        NSArray *records = @[ self.guideTaxon.taxonID ];
-        observedTaxon = [[Taxon matchingRecordIDs:records] firstObject];
-    }
-    if (observedTaxon) {
-        [tabBar triggerNewObservationFlowForTaxon:observedTaxon project:nil];
+        // try to get an ExploreTaxonRealm object out for it
+        NSInteger taxonId = [self.guideTaxon.taxonID integerValue];
+        ExploreTaxonRealm *etr = [ExploreTaxonRealm objectForPrimaryKey:@(taxonId)];        
+        [tabBar triggerNewObservationFlowForTaxon:etr];
     } else {
-        observedTaxon = [[Taxon alloc] initWithEntity:[Taxon entity]
-                       insertIntoManagedObjectContext:[NSManagedObjectContext defaultContext]];
-        observedTaxon.recordID = @(self.guideTaxon.taxonID.integerValue);
-        observedTaxon.name = self.guideTaxon.name;
-        
-        NSError *saveError = nil;
-        [[[RKObjectManager sharedManager] objectStore] save:&saveError];
-        if (saveError) {
-            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving: %@",
-                                                saveError.localizedDescription]];
-            [tabBar triggerNewObservationFlowForTaxon:nil project:nil];
-        } else {
-            [tabBar triggerNewObservationFlowForTaxon:observedTaxon project:nil];
-        }
+        [tabBar triggerNewObservationFlowForTaxon:nil];
     }
 }
 

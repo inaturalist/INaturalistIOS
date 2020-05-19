@@ -16,20 +16,14 @@
 
 @property NSInteger taxonPhotoId;
 @property NSString *attribution;
-@property NSString *nativePageUrlString;
-@property NSString *squareUrlString;
-@property NSString *smallUrlString;
-@property NSString *mediumUrlString;
-@property NSString *largeUrlString;
+@property NSString *urlString;
+@property NSString *licenseCode;
 
 @property (readonly) NSURL *nativePageUrl;
-@property (readonly) NSURL *squareUrl;
-@property (readonly) NSURL *smallUrl;
-@property (readonly) NSURL *mediumUrl;
-@property (readonly) NSURL *largeUrl;
-
 
 - (instancetype)initWithMantleModel:(ExploreTaxonPhoto *)model;
++ (NSDictionary *)valueForMantleModel:(ExploreTaxonPhoto *)model;
++ (NSDictionary *)valueForCoreDataModel:(id)model;
 
 @end
 

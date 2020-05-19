@@ -9,8 +9,6 @@
 #import "Fave.h"
 #import "Observation.h"
 
-static RKManagedObjectMapping *defaultMapping = nil;
-
 @implementation Fave
 
 @dynamic observation;
@@ -18,21 +16,6 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic userIconUrlString;
 @dynamic userLogin;
 @dynamic userRecordID;
-
-+ (RKManagedObjectMapping *)mapping
-{
-    if (!defaultMapping) {
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[Fave class]
-                                            inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
-        [defaultMapping mapKeyPath:@"created_at" toAttribute:@"faveDate"];
-        [defaultMapping mapKeyPath:@"user.id" toAttribute:@"userRecordID"];
-        [defaultMapping mapKeyPath:@"user.login" toAttribute:@"userLogin"];
-        [defaultMapping mapKeyPath:@"user.user_icon_url" toAttribute:@"userIconUrlString"];
-
-    }
-    
-    return defaultMapping;
-}
 
 - (void)awakeFromInsert {
     [super awakeFromInsert];

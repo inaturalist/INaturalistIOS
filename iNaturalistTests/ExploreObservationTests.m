@@ -41,7 +41,6 @@
     XCTAssertEqual(polychaete.faves.count, 5, @"wrong number of faves for polychaete fixture");
     XCTAssertEqual(polychaete.observationPhotos.count, 22, @"wrong number of photos for polychaete fixture");
     XCTAssertEqualObjects(polychaete.username, @"raulagrait", @"wrong observer for polychaete fixture");
-
 }
 
 

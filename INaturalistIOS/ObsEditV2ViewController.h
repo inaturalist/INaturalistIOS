@@ -8,11 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
-@class Observation;
+@class ExploreObservationRealm;
 
 @interface ObsEditV2ViewController : UIViewController
 
-@property Observation *observation;
+@property ExploreObservationRealm *standaloneObservation;
+@property ExploreObservationRealm *persistedObservation;
 @property BOOL shouldContinueUpdatingLocation;
 @property BOOL isMakingNewObservation;
 @property UITableView *tableView;

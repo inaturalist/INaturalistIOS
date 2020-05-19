@@ -8,33 +8,18 @@
 
 #import "ExploreTaxonPhoto.h"
 
-
-/*
- @property (nonatomic, assign) NSInteger taxonPhotoId;
- @property (nonatomic, copy) NSString *attribution;
- @property (nonatomic, copy) NSURL *nativePageUrl;
- @property (nonatomic, copy) NSURL *squareUrl;
- @property (nonatomic, copy) NSURL *smallUrl;
- @property (nonatomic, copy) NSURL *mediumUrl;
- @property (nonatomic, copy) NSURL *largeUrl;
-*/
-
 @implementation ExploreTaxonPhoto
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey{
     return @{
              @"taxonPhotoId": @"photo.id",
              @"attribution": @"photo.attribution",
-             @"nativePageUrl": @"photo.native_page_url",
              @"squareUrl": @"photo.square_url",
              @"smallUrl": @"photo.small_url",
              @"mediumUrl": @"photo.medium_url",
              @"largeUrl": @"photo.large_url",
+             @"licenseCode": @"photo.license_code",
              };
-}
-
-+ (NSValueTransformer *)nativePageUrlJSONTransformer {
-    return [NSValueTransformer valueTransformerForName:MTLURLValueTransformerName];
 }
 
 + (NSValueTransformer *)squareUrlJSONTransformer {
@@ -52,7 +37,5 @@
 + (NSValueTransformer *)largeUrlJSONTransformer {
     return [NSValueTransformer valueTransformerForName:MTLURLValueTransformerName];
 }
-
-
 
 @end

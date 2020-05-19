@@ -8,14 +8,15 @@
 
 @import CoreTelephony;
 
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
-#import <FontAwesomeKit/FAKIonIcons.h>
-#import <MBProgressHUD/MBProgressHUD.h>
-#import <NXOAuth2Client/NXOAuth2.h>
-#import <BlocksKit/BlocksKit+UIKit.h>
+@import UIColor_HTMLColors;
+@import FontAwesomeKit;
+@import MBProgressHUD;
+@import NXOAuth2Client;
+@import BlocksKit;
+@import GoogleSignIn;
+@import FBSDKLoginKit;
+
 #import <objc/runtime.h>
-#import <GoogleSignIn/GoogleSignIn.h>
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 #import "OnboardingLoginViewController.h"
 #import "UIColor+INaturalist.h"

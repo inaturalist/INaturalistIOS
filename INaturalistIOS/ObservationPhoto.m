@@ -11,9 +11,6 @@
 #import "ImageStore.h"
 #import "ExploreDeletedRecord.h"
 
-static RKManagedObjectMapping *defaultMapping = nil;
-static RKManagedObjectMapping *defaultSerializationMapping = nil;
-
 @implementation ObservationPhoto
 
 @dynamic largeURL;
@@ -53,49 +50,6 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 
 + (NSString *)endpointName {
     return @"observation_photos";
-}
-
-+ (RKManagedObjectMapping *)mapping
-{
-    if (!defaultMapping) {
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[ObservationPhoto class] inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
-        [defaultMapping mapKeyPathsToAttributes:
-         @"id", @"recordID",
-         @"photo_id", @"photoID",
-         @"observation_id", @"observationID",
-         @"createdAt", @"createdAt",
-         @"updatedAt", @"updatedAt",
-         @"position", @"position",
-         @"photo.original_url", @"originalURL",
-         @"photo.large_url", @"largeURL",
-         @"photo.medium_url", @"mediumURL",
-         @"photo.small_url", @"smallURL",
-         @"photo.thumb_url", @"thumbURL",
-         @"photo.square_url", @"squareURL",
-         @"photo.native_page_url", @"nativePageURL",
-         @"photo.native_photo_id", @"nativePhotoID",
-         @"photo.native_username", @"nativeUsername",
-         @"photo.native_realname", @"nativeRealName",
-         @"photo.license_code", @"licenseCode",
-         @"uuid", @"uuid",
-         nil];
-        defaultMapping.primaryKeyAttribute = @"recordID";
-    }
-    return defaultMapping;
-}
-
-+ (RKManagedObjectMapping *)serializationMapping
-{
-    if (!defaultSerializationMapping) {
-        defaultSerializationMapping = [RKManagedObjectMapping mappingForClass:[ObservationPhoto class]
-                                                         inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
-        [defaultSerializationMapping mapKeyPathsToAttributes:
-         @"observationID", @"observation_photo[observation_id]",
-         @"position", @"observation_photo[position]",
-         @"uuid", @"observation_photo[uuid]",
-         nil];
-    }
-    return defaultSerializationMapping;
 }
 
 // checks the associated observation for its recordID

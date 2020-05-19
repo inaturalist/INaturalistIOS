@@ -17,5 +17,6 @@
 
 @property (nonatomic, retain) ExploreUser *faver;
 @property (nonatomic, copy) NSDate *faveDate;
+@property (nonatomic, assign) NSInteger faveId;
 
 @end

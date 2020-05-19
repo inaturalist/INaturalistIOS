@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+@import UIColor_HTMLColors;
 
 #import "UIColor+INaturalist.h"
 

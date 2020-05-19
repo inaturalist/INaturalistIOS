@@ -147,9 +147,8 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
                                                                     forSize:ImageStoreSquareSize];
         }
         if (!cell.photoImageView.image) {
-            NSURL *squarePhotoUrl = [NSURL URLWithString:obsPhoto.squareURL];
-            if (squarePhotoUrl) {
-                [cell.photoImageView setImageWithURL:squarePhotoUrl];
+            if ([obsPhoto squarePhotoUrl]) {
+                [cell.photoImageView setImageWithURL:[obsPhoto squarePhotoUrl]];
             }
         }
         

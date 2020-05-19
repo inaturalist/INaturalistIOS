@@ -11,8 +11,6 @@
 #import "NewsItem.h"
 #import "NSURL+INaturalist.h"
 
-static RKManagedObjectMapping *defaultMapping = nil;
-
 @implementation NewsItem
 
 @dynamic parentIconUrl;
@@ -33,34 +31,6 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic recordID;
 @dynamic syncedAt;
 @dynamic localUpdatedAt;
-
-+ (RKManagedObjectMapping *)mapping
-{
-    if (!defaultMapping) {
-        
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[self class]
-                                            inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
-                
-        [defaultMapping mapKeyPath:@"parent.icon_url" toAttribute:@"parentIconUrl"];
-        [defaultMapping mapKeyPath:@"parent.title" toAttribute:@"parentProjectTitle"];
-        [defaultMapping mapKeyPath:@"parent_id" toAttribute:@"parentRecordID"];
-        [defaultMapping mapKeyPath:@"parent.site_name_short" toAttribute:@"parentSiteShortName"];
-        [defaultMapping mapKeyPath:@"parent_type" toAttribute:@"parentTypeString"];
-
-        [defaultMapping mapKeyPath:@"body" toAttribute:@"postBody"];
-        [defaultMapping mapKeyPath:@"published_at" toAttribute:@"postPublishedAt"];
-        [defaultMapping mapKeyPath:@"title" toAttribute:@"postTitle"];
-        
-        [defaultMapping mapKeyPath:@"user.login" toAttribute:@"authorLogin"];
-        [defaultMapping mapKeyPath:@"user.user_icon_url" toAttribute:@"authorIconUrl"];
-        
-        [defaultMapping mapKeyPath:@"id"
-                       toAttribute:@"recordID"];
-                
-        defaultMapping.primaryKeyAttribute = @"recordID";
-    }
-    return defaultMapping;
-}
 
 - (NSString *)parentTitleText {
     if ([self.parentTypeString isEqualToString:@"Site"]) {

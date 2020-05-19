@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ln2-Xm-kuL">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ln2-Xm-kuL">
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -35,7 +35,7 @@
                         <color key="sectionIndexBackgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ObservationNormalCell" rowHeight="54" id="XTh-7E-mmV" customClass="ObservationViewNormalCell">
-                                <rect key="frame" x="0.0" y="99.333332061767578" width="414" height="54"/>
+                                <rect key="frame" x="0.0" y="55.333332061767578" width="414" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="XTh-7E-mmV" id="C3n-W6-LHI">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="54"/>
@@ -95,7 +95,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ObservationUploadingCell" rowHeight="54" id="wQN-9N-x2Y" customClass="ObservationViewUploadingCell">
-                                <rect key="frame" x="0.0" y="153.33333206176758" width="414" height="54"/>
+                                <rect key="frame" x="0.0" y="109.33333206176758" width="414" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="wQN-9N-x2Y" id="m9I-6r-lNe">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="54"/>
@@ -135,7 +135,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ObservationWaitingUploadCell" rowHeight="54" id="gAn-aH-TD8" customClass="ObservationViewWaitingUploadCell">
-                                <rect key="frame" x="0.0" y="207.33333206176758" width="414" height="54"/>
+                                <rect key="frame" x="0.0" y="163.33333206176758" width="414" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gAn-aH-TD8" id="aD9-FP-cmK">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="54"/>
@@ -176,7 +176,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ObservationErrorCell" rowHeight="54" id="zeS-FU-FRr" customClass="ObservationViewErrorCell">
-                                <rect key="frame" x="0.0" y="261.33333206176758" width="414" height="54"/>
+                                <rect key="frame" x="0.0" y="217.33333206176758" width="414" height="54"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="zeS-FU-FRr" id="ePT-h4-s6E">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="54"/>
@@ -751,10 +751,10 @@
             </objects>
             <point key="canvasLocation" x="944" y="-661.16941529235385"/>
         </scene>
-        <!--NatUI Tab Bar Controller-->
+        <!--Nat Tab Bar Controller-->
         <scene sceneID="e73-h5-xu6">
             <objects>
-                <tabBarController definesPresentationContext="YES" id="ln2-Xm-kuL" customClass="INatUITabBarController" sceneMemberID="viewController">
+                <tabBarController definesPresentationContext="YES" id="ln2-Xm-kuL" customClass="INatTabBarController" customModule="iNaturalist" customModuleProvider="target" sceneMemberID="viewController">
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" translucent="NO" id="CX2-0f-gTP">
                         <rect key="frame" x="129" y="330" width="163" height="49"/>
@@ -796,7 +796,6 @@
         <!--Explore-->
         <scene sceneID="gc6-uK-FOl">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Rgw-UT-lST" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController id="2go-53-3Kx" userLabel="Explore" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="" id="6cS-83-3B7"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="2Ih-nZ-tvp">
@@ -807,6 +806,7 @@
                         <segue destination="Jhn-uK-6Tn" kind="relationship" relationship="rootViewController" id="kvS-wT-xvh"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Rgw-UT-lST" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-4312" y="3519.9400299850076"/>
         </scene>

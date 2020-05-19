@@ -7,21 +7,17 @@
 //
 
 @import MessageUI;
-
-#import <VTAcknowledgementsViewController/VTAcknowledgementsViewController.h>
-#import <JDFTooltips/JDFTooltips.h>
-#import <BlocksKit/BlocksKit+UIKit.h>
-#import <MHVideoPhotoGallery/MHGalleryController.h>
-#import <MHVideoPhotoGallery/MHGallery.h>
-#import <MHVideoPhotoGallery/MHTransitionDismissMHGallery.h>
-#import <GoogleSignIn/GoogleSignIn.h>
-#import <ActionSheetPicker-3.0/ActionSheetStringPicker.h>
-#import <JDStatusBarNotification/JDStatusBarNotification.h>
-#import <MBProgressHUD/MBProgressHUD.h>
-#import <Realm/Realm.h>
-#import <RestKit/RestKit.h>
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
-#import <SafariServices/SafariServices.h>
+@import VTAcknowledgementsViewController;
+@import JDFTooltips;
+@import BlocksKit;
+@import MHVideoPhotoGallery;
+@import GoogleSignIn;
+@import ActionSheetPicker_3_0;
+@import JDStatusBarNotification;
+@import MBProgressHUD;
+@import Realm;
+@import FBSDKLoginKit;
+@import SafariServices;
 
 #import "SettingsViewController.h"
 #import "Observation.h"
@@ -361,9 +357,7 @@ static const int ChangePartnerMinimumInterval = 86400;
     hud.removeFromSuperViewOnHide = YES;
     
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [[[RKClient sharedClient] requestQueue] cancelAllRequests];
-        
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){        
         [self localSignOut];
         
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -407,12 +401,7 @@ static const int ChangePartnerMinimumInterval = 86400;
     for (NXOAuth2Account *account in [[NXOAuth2AccountStore sharedStore] accounts]) {
         [[NXOAuth2AccountStore sharedStore] removeAccount:account];
     }
-    
-    // clear cached RKClient authentication details
-    [RKClient.sharedClient setUsername:nil];
-    [RKClient.sharedClient setPassword:nil];
-    [RKClient.sharedClient setValue:nil forHTTPHeaderField:@"Authorization"];
-    
+        
     // since we've removed any custom base URL, reconfigure RestKit again
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     [appDelegate reconfigureForNewBaseUrl];

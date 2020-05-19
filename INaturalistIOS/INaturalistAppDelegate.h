@@ -7,13 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <RestKit/RestKit.h>
 
 @class LoginController;
 
 @interface INaturalistAppDelegate : UIResponder <UIApplicationDelegate>
 @property (strong, nonatomic) UIWindow *window;
-@property (strong, nonatomic) RKObjectManager *photoObjectManager;
 @property (strong, nonatomic) LoginController *loginController;
 
 - (BOOL)loggedIn;

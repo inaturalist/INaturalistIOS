@@ -7,6 +7,7 @@
 //
 
 #import "ExploreTaxonRealm.h"
+#import "GuideTaxonXML.h"
 
 @implementation ExploreTaxonRealm
 
@@ -37,6 +38,65 @@
         self.wikipediaUrlString = [taxon.wikipediaUrl absoluteString];
 	}
 	return self;
+}
+
++ (NSDictionary *)valueForMantleModel:(ExploreTaxon *)model {
+    NSMutableDictionary *value = [NSMutableDictionary dictionary];
+    
+    value[@"taxonId"] = @(model.taxonId);
+    value[@"webContent"] = model.webContent;
+    value[@"commonName"] = model.commonName;
+    value[@"scientificName"] = model.scientificName;
+    value[@"searchableCommonName"] = [model.commonName stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
+                                                                           locale:[NSLocale currentLocale]];
+    value[@"searchableScientificName"] = [model.scientificName stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
+                                                                                   locale:[NSLocale currentLocale]];
+    value[@"photoUrlString"] = [model.photoUrl absoluteString];
+    value[@"rankName"] = model.rankName;
+    value[@"rankLevel"] = @(model.rankLevel);
+    value[@"iconicTaxonName"] = model.iconicTaxonName;
+    value[@"lastMatchedTerm"] = model.matchedTerm;
+    value[@"searchableLastMatchedTerm"] = [model.matchedTerm stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
+                                                                                 locale:[NSLocale currentLocale]];
+    value[@"observationCount"] = @(model.observationCount);
+    
+    if (model.taxonPhotos) {
+        NSMutableArray *etprs = [NSMutableArray array];
+        for (ExploreTaxonPhoto *etp in model.taxonPhotos) {
+            [etprs addObject:[ExploreTaxonPhotoRealm valueForMantleModel:etp]];
+        }
+        value[@"taxonPhotos"] = [NSArray arrayWithArray:etprs];
+    }
+
+    value[@"wikipediaUrlString"] = model.wikipediaUrl.absoluteString;
+    
+    return [NSDictionary dictionaryWithDictionary:value];
+}
+
++ (NSDictionary *)valueForCoreDataModel:(id)cdModel {
+    NSMutableDictionary *value = [NSMutableDictionary dictionary];
+    
+    value[@"taxonId"] = [cdModel valueForKey:@"recordID"];
+    value[@"commonName"] = [cdModel valueForKey:@"defaultName"];
+    value[@"searchableCommonName"] = [[cdModel valueForKey:@"defaultName"] stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
+                                                                                             locale:[NSLocale currentLocale]];
+    value[@"scientificName"] = [cdModel valueForKey:@"name"];
+    value[@"searchableScientificName"] = [[cdModel valueForKey:@"name"] stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
+                                                                                             locale:[NSLocale currentLocale]];
+    value[@"rankName"] = [cdModel valueForKey:@"rankName"];
+    value[@"rankLevel"] = [cdModel valueForKey:@"rankLevel"];
+    value[@"webContent"] = [cdModel valueForKey:@"wikipediaSummary"];
+    value[@"observationCount"] = [cdModel valueForKey:@"observationsCount"];
+    
+    if ([cdModel valueForKey:@"taxonPhotos"]) {
+        NSMutableArray *photosValue = [NSMutableArray array];
+        for (id cdPhoto in [cdModel valueForKey:@"taxonPhotos"]) {
+            [photosValue addObject:[ExploreTaxonPhotoRealm valueForCoreDataModel:cdPhoto]];
+        }
+        value[@"taxonPhotos"] = [NSArray arrayWithArray:photosValue];
+    }
+    
+    return [NSDictionary dictionaryWithDictionary:value];
 }
 
 + (NSString *)primaryKey {

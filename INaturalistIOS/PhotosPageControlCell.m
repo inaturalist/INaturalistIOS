@@ -6,8 +6,8 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <AFNetworking/UIImageView+AFNetworking.h>
-#import <FontAwesomeKit/FAKIonicons.h>
+@import FontAwesomeKit;
+@import AFNetworking;
 
 #import "PhotosPageControlCell.h"
 

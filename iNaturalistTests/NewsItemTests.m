@@ -6,52 +6,45 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
-#import <RestKit/Testing.h>
+@import Realm;
+@import XCTest;
 
-#import "RKModelBaseTests.h"
-#import "NewsItem.h"
+#import "ExplorePost.h"
+#import "MantleHelpers.h"
 
-@interface NewsItemTests : RKModelBaseTests
+@interface NewsItemTests : XCTestCase
+
 @end
 
 @implementation NewsItemTests
 
 - (void)setUp {
     [super setUp];
+    
+    RLMRealm.defaultRealm.configuration.inMemoryIdentifier = @"Database A";
 }
 
 - (void)tearDown {
     [super tearDown];
+    
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    [realm deleteAllObjects];
+    [realm commitWriteTransaction];
 }
 
 - (void)testProjectBlogUrlConstruction {
-    id parsedJSON = [RKTestFixture parsedObjectWithContentsOfFixture:@"ProjectBlogPost.json"];
-    
-    NewsItem *newsItem = [NewsItem createEntity];
-    
-    RKMappingTest *test = [RKMappingTest testForMapping:[NewsItem mapping]
-                                           sourceObject:parsedJSON
-                                      destinationObject:newsItem];
-
-    [test performMapping];
-    XCTAssertTrue([[newsItem urlForNewsItem] isEqual:[NSURL URLWithString:@"https://www.inaturalist.org/projects/5813/journal/7699"]],
+    ExplorePost *projectPost = [MantleHelpers projectPostFixture];
+    XCTAssertTrue([[projectPost urlForNewsItem] isEqual:[NSURL URLWithString:@"https://www.inaturalist.org/projects/5813/journal/29357"]],
                    @"Constructed URL for project post is incorrect.");
 }
 
 - (void)testSiteNewsUrlConstruction {
-    id parsedJSON = [RKTestFixture parsedObjectWithContentsOfFixture:@"SiteBlogPost.json"];
-    
-    NewsItem *newsItem = [NewsItem createEntity];
-    
-    RKMappingTest *test = [RKMappingTest testForMapping:[NewsItem mapping]
-                                           sourceObject:parsedJSON
-                                      destinationObject:newsItem];
-    
-    [test performMapping];
-    XCTAssertTrue([[newsItem urlForNewsItem] isEqual:[NSURL URLWithString:@"https://www.inaturalist.org/blog/8014"]],
-                  @"Constructed URL for site news post is incorrect.");
+    ExplorePost *sitePost = [MantleHelpers sitePostFixture];
+    XCTAssertTrue([[sitePost urlForNewsItem] isEqual:[NSURL URLWithString:@"https://www.inaturalist.org/blog/30519"]],
+                   @"Constructed URL for site post is incorrect.");
 }
 
 
 @end
+

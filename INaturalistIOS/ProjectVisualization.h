@@ -28,7 +28,10 @@ typedef NS_ENUM(NSInteger, ExploreProjectType) {
 - (NSURL *)bannerImageUrl;
 - (UIColor *)bannerColor;
 - (NSString *)inatDescription;
+- (NSArray *)sortedProjectObservationFields;
 
 - (void)setJoined:(BOOL)newValue;
 
 @end
+
+

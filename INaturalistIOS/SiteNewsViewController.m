@@ -11,10 +11,9 @@
 #import <YLMoment/YLMoment.h>
 #import <NSString_stripHtml/NSString_stripHTML.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
-#import <RestKit/RestKit.h>
+#import <Realm/Realm.h>
 
 #import "SiteNewsViewController.h"
-#import "NewsItem.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
 #import "NewsItemViewController.h"
@@ -24,19 +23,28 @@
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
 #import "INatReachability.h"
+#import "PostsAPI.h"
+#import "ExplorePost.h"
 
 static UIImage *briefcase;
 
-@interface SiteNewsViewController () <NSFetchedResultsControllerDelegate, RKObjectLoaderDelegate, RKRequestDelegate, UITableViewDelegate, UITableViewDataSource> {
-    NSFetchedResultsController *_frc;
-}
-
-@property (readonly) NSFetchedResultsController *frc;
-@property RKObjectLoader *objectLoader;
+@interface SiteNewsViewController () <NSFetchedResultsControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 @property IBOutlet UITableView *tableView;
+@property NSArray *posts;
+@property UIRefreshControl *refreshControl;
 @end
 
 @implementation SiteNewsViewController
+
+- (PostsAPI *)postsApi {
+    static PostsAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[PostsAPI alloc] init];
+    });
+    return _api;
+}
+
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
@@ -54,6 +62,13 @@ static UIImage *briefcase;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(loadNewNews) forControlEvents:UIControlEventValueChanged];
+    
+    // Add Refresh Control to Table View
+    if (@available(iOS 10, *)) {
+        self.tableView.refreshControl = self.refreshControl;
+    }
     
     // hide empty cell divider lines
     self.tableView.tableFooterView = [UIView new];
@@ -72,10 +87,8 @@ static UIImage *briefcase;
     self.tableView.showsInfiniteScrolling = YES;
     
     // fetch content from the server
+    self.posts = [NSArray array];
     [self refresh];
-    
-    NSError *err;
-    [self.frc performFetch:&err];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -92,12 +105,8 @@ static UIImage *briefcase;
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"detail"]) {
         NewsItemViewController *vc = (NewsItemViewController *)[segue destinationViewController];
-        vc.newsItem = (NewsItem *)sender;
+        vc.post = (ExplorePost *)sender;
     }
-}
-
-- (void)dealloc {
-    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:self];
 }
 
 #pragma mark - Table view data source
@@ -107,8 +116,7 @@ static UIImage *briefcase;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    id <NSFetchedResultsSectionInfo> sectionInfo = [self.frc sections][0];
-    return [sectionInfo numberOfObjects];
+    return self.posts.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -116,7 +124,7 @@ static UIImage *briefcase;
     NewsItemCell *cell = [tableView dequeueReusableCellWithIdentifier:@"newsItem"
                                                          forIndexPath:indexPath];
     
-    NewsItem *newsItem = [self.frc objectAtIndexPath:indexPath];
+    ExplorePost *post = [self.posts objectAtIndex:indexPath.item];
     
     if (self.project) {
         cell.newsCategoryTitle.text = self.project.title;
@@ -127,26 +135,24 @@ static UIImage *briefcase;
             cell.newsCategoryImageView.image = briefcase;
         }
     } else {
-        cell.newsCategoryTitle.text = newsItem.parentTitleText;
-        NSURL *iconURL = [NSURL URLWithString:newsItem.parentIconUrl];
-        if (iconURL) {
-            [cell.newsCategoryImageView setImageWithURL:iconURL];
+        cell.newsCategoryTitle.text = post.parentTitleText;
+        if (post.parentIconUrl) {
+            [cell.newsCategoryImageView setImageWithURL:post.parentIconUrl];
         } else {
             cell.newsCategoryImageView.image = briefcase;
         }
     }
     
-    NSURL *coverImageURL = [NSURL URLWithString:newsItem.postCoverImageUrl];
-    if (coverImageURL) {
-        [cell.postImageView setImageWithURL:coverImageURL];
+    if (post.postCoverImageUrl) {
+        [cell.postImageView setImageWithURL:post.postCoverImageUrl];
         [cell showPostImageView:YES];
     } else {
         [cell showPostImageView:NO];
     }
     
-    cell.postTitle.text = newsItem.postTitle;
-    cell.postBody.text = newsItem.postPlainTextExcerpt;
-    cell.postedAt.text = [[YLMoment momentWithDate:newsItem.postPublishedAt] fromNowWithSuffix:NO];
+    cell.postTitle.text = post.postTitle;
+    cell.postBody.text = post.postPlainTextExcerpt;
+    cell.postedAt.text = [[YLMoment momentWithDate:post.postPublishedAt] fromNowWithSuffix:NO];
     
     return cell;
 }
@@ -154,16 +160,16 @@ static UIImage *briefcase;
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    NewsItem *newsItem = [self.frc objectAtIndexPath:indexPath];
+    ExplorePost *post = [self.posts objectAtIndex:indexPath.item];
     
     [[Analytics sharedClient] event:kAnalyticsEventNewsOpenArticle
                      withProperties:@{
-                                      @"ParentType": [newsItem parentTypeString] ?: @"",
-                                      @"ParentName": [newsItem parentTitleText] ?: @"",
-                                      @"ArticleTitle": [newsItem postTitle] ?: @"",
+                                      @"ParentType": @([post parentType]) ?: @"",
+                                      @"ParentName": [post parentTitleText] ?: @"",
+                                      @"ArticleTitle": [post postTitle] ?: @"",
                                       }];
     
-    [self performSegueWithIdentifier:@"detail" sender:newsItem];
+    [self performSegueWithIdentifier:@"detail" sender:post];
 }
 
 #pragma mark - UIControl targets
@@ -179,155 +185,88 @@ static UIImage *briefcase;
 }
 
 - (void)loadNewNews {
-    
     // silently do nothing if we're offline
     if (![[INatReachability sharedClient] isNetworkReachable]) {
         return;
     }
     
-    NSString *path = [self newsItemEndpoint];
+    //returnType (^blockName)(parameterTypes) = ^returnType(parameters) {...};
     
-    id <NSFetchedResultsSectionInfo> sectionInfo = [self.frc sections][0];
-    if ([sectionInfo numberOfObjects] > 0) {
-        // most recent item will be first
-        NewsItem *mostRecentItem = [self.frc objectAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-        path = [path stringByAppendingString:[NSString stringWithFormat:@"?newer_than=%ld", (long)mostRecentItem.recordID.integerValue]];
+    __weak typeof(self)weakSelf = self;
+    INatAPIFetchCompletionCountHandler finished = ^void(NSArray *results, NSInteger count, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.tableView.refreshControl endRefreshing];
+        });
+
+        // extract excerpt and post image url
+        for (ExplorePost *post in results) {
+            [post computeProperties];
+        }
+        // merge the new values in
+        NSArray *allResults = [[weakSelf posts] arrayByAddingObjectsFromArray:results];
+        // make them unique
+        NSSet *allResultsSet = [NSSet setWithArray:allResults];
+        // sort them
+        weakSelf.posts = [[allResultsSet allObjects] sortedArrayUsingDescriptors:[self postSortDescriptors]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.tableView reloadData];
+        });
+    };
+    
+    if (self.project) {
+        [[self postsApi] postsForProjectId:self.project.projectId handler:finished];
+    } else {
+        if (self.posts.count > 0) {
+            ExplorePost *firstPost = [self.posts firstObject];
+            [[self postsApi] userPostsNewerThanPost:firstPost.postId handler:finished];
+        } else {
+            [[self postsApi] userPosts:finished];
+        }
     }
-    
-    [[Analytics sharedClient] debugLog:@"Network - Fetch New News"];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
-                                                    usingBlock:^(RKObjectLoader *loader) {
-                                                        loader.objectMapping = [NewsItem mapping];
-                                                        loader.delegate = self;
-                                                    }];
+}
+
+- (NSArray *)postSortDescriptors {
+    return @[
+        [NSSortDescriptor sortDescriptorWithKey:@"postId" ascending:NO],
+    ];
 }
 
 - (void)loadOldNews {
-    
     // silently do nothing if we're offline
     if (![[INatReachability sharedClient] isNetworkReachable]) {
         return;
     }
     
-    NSString *path = [self newsItemEndpoint];
     
-    id <NSFetchedResultsSectionInfo> sectionInfo = [self.frc sections][0];
-    if ([sectionInfo numberOfObjects] > 0) {
-        // most recent item will be last
-        NewsItem *oldestItem = [self.frc objectAtIndexPath:[NSIndexPath indexPathForItem:[sectionInfo numberOfObjects] - 1
-                                                                               inSection:0]];
-        path = [path stringByAppendingString:[NSString stringWithFormat:@"?older_than=%ld", (long)oldestItem.recordID.integerValue]];
-    }
-    
-    [[Analytics sharedClient] debugLog:@"Network - Fetch Old News"];
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
-                                                    usingBlock:^(RKObjectLoader *loader) {
-                                                        loader.objectMapping = [NewsItem mapping];
-                                                        loader.delegate = self;
-                                                    }];
-}
-
-- (NSString *)newsItemEndpoint {
     if (self.project) {
-        return [NSString stringWithFormat:@"/projects/%ld/journal.json",
-                (long)self.project.projectId];
+        // no old news for projects, sorry
+        // api doesn't support older_than here
     } else {
-        return @"/posts/for_user.json";
+        ExplorePost *lastPost = [self.posts lastObject];
+        
+        __weak typeof(self)weakSelf = self;
+        [[self postsApi] userPostsOlderThanPost:lastPost.postId handler:^(NSArray *results, NSInteger count, NSError *error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf.tableView.infiniteScrollingView stopAnimating];
+            });
+
+            // extract excerpt and post image url
+            for (ExplorePost *post in results) {
+                [post computeProperties];
+            }
+            // merge the new values in
+            NSArray *allResults = [[weakSelf posts] arrayByAddingObjectsFromArray:results];
+            // make them unique
+            NSSet *allResultsSet = [NSSet setWithArray:allResults];
+            // sort them
+            weakSelf.posts = [[allResultsSet allObjects] sortedArrayUsingDescriptors:[self postSortDescriptors]];
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf.tableView reloadData];
+            });
+        }];
     }
 }
-
-#pragma mark - NSFetchedResultsControllerDelegate
-
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    // skip reload animation
-}
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    // skip reload animation
-    
-    [self.tableView reloadData];
-}
-
-- (void)controller:(NSFetchedResultsController *)controller
-   didChangeObject:(id)anObject
-       atIndexPath:(NSIndexPath *)indexPath
-     forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath {
-    
-    // skip reload animation
-}
-
-#pragma mark - Fetched Results Controller helper
-
-- (NSFetchedResultsController *)frc {
-    
-    if (!_frc) {
-        // NSFetchedResultsController request for my observations
-        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"NewsItem"];
-        
-        if (self.project) {
-            request.predicate = [NSPredicate predicateWithFormat:@"parentTypeString == 'Project' AND parentRecordID == %ld",
-                                 (long)self.project.projectId];
-        }
-        
-        // sort by common name, if available
-        request.sortDescriptors = @[
-                                    [[NSSortDescriptor alloc] initWithKey:@"postPublishedAt" ascending:NO],
-                                    ];
-        
-        // setup our fetched results controller
-        _frc = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                   managedObjectContext:[NSManagedObjectContext defaultContext]
-                                                     sectionNameKeyPath:nil
-                                                              cacheName:nil];
-        
-        // update our tableview based on changes in the fetched results
-        _frc.delegate = self;
-    }
-    
-    return _frc;
-}
-
-#pragma mark - RKObjectLoaderDelegate
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
-    
-    NSDate *now = [NSDate date];
-    for (INatModel *o in objects) {
-        [o setSyncedAt:now];
-    }
-    
-    NSError *error = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    
-    // check for new activity
-    NSError *err;
-    [self.frc performFetch:&err];
-    
-    // in case load was triggered by pull to refresh, stop the animation
-    //[self.refreshControl endRefreshing];
-    // in case load was triggered by infinite scrolling, stop the animation
-    [self.tableView.infiniteScrollingView stopAnimating];
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    // workaround an objectloader dealloc bug in restkit
-    self.objectLoader = objectLoader;
-    
-    // in case load was triggered by pull to refresh, stop the animation
-    //[self.refreshControl endRefreshing];
-    // in case load was triggered by infinite scrolling, stop the animation
-    [self.tableView.infiniteScrollingView stopAnimating];
-    
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error", nil)
-                                                                   message:error.localizedDescription
-                                                            preferredStyle:UIAlertControllerStyleAlert];
-    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                              style:UIAlertActionStyleCancel
-                                            handler:nil]];
-    [self presentViewController:alert animated:YES completion:nil];
-}
-
-
 
 @end

@@ -6,12 +6,11 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <FontAwesomeKit/FAKIonIcons.h>
-#import <FontAwesomeKit/FAKFoundationIcons.h>
-#import <BlocksKit/BlocksKit+UIKit.h>
-#import <SVPullToRefresh/SVPullToRefresh.h>
-#import <PDKTStickySectionHeadersCollectionViewLayout/PDKTStickySectionHeadersCollectionViewLayout.h>
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+@import FontAwesomeKit;
+@import BlocksKit;
+@import SVPullToRefresh;
+@import PDKTStickySectionHeadersCollectionViewLayout;
+@import UIColor_HTMLColors;
 
 #import "ExploreGridViewController.h"
 #import "ExploreObservationPhoto.h"

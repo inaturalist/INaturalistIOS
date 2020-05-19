@@ -8,7 +8,6 @@
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <MBProgressHUD/MBProgressHUD.h>
-#import <RestKit/RestKit.h>
 
 #import "ObsDetailFavesViewModel.h"
 #import "Observation.h"
@@ -25,9 +24,18 @@
 #import "UIImage+INaturalist.h"
 #import "INatReachability.h"
 #import "ExploreUserRealm.h"
+#import "ObservationAPI.h"
 
 @implementation ObsDetailFavesViewModel
 
+- (ObservationAPI *)observationApi {
+    static ObservationAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[ObservationAPI alloc] init];
+    });
+    return _api;
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section < 2) {
@@ -162,57 +170,29 @@
         return;
     }
     
-    NSString *requestPath = nil;
-    NSString *hudText;
-    NSString *method;
-    
     if ([self loggedInUserHasFavedThisObservation]) {
         // need to unfave it
         [[Analytics sharedClient] event:kAnalyticsEventObservationUnfave];
         
-        // delete to /votes/unvote/observation/{obs.recordID}.json
-        requestPath = [NSString stringWithFormat:@"/votes/unvote/observation/%ld.json", (long)self.observation.inatRecordId];
-        hudText = NSLocalizedString(@"Un-faving...", @"Shown when your request to remove an observation from your favorites is loading");
-        method = @"DELETE";
+        [self.delegate showProgressHud];
+        
+        __weak typeof(self)weakSelf = self;
+        [[self observationApi] unfaveObservationWithId:self.observation.inatRecordId handler:^(NSArray *results, NSInteger count, NSError *error) {
+            [weakSelf.delegate hideProgressHud];
+            [weakSelf.delegate reloadObservation];
+        }];
     } else {
         // need to fave it
         [[Analytics sharedClient] event:kAnalyticsEventObservationFave];
         
-        // post to /votes/vote/observation/{obs.recordID}.json
-        requestPath = [NSString stringWithFormat:@"/votes/vote/observation/%ld.json", (long)self.observation.inatRecordId];
-        hudText = NSLocalizedString(@"Faving...", nil);
-        method = @"POST";
+        [self.delegate showProgressHud];
+        
+        __weak typeof(self)weakSelf = self;
+        [[self observationApi] faveObservationWithId:self.observation.inatRecordId handler:^(NSArray *results, NSInteger count, NSError *error) {
+            [weakSelf.delegate hideProgressHud];
+            [weakSelf.delegate reloadObservation];
+        }];
     }
-    
-    NSURL *requestURL = [NSURL URLWithString:requestPath relativeToURL:[NSURL inat_baseURL]];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:requestURL];
-    [request setHTTPMethod:method];
-    
-    [request addValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
-   forHTTPHeaderField:@"Authorization"];
-    [request setValue:@"application/json" forHTTPHeaderField:@"content-type"];
-    
-    [self.delegate showProgressHud];
-    
-    NSURLSessionTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request
-                                                             completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                                                 
-                                                                 [self.delegate hideProgressHud];
-                                                                 
-                                                                 if (error) {
-                                                                     NSLog(@"dataTaskWithRequest error: %@", error);
-                                                                 }
-                                                                 
-                                                                 if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-                                                                     NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
-                                                                     if (statusCode != 200) {
-                                                                         NSLog(@"Expected responseCode == 200; received %ld", (long)statusCode);
-                                                                     }
-                                                                 }
-                                                                 
-                                                                 [self.delegate reloadObservation];
-                                                             }];
-    [task resume];
 }
 
 - (BOOL)loggedInUserHasFavedThisObservation {

@@ -41,7 +41,7 @@
 "dSw-gs-zGG.placeholder" = "Gebruikersnaam";
 
 /* Class = "UILabel"; text = "Share your observation with the community to discuss and confirm your findings."; ObjectID = "ixn-0U-lJ7"; */
-"ixn-0U-lJ7.text" = "Deel uw observatie met de gemeenschap om tebespreken en uw bevindingen te bevestigen.";
+"ixn-0U-lJ7.text" = "Deel je waarneming met de gemeenschap zodat je die kan bespreken en om je vondsten te bevestigen.";
 
 /* Class = "UILabel"; text = "Your observation may be vetted as Research Grade and shared with scientists working to better understand and protect nature. "; ObjectID = "oro-uB-RY1"; */
 "oro-uB-RY1.text" = "Uw observatie kan worden beoordeeld als Research Grade en worden gedeeld met wetenschappers die werken om de natuur beter te begrijpen en te beschermen. ";
@@ -56,7 +56,7 @@
 "uop-S8-3lF.normalTitle" = "Heb je al een account?";
 
 /* Class = "UILabel"; text = "Identify"; ObjectID = "vCH-CP-6hM"; */
-"vCH-CP-6hM.text" = "Identificeer";
+"vCH-CP-6hM.text" = "Determineer";
 
 /* Class = "UILabel"; text = "Yes, license my content so scientists can use my data! Learn More"; ObjectID = "xUc-8o-XIN"; */
 "xUc-8o-XIN.text" = "Ja, kies een licentie zodat onderzoekers mijn data kunnen gebruiken. Meer info";

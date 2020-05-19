@@ -6,11 +6,15 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <Realm/Realm.h>
+@import UIKit;
+@import Foundation;
+@import Realm;
+
 #import "ExploreTaxon.h"
 #import "ExploreTaxonPhotoRealm.h"
 #import "TaxonVisualization.h"
+
+@class GuideTaxonXML;
 
 @interface ExploreTaxonRealm : RLMObject <TaxonVisualization>
 
@@ -38,6 +42,9 @@
 - (BOOL)isGenusOrLower;
 - (BOOL)scientificNameIsItalicized;
 - (instancetype)initWithMantleModel:(ExploreTaxon *)model;
++ (NSDictionary *)valueForMantleModel:(ExploreTaxon *)model;
++ (NSDictionary *)valueForCoreDataModel:(id)model;
+
 - (NSAttributedString *)wikipediaSummaryAttrStringWithSystemFontSize:(CGFloat)fontSize;
 
 @end

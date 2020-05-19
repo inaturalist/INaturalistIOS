@@ -33,6 +33,8 @@
 // viewed on RLMRealm -addOrUpdate
 @property BOOL viewedLocally;
 
++ (RLMResults *)updatesForObservationId:(NSInteger)observationId;;
+
 - (instancetype)initWithMantleModel:(ExploreUpdate *)model;
 
 @end

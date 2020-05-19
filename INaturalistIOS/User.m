@@ -10,8 +10,6 @@
 #import "Comment.h"
 #import "Identification.h"
 
-static RKManagedObjectMapping *defaultMapping = nil;
-
 @implementation User
 
 @dynamic recordID;
@@ -24,25 +22,5 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic identificationsCount;
 @dynamic mediumUserIconURL;
 @dynamic siteId;
-
-+ (RKManagedObjectMapping *)mapping
-{
-    if (!defaultMapping) {
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[User class]
-                                            inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
-        [defaultMapping mapKeyPathsToAttributes:
-         @"id", @"recordID",
-         @"login", @"login",
-         @"name", @"name",
-		 @"user_icon_url", @"userIconURL",
-         @"observations_count", @"observationsCount",
-         @"identifications_count", @"identificationsCount",
-         @"medium_user_icon_url", @"mediumUserIconURL",
-         @"site_id", @"siteId",
-         nil];
-        defaultMapping.primaryKeyAttribute = @"recordID";
-    }
-    return defaultMapping;
-}
 
 @end

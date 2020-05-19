@@ -141,15 +141,50 @@
             done(nil, 0, error);
         });
     } else {
-        NSMutableArray *results = [NSMutableArray array];
-        NSInteger totalResults = 0;
-        NSString *totalResultsKey = @"total_results";
-        if ([json valueForKey:totalResultsKey] && [json valueForKey:totalResultsKey] != [NSNull null]) {
-            totalResults = [[json valueForKey:totalResultsKey] integerValue];
-        }
         
-        if ([json valueForKey:@"results"]) {
-            for (NSDictionary *resultJSON in [json valueForKey:@"results"]) {
+        if ([json isKindOfClass:NSDictionary.class]) {
+            NSMutableArray *results = [NSMutableArray array];
+            NSInteger totalResults = 0;
+            NSString *totalResultsKey = @"total_results";
+            if ([json valueForKey:totalResultsKey] && [json valueForKey:totalResultsKey] != [NSNull null]) {
+                totalResults = [[json valueForKey:totalResultsKey] integerValue];
+            }
+            
+            if ([json valueForKey:@"results"]) {
+                for (NSDictionary *resultJSON in [json valueForKey:@"results"]) {
+                    NSError *error;
+                    MTLModel *result = [MTLJSONAdapter modelOfClass:ClassForMapping
+                                                 fromJSONDictionary:resultJSON
+                                                              error:&error];
+                    
+                    if (result) {
+                        [results addObject:result];
+                    } else {
+                        // skip this one
+                        NSLog(@"MANTLE ERROR: %@", error);
+                    }
+                }
+            } else {
+                NSError *error;
+                MTLModel *result = [MTLJSONAdapter modelOfClass:ClassForMapping
+                                             fromJSONDictionary:json
+                                                          error:&error];
+                
+                if (result) {
+                    [results addObject:result];
+                    totalResults = 1;
+                } else {
+                    // skip this one
+                    NSLog(@"MANTLE ERROR: %@", error);
+                }
+                
+            }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                done([NSArray arrayWithArray:results], totalResults, nil);
+            });
+        } else if ([json isKindOfClass:NSArray.class]) {
+            NSMutableArray *results = [NSMutableArray array];
+            for (NSDictionary *resultJSON in json) {
                 NSError *error;
                 MTLModel *result = [MTLJSONAdapter modelOfClass:ClassForMapping
                                              fromJSONDictionary:resultJSON
@@ -162,24 +197,13 @@
                     NSLog(@"MANTLE ERROR: %@", error);
                 }
             }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                done([NSArray arrayWithArray:results], 0, nil);
+            });
         } else {
-            NSError *error;
-            MTLModel *result = [MTLJSONAdapter modelOfClass:ClassForMapping
-                                         fromJSONDictionary:json
-                                                      error:&error];
-            
-            if (result) {
-                [results addObject:result];
-                totalResults = 1;
-            } else {
-                // skip this one
-                NSLog(@"MANTLE ERROR: %@", error);
-            }
-            
+            // skip it?
         }
-        dispatch_async(dispatch_get_main_queue(), ^{
-            done([NSArray arrayWithArray:results], totalResults, nil);
-        });
+        
     }
 }
 

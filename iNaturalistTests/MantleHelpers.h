@@ -11,6 +11,7 @@
 
 @class ExploreObservation;
 @class ExploreProject;
+@class ExplorePost;
 
 @interface MantleHelpers : XCTestCase
 
@@ -30,5 +31,8 @@
 // this is ken-ichi's Test Project of Unfathomable
 // Awesomeness
 + (ExploreProject *)tpouaProjectFixture;
+
++ (ExplorePost *)sitePostFixture;
++ (ExplorePost *)projectPostFixture;
 
 @end

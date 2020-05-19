@@ -1,5 +1,5 @@
 //
-//  ExploreObsFieldRealm.h
+//  Explore;FieldRealm.h
 //  iNaturalist
 //
 //  Created by Alex Shepard on 1/14/20.
@@ -19,5 +19,8 @@
 
 - (instancetype)initWithMantleModel:(ExploreObsField *)model;
 + (NSDictionary *)valueForMantleModel:(ExploreObsField *)model;
++ (NSDictionary *)valueForCoreDataModel:(id)model;
+
+- (BOOL)canBeTreatedAsText;
 
 @end

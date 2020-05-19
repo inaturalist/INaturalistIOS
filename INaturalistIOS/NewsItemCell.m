@@ -6,9 +6,9 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <AFNetworking/UIImageView+AFNetworking.h>
-#import <FontAwesomeKit/FAKIonIcons.h>
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+@import AFNetworking;
+@import FontAwesomeKit;
+@import UIColor_HTMLColors;
 
 #import "NewsItemCell.h"
 #import "UIColor+INaturalist.h"

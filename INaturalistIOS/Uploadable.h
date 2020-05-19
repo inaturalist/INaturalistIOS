@@ -16,6 +16,10 @@
 - (NSDictionary *)uploadableRepresentation;
 - (NSString *)uuid;
 + (NSString *)endpointName;
+- (NSDate *)timeSynced;
+- (void)setTimeSynced:(NSDate *)date;
+- (void)setRecordId:(NSInteger)newRecordId;
+- (NSInteger)recordId;
 
 @optional
 - (NSString *)fileUploadParameter;

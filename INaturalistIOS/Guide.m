@@ -9,8 +9,6 @@
 #import "Guide.h"
 #import "NSURL+INaturalist.h"
 
-static RKManagedObjectMapping *defaultMapping = nil;
-
 @implementation Guide
 
 @dynamic title;
@@ -27,32 +25,6 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic latitude;
 @dynamic longitude;
 @dynamic taxon;
-
-+ (RKManagedObjectMapping *)mapping
-{
-    if (!defaultMapping) {
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[self class] inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
-        [defaultMapping mapKeyPathsToAttributes:
-         @"id", @"recordID",
-         @"created_at", @"createdAt",
-         @"updated_at", @"updatedAt",
-         @"title", @"title",
-         @"description", @"desc",
-         @"icon_url", @"iconURL",
-         @"taxon_id", @"taxonID",
-         @"user_id", @"userID",
-         @"user_login", @"userLogin",
-         @"latitude", @"latitude",
-         @"longitude", @"longitude",
-         nil];
-        [defaultMapping mapKeyPath:@"taxon"
-                    toRelationship:@"taxon"
-                       withMapping:[Taxon mapping]
-                         serialize:NO];
-        defaultMapping.primaryKeyAttribute = @"recordID";
-    }
-    return defaultMapping;
-}
 
 - (NSString *)dirPath
 {

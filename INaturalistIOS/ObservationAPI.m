@@ -6,8 +6,6 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <RestKit/RestKit.h>
-
 #import "ObservationAPI.h"
 #import "ExploreObservation.h"
 #import "ExploreUpdate.h"
@@ -19,6 +17,13 @@
 
 @implementation ObservationAPI
 
+- (void)observationsForUserId:(NSInteger)userId count:(NSInteger)count handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - fetch user observation from node"];
+    NSString *path = [NSString stringWithFormat:@"observations?user_id=%ld&per_page=%ld&details=all",
+                      (long)userId, (long)count];;
+    [self fetch:path classMapping:ExploreObservation.class handler:done];
+}
+
 - (void)observationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch observation from node"];
     NSString *path = [NSString stringWithFormat:@"observations/%ld", (long)identifier];
@@ -27,26 +32,8 @@
 
 - (void)updatesWithHandler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch observation updates from node"];
-    NSString *path = @"observations/updates?per_page=100";
+    NSString *path = @"observations/updates?per_page=200&observations_by=owner";
     [self fetch:path classMapping:ExploreUpdate.class handler:done];
-}
-
-- (void)railsObservationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
-    [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%ld", (long)identifier]
-                                                    usingBlock:^(RKObjectLoader *loader) {
-                                                        loader.objectMapping = [Observation mapping];
-                                                        loader.onDidLoadObject = ^(id object) {
-                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                                done(@[], 0, nil);
-                                                            });
-                                                        };
-                                                        
-                                                        loader.onDidFailWithError = ^(NSError *error) {
-                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                                done(nil, 0, error);
-                                                            });
-                                                        };
-                                                    }];
 }
 
 - (void)seenUpdatesForObservationId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
@@ -75,9 +62,16 @@
     [self post:path params:[observation uploadableRepresentation] classMapping:[ExploreObservation class] handler:done];
 }
 
+- (void)faveObservationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - fave observation via node"];
+    NSString *path = [NSString stringWithFormat:@"observations/%ld/fave", (long)identifier];
+    [self post:path params:nil classMapping:[ExploreObservation class] handler:done];
+}
 
-- (void)dealloc {
-    [[[RKClient sharedClient] requestQueue] cancelRequestsWithDelegate:(id <RKRequestDelegate>)self];
+- (void)unfaveObservationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - fave observation via node"];
+    NSString *path = [NSString stringWithFormat:@"observations/%ld/unfave", (long)identifier];
+    [self delete:path handler:done];
 }
 
 @end

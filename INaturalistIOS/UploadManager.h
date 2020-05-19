@@ -10,6 +10,8 @@
 #import "UploadManagerNotificationDelegate.h"
 
 @class INatModel;
+@class ExploreObservationRealm;
+@class ExploreDeletedRecord;
 
 typedef NS_ENUM(NSInteger, UploadManagerState) {
     UploadManagerStateIdle,
@@ -30,8 +32,8 @@ typedef NS_ENUM(NSInteger, UploadManagerState) {
 
 @property (nonatomic, weak) id <UploadManagerNotificationDelegate> delegate;
 
-- (void)syncDeletedRecords:(NSArray *)deletedRecords thenUploadObservations:(NSArray *)recordsToUpload;
-- (void)uploadObservations:(NSArray *)observations;
+- (void)syncDeletedRecords:(NSArray <ExploreDeletedRecord *> *)deletedRecords thenUploadObservations:(NSArray <ExploreObservationRealm *> *)recordsToUpload;
+- (void)uploadObservations:(NSArray <ExploreObservationRealm *> *)observations;
 - (void)cancelSyncsAndUploads;
 - (void)autouploadPendingContent;
 

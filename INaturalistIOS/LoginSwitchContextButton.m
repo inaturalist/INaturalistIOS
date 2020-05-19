@@ -6,7 +6,7 @@
 //  Copyright © 2018 iNaturalist. All rights reserved.
 //
 
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+@import UIColor_HTMLColors;
 
 #import "LoginSwitchContextButton.h"
 

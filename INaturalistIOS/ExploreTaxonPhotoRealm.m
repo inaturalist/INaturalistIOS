@@ -14,39 +14,62 @@
     if (self = [super init]) {
         self.taxonPhotoId = model.taxonPhotoId;
         self.attribution = model.attribution;
-        self.nativePageUrlString = [model.nativePageUrl absoluteString];
-        self.squareUrlString = [model.squareUrl absoluteString];
-        self.smallUrlString = [model.smallUrl absoluteString];
-        self.mediumUrlString = [model.mediumUrl absoluteString];
-        self.largeUrlString = [model.mediumUrl absoluteString];
+        self.urlString = [model.squareUrl absoluteString];
+        self.licenseCode = model.licenseCode;
     }
     
     return self;
 }
 
++ (NSDictionary *)valueForMantleModel:(ExploreTaxonPhoto *)model {
+    NSMutableDictionary *value = [NSMutableDictionary dictionary];
+    
+    value[@"taxonPhotoId"] = @(model.taxonPhotoId);
+    value[@"attribution"] = model.attribution;
+    value[@"urlString"] = [model.squareUrl absoluteString];
+    value[@"licenseCode"] = model.licenseCode;
+    
+    return [NSDictionary dictionaryWithDictionary:value];
+}
+
++ (NSDictionary *)valueForCoreDataModel:(id)model {
+    NSMutableDictionary *value = [NSMutableDictionary dictionary];
+    
+    value[@"taxonPhotoId"] = [model valueForKey:@"recordID"];
+    value[@"attribution"] = [model valueForKey:@"attribution"];
+    value[@"urlString"] = [model valueForKey:@"squareURL"];
+    value[@"licenseCode"] = [model valueForKey:@"licenseCode"];
+    
+    return [NSDictionary dictionaryWithDictionary:value];
+}
+
+
 + (NSString *)primaryKey {
     return @"taxonPhotoId";
 }
 
-
-- (NSURL *)nativePageUrl {
-    return [NSURL URLWithString:self.nativePageUrlString];
+- (NSURL *)largePhotoUrl {
+    return [NSURL URLWithString:[self urlStringForSize:@"large"]];
 }
 
-- (NSURL *)squareUrl {
-    return [NSURL URLWithString:self.squareUrlString];
+- (NSURL *)mediumPhotoUrl {
+    return [NSURL URLWithString:[self urlStringForSize:@"medium"]];
 }
 
-- (NSURL *)smallUrl {
-    return [NSURL URLWithString:self.smallUrlString];
+- (NSURL *)smallPhotoUrl {
+    return [NSURL URLWithString:[self urlStringForSize:@"small"]];
 }
 
-- (NSURL *)mediumUrl {
-    return [NSURL URLWithString:self.mediumUrlString];
+- (NSURL *)thumbPhotoUrl {
+    return [NSURL URLWithString:[self urlStringForSize:@"thumb"]];
 }
 
-- (NSURL *)largeUrl {
-    return [NSURL URLWithString:self.largeUrlString];
+- (NSURL *)squarePhotoUrl {
+    return [NSURL URLWithString:self.urlString];
+}
+
+- (NSString *)urlStringForSize:(NSString *)size {
+    return [self.urlString stringByReplacingOccurrencesOfString:@"square" withString:size];
 }
 
 @end

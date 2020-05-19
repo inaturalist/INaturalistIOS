@@ -6,15 +6,15 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <Firebase/Firebase.h>
-#import <Fabric/Fabric.h>
-#import <Crashlytics/Crashlytics.h>
-#import <Realm/Realm.h>
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import <IFTTTLaunchImage/UIImage+IFTTTLaunchImage.h>
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
-#import <JDStatusBarNotification/JDStatusBarNotification.h>
-#import <GoogleSignIn/GoogleSignIn.h>
+@import Firebase;
+@import Fabric;
+@import Crashlytics;
+@import Realm;
+@import FBSDKCoreKit;
+@import GoogleSignIn;
+@import IFTTTLaunchImage;
+@import UIColor_HTMLColors;
+@import JDStatusBarNotification;
 
 #import "INaturalistAppDelegate.h"
 #import "Observation.h"
@@ -49,13 +49,12 @@
 #import "ExploreDeletedRecord.h"
 #import "Guide.h"
 #import "ExploreGuideRealm.h"
+#import "ExploreObservationRealm.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
-    RKManagedObjectStore *_inatObjectStore;
 }
 
-@property (readonly) RKManagedObjectStore *inatObjectStore;
 @property UIBackgroundTaskIdentifier backgroundFetchTask;
 
 @end
@@ -141,14 +140,159 @@
     [self.window setRootViewController:loadingVC];
 }
 
+- (void)migrateCoreDataTaxaToRealm {
+    // migrate old core data taxon objects to realm
+
+    NSError *error = nil;
+    NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *docDir = [docDirs objectAtIndex:0];
+    NSString *storePath = [docDir stringByAppendingPathComponent:@"inaturalist.sqlite"];
+    NSURL *storeURL = [NSURL fileURLWithPath:storePath];
+    
+    NSString *momPath = [[[NSBundle mainBundle] pathsForResourcesOfType:@"momd"
+                                                            inDirectory:nil] firstObject];
+    NSURL *momURL = [NSURL fileURLWithPath:momPath];
+    
+    NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:momURL];
+    
+    NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+    NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption : @YES,
+                              NSInferMappingModelAutomaticallyOption : @YES};
+    
+    if (![psc addPersistentStoreWithType:NSSQLiteStoreType
+                           configuration:nil
+                                     URL:storeURL
+                                 options:options
+                                   error:&error]) {
+        [NSException raise:@"Failed to open database" format:@"%@", error.localizedDescription];
+    }
+
+    
+    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+    [moc setPersistentStoreCoordinator:psc];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Taxon"];
+     
+    NSArray *results = [moc executeFetchRequest:request error:&error];
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    for (id cdTaxon in results) {
+        ExploreTaxonRealm *rlmTaxon = [[ExploreTaxonRealm alloc] init];
+        if ([cdTaxon valueForKey:@"defaultName"]) {
+            rlmTaxon.commonName = [cdTaxon valueForKey:@"defaultName"];
+        }
+        if ([cdTaxon valueForKey:@"name"]) {
+            rlmTaxon.scientificName = [cdTaxon valueForKey:@"name"];
+        }
+        if ([cdTaxon valueForKey:@"rank"]) {
+            rlmTaxon.rankName = [cdTaxon valueForKey:@"rank"];
+        }
+        if ([cdTaxon valueForKey:@"rankLevel"]) {
+            rlmTaxon.rankLevel = [[cdTaxon valueForKey:@"rankLevel"] integerValue];
+        }
+        if ([cdTaxon valueForKey:@"recordID"]) {
+            rlmTaxon.taxonId = [[cdTaxon valueForKey:@"recordID"] integerValue];
+        }
+        if ([cdTaxon valueForKey:@"wikipediaSummary"]) {
+            rlmTaxon.webContent = [cdTaxon valueForKey:@"wikipediaSummary"];
+        }
+        if ([cdTaxon valueForKey:@"observationsCount"]) {
+            rlmTaxon.observationCount = [[cdTaxon valueForKey:@"observationsCount"] integerValue];
+        }
+        
+        if ([cdTaxon valueForKey:@"taxonPhotos"]) {
+            for (id cdTaxonPhoto in [cdTaxon valueForKey:@"taxonPhotos"]) {
+                // migrate taxon photos, add them to this taxon
+                ExploreTaxonPhotoRealm *rlmTaxonPhoto = [[ExploreTaxonPhotoRealm alloc] init];
+                
+                if ([cdTaxonPhoto valueForKey:@"recordID"]) {
+                    rlmTaxonPhoto.taxonPhotoId = [cdTaxonPhoto valueForKey:@"recordID"];
+                }
+                if ([cdTaxonPhoto valueForKey:@"attribution"]) {
+                    rlmTaxonPhoto.attribution = [cdTaxonPhoto valueForKey:@"attribution"];
+                }
+                if ([cdTaxonPhoto valueForKey:@"licenseCode"]) {
+                    rlmTaxonPhoto.licenseCode = [cdTaxonPhoto valueForKey:@"licenseCode"];
+                }
+                if ([cdTaxonPhoto valueForKey:@"squareURL"]) {
+                    rlmTaxonPhoto.urlString = [cdTaxonPhoto valueForKey:@"squareURL"];
+                }
+                
+                [rlmTaxon.taxonPhotos addObject:rlmTaxonPhoto];
+            }
+        }
+        
+        
+        [realm beginWriteTransaction];
+        [realm addOrUpdateObject:rlmTaxon];
+        [realm commitWriteTransaction];
+    }
+    if (!results) {
+        NSLog(@"Error fetching Guide objects: %@\n%@", [error localizedDescription], [error userInfo]);
+        // not the end of the world if we can't migrate a core data taxon
+    }
+
+}
+
+- (void)migrateCoreDataObsToRealm {
+    
+    NSError *error = nil;
+    NSArray *docDirs = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *docDir = [docDirs objectAtIndex:0];
+    NSString *storePath = [docDir stringByAppendingPathComponent:@"inaturalist.sqlite"];
+    NSURL *storeURL = [NSURL fileURLWithPath:storePath];
+    
+    NSString *momPath = [[[NSBundle mainBundle] pathsForResourcesOfType:@"momd"
+                                                            inDirectory:nil] firstObject];
+    NSURL *momURL = [NSURL fileURLWithPath:momPath];
+    
+    NSManagedObjectModel *model = [[NSManagedObjectModel alloc] initWithContentsOfURL:momURL];
+    
+    NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+    NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption : @YES,
+                              NSInferMappingModelAutomaticallyOption : @YES};
+    
+    if (![psc addPersistentStoreWithType:NSSQLiteStoreType
+                           configuration:nil
+                                     URL:storeURL
+                                 options:options
+                                   error:&error]) {
+        [NSException raise:@"Failed to open database" format:@"%@", error.localizedDescription];
+    }
+
+    
+    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+    [moc setPersistentStoreCoordinator:psc];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Observation"];
+     
+    NSArray *results = [moc executeFetchRequest:request error:&error];
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    for (id observation in results) {
+        ExploreObservationRealm *eor = [[ExploreObservationRealm alloc] init];
+        if ([observation valueForKey:@"recordID"]) {
+            eor.observationId = [observation valueForKey:@"recordID"];
+        }
+        [realm beginWriteTransaction];
+        [realm addOrUpdateObject:eor];
+        [realm commitWriteTransaction];
+    }
+    if (!results) {
+        NSLog(@"Error fetching Guide objects: %@\n%@", [error localizedDescription], [error userInfo]);
+        // not the end of the world if we can't migrate a core data guide
+        
+    }
+
+}
+
 - (void)configureApplication {
     
     [self configureOAuth2Client];
     [self configureGlobalStyles];    
-    [self configureRestKit];
+    //[self configureRestKit];
 
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
-	config.schemaVersion = 15;
+    NSLog(@"config file URL %@", config.fileURL);
+	config.schemaVersion = 18;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
         if (oldSchemaVersion < 1) {
             // add searchable (ie diacritic-less) taxon names
@@ -191,8 +335,10 @@
                 }
             }];
         }
-        if (oldSchemaVersion < 14) {
-            // migrate old core data guides to realm
+        if (oldSchemaVersion < 17) {
+            // TODO: update migration code
+            
+            /*
             for (Guide *g in [Guide allObjects]) {
                 id value = [ExploreGuideRealm valueForCoreDataModel:g];
                 if (!value) {
@@ -207,6 +353,7 @@
                     continue;
                 }
             }
+             */
         }
     };
     [RLMRealmConfiguration setDefaultConfiguration:config];
@@ -274,9 +421,10 @@
 }
 
 - (void)reconfigureForNewBaseUrl {
-    [self configureRestKit];
+    //[self configureRestKit];
 }
 
+/*
 - (RKManagedObjectStore *)inatObjectStore {
     if (!_inatObjectStore) {
         _inatObjectStore = [RKManagedObjectStore objectStoreWithStoreFilename:@"inaturalist.sqlite"
@@ -442,6 +590,7 @@
     managedObjectModel = psc.managedObjectModel;
     return managedObjectModel;
 }
+ */
 
 -(void) configureOAuth2Client{
     NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];

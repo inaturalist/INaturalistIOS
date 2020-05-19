@@ -33,7 +33,7 @@
                                        NSFontAttributeName: [UIFont systemFontOfSize:11.0f],
                                        };
     for (ExploreTaxonPhotoRealm *etpr in self.taxon.taxonPhotos) {
-        MHGalleryItem *item = [MHGalleryItem itemWithURL:etpr.largeUrl.absoluteString
+        MHGalleryItem *item = [MHGalleryItem itemWithURL:etpr.largePhotoUrl.absoluteString
                                              galleryType:MHGalleryTypeImage];
         item.attributedString = [[NSAttributedString alloc] initWithString:etpr.attribution
                                                                 attributes:attributionAttrs];

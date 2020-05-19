@@ -23,7 +23,7 @@
 #import "LoginController.h"
 #import "IdentificationsAPI.h"
 
-@interface AddIdentificationViewController () <RKRequestDelegate, UITextViewDelegate> {
+@interface AddIdentificationViewController () <UITextViewDelegate> {
     BOOL viewHasPresented;
 }
 @property BOOL taxonViaVision;

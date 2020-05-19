@@ -12,9 +12,6 @@
 #import "User.h"
 #import "TaxonPhoto.h"
 
-static RKManagedObjectMapping *defaultMapping = nil;
-static RKObjectMapping *defaultSerializationMapping = nil;
-
 @implementation Identification
 
 @dynamic recordID;
@@ -81,50 +78,6 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 
 - (BOOL)isCurrent {
     return self.current.boolValue;
-}
-
-
-+ (RKManagedObjectMapping *)mapping
-{
-    if (!defaultMapping) {
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[Identification class]
-                                            inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
-        [defaultMapping mapKeyPathsToAttributes:
-         @"id", @"recordID",
-         @"body", @"body",
-		 @"created_at", @"createdAt",
-		 @"updated_at", @"updatedAt",
-         @"current", @"current",
-         @"observation_id", @"observationID",
-         @"taxon_change_id", @"taxonChangeID",
-         @"taxon_id", @"taxonID",
-         @"user_id", @"userID",
-         nil];
-        [defaultMapping mapKeyPath:@"taxon"
-                    toRelationship:@"taxon"
-                       withMapping:[Taxon mapping]
-                         serialize:YES];
-		[defaultMapping mapKeyPath:@"user"
-                    toRelationship:@"user"
-                       withMapping:[User mapping]
-                         serialize:NO];
-        defaultMapping.primaryKeyAttribute = @"recordID";
-    }
-    return defaultMapping;
-}
-
-+ (RKObjectMapping *)serializationMapping
-{
-    if (!defaultSerializationMapping) {
-        defaultSerializationMapping = [[RKManagedObjectMapping mappingForClass:[Identification class]
-                                                          inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]] inverseMapping];
-        [defaultSerializationMapping mapKeyPathsToAttributes:
-         @"observationID", @"identification[observation_id]",
-         @"taxonID", @"identification[taxon_id]",
-		 @"body", @"identification[body]",
-         nil];
-    }
-    return defaultSerializationMapping;
 }
 
 - (NSString *)createdAtPrettyString

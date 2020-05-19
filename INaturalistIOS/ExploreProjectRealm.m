@@ -6,45 +6,77 @@
 //  Copyright © 2020 iNaturalist. All rights reserved.
 //
 
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+@import UIColor_HTMLColors;
 
 #import "ExploreProjectRealm.h"
 
 @implementation ExploreProjectRealm
 
-+ (NSDictionary *)valueForMantleModel:(ExploreProject *)model {
++ (NSDictionary *)valueForMantleModel:(ExploreProject *)mtlModel {
     NSMutableDictionary *value = [NSMutableDictionary dictionary];
-    value[@"projectId"] = @(model.projectId);
+    value[@"projectId"] = @(mtlModel.projectId);
     
-    if (model.title) { value[@"title"] = model.title; }
-    if (model.iconUrl) { value[@"iconUrlString"] = model.iconUrl.absoluteString; }
-    if (model.bannerImageUrl) { value[@"bannerImageUrlString"] = model.bannerImageUrl.absoluteString; }
-    if (model.bannerColorString) { value[@"bannerColorString"] = model.bannerColorString; }
-    if (model.inatDescription) { value[@"inatDescription"] = model.inatDescription; }
+    if (mtlModel.title) { value[@"title"] = mtlModel.title; }
+    if (mtlModel.iconUrl) { value[@"iconUrlString"] = mtlModel.iconUrl.absoluteString; }
+    if (mtlModel.bannerImageUrl) { value[@"bannerImageUrlString"] = mtlModel.bannerImageUrl.absoluteString; }
+    if (mtlModel.bannerColorString) { value[@"bannerColorString"] = mtlModel.bannerColorString; }
+    if (mtlModel.inatDescription) { value[@"inatDescription"] = mtlModel.inatDescription; }
     
-    if (model.projectObsFields) {
+    if (mtlModel.projectObsFields) {
         NSMutableArray *pofs = [NSMutableArray array];
-        for (ExploreProjectObsField *projectObsField in model.projectObsFields) {
+        for (ExploreProjectObsField *projectObsField in mtlModel.projectObsFields) {
             [pofs addObject:[ExploreProjectObsFieldRealm valueForMantleModel:projectObsField]];
         }
         value[@"projectObsFields"] = [NSArray arrayWithArray:pofs];
     }
 
-    value[@"latitude"] = @(model.latitude);
-    value[@"longitude"] = @(model.longitude);
-    value[@"type"] = @(model.type);
-    value[@"locationId"] = @(model.locationId);
-    value[@"joined"] = @(NO);
+    value[@"latitude"] = @(mtlModel.latitude);
+    value[@"longitude"] = @(mtlModel.longitude);
+    value[@"type"] = @(mtlModel.type);
+    value[@"locationId"] = @(mtlModel.locationId);
     
     return [NSDictionary dictionaryWithDictionary:value];
 }
 
-+ (NSDictionary *)valueForCoreDataModel:(Project *)model {
-    /*
-     TBD
-     */
++ (NSDictionary *)valueForCoreDataModel:(id)cdModel {
     NSMutableDictionary *value = [NSMutableDictionary dictionary];
-    return value;
+    
+    // already wrapped by core data
+    value[@"projectId"] = [cdModel valueForKey:@"recordID"];
+    
+    // nils are OK here
+    value[@"title"] = [cdModel valueForKey:@"title"];
+    value[@"iconUrl"] = [cdModel valueForKey:@"iconURL"];
+    value[@"inatDescription"] = [cdModel valueForKey:@"desc"];
+    value[@"latitude"] = [cdModel valueForKey:@"latitude"];
+    value[@"longitude"] = [cdModel valueForKey:@"longitude"];
+    
+    // no location id for cd projects
+    value[@"locationId"] = @(0);
+        
+    // needs conversion
+    if ([cdModel valueForKey:@"projectType"]) {
+        if ([[cdModel valueForKey:@"projectType"] isEqualToString:@"collection"]) {
+            value[@"type"] = @(ExploreProjectTypeCollection);
+        } else if ([[cdModel valueForKey:@"projectType"] isEqualToString:@"umbrella"]) {
+            value[@"type"] = @(ExploreProjectTypeUmbrella);
+        } else {
+            value[@"type"] = @(ExploreProjectTypeOldStyle);
+        }
+    } else {
+        value[@"type"] = @(ExploreProjectTypeOldStyle);
+    }
+    
+    // to-many relationships
+    if ([cdModel valueForKey:@"projectObservationFields"]) {
+        NSMutableArray *pofs = [NSMutableArray array];
+        for (id cdPof in [cdModel valueForKey:@"projectObservationFields"]) {
+            [pofs addObject:[ExploreProjectObsFieldRealm valueForCoreDataModel:cdPof]];
+        }
+        value[@"projectObsFields"] = [NSArray arrayWithArray:pofs];
+    }
+    
+    return [NSDictionary dictionaryWithDictionary:value];    
 }
 
 - (instancetype)initWithMantleModel:(ExploreProject *)model {
@@ -57,7 +89,6 @@
         self.iconUrlString = model.iconUrl.absoluteString;
         self.bannerImageUrlString = model.bannerImageUrl.absoluteString;
         self.type = model.type;
-        self.joined = NO;
         self.inatDescription = model.inatDescription;
     }
     return self;
@@ -83,16 +114,31 @@
     }
 }
 
-+ (RLMResults *)joinedProjects {
-    RLMResults *joinedProjects = [[self class] objectsWhere:@"joined = YES"];
-    return [joinedProjects sortedResultsUsingDescriptors:[ExploreProjectRealm titleSortDescriptors]];
-}
-
 + (NSArray *)titleSortDescriptors {
     return @[
         [RLMSortDescriptor sortDescriptorWithKeyPath:@"title" ascending:YES],
     ];
 }
 
+- (NSArray *)sortedProjectObservationFields {
+    RLMSortDescriptor *positionSort = [RLMSortDescriptor sortDescriptorWithKeyPath:@"position" ascending:YES];
+    RLMResults *sortedResults = [self.projectObsFields sortedResultsUsingDescriptors:@[ positionSort ]];
+    // convert to NSArray
+    return [sortedResults valueForKey:@"self"];
+}
+
+- (BOOL)isNewStyleProject {
+    return self.type == ExploreProjectTypeUmbrella || self.type == ExploreProjectTypeCollection;
+}
+
+- (NSString *)titleForTypeOfProject {
+    if (self.type == ExploreProjectTypeCollection) {
+        return NSLocalizedString(@"Collection Project", @"Collection type of project, which automatically collects observations into it.");
+    } else if (self.type == ExploreProjectTypeUmbrella) {
+        return NSLocalizedString(@"Umbrella Project", @"Umbrella type of project, which contains other projects within it.");
+    } else {
+        return NSLocalizedString(@"Traditional Project", @"Traditional inat type of project, where users have to manually add observations to the project.");
+    }
+}
 
 @end

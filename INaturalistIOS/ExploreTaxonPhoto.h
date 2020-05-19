@@ -15,10 +15,10 @@
 
 @property (nonatomic, assign) NSInteger taxonPhotoId;
 @property (nonatomic, copy) NSString *attribution;
-@property (nonatomic, copy) NSURL *nativePageUrl;
 @property (nonatomic, copy) NSURL *squareUrl;
 @property (nonatomic, copy) NSURL *smallUrl;
 @property (nonatomic, copy) NSURL *mediumUrl;
 @property (nonatomic, copy) NSURL *largeUrl;
+@property (nonatomic, copy) NSString *licenseCode;
 
 @end

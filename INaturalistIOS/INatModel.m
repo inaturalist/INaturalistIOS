@@ -68,39 +68,19 @@ static NSDateFormatter *jsDateFormatter = nil;
     return jsDateFormatter;
 }
 
-+ (NSArray *)matchingRecordIDs:(NSArray *)recordIDs
-{
-    // if recordIDs is blank or contains one blank string this will return local records where recordID is blank, which is not really what we want, particularly when deleting records
-    if (recordIDs.count == 0) {
-        return [NSArray array];
-    }
-    for (NSString *check in recordIDs) {
-        if (check.length == 0) {
-            return [NSArray array];
-        }
-    }
-	NSFetchRequest *request = [self fetchRequest];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"recordID in %@", recordIDs]];
-    return [self objectsWithFetchRequest:request];
++ (NSArray *)matchingRecordIDs:(NSArray *)recordIDs {
+    return @[ ];
 }
 
-+ (NSArray *)all
-{
-    NSFetchRequest *request = [self fetchRequest];
-    NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"recordID" ascending:NO];
-    NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"localCreatedAt" ascending:NO];
-    [request setSortDescriptors:@[sortDescriptor1, sortDescriptor2]];
-    return [self objectsWithFetchRequest:request];
++ (NSArray *)all {
+    return @[ ];
 }
 
-+ (NSArray *)needingSync
-{
-    
-    return [self objectsWithFetchRequest:self.needingSyncRequest];
++ (NSArray *)needingSync {
+    return @[ ];
 }
 
-+ (NSFetchRequest *)needingSyncRequest
-{
++ (NSFetchRequest *)needingSyncRequest {
     NSFetchRequest *request = [self fetchRequest];
     [request setPredicate:[NSPredicate predicateWithFormat:
                            @"syncedAt = nil OR syncedAt < localUpdatedAt"]];
@@ -109,10 +89,8 @@ static NSDateFormatter *jsDateFormatter = nil;
     return request;
 }
 
-+ (NSInteger)needingSyncCount
-{
-    NSError *error = nil;
-    return [[NSManagedObjectContext defaultContext] countForFetchRequest:self.needingSyncRequest error:&error];
++ (NSInteger)needingSyncCount {
+    return 0;
 }
 
 + (id)stub
@@ -120,39 +98,8 @@ static NSDateFormatter *jsDateFormatter = nil;
     return [[self alloc] init];
 }
 
-+ (RKManagedObjectMapping *)mapping
-{
-    return [RKManagedObjectMapping mappingForClass:[self class] inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
-}
-
-+ (RKManagedObjectMapping *)serializationMapping
-{
-    return (RKManagedObjectMapping *)[[self mapping] inverseMapping];
-}
-
-+ (void)deleteAll
-{
-    for (INatModel *o in [self allObjects]) {
-        // don't create deleted records on entity deletion
-        o.syncedAt = nil;
-        [o deleteEntity];
-    }
-    NSError *error = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-}
-
-+ (NSManagedObjectContext *)managedObjectContext
-{
-    return [NSManagedObjectContext defaultContext];
-}
-
-- (void)save
-{
-    NSError *error = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    if (error) {
-        NSLog(@"error saving record: %@", error);
-    }
++ (void)deleteAll {
+    return;
 }
 
 - (void)willSave
@@ -161,26 +108,8 @@ static NSDateFormatter *jsDateFormatter = nil;
     [super willSave];
 }
 
-- (void)destroy
-{
-    [self deleteEntity];
-    NSError* error = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-}
-
-- (BOOL)needsSync
-{
+- (BOOL)needsSync {
     return self.syncedAt == nil || [self.syncedAt timeIntervalSinceDate:self.localUpdatedAt] < 0;
-}
-
-- (NSDictionary *)attributeChanges
-{
-    NSDictionary *relats = self.class.entityDescription.relationshipsByName;
-	NSMutableDictionary *changes = [NSMutableDictionary dictionaryWithDictionary:self.changedValues];
-	for (NSString *relatName in relats.keyEnumerator) {
-		[changes removeObjectForKey:relatName];
-	}
-    return changes;
 }
 
 // Note: controllers are responsible for setting localUpdatedAt and syncedAt

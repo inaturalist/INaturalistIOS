@@ -6,9 +6,12 @@
 //  Copyright © 2020 iNaturalist. All rights reserved.
 //
 
-#import <Realm/Realm.h>
+@import Realm;
+
 #import "ExploreObsFieldRealm.h"
 #import "ExploreProjectObsField.h"
+
+@class ExploreProjectRealm;
 
 @interface ExploreProjectObsFieldRealm : RLMObject
 
@@ -17,8 +20,11 @@
 @property NSInteger projectObsFieldId;
 @property ExploreObsFieldRealm *obsField;
 
+@property (readonly) ExploreProjectRealm *project;
+
 - (instancetype)initWithMantleModel:(ExploreProjectObsField *)model;
 + (NSDictionary *)valueForMantleModel:(ExploreProjectObsField *)model;
++ (NSDictionary *)valueForCoreDataModel:(id)model;
 
 @end
 

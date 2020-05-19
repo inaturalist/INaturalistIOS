@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		074B7301CE4C2B0CBDF67FDB /* Pods_iNaturalist.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 061A1CFCBA40CA52B2871183 /* Pods_iNaturalist.framework */; };
 		1902812514F308AD005AC8D2 /* ImageStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902812414F308AD005AC8D2 /* ImageStore.m */; };
 		1902812814F315F3005AC8D2 /* INatModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902812714F315F2005AC8D2 /* INatModel.m */; };
 		1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 1902813C14F36B44005AC8D2 /* ObservationPhoto.m */; };
@@ -80,7 +81,7 @@
 		19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F87498152679F100A65F9A /* TaxaSearchViewController.m */; };
 		19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */; };
 		19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */; };
-		25FF7D00F437D2EC79C4BBCA /* libPods-iNaturalistTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 320569F9ED5CE36E0238A317 /* libPods-iNaturalistTests.a */; };
+		23A7B5284AC2694A54E56CD4 /* Pods_iNaturalistTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEDFD01C182A038BA8F1117B /* Pods_iNaturalistTests.framework */; };
 		6098FD1716F3BE4C0053987E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6098FD1616F3BE4C0053987E /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		6098FD1916F3BE690053987E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6098FD1816F3BE690053987E /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */; };
@@ -88,7 +89,6 @@
 		893FE7181B525BFD00BC7CC4 /* config.h.example in Resources */ = {isa = PBXBuildFile; fileRef = 893FE7171B525BFD00BC7CC4 /* config.h.example */; };
 		897569FF1B4557B500F0BFAD /* ObservationViewNormalCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 897569FE1B4557B500F0BFAD /* ObservationViewNormalCell.m */; };
 		899A00D41B53AADD0079162F /* ProjectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 899A00D31B53AADD0079162F /* ProjectTableViewCell.m */; };
-		CA0213AC0FF824B557AAE618 /* libPods-iNaturalist.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9DFF9097662B40EF98B3675 /* libPods-iNaturalist.a */; };
 		FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */; };
 		FA067F601DBACF0A00CBA5EF /* UpdatesItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA067F5F1DBACF0A00CBA5EF /* UpdatesItemCell.m */; };
 		FA0F1AF81BBB2E9600533ED5 /* ObservationValidationErrorView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */; };
@@ -102,6 +102,7 @@
 		FA2552101D1F49A8005D2128 /* ExploreTaxonRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */; };
 		FA2552131D1F4D62005D2128 /* TaxaAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2552121D1F4D62005D2128 /* TaxaAPI.m */; };
 		FA2A07991C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2A07981C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m */; };
+		FA3759D023EB467E0053F783 /* INatTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3759CF23EB467E0053F783 /* INatTabBarController.swift */; };
 		FA394EB8218909AF004AE0FE /* ProjectObservationHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA394EB7218909AF004AE0FE /* ProjectObservationHeaderView.xib */; };
 		FA399A971DDBDB3E007ABD3E /* Projects.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA399A991DDBDB3E007ABD3E /* Projects.storyboard */; };
 		FA399AAC1DDBDC73007ABD3E /* Activity.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FA399AAE1DDBDC73007ABD3E /* Activity.storyboard */; };
@@ -164,6 +165,8 @@
 		FA5BC6F61C3C7FD0008FCD43 /* NSFileManager+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5BC6F51C3C7FD0008FCD43 /* NSFileManager+INaturalist.m */; };
 		FA5BC6FB1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5BC6FA1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m */; };
 		FA60A4461B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */; };
+		FA60EA1123EA3F7F0026F7A3 /* ExplorePost.m in Sources */ = {isa = PBXBuildFile; fileRef = FA60EA1023EA3F7F0026F7A3 /* ExplorePost.m */; };
+		FA60EA1423EA453D0026F7A3 /* PostsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA60EA1323EA453D0026F7A3 /* PostsAPI.m */; };
 		FA627BA91ACB6A050079534E /* INatTooltipView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA627BA81ACB6A050079534E /* INatTooltipView.m */; };
 		FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = FA63FA1419E4CE65007306F9 /* Analytics.m */; };
 		FA6513371E04A03B0059FD70 /* NewsItemTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6513361E04A03B0059FD70 /* NewsItemTests.m */; };
@@ -205,7 +208,6 @@
 		FA7C53511BCD9D3100A0D5AA /* ProjectObsFieldViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7C53501BCD9D3100A0D5AA /* ProjectObsFieldViewController.m */; };
 		FA7FF84A1BAB622200885034 /* UIAlertController+IOS9_Autorotate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */; };
 		FA81DF0E1E6F73A9006E7132 /* ObsDetailViewModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */; };
-		FA8382441E70FB2900F73E90 /* RKModelBaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8382431E70FB2900F73E90 /* RKModelBaseTests.m */; };
 		FA8382471E70FD7400F73E90 /* WilletObservationRails.json in Resources */ = {isa = PBXBuildFile; fileRef = FA8382461E70FD7400F73E90 /* WilletObservationRails.json */; };
 		FA86CC381EAAE496004D6482 /* TaxonSuggestionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */; };
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
@@ -216,6 +218,8 @@
 		FA8EBCE4230DC6E100C1D789 /* UIImage+MapAnnotations.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8EBCE3230DC6E100C1D789 /* UIImage+MapAnnotations.m */; };
 		FA8EBCE7230DE48400C1D789 /* ExploreDeletedRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8EBCE6230DE48400C1D789 /* ExploreDeletedRecord.m */; };
 		FA9249821EF85FD000E0C387 /* ExploreTaxonScore.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9249811EF85FD000E0C387 /* ExploreTaxonScore.m */; };
+		FA930F6D244FA582001B9D81 /* ExploreProjectObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA930F6C244FA582001B9D81 /* ExploreProjectObservation.m */; };
+		FA930F70244FBA37001B9D81 /* ExploreObsFieldValue.m in Sources */ = {isa = PBXBuildFile; fileRef = FA930F6F244FBA37001B9D81 /* ExploreObsFieldValue.m */; };
 		FA9437831C869AA400CB10F3 /* ProjectsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9437821C869AA400CB10F3 /* ProjectsAPI.m */; };
 		FA9437861C869B7300CB10F3 /* ObservationAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9437851C869B7300CB10F3 /* ObservationAPI.m */; };
 		FA97666620D1E28F00D172DC /* AboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA97666520D1E28F00D172DC /* AboutViewController.m */; };
@@ -224,6 +228,8 @@
 		FA98B4DA1B30E8BC0023851D /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA98B4D91B30E8BC0023851D /* CoreTelephony.framework */; };
 		FA99BDCB1FD794E300C9D985 /* CommentsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA99BDCA1FD794E300C9D985 /* CommentsAPI.m */; };
 		FA9BC3771B332BEC003375A2 /* NSURL+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */; };
+		FA9C631B23E7795600E1AD62 /* ExploreObservationPhotoRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9C631A23E7795600E1AD62 /* ExploreObservationPhotoRealm.m */; };
+		FA9C631E23E8C51400E1AD62 /* ExploreFaveRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9C631D23E8C51400E1AD62 /* ExploreFaveRealm.m */; };
 		FA9E07431E1B158F00AE7833 /* Octopus_rubescens.json in Resources */ = {isa = PBXBuildFile; fileRef = FA9E07421E1B158F00AE7833 /* Octopus_rubescens.json */; };
 		FA9E07451E1B15B100AE7833 /* Diptera.json in Resources */ = {isa = PBXBuildFile; fileRef = FA9E07441E1B15B100AE7833 /* Diptera.json */; };
 		FA9E07471E1B15D100AE7833 /* TaxonTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9E07461E1B15D100AE7833 /* TaxonTests.m */; };
@@ -257,6 +263,7 @@
 		FABCAD1423C6BEA4006479CA /* AnonHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FABCAD1323C6BEA4006479CA /* AnonHeaderView.xib */; };
 		FAC0F1691A9EAE3B000F20C4 /* ConfirmPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F1681A9EAE3B000F20C4 /* ConfirmPhotoViewController.m */; };
 		FAC0F17E1A9FDD0D000F20C4 /* MultiImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */; };
+		FAC24AF02443CE90002FF698 /* InaturalistRealmMigration.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC24AEF2443CE90002FF698 /* InaturalistRealmMigration.m */; };
 		FAC59DF520D9D8C2000A6558 /* UploadObservationOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC59DF420D9D8C2000A6558 /* UploadObservationOperation.m */; };
 		FAC59DF820D9DF87000A6558 /* DeleteRecordOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC59DF720D9DF87000A6558 /* DeleteRecordOperation.m */; };
 		FAC59DFC20DB0890000A6558 /* UploadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC59DFB20DB0890000A6558 /* UploadOperation.m */; };
@@ -277,7 +284,10 @@
 		FACD11EF1C56E9720041E318 /* TaxonCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FACD11EE1C56E9720041E318 /* TaxonCell.xib */; };
 		FACEEB281D1C607600B2EC62 /* ExploreUser.m in Sources */ = {isa = PBXBuildFile; fileRef = FACEEB271D1C607600B2EC62 /* ExploreUser.m */; };
 		FAD05EA41B9A911400C14085 /* TextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD05EA31B9A911400C14085 /* TextViewCell.m */; };
+		FAD0890A23E4AD4F002D9F3C /* ExploreObservationRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD0890923E4AD4F002D9F3C /* ExploreObservationRealm.m */; };
 		FAD125442296060C006E70FC /* InsetLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD125432296060C006E70FC /* InsetLabel.m */; };
+		FAD44AE72456635000E9DA38 /* ExploreObsFieldValueRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD44AE62456635000E9DA38 /* ExploreObsFieldValueRealm.m */; };
+		FAD44AEA24576E2800E9DA38 /* ExploreProjectObservationRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD44AE924576E2800E9DA38 /* ExploreProjectObservationRealm.m */; };
 		FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FADD57E919FEFF2500E141C9 /* Images.xcassets */; };
 		FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */ = {isa = PBXBuildFile; fileRef = FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */; };
 		FADDA3BC1DBABA9900FB054F /* NewsPagerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FADDA3BB1DBABA9900FB054F /* NewsPagerViewController.m */; };
@@ -298,6 +308,7 @@
 		FAEF23511C7D2DBA00208F44 /* IdentifierCount.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23501C7D2DBA00208F44 /* IdentifierCount.m */; };
 		FAEF23541C7D2DC300208F44 /* ObserverCount.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23531C7D2DC300208F44 /* ObserverCount.m */; };
 		FAEF23571C7D2DCD00208F44 /* SpeciesCount.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEF23561C7D2DCD00208F44 /* SpeciesCount.m */; };
+		FAF16A1A24733E5C00209D96 /* DownWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF16A1924733E5C00209D96 /* DownWrapper.swift */; };
 		FAF47B321BD99FFC007CC407 /* PhotoChicletCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF47B311BD99FFC007CC407 /* PhotoChicletCell.m */; };
 		FAF73BE11E1B1FF2002456AF /* Gollum.json in Resources */ = {isa = PBXBuildFile; fileRef = FAF73BE01E1B1FF2002456AF /* Gollum.json */; };
 		FAF73BE41E1B2472002456AF /* PartnerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF73BE31E1B2472002456AF /* PartnerTests.m */; };
@@ -323,6 +334,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		061A1CFCBA40CA52B2871183 /* Pods_iNaturalist.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iNaturalist.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0BD0868694B7BFE1F871526D /* Pods-iNaturalist.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNaturalist.debug.xcconfig"; path = "Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist.debug.xcconfig"; sourceTree = "<group>"; };
 		1902812314F308AD005AC8D2 /* ImageStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageStore.h; sourceTree = "<group>"; };
 		1902812414F308AD005AC8D2 /* ImageStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageStore.m; sourceTree = "<group>"; };
@@ -456,7 +468,6 @@
 		19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TaxonOneNameTableViewCell.xib; sourceTree = "<group>"; };
 		19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TaxonTwoNameTableViewCell.xib; sourceTree = "<group>"; };
 		19FFA16F191D82CE000A6EBA /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
-		320569F9ED5CE36E0238A317 /* libPods-iNaturalistTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iNaturalistTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		516616E67068DFBF260742A9 /* Pods-iNaturalist.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNaturalist.release.xcconfig"; path = "Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist.release.xcconfig"; sourceTree = "<group>"; };
 		6098FD1416F3BE270053987E /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		6098FD1616F3BE4C0053987E /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
@@ -474,9 +485,9 @@
 		897569FE1B4557B500F0BFAD /* ObservationViewNormalCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationViewNormalCell.m; sourceTree = "<group>"; };
 		899A00D21B53AADD0079162F /* ProjectTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectTableViewCell.h; sourceTree = "<group>"; };
 		899A00D31B53AADD0079162F /* ProjectTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectTableViewCell.m; sourceTree = "<group>"; };
+		AEDFD01C182A038BA8F1117B /* Pods_iNaturalistTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iNaturalistTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CAF65CB214F5CAC9003D63BB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		E7392A23E01CD0D45F0E3F02 /* Pods-iNaturalistTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNaturalistTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests.release.xcconfig"; sourceTree = "<group>"; };
-		E9DFF9097662B40EF98B3675 /* libPods-iNaturalist.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-iNaturalist.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA0069211A0C51F600C64F28 /* MKMapView+ZoomLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMapView+ZoomLevel.h"; sourceTree = "<group>"; };
 		FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMapView+ZoomLevel.m"; sourceTree = "<group>"; };
 		FA0600691DCEE1700025473C /* iNaturalist.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = iNaturalist.entitlements; path = iNaturalist/iNaturalist.entitlements; sourceTree = "<group>"; };
@@ -519,6 +530,8 @@
 		FA30C2F12090D882006F7629 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FA30C2F22090D882006F7629 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA31E8DB1BB9CD1A0051B199 /* INaturalist2.8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.8.xcdatamodel; sourceTree = "<group>"; };
+		FA3759CE23EB467E0053F783 /* iNaturalist-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iNaturalist-Bridging-Header.h"; sourceTree = "<group>"; };
+		FA3759CF23EB467E0053F783 /* INatTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = INatTabBarController.swift; sourceTree = "<group>"; };
 		FA38139D1BC32CD7004DBAD0 /* INaturalist2.9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.9.xcdatamodel; sourceTree = "<group>"; };
 		FA394EB7218909AF004AE0FE /* ProjectObservationHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProjectObservationHeaderView.xib; sourceTree = "<group>"; };
 		FA399A981DDBDB3E007ABD3E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Projects.storyboard; sourceTree = "<group>"; };
@@ -696,6 +709,10 @@
 		FA5BC6FA1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailQualityDetailsFooter.m; sourceTree = "<group>"; };
 		FA60A4441B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITapGestureRecognizer+InatHelpers.h"; sourceTree = "<group>"; };
 		FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITapGestureRecognizer+InatHelpers.m"; sourceTree = "<group>"; };
+		FA60EA0F23EA3F7F0026F7A3 /* ExplorePost.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExplorePost.h; sourceTree = "<group>"; };
+		FA60EA1023EA3F7F0026F7A3 /* ExplorePost.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExplorePost.m; sourceTree = "<group>"; };
+		FA60EA1223EA453D0026F7A3 /* PostsAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PostsAPI.h; sourceTree = "<group>"; };
+		FA60EA1323EA453D0026F7A3 /* PostsAPI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PostsAPI.m; sourceTree = "<group>"; };
 		FA627BA71ACB6A050079534E /* INatTooltipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatTooltipView.h; sourceTree = "<group>"; };
 		FA627BA81ACB6A050079534E /* INatTooltipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = INatTooltipView.m; sourceTree = "<group>"; };
 		FA63FA1319E4CE65007306F9 /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
@@ -797,8 +814,6 @@
 		FA7FF8481BAB622200885034 /* UIAlertController+IOS9_Autorotate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+IOS9_Autorotate.h"; sourceTree = "<group>"; };
 		FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+IOS9_Autorotate.m"; sourceTree = "<group>"; };
 		FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailViewModelTests.m; sourceTree = "<group>"; };
-		FA8382431E70FB2900F73E90 /* RKModelBaseTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKModelBaseTests.m; sourceTree = "<group>"; };
-		FA8382451E70FB9D00F73E90 /* RKModelBaseTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RKModelBaseTests.h; sourceTree = "<group>"; };
 		FA8382461E70FD7400F73E90 /* WilletObservationRails.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = WilletObservationRails.json; path = Fixtures/WilletObservationRails.json; sourceTree = "<group>"; };
 		FA86CC361EAAE496004D6482 /* TaxonSuggestionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxonSuggestionCell.h; sourceTree = "<group>"; };
 		FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonSuggestionCell.m; sourceTree = "<group>"; };
@@ -823,6 +838,10 @@
 		FA91C7E41B4362FE004D4C5B /* UploadManagerNotificationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadManagerNotificationDelegate.h; sourceTree = "<group>"; };
 		FA9249801EF85FD000E0C387 /* ExploreTaxonScore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreTaxonScore.h; sourceTree = "<group>"; };
 		FA9249811EF85FD000E0C387 /* ExploreTaxonScore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreTaxonScore.m; sourceTree = "<group>"; };
+		FA930F6B244FA582001B9D81 /* ExploreProjectObservation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreProjectObservation.h; sourceTree = "<group>"; };
+		FA930F6C244FA582001B9D81 /* ExploreProjectObservation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreProjectObservation.m; sourceTree = "<group>"; };
+		FA930F6E244FBA37001B9D81 /* ExploreObsFieldValue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreObsFieldValue.h; sourceTree = "<group>"; };
+		FA930F6F244FBA37001B9D81 /* ExploreObsFieldValue.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreObsFieldValue.m; sourceTree = "<group>"; };
 		FA9437811C869AA400CB10F3 /* ProjectsAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectsAPI.h; sourceTree = "<group>"; };
 		FA9437821C869AA400CB10F3 /* ProjectsAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectsAPI.m; sourceTree = "<group>"; };
 		FA9437841C869B7300CB10F3 /* ObservationAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationAPI.h; sourceTree = "<group>"; };
@@ -839,6 +858,10 @@
 		FA9BC3751B332BEC003375A2 /* NSURL+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSURL+INaturalist.h"; sourceTree = "<group>"; };
 		FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSURL+INaturalist.m"; sourceTree = "<group>"; };
 		FA9BC3781B33893D003375A2 /* INaturalist2.7.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.7.xcdatamodel; sourceTree = "<group>"; };
+		FA9C631923E7795600E1AD62 /* ExploreObservationPhotoRealm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreObservationPhotoRealm.h; sourceTree = "<group>"; };
+		FA9C631A23E7795600E1AD62 /* ExploreObservationPhotoRealm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationPhotoRealm.m; sourceTree = "<group>"; };
+		FA9C631C23E8C51400E1AD62 /* ExploreFaveRealm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreFaveRealm.h; sourceTree = "<group>"; };
+		FA9C631D23E8C51400E1AD62 /* ExploreFaveRealm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreFaveRealm.m; sourceTree = "<group>"; };
 		FA9E07421E1B158F00AE7833 /* Octopus_rubescens.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = Octopus_rubescens.json; path = Fixtures/Octopus_rubescens.json; sourceTree = "<group>"; };
 		FA9E07441E1B15B100AE7833 /* Diptera.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = Diptera.json; path = Fixtures/Diptera.json; sourceTree = "<group>"; };
 		FA9E07461E1B15D100AE7833 /* TaxonTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonTests.m; sourceTree = "<group>"; };
@@ -925,6 +948,8 @@
 		FAC0F1681A9EAE3B000F20C4 /* ConfirmPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ConfirmPhotoViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		FAC0F17C1A9FDD0D000F20C4 /* MultiImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiImageView.h; sourceTree = "<group>"; };
 		FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiImageView.m; sourceTree = "<group>"; };
+		FAC24AEE2443CE90002FF698 /* InaturalistRealmMigration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InaturalistRealmMigration.h; sourceTree = "<group>"; };
+		FAC24AEF2443CE90002FF698 /* InaturalistRealmMigration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InaturalistRealmMigration.m; sourceTree = "<group>"; };
 		FAC3BDB020901B9C004B611D /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		FAC3BDB120901B9C004B611D /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Onboarding.strings; sourceTree = "<group>"; };
 		FAC3BDB220901B9C004B611D /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Projects.strings; sourceTree = "<group>"; };
@@ -983,6 +1008,8 @@
 		FACEEB271D1C607600B2EC62 /* ExploreUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreUser.m; sourceTree = "<group>"; };
 		FAD05EA21B9A911400C14085 /* TextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextViewCell.h; sourceTree = "<group>"; };
 		FAD05EA31B9A911400C14085 /* TextViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextViewCell.m; sourceTree = "<group>"; };
+		FAD0890823E4AD4F002D9F3C /* ExploreObservationRealm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreObservationRealm.h; sourceTree = "<group>"; };
+		FAD0890923E4AD4F002D9F3C /* ExploreObservationRealm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationRealm.m; sourceTree = "<group>"; };
 		FAD125422296060C006E70FC /* InsetLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InsetLabel.h; sourceTree = "<group>"; };
 		FAD125432296060C006E70FC /* InsetLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InsetLabel.m; sourceTree = "<group>"; };
 		FAD35175225A7D9300E0BE6C /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ca-ES"; path = "ca-ES.lproj/MainStoryboard.strings"; sourceTree = "<group>"; };
@@ -992,6 +1019,10 @@
 		FAD35179225A7D9300E0BE6C /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ca-ES"; path = "ca-ES.lproj/Guides.strings"; sourceTree = "<group>"; };
 		FAD3517A225A7D9300E0BE6C /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ca-ES"; path = "ca-ES.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		FAD3517B225A7D9300E0BE6C /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ca-ES"; path = "ca-ES.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		FAD44AE52456635000E9DA38 /* ExploreObsFieldValueRealm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreObsFieldValueRealm.h; sourceTree = "<group>"; };
+		FAD44AE62456635000E9DA38 /* ExploreObsFieldValueRealm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreObsFieldValueRealm.m; sourceTree = "<group>"; };
+		FAD44AE824576E2800E9DA38 /* ExploreProjectObservationRealm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreProjectObservationRealm.h; sourceTree = "<group>"; };
+		FAD44AE924576E2800E9DA38 /* ExploreProjectObservationRealm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreProjectObservationRealm.m; sourceTree = "<group>"; };
 		FADD57E919FEFF2500E141C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = iNaturalist/Images.xcassets; sourceTree = "<group>"; };
 		FADD58641A00662200E141C9 /* UIFont+ExploreFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+ExploreFonts.h"; sourceTree = "<group>"; };
 		FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+ExploreFonts.m"; sourceTree = "<group>"; };
@@ -1037,6 +1068,14 @@
 		FAEF23531C7D2DC300208F44 /* ObserverCount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObserverCount.m; sourceTree = "<group>"; };
 		FAEF23551C7D2DCD00208F44 /* SpeciesCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpeciesCount.h; sourceTree = "<group>"; };
 		FAEF23561C7D2DCD00208F44 /* SpeciesCount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpeciesCount.m; sourceTree = "<group>"; };
+		FAF16A1924733E5C00209D96 /* DownWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownWrapper.swift; sourceTree = "<group>"; };
+		FAF16A1B24745F3300209D96 /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/MainStoryboard.strings"; sourceTree = "<group>"; };
+		FAF16A1C24745F3300209D96 /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/Onboarding.strings"; sourceTree = "<group>"; };
+		FAF16A1D24745F3400209D96 /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/Projects.strings"; sourceTree = "<group>"; };
+		FAF16A1E24745F3400209D96 /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/Activity.strings"; sourceTree = "<group>"; };
+		FAF16A1F24745F3400209D96 /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/Guides.strings"; sourceTree = "<group>"; };
+		FAF16A2024745F3400209D96 /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		FAF16A2124745F3400209D96 /* fi-FI */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fi-FI"; path = "fi-FI.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		FAF47B301BD99FFC007CC407 /* PhotoChicletCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoChicletCell.h; sourceTree = "<group>"; };
 		FAF47B311BD99FFC007CC407 /* PhotoChicletCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoChicletCell.m; sourceTree = "<group>"; };
 		FAF614CD1B630122008B63B0 /* Uploadable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Uploadable.h; sourceTree = "<group>"; };
@@ -1086,7 +1125,7 @@
 				1959CDB314EA30280036F363 /* QuartzCore.framework in Frameworks */,
 				1927513814E9CCC9000ABAC4 /* UIKit.framework in Frameworks */,
 				1927513A14E9CCC9000ABAC4 /* Foundation.framework in Frameworks */,
-				CA0213AC0FF824B557AAE618 /* libPods-iNaturalist.a in Frameworks */,
+				074B7301CE4C2B0CBDF67FDB /* Pods_iNaturalist.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1094,7 +1133,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				25FF7D00F437D2EC79C4BBCA /* libPods-iNaturalistTests.a in Frameworks */,
+				23A7B5284AC2694A54E56CD4 /* Pods_iNaturalistTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1166,8 +1205,8 @@
 				1927513714E9CCC9000ABAC4 /* UIKit.framework */,
 				1927513914E9CCC9000ABAC4 /* Foundation.framework */,
 				1927513B14E9CCC9000ABAC4 /* CoreGraphics.framework */,
-				E9DFF9097662B40EF98B3675 /* libPods-iNaturalist.a */,
-				320569F9ED5CE36E0238A317 /* libPods-iNaturalistTests.a */,
+				061A1CFCBA40CA52B2871183 /* Pods_iNaturalist.framework */,
+				AEDFD01C182A038BA8F1117B /* Pods_iNaturalistTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1194,6 +1233,7 @@
 		1927513E14E9CCC9000ABAC4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				FA3759CE23EB467E0053F783 /* iNaturalist-Bridging-Header.h */,
 				893FE7171B525BFD00BC7CC4 /* config.h.example */,
 				1904E5F117FB7DAC00725804 /* guides */,
 				60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */,
@@ -1252,7 +1292,6 @@
 				195F3247151A8AB60019CB85 /* Taxon.m */,
 				195F3249151A8AF70019CB85 /* TaxonPhoto.h */,
 				195F324A151A8AF70019CB85 /* TaxonPhoto.m */,
-				FAF614CD1B630122008B63B0 /* Uploadable.h */,
 				19AE897718DD08CC00505918 /* User.h */,
 				19AE897818DD08CC00505918 /* User.m */,
 				197FD41A17FE13CD0099BDE6 /* GuideTaxonXML.h */,
@@ -1304,12 +1343,13 @@
 				19F87497152679F000A65F9A /* TaxaSearchViewController.h */,
 				19F87498152679F100A65F9A /* TaxaSearchViewController.m */,
 				FACCEB3D1ED4E590009C9A19 /* Taxon Details */,
-				FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */,
 				FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */,
+				FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */,
 				FADDA3B91DBABA7800FB054F /* News */,
 				FA711AA81D53D6E600C4FFDB /* Onboarding */,
 				FA430BE31CA48E3F00FDC6E4 /* Observation Detail */,
 				FA430BE21CA48E3A00FDC6E4 /* Project Detail */,
+				FA3759CF23EB467E0053F783 /* INatTabBarController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -1402,6 +1442,7 @@
 				FAA0A1971F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.m */,
 				FAEA0A4C229224EF004111A1 /* CLPlacemark+INat.h */,
 				FAEA0A4D229224EF004111A1 /* CLPlacemark+INat.m */,
+				FAF16A1924733E5C00209D96 /* DownWrapper.swift */,
 				FA6F87681B0E99A20019B157 /* FAKINaturalist.h */,
 				FA6F87691B0E99A20019B157 /* FAKINaturalist.m */,
 				1902812314F308AD005AC8D2 /* ImageStore.h */,
@@ -1411,6 +1452,8 @@
 				FAB71E041FDC7D530039C45B /* INatReachability.m */,
 				FA627BA71ACB6A050079534E /* INatTooltipView.h */,
 				FA627BA81ACB6A050079534E /* INatTooltipView.m */,
+				FAC24AEE2443CE90002FF698 /* InaturalistRealmMigration.h */,
+				FAC24AEF2443CE90002FF698 /* InaturalistRealmMigration.m */,
 				FAD125422296060C006E70FC /* InsetLabel.h */,
 				FAD125432296060C006E70FC /* InsetLabel.m */,
 				FA6D69571B06A6CD000983F8 /* LoginController.h */,
@@ -1685,8 +1728,6 @@
 				FA6513361E04A03B0059FD70 /* NewsItemTests.m */,
 				FA9E07461E1B15D100AE7833 /* TaxonTests.m */,
 				FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */,
-				FA8382451E70FB9D00F73E90 /* RKModelBaseTests.h */,
-				FA8382431E70FB2900F73E90 /* RKModelBaseTests.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1866,6 +1907,7 @@
 			children = (
 				FAC59DF620D9DF87000A6558 /* DeleteRecordOperation.h */,
 				FAC59DF720D9DF87000A6558 /* DeleteRecordOperation.m */,
+				FAF614CD1B630122008B63B0 /* Uploadable.h */,
 				1997410F15194E89006FBEA0 /* UploadManager.h */,
 				1997411015194E89006FBEA0 /* UploadManager.m */,
 				FA91C7E41B4362FE004D4C5B /* UploadManagerNotificationDelegate.h */,
@@ -1899,12 +1941,22 @@
 				FAFED1FB1DB5A2680015CCBA /* ExploreCommentRealm.m */,
 				FA8EBCE5230DE48400C1D789 /* ExploreDeletedRecord.h */,
 				FA8EBCE6230DE48400C1D789 /* ExploreDeletedRecord.m */,
+				FA9C631C23E8C51400E1AD62 /* ExploreFaveRealm.h */,
+				FA9C631D23E8C51400E1AD62 /* ExploreFaveRealm.m */,
 				FAB0B8EC237F37C000E73681 /* ExploreGuideRealm.h */,
 				FAB0B8ED237F37C000E73681 /* ExploreGuideRealm.m */,
 				FAFED1FD1DB5A2730015CCBA /* ExploreIdentificationRealm.h */,
 				FAFED1FE1DB5A2730015CCBA /* ExploreIdentificationRealm.m */,
+				FA9C631923E7795600E1AD62 /* ExploreObservationPhotoRealm.h */,
+				FA9C631A23E7795600E1AD62 /* ExploreObservationPhotoRealm.m */,
+				FAD0890823E4AD4F002D9F3C /* ExploreObservationRealm.h */,
+				FAD0890923E4AD4F002D9F3C /* ExploreObservationRealm.m */,
 				FA8B8DD323CE7266007FBA63 /* ExploreObsFieldRealm.h */,
 				FA8B8DD423CE7266007FBA63 /* ExploreObsFieldRealm.m */,
+				FAD44AE52456635000E9DA38 /* ExploreObsFieldValueRealm.h */,
+				FAD44AE62456635000E9DA38 /* ExploreObsFieldValueRealm.m */,
+				FAD44AE824576E2800E9DA38 /* ExploreProjectObservationRealm.h */,
+				FAD44AE924576E2800E9DA38 /* ExploreProjectObservationRealm.m */,
 				FA8B8DD623CE7279007FBA63 /* ExploreProjectObsFieldRealm.h */,
 				FA8B8DD723CE7279007FBA63 /* ExploreProjectObsFieldRealm.m */,
 				FAFA9C9823C40A40002E22FD /* ExploreProjectRealm.h */,
@@ -1940,8 +1992,14 @@
 				FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */,
 				FAA8D26123CD267200757A1E /* ExploreObsField.h */,
 				FAA8D26223CD267200757A1E /* ExploreObsField.m */,
+				FA930F6E244FBA37001B9D81 /* ExploreObsFieldValue.h */,
+				FA930F6F244FBA37001B9D81 /* ExploreObsFieldValue.m */,
+				FA60EA0F23EA3F7F0026F7A3 /* ExplorePost.h */,
+				FA60EA1023EA3F7F0026F7A3 /* ExplorePost.m */,
 				FA4E72BA19FAC93400A9AB5D /* ExploreProject.h */,
 				FA4E72BB19FAC93400A9AB5D /* ExploreProject.m */,
+				FA930F6B244FA582001B9D81 /* ExploreProjectObservation.h */,
+				FA930F6C244FA582001B9D81 /* ExploreProjectObservation.m */,
 				FAA8D25E23CD266400757A1E /* ExploreProjectObsField.h */,
 				FAA8D25F23CD266400757A1E /* ExploreProjectObsField.m */,
 				FA4E72BC19FAC93400A9AB5D /* ExploreTaxon.h */,
@@ -2028,16 +2086,18 @@
 				FADE674A1FD7B2B400AB4F09 /* IdentificationsAPI.m */,
 				FAEF23331C7D00A600208F44 /* INatAPI.h */,
 				FAEF23341C7D00A600208F44 /* INatAPI.m */,
+				FAB0B8E9237F1B0300E73681 /* INatRailsAPI.h */,
+				FAB0B8EA237F1B0300E73681 /* INatRailsAPI.m */,
 				FA9437841C869B7300CB10F3 /* ObservationAPI.h */,
 				FA9437851C869B7300CB10F3 /* ObservationAPI.m */,
 				FA711AA21D515F3000C4FFDB /* PeopleAPI.h */,
 				FA711AA31D515F3000C4FFDB /* PeopleAPI.m */,
+				FA60EA1223EA453D0026F7A3 /* PostsAPI.h */,
+				FA60EA1323EA453D0026F7A3 /* PostsAPI.m */,
 				FA9437811C869AA400CB10F3 /* ProjectsAPI.h */,
 				FA9437821C869AA400CB10F3 /* ProjectsAPI.m */,
 				FA2552111D1F4D62005D2128 /* TaxaAPI.h */,
 				FA2552121D1F4D62005D2128 /* TaxaAPI.m */,
-				FAB0B8E9237F1B0300E73681 /* INatRailsAPI.h */,
-				FAB0B8EA237F1B0300E73681 /* INatRailsAPI.m */,
 				FABCAD0823C661CA006479CA /* YearInReviewAPI.h */,
 				FABCAD0923C661CA006479CA /* YearInReviewAPI.m */,
 			);
@@ -2083,6 +2143,7 @@
 				FA88B7681ABCD34A0004B4C6 /* ShellScript */,
 				C110890B09E5A0D7B69DC989 /* [CP] Copy Pods Resources */,
 				FADEF3FA235F9D150025C580 /* ShellScript */,
+				92F229D3DF9592FC1577A92E /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2123,6 +2184,7 @@
 				TargetAttributes = {
 					1927513214E9CCC9000ABAC4 = {
 						DevelopmentTeam = N5J7L4P93Z;
+						LastSwiftMigration = 1130;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
@@ -2172,6 +2234,7 @@
 				nl,
 				"ca-ES",
 				uk,
+				"fi-FI",
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -2259,6 +2322,122 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		92F229D3DF9592FC1577A92E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+				"${BUILT_PRODUCTS_DIR}/ARSafariActivity/ARSafariActivity.framework",
+				"${BUILT_PRODUCTS_DIR}/ActionSheetPicker-3.0/ActionSheetPicker_3_0.framework",
+				"${BUILT_PRODUCTS_DIR}/Base64/Base64.framework",
+				"${BUILT_PRODUCTS_DIR}/BlocksKit/BlocksKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
+				"${BUILT_PRODUCTS_DIR}/CustomIOSAlertView/CustomIOSAlertView.framework",
+				"${BUILT_PRODUCTS_DIR}/DCRoundSwitch/DCRoundSwitch.framework",
+				"${BUILT_PRODUCTS_DIR}/Down/Down.framework",
+				"${BUILT_PRODUCTS_DIR}/FBSDKCoreKit/FBSDKCoreKit.framework",
+				"${BUILT_PRODUCTS_DIR}/FBSDKLoginKit/FBSDKLoginKit.framework",
+				"${BUILT_PRODUCTS_DIR}/FileMD5Hash/FileMD5Hash.framework",
+				"${BUILT_PRODUCTS_DIR}/FontAwesomeKit/FontAwesomeKit.framework",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/Gallery/Gallery.framework",
+				"${BUILT_PRODUCTS_DIR}/GeoJSONSerialization/GeoJSONSerialization.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/HexColors/HexColors.framework",
+				"${BUILT_PRODUCTS_DIR}/ICViewPager/ICViewPager.framework",
+				"${BUILT_PRODUCTS_DIR}/IFTTTLaunchImage/IFTTTLaunchImage.framework",
+				"${BUILT_PRODUCTS_DIR}/JDFTooltips/JDFTooltips.framework",
+				"${BUILT_PRODUCTS_DIR}/JDStatusBarNotification/JDStatusBarNotification.framework",
+				"${BUILT_PRODUCTS_DIR}/JSONKit/JSONKit.framework",
+				"${BUILT_PRODUCTS_DIR}/JWT/JWT.framework",
+				"${BUILT_PRODUCTS_DIR}/M13ProgressSuite/M13ProgressSuite.framework",
+				"${BUILT_PRODUCTS_DIR}/MBProgressHUD/MBProgressHUD.framework",
+				"${BUILT_PRODUCTS_DIR}/MHVideoPhotoGallery/MHVideoPhotoGallery.framework",
+				"${BUILT_PRODUCTS_DIR}/Mantle/Mantle.framework",
+				"${BUILT_PRODUCTS_DIR}/Masonry/Masonry.framework",
+				"${BUILT_PRODUCTS_DIR}/NSString_stripHtml/NSString_stripHtml.framework",
+				"${BUILT_PRODUCTS_DIR}/NXOAuth2Client/NXOAuth2Client.framework",
+				"${BUILT_PRODUCTS_DIR}/PBRevealViewController/PBRevealViewController.framework",
+				"${BUILT_PRODUCTS_DIR}/PDKTStickySectionHeadersCollectionViewLayout/PDKTStickySectionHeadersCollectionViewLayout.framework",
+				"${BUILT_PRODUCTS_DIR}/RaptureXML/RaptureXML.framework",
+				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
+				"${BUILT_PRODUCTS_DIR}/SSZipArchive/SSZipArchive.framework",
+				"${BUILT_PRODUCTS_DIR}/SVPullToRefresh/SVPullToRefresh.framework",
+				"${BUILT_PRODUCTS_DIR}/SWRevealViewController/SWRevealViewController.framework",
+				"${BUILT_PRODUCTS_DIR}/TOCropViewController/TOCropViewController.framework",
+				"${BUILT_PRODUCTS_DIR}/TTTAttributedLabel/TTTAttributedLabel.framework",
+				"${BUILT_PRODUCTS_DIR}/TapkuLibrary/TapkuLibrary.framework",
+				"${BUILT_PRODUCTS_DIR}/Toast/Toast.framework",
+				"${BUILT_PRODUCTS_DIR}/UIColor-HTMLColors/UIColor_HTMLColors.framework",
+				"${BUILT_PRODUCTS_DIR}/VICMAImageView/VICMAImageView.framework",
+				"${BUILT_PRODUCTS_DIR}/VTAcknowledgementsViewController/VTAcknowledgementsViewController.framework",
+				"${BUILT_PRODUCTS_DIR}/YLMoment/YLMoment.framework",
+				"${BUILT_PRODUCTS_DIR}/YLProgressBar/YLProgressBar.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ARSafariActivity.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ActionSheetPicker_3_0.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Base64.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BlocksKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bolts.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CustomIOSAlertView.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DCRoundSwitch.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Down.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKCoreKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSDKLoginKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FileMD5Hash.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FontAwesomeKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Gallery.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GeoJSONSerialization.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/HexColors.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ICViewPager.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IFTTTLaunchImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JDFTooltips.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JDStatusBarNotification.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JSONKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JWT.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/M13ProgressSuite.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MBProgressHUD.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/MHVideoPhotoGallery.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mantle.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Masonry.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NSString_stripHtml.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NXOAuth2Client.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PBRevealViewController.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PDKTStickySectionHeadersCollectionViewLayout.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RaptureXML.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SSZipArchive.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVPullToRefresh.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SWRevealViewController.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TOCropViewController.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TTTAttributedLabel.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TapkuLibrary.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Toast.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UIColor_HTMLColors.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/VICMAImageView.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/VTAcknowledgementsViewController.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YLMoment.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YLProgressBar.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		C110890B09E5A0D7B69DC989 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2266,107 +2445,11 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-resources.sh",
-				"${PODS_ROOT}/ARSafariActivity/ARSafariActivity/ARSafariActivity.bundle",
-				"${PODS_ROOT}/FBSDKCoreKit/FacebookSDKStrings.bundle",
-				"${PODS_ROOT}/FontAwesomeKit/FontAwesomeKit/FontAwesome.otf",
-				"${PODS_ROOT}/FontAwesomeKit/FontAwesomeKit/foundation-icons.ttf",
-				"${PODS_ROOT}/FontAwesomeKit/FontAwesomeKit/ionicons.ttf",
-				"${PODS_ROOT}/FontAwesomeKit/FontAwesomeKit/Material-Design-Iconic-Font.ttf",
-				"${PODS_ROOT}/FontAwesomeKit/FontAwesomeKit/octicons.ttf",
-				"${PODS_ROOT}/FontAwesomeKit/FontAwesomeKit/zocial-regular-webfont.ttf",
 				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/activityMH.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/activtyMH@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/EditControl.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/EditControl@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/EditControlSelected.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/EditControlSelected@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/error.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/error@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/facebookMH.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/facebookMH@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/ic_square.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/ic_square@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/left_arrow.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/left_arrow@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/mailMH.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/mailMH@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/messageMH.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/messageMH@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/pause.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/pause@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/play.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/play@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/playButton.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/playButton@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/right_arrow.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/right_arrow@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/saveMH@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/sliderPoint.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/sliderPoint@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/twitterMH.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/twitterMH@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/unplay.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/unplay@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/videoIcon.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/Images/videoIcon@2x.png",
-				"${PODS_ROOT}/MHVideoPhotoGallery/MHVideoPhotoGallery/MMHVideoPhotoGallery/MHGallery.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/TOCropViewController/TOCropViewControllerBundle.bundle",
-				"${PODS_ROOT}/TapkuLibrary/src/TapkuLibrary.bundle",
-				"${PODS_ROOT}/VTAcknowledgementsViewController/VTAcknowledgementsViewController.bundle",
-				"${PODS_CONFIGURATION_BUILD_DIR}/YLMoment/YLMoment-iOS.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ARSafariActivity.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FacebookSDKStrings.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FontAwesome.otf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/foundation-icons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ionicons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Material-Design-Iconic-Font.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/octicons.ttf",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/zocial-regular-webfont.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/activityMH.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/activtyMH@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EditControl.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EditControl@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EditControlSelected.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EditControlSelected@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/error.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/error@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/facebookMH.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/facebookMH@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ic_square.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ic_square@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/left_arrow.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/left_arrow@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/mailMH.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/mailMH@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageMH.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/messageMH@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/pause.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/pause@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/play.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/play@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/playButton.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/playButton@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/right_arrow.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/right_arrow@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/saveMH@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/sliderPoint.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/sliderPoint@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/twitterMH.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/twitterMH@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/unplay.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/unplay@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/videoIcon.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/videoIcon@2x.png",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/MHGallery.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TOCropViewControllerBundle.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/TapkuLibrary.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/VTAcknowledgementsViewController.bundle",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/YLMoment-iOS.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2440,6 +2523,7 @@
 				FA6B45031BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m in Sources */,
 				FAB0B8E8237F17DE00E73681 /* GuidesAPI.m in Sources */,
 				FA9EBE4C1ED50767001FE4AD /* TaxonMapViewController.m in Sources */,
+				FAD44AE72456635000E9DA38 /* ExploreObsFieldValueRealm.m in Sources */,
 				1927514814E9CCC9000ABAC4 /* INaturalistAppDelegate.m in Sources */,
 				FAEF23411C7D093900208F44 /* ProjectDetailIdentifiersViewController.m in Sources */,
 				FA6F875B1B0E72C60019B157 /* SplitTextButton.m in Sources */,
@@ -2462,6 +2546,7 @@
 				FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */,
 				1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */,
 				FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */,
+				FA9C631E23E8C51400E1AD62 /* ExploreFaveRealm.m in Sources */,
 				FA4E72EC19FACE6900A9AB5D /* AutocompleteCell.m in Sources */,
 				FA51BA651C000A1900101807 /* Activity.m in Sources */,
 				FA60A4461B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m in Sources */,
@@ -2471,6 +2556,7 @@
 				FA6DF0641C498C9400718CF4 /* NewsItemViewController.m in Sources */,
 				FABCAD0A23C661CA006479CA /* YearInReviewAPI.m in Sources */,
 				FAA20BBA1C5079830075EF2C /* NewsItemCell.m in Sources */,
+				FA60EA1123EA3F7F0026F7A3 /* ExplorePost.m in Sources */,
 				FA97666B20D1E45900D172DC /* AboutHeaderView.m in Sources */,
 				19D9B54614F62B850017B70A /* INatUITabBarController.m in Sources */,
 				FA5BC6FB1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m in Sources */,
@@ -2489,6 +2575,7 @@
 				19AE897F18DD0AA700505918 /* AddIdentificationViewController.m in Sources */,
 				FAFED1F61DB59EA90015CCBA /* ExploreUpdateRealm.m in Sources */,
 				FABCAD1123C6BA2C006479CA /* AnonHeaderView.m in Sources */,
+				FAF16A1A24733E5C00209D96 /* DownWrapper.swift in Sources */,
 				191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */,
 				FA6D69591B06A6CD000983F8 /* LoginController.m in Sources */,
 				FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */,
@@ -2532,6 +2619,7 @@
 				FA427EEF1ECD087F003B26C3 /* ExploreTaxonPhoto.m in Sources */,
 				FAEF23541C7D2DC300208F44 /* ObserverCount.m in Sources */,
 				FA7591DA20F442930062DE7F /* SettingsVersionCell.m in Sources */,
+				FAD0890A23E4AD4F002D9F3C /* ExploreObservationRealm.m in Sources */,
 				FA2552101D1F49A8005D2128 /* ExploreTaxonRealm.m in Sources */,
 				FACACA121BFBB17D002223D7 /* ObsDetailV2ViewController.m in Sources */,
 				FA9BC3771B332BEC003375A2 /* NSURL+INaturalist.m in Sources */,
@@ -2546,12 +2634,14 @@
 				FACCEB441ED4E5D0009C9A19 /* TaxonPhotoViewController.m in Sources */,
 				FA7BC8CB1C59D2460032E709 /* NewsItem.m in Sources */,
 				FA8EBCE7230DE48400C1D789 /* ExploreDeletedRecord.m in Sources */,
+				FAC24AF02443CE90002FF698 /* InaturalistRealmMigration.m in Sources */,
 				FAEF23451C7D0E0100208F44 /* ProjectObsPhotoCell.m in Sources */,
 				FA9437831C869AA400CB10F3 /* ProjectsAPI.m in Sources */,
 				FA9EE9FB1C20BA6900CACF70 /* LocationViewController.m in Sources */,
 				FA1F26291C20E25300CE73A8 /* ObsDetailDataQualityCell.m in Sources */,
 				FA427EF21ECD1794003B26C3 /* ExploreTaxonPhotoRealm.m in Sources */,
 				FA0F1B011BBB412C00533ED5 /* ObservationViewErrorCell.m in Sources */,
+				FA930F70244FBA37001B9D81 /* ExploreObsFieldValue.m in Sources */,
 				FA4D56C21C1A6C7100C5C5AE /* ObsDetailNotesCell.m in Sources */,
 				FACACA1B1BFBE0A9002223D7 /* ObsDetailViewModel.m in Sources */,
 				FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */,
@@ -2559,6 +2649,7 @@
 				FADE674B1FD7B2B400AB4F09 /* IdentificationsAPI.m in Sources */,
 				FAA6EB1A1C90C28800F43552 /* TaxonSummaryCell.m in Sources */,
 				19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */,
+				FA9C631B23E7795600E1AD62 /* ExploreObservationPhotoRealm.m in Sources */,
 				FADDA3BF1DBABAD500FB054F /* UpdatesViewController.m in Sources */,
 				FAB7028821431BD600462F62 /* UIViewController+INaturalist.m in Sources */,
 				FA7558491B9A4BDF00762D7B /* ObsEditV2ViewController.m in Sources */,
@@ -2570,6 +2661,7 @@
 				FACC30251C47398100234BF3 /* SiteNewsViewController.m in Sources */,
 				FA3F1F8A1A12ABEF00928102 /* ExploreDisambiguator.m in Sources */,
 				19AE898818DD0B9600505918 /* RefreshControl.m in Sources */,
+				FA3759D023EB467E0053F783 /* INatTabBarController.swift in Sources */,
 				FAC59DF820D9DF87000A6558 /* DeleteRecordOperation.m in Sources */,
 				FAB8C44A1C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m in Sources */,
 				191FB4CD16014A6800C1F5DE /* ObservationField.m in Sources */,
@@ -2609,6 +2701,7 @@
 				FACCEB411ED4E5B6009C9A19 /* TaxonPhotoPageViewController.m in Sources */,
 				FAEF233E1C7D092D00208F44 /* ProjectDetailObserversViewController.m in Sources */,
 				FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */,
+				FAD44AEA24576E2800E9DA38 /* ExploreProjectObservationRealm.m in Sources */,
 				FA2A07991C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m in Sources */,
 				FA6B45061BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m in Sources */,
 				FA4D56BC1C1A3A2900C5C5AE /* ObsDetailSelectorButton.m in Sources */,
@@ -2651,7 +2744,9 @@
 				FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */,
 				FA4714F81ED7A88F00D57FDE /* TaxonSelectButtonCell.m in Sources */,
 				FA4E72C319FAC93400A9AB5D /* ExploreProject.m in Sources */,
+				FA930F6D244FA582001B9D81 /* ExploreProjectObservation.m in Sources */,
 				FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */,
+				FA60EA1423EA453D0026F7A3 /* PostsAPI.m in Sources */,
 				FA7C53511BCD9D3100A0D5AA /* ProjectObsFieldViewController.m in Sources */,
 				FACACA1E1BFD0CF7002223D7 /* PhotosPageControlCell.m in Sources */,
 				FAA6EB171C90C15400F43552 /* TaxonPhotoCell.m in Sources */,
@@ -2678,7 +2773,6 @@
 				FAEB5C132069A5B400BA3132 /* LoginSwitchContextButtonTests.m in Sources */,
 				FA9E07471E1B15D100AE7833 /* TaxonTests.m in Sources */,
 				FA6F81D71E72459900135C5E /* MantleHelpers.m in Sources */,
-				FA8382441E70FB2900F73E90 /* RKModelBaseTests.m in Sources */,
 				FA6F81D91E733ECE00135C5E /* ImageStoreTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2724,6 +2818,7 @@
 				FAB1FCA621405712001CE431 /* nl */,
 				FAD35175225A7D9300E0BE6C /* ca-ES */,
 				FA9E2B2222FB97AD00FE4026 /* uk */,
+				FAF16A1B24745F3300209D96 /* fi-FI */,
 			);
 			name = MainStoryboard.storyboard;
 			path = INaturalistIOS;
@@ -2757,6 +2852,7 @@
 				FAB1FCAB21405713001CE431 /* nl */,
 				FAD3517A225A7D9300E0BE6C /* ca-ES */,
 				FA9E2B2722FB97AE00FE4026 /* uk */,
+				FAF16A2024745F3400209D96 /* fi-FI */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2789,6 +2885,7 @@
 				FAB1FCAC21405713001CE431 /* nl */,
 				FAD3517B225A7D9300E0BE6C /* ca-ES */,
 				FA9E2B2822FB97AE00FE4026 /* uk */,
+				FAF16A2124745F3400209D96 /* fi-FI */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2823,6 +2920,7 @@
 				FAB1FCA821405713001CE431 /* nl */,
 				FAD35177225A7D9300E0BE6C /* ca-ES */,
 				FA9E2B2422FB97AE00FE4026 /* uk */,
+				FAF16A1D24745F3400209D96 /* fi-FI */,
 			);
 			name = Projects.storyboard;
 			path = INaturalistIOS;
@@ -2834,6 +2932,7 @@
 				FA399AAD1DDBDC73007ABD3E /* Base */,
 				FAD35178225A7D9300E0BE6C /* ca-ES */,
 				FA9E2B2522FB97AE00FE4026 /* uk */,
+				FAF16A1E24745F3400209D96 /* fi-FI */,
 			);
 			name = Activity.storyboard;
 			path = INaturalistIOS;
@@ -2869,6 +2968,7 @@
 				FAB1FCAA21405713001CE431 /* nl */,
 				FAD35179225A7D9300E0BE6C /* ca-ES */,
 				FA9E2B2622FB97AE00FE4026 /* uk */,
+				FAF16A1F24745F3400209D96 /* fi-FI */,
 			);
 			name = Guides.storyboard;
 			path = INaturalistIOS;
@@ -2904,6 +3004,7 @@
 				FAB1FCA721405713001CE431 /* nl */,
 				FAD35176225A7D9300E0BE6C /* ca-ES */,
 				FA9E2B2322FB97AE00FE4026 /* uk */,
+				FAF16A1C24745F3300209D96 /* fi-FI */,
 			);
 			name = Onboarding.storyboard;
 			path = INaturalistIOS;
@@ -2986,6 +3087,7 @@
 				);
 				INFOPLIST_FILE = "INaturalistIOS/INaturalistIOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MARKETING_VERSION = 2.8.7;
 				OTHER_LDFLAGS = (
@@ -2998,6 +3100,9 @@
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "INaturalistIOS/iNaturalist-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				WRAPPER_EXTENSION = app;
@@ -3031,6 +3136,7 @@
 				);
 				INFOPLIST_FILE = "INaturalistIOS/INaturalistIOS-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				MARKETING_VERSION = 2.8.7;
 				OTHER_LDFLAGS = (
@@ -3044,6 +3150,8 @@
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "INaturalistIOS/iNaturalist-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				WRAPPER_EXTENSION = app;
@@ -3054,6 +3162,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 60D967BB67BC48F7F71F2D72 /* Pods-iNaturalistTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -3098,6 +3207,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E7392A23E01CD0D45F0E3F02 /* Pods-iNaturalistTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";

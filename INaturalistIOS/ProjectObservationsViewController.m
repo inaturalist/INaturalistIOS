@@ -6,27 +6,18 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <AFNetworking/UIImageView+AFNetworking.h>
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
-#import <ActionSheetPicker-3.0/ActionSheetPicker.h>
-#import <FontAwesomeKit/FAKIonicons.h>
-#import <RestKit/RestKit.h>
+@import AFNetworking;
+@import UIColor_HTMLColors;
+@import ActionSheetPicker_3_0;
+@import FontAwesomeKit;
 
 #import "ProjectObservationsViewController.h"
 #import "ProjectObservationHeaderView.h"
-#import "ProjectObservation.h"
-#import "Project.h"
-#import "ProjectUser.h"
-#import "Observation.h"
 #import "Analytics.h"
-#import "ProjectObservationField.h"
-#import "ObservationField.h"
-#import "ObservationFieldValue.h"
 #import "ObsFieldSimpleValueCell.h"
 #import "ObsFieldLongTextValueCell.h"
 #import "ProjectObsFieldViewController.h"
 #import "TaxaSearchViewController.h"
-#import "Taxon.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
 #import "ExploreTaxonRealm.h"
@@ -34,16 +25,20 @@
 #import "ExploreUserRealm.h"
 #import "UIColor+INaturalist.h"
 #import "InsetLabel.h"
+#import "ExploreProjectRealm.h"
+#import "ProjectsAPI.h"
 
 static NSString *SimpleFieldIdentifier = @"simple";
 static NSString *LongTextFieldIdentifier = @"longtext";
 
-@interface ProjectObservationsViewController () <UITableViewDataSource, UITableViewDelegate, RKObjectLoaderDelegate, RKRequestDelegate, UITextFieldDelegate, TaxaSearchViewControllerDelegate> {
+@interface ProjectObservationsViewController () <UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, TaxaSearchViewControllerDelegate> {
     
     UIToolbar *_keyboardToolbar;
 }
 
-@property RKObjectLoader *loader;
+@property RLMResults *joinedProjects;
+@property RLMNotificationToken *joinedToken;
+
 @property NSIndexPath *taxaSearchIndexPath;
 @property UITapGestureRecognizer *tapAwayGesture;
 @property (readonly) UIToolbar *keyboardToolbar;
@@ -51,25 +46,65 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 
 @implementation ProjectObservationsViewController
 
-- (NSArray *)joinedProjectSortDescriptors {
-    return @[
-             [NSSortDescriptor sortDescriptorWithKey:@"isNewStyleProject" ascending:YES],
-             [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES],
-             ];
+- (ProjectsAPI *)projectsApi {
+    static ProjectsAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[ProjectsAPI alloc] init];
+    });
+    return _api;
 }
 
 #pragma mark - UIViewController lifecycle
 
+- (void)syncUserProjectsUserId:(NSInteger)userId page:(NSInteger)page {
+
+    __weak typeof(self)weakSelf = self;
+    [[self projectsApi] projectsForUser:userId page:page handler:^(NSArray *results, NSInteger totalCount, NSError *error) {
+        ExploreUserRealm *meUser = [ExploreUserRealm objectForPrimaryKey:@(userId)];
+        if (!meUser) { return; }        // can't join projects if we don't have a me user
+        
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        for (ExploreProject *eg in results) {
+            NSDictionary *value = [ExploreProjectRealm valueForMantleModel:eg];
+            [realm beginWriteTransaction];
+            ExploreProjectRealm *project = [ExploreProjectRealm createOrUpdateInDefaultRealmWithValue:value];
+            [meUser.joinedProjects addObject:project];
+            [realm commitWriteTransaction];
+        }
+
+        // update tableview
+        [weakSelf.tableView reloadData];
+        
+        NSInteger totalReceived = results.count + ((page-1) * [[weakSelf projectsApi] projectsPerPage]);
+        if (totalReceived < totalCount) {
+            // recursively fetch another page of joined projects
+            [weakSelf syncUserProjectsUserId:userId page:page+1];
+        }
+    }];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.joinedProjects = [self.joinedProjects sortedArrayUsingDescriptors:[self joinedProjectSortDescriptors]];
+    NSArray *sorts = @[
+        [RLMSortDescriptor sortDescriptorWithKeyPath:@"type" ascending:NO],
+        [RLMSortDescriptor sortDescriptorWithKeyPath:@"title" ascending:YES],
+    ];
     
-    if (self.isReadOnly) {
-        self.title = NSLocalizedString(@"Projects", nil);
-    } else {
-        self.title = NSLocalizedString(@"Choose Projects", @"title for project observations chooser");
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (appDelegate.loginController.isLoggedIn) {
+        ExploreUserRealm *meUser = appDelegate.loginController.meUserLocal;
+        if (meUser) {
+            self.joinedProjects = [[meUser joinedProjects] sortedResultsUsingDescriptors:sorts];
+            __weak typeof(self)weakSelf = self;
+            self.joinedToken = [self.joinedProjects addNotificationBlock:^(RLMResults * _Nullable results, RLMCollectionChange * _Nullable change, NSError * _Nullable error) {
+                [weakSelf.tableView reloadData];
+            }];
+        }
     }
+    
+    self.title = NSLocalizedString(@"Choose Projects", @"title for project observations chooser");
     
     self.tableView.tableHeaderView = ({
         InsetLabel *label = [InsetLabel new];
@@ -103,20 +138,15 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         if ([appDelegate.loginController isLoggedIn]) {
             ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
-	        NSString *countryCode = [[NSLocale currentLocale] objectForKey: NSLocaleCountryCode];
-    	    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-        	NSString *url =[NSString stringWithFormat:@"/projects/user/%@.json?locale=%@-%@",
-            	            me.login,
-                        	language,
-                        	countryCode];
-            [[Analytics sharedClient] debugLog:@"Network - Load projects for user"];
-            RKObjectManager *objectManager = [RKObjectManager sharedManager];
-            [objectManager loadObjectsAtResourcePath:url
-                                          usingBlock:^(RKObjectLoader *loader) {
-                                              loader.delegate = self;
-                                              // handle naked array in JSON by explicitly directing the loader which mapping to use
-                                              loader.objectMapping = [objectManager.mappingProvider objectMappingForClass:[ProjectUser class]];
-                                          }];
+            // start by clearing all joined projects
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            [realm beginWriteTransaction];
+            [me.joinedProjects removeAllObjects];
+            [realm commitWriteTransaction];
+            
+            // sync first page, that will trigger page 2 if
+            // necessary and so on
+            [self syncUserProjectsUserId:me.userId page:1];
         }
     }
 }
@@ -128,26 +158,20 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 }
 
 - (void)dealloc {
-    [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
+    [self.joinedToken invalidate];
 }
 
 #pragma mark - UIBarButton targets
 
 - (void)backPressed:(UIBarButtonItem *)button {
-    
-    if (self.isReadOnly) {
-        [self.navigationController popViewControllerAnimated:YES];
-        return;
-    }
-    
     // end editing on any rows
     [self.tableView endEditing:YES];
     
     // save the ofvs
     [self saveVisibleObservationFieldValues];
     
-    NSString *projectNameFailingValidation = nil;
-    NSString *projectFieldFailingValidation = nil;
+    NSString *projectNameFailingValidation = [NSString string];
+    NSString *projectFieldFailingValidation = [NSString string];
     
     BOOL validated = [self validateProjectObservationsForObservation:self.observation
                                                        failedProject:&projectNameFailingValidation
@@ -171,58 +195,53 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 
 #pragma mark - ProjectObs & OFV helpers
 
-- (BOOL)validateProjectObservationsForObservation:(Observation *)observation
-                                    failedProject:(out NSString **)failedProject
-                                      failedField:(out NSString **)failedField {
+- (BOOL)validateProjectObservationsForObservation:(ExploreObservationRealm *)observation
+                                    failedProject:(out NSString **)failedProjectName
+                                      failedField:(out NSString **)failedFieldName {
     
-    for (ProjectObservation *po in self.observation.sortedProjectObservations) {
-        for (ProjectObservationField *pof in po.project.sortedProjectObservationFields) {
-            if (pof.required.boolValue) {
-                ObservationFieldValue *ofv = [[self.observation.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *obj, BOOL *stop) {
-                    return [obj.observationField isEqual:pof.observationField];
-                }] anyObject];
+    for (ExploreProjectObservationRealm *po in self.observation.projectObservations) {
+        for (ExploreProjectObsFieldRealm *pof in po.project.projectObsFields) {
+            if (pof.required) {
+                ExploreObsFieldValueRealm *ofv = [self.observation valueForObsField:pof.obsField];
                 if (!ofv || ofv.value == nil || ofv.value.length == 0) {
-                    *failedProject = pof.project.title;
-                    *failedField = pof.observationField.name;
-                    
-                    return false;
+                    *failedProjectName = po.project.title;
+                    *failedFieldName = pof.obsField.name;
+                    return NO;
                 }
             }
         }
     }
-    
-    return true;
+        
+    return YES;
 }
 
 - (void)saveVisibleObservationFieldValues {
-    if (self.isReadOnly) {
-        return;
-    }
-    
+    RLMRealm *realm = [RLMRealm defaultRealm];
+
     for (NSIndexPath *indexPath in self.tableView.indexPathsForVisibleRows) {
-        Project *project = [self projectForSection:indexPath.section];
-        ProjectObservationField *pof = [project sortedProjectObservationFields][indexPath.item];
-        ObservationField *field = pof.observationField;
+        ExploreProjectRealm *project = [self projectForSection:indexPath.section];
+        ExploreProjectObsFieldRealm *pof = [[project sortedProjectObservationFields] objectAtIndex:indexPath.item];
         
-        ObservationFieldValue *ofv = [self.observation valueWithObservationFieldId:pof.observationFieldID.integerValue];
+        
+        ExploreObsFieldValueRealm *ofv = [self.observation valueForObsField:pof.obsField];
         if (ofv) {
             if (![ofv.value isEqualToString:[self currentValueForIndexPath:indexPath]]) {
+                [realm beginWriteTransaction];
                 ofv.value = [self currentValueForIndexPath:indexPath];
-                ofv.localUpdatedAt = [NSDate date];
+                ofv.timeUpdatedLocally = [NSDate date];
+                [realm commitWriteTransaction];
             }
         } else {
-            ObservationFieldValue *ofv = [ObservationFieldValue object];
-            ofv.observationField = field;
-            ofv.observation = self.observation;
+            ofv = [ExploreObsFieldValueRealm new];
+            ofv.obsField = pof.obsField;
             ofv.value = [self currentValueForIndexPath:indexPath];
-            ofv.localUpdatedAt = [NSDate date];
+            ofv.timeUpdatedLocally = [NSDate date];
+
+            [realm beginWriteTransaction];
+            [realm addObject:ofv];
+            [self.observation.observationFieldValues addObject:ofv];
+            [realm commitWriteTransaction];
         }
-    }
-    
-    NSError *error;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    if (error) {
-        // TODO: log it at least, also notify the user
     }
 }
 
@@ -236,6 +255,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         [textField removeFromSuperview];
         cell.valueLabel.hidden = NO;
     }
+    
     [self saveVisibleObservationFieldValues];
 }
 
@@ -279,13 +299,17 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     
     if (!self.taxaSearchIndexPath) { return; }
     
-    Project *project = [self projectForSection:self.taxaSearchIndexPath.section];
-    ProjectObservationField *field = [project sortedProjectObservationFields][self.taxaSearchIndexPath.item];
     
-    ObservationFieldValue *ofv = [self.observation valueWithObservationFieldId:field.observationFieldID.integerValue];
+    ExploreProjectRealm *project = [self projectForSection:self.taxaSearchIndexPath.section];
+    ExploreProjectObsFieldRealm *pof = [project.sortedProjectObservationFields objectAtIndex:self.taxaSearchIndexPath.item];
+    
+    ExploreObsFieldValueRealm *ofv = [self.observation valueForObsField:pof.obsField];
     if (ofv) {
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
         ofv.value = [NSString stringWithFormat:@"%ld", (long)taxon.taxonId];
-        ofv.localUpdatedAt = [NSDate date];
+        ofv.timeUpdatedLocally = [NSDate date];
+        [realm commitWriteTransaction];
     }
     
     [self.tableView beginUpdates];
@@ -304,44 +328,39 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 #pragma mark - UITableView delegate & datasource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    Project *project = [self projectForSection:indexPath.section];
-    ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
+    ExploreProjectRealm *project = [self projectForSection:indexPath.section];
+    ExploreProjectObsFieldRealm *pof = [[project sortedProjectObservationFields] objectAtIndex:indexPath.item];
     
-    if ([[ProjectObservationField textFieldDataTypes] containsObject:field.observationField.datatype]) {
-        if (field.observationField.allowedValuesArray.count > 1) {
+    if ([pof.obsField canBeTreatedAsText]) {
+        if (pof.obsField.allowedValues.count > 1) {
+            // simple value cell
             ObsFieldSimpleValueCell *cell = [tableView dequeueReusableCellWithIdentifier:SimpleFieldIdentifier];
-            [self configureSimpleCell:cell forObsField:field];
+            [self configureSimpleCell:cell forProjectObsField:pof];
             return cell;
         } else {
             ObsFieldLongTextValueCell *cell = [tableView dequeueReusableCellWithIdentifier:LongTextFieldIdentifier];
-            [self configureLongTextCell:cell forObsField:field];
+            [self configureLongTextCell:cell forProjectObsField:pof];
             return cell;
         }
-    } else if ([field.observationField.datatype isEqualToString:@"numeric"]) {
+    } else if (pof.obsField.dataType == ExploreObsFieldDataTypeNumeric ||
+               pof.obsField.dataType == ExploreObsFieldDataTypeDate ||
+               pof.obsField.dataType == ExploreObsFieldDataTypeTime ||
+               pof.obsField.dataType == ExploreObsFieldDataTypeDateTime ||
+               pof.obsField.dataType == ExploreObsFieldDataTypeTaxon) {
+
         ObsFieldSimpleValueCell *cell = [tableView dequeueReusableCellWithIdentifier:SimpleFieldIdentifier];
-        [self configureSimpleCell:cell forObsField:field];
+        [self configureSimpleCell:cell forProjectObsField:pof];
         return cell;
-    } else if ([field.observationField.datatype isEqualToString:@"date"] || [field.observationField.datatype isEqualToString:@"datetime"]) {
-        ObsFieldSimpleValueCell *cell = [tableView dequeueReusableCellWithIdentifier:SimpleFieldIdentifier];
-        [self configureSimpleCell:cell forObsField:field];
-        return cell;
-    } else if ([field.observationField.datatype isEqualToString:@"time"]) {
-        ObsFieldSimpleValueCell *cell = [tableView dequeueReusableCellWithIdentifier:SimpleFieldIdentifier];
-        [self configureSimpleCell:cell forObsField:field];
-        return cell;
-    } else if ([field.observationField.datatype isEqualToString:@"taxon"]) {
-        ObsFieldSimpleValueCell *cell = [tableView dequeueReusableCellWithIdentifier:SimpleFieldIdentifier];
-        [self configureSimpleCell:cell forObsField:field];
+    } else {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+        [self configureCell:cell forIndexPath:indexPath];
         return cell;
     }
-
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
-    [self configureCell:cell forIndexPath:indexPath];
-    return cell;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    Project *project = [self projectForSection:section];
+
+    ExploreProjectRealm *project = [self projectForSection:section];
     BOOL projectIsSelected = [self projectIsSelected:project];
     
     CGFloat height = [self tableView:tableView heightForHeaderInSection:section];
@@ -349,13 +368,11 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     UINib *nib = [UINib nibWithNibName:@"ProjectObservationHeaderView" bundle:[NSBundle mainBundle]];
     ProjectObservationHeaderView *header = [[nib instantiateWithOwner:nil options:nil] firstObject];
     header.frame = CGRectMake(0, 0, tableView.bounds.size.width, height);
+    
     header.projectTitleLabel.text = project.title;
     header.projectTypeLabel.text = [project titleForTypeOfProject];
     
-    if (self.isReadOnly) {
-        header.selectedSwitch.hidden = YES;
-        header.backgroundColor = [UIColor whiteColor];
-    } else if ([project isNewStyleProject]) {
+    if ([project isNewStyleProject]) {
         header.selectedSwitch.hidden = YES;
         header.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.2];
     } else {
@@ -366,11 +383,11 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         header.backgroundColor = [UIColor whiteColor];
     }
     
-    NSURL *url = [NSURL URLWithString:project.iconURL];
-    if (url) {
+    
+    if ([project iconUrl]) {
         header.projectThumbnailImageView.backgroundColor = [UIColor clearColor];
         header.projectThumbnailImageView.contentMode = UIViewContentModeScaleAspectFill;
-        [header.projectThumbnailImageView setImageWithURL:url];
+        [header.projectThumbnailImageView setImageWithURL:[project iconUrl]];
     } else {
         // use standard projects icon
         header.projectThumbnailImageView.backgroundColor = [UIColor colorWithHexString:@"#cccccc"];
@@ -390,96 +407,78 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    Project *project = [self projectForSection:indexPath.section];
-    ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
+    ExploreProjectRealm *project = [self projectForSection:indexPath.section];
+    ExploreProjectObsFieldRealm *pof = [[project sortedProjectObservationFields] objectAtIndex:indexPath.item];
+   
+    UIFont *fieldFont = pof.required ? [UIFont boldSystemFontOfSize:17] : [UIFont systemFontOfSize:17];
     
-    UIFont *fieldFont = field.required ? [UIFont boldSystemFontOfSize:17] : [UIFont systemFontOfSize:17];
-
-    
-    if ([[ProjectObservationField textFieldDataTypes] containsObject:field.observationField.datatype] && field.observationField.allowedValuesArray.count == 1) {
-        return [self heightForLongTextProjectField:field inTableView:tableView font:fieldFont];
+    if ([[pof obsField] canBeTreatedAsText] && [[[pof obsField] allowedValues] count] == 1) {
+        return [self heightForLongTextProjectField:pof inTableView:tableView font:fieldFont];
     } else {
-        return [self heightForSimpleProjectField:field inTableView:tableView font:fieldFont];
+        return [self heightForSimpleProjectField:pof inTableView:tableView font:fieldFont];
     }
-    
-    return 44;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (self.isReadOnly) {
-        // only show project in readonly mode, for now
-        return 0;
-    }
-    Project *project = [self projectForSection:section];
+    ExploreProjectRealm *project = [self projectForSection:section];
     if ([project isNewStyleProject]) {
-        // only show new style projects in readonly mode
+        // don't show fields for new style projects
         return 0;
     }
+    
     if ([self projectIsSelected:project]) {
-        return project.projectObservationFields.count;
+        return project.projectObsFields.count;
     } else {
         return 0;
     }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if (self.isReadOnly) {
-        return self.observation.projectObservations.count;
-    } else {
-        return self.joinedProjects.count;
-    }
+    return [self.joinedProjects count];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.isReadOnly) {
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        return;
-    }
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    Project *project = [self projectForSection:indexPath.section];
+    ExploreProjectRealm *project = [self projectForSection:indexPath.section];
+    
     if ([project isNewStyleProject]) {
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        // there shouldn't be any rows for new style projects
+        // bail just in case
         return;
     }
     
-    ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
-    NSArray *values = field.observationField.allowedValuesArray;
+    ExploreProjectObsFieldRealm *pof = [[project sortedProjectObservationFields] objectAtIndex:indexPath.item];
+    ExploreObsFieldValueRealm *ofv = [self.observation valueForObsField:pof.obsField];
+    
     NSInteger initialSelection = 0;
-    ObservationFieldValue *ofv = field.observationField.observationFieldValues.anyObject;
+    
     if (ofv) {
-        initialSelection = [values indexOfObject:ofv.value];
+        // will be set to NSNotFound if it's not in the allowed values
+        initialSelection = [pof.obsField.allowedValues indexOfObject:ofv.value];
     }
     
-    if ([[ProjectObservationField textFieldDataTypes] containsObject:field.observationField.datatype] && field.observationField.allowedValuesArray.count > 1) {
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        
-        ProjectObsFieldViewController *pofVC = [[ProjectObsFieldViewController alloc] initWithNibName:nil bundle:nil];
-        pofVC.projectObsField = field;
-        pofVC.obsFieldValue = [[field.observationField.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *ofv, BOOL *stop) {
-            return [ofv.observation isEqual:self.observation];
-        }] anyObject];
-
-        [self.navigationController pushViewController:pofVC animated:YES];
-
-    } else if ([[ProjectObservationField textFieldDataTypes] containsObject:field.observationField.datatype]) {
-        // free text
-        
-        // deselect
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        
-        // activate the textfield
-        ObsFieldLongTextValueCell *cell = (ObsFieldLongTextValueCell *)[tableView cellForRowAtIndexPath:indexPath];
-        [cell.textField becomeFirstResponder];
-        
-        self.tapAwayGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAway:)];
-        [self.tableView addGestureRecognizer:self.tapAwayGesture];
-        
-    } else if ([field.observationField.datatype isEqualToString:@"numeric"]) {
+    if ([pof.obsField canBeTreatedAsText]) {
+        if (pof.obsField.allowedValues.count > 1) {
+            // text field, multiselect
+            ProjectObsFieldViewController *pofVC = [[ProjectObsFieldViewController alloc] initWithNibName:nil bundle:nil];
+            pofVC.pof = pof;
+            pofVC.ofv = ofv;
+            
+            [self.navigationController pushViewController:pofVC animated:YES];
+        } else {
+            // text field, raw entry
+            
+            // activate the textfield
+            ObsFieldLongTextValueCell *cell = (ObsFieldLongTextValueCell *)[tableView cellForRowAtIndexPath:indexPath];
+            [cell.textField becomeFirstResponder];
+            
+            self.tapAwayGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAway:)];
+            [self.tableView addGestureRecognizer:self.tapAwayGesture];
+        }
+    } else if (pof.obsField.dataType == ExploreObsFieldDataTypeNumeric) {
         // numeric text entry
         
-        // deselect
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-
         // setup a textfield above the label
         ObsFieldSimpleValueCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         cell.valueLabel.hidden = YES;
@@ -496,8 +495,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         
         self.tapAwayGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAway:)];
         [self.tableView addGestureRecognizer:self.tapAwayGesture];
-
-    } else if ([field.observationField.datatype isEqualToString:@"taxon"]) {
+    } else if (pof.obsField.dataType == ExploreObsFieldDataTypeTaxon) {
         // taxon picker
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
         
@@ -512,9 +510,8 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         
         // stash the selected index path so we know what ofv to update
         self.taxaSearchIndexPath = indexPath;
-        
-    } else if ([field.observationField.datatype isEqualToString:@"date"] || [field.observationField.datatype isEqualToString:@"datetime"]) {
-        // date field
+    } else if (pof.obsField.dataType == ExploreObsFieldDataTypeDate
+               || pof.obsField.dataType == ExploreObsFieldDataTypeDateTime) {
         
         ObsFieldSimpleValueCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         static NSDateFormatter *dateFormatter;
@@ -531,7 +528,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         }
         
         __weak typeof(self) weakSelf = self;
-        [[[ActionSheetDatePicker alloc] initWithTitle:field.observationField.name
+        [[[ActionSheetDatePicker alloc] initWithTitle:pof.obsField.name
                                        datePickerMode:UIDatePickerModeDateAndTime
                                          selectedDate:date
                                             doneBlock:^(ActionSheetDatePicker *picker, id selectedDate, id origin) {
@@ -541,7 +538,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
                                          } cancelBlock:nil
                                                origin:self.view] showActionSheetPicker];
         
-    } else if ([field.observationField.datatype isEqualToString:@"time"]) {
+    } else if (pof.obsField.dataType == ExploreObsFieldDataTypeTime) {
         
         ObsFieldSimpleValueCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         static NSDateFormatter *dateFormatter;
@@ -558,7 +555,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         }
         
         __weak typeof(self) weakSelf = self;
-        [[[ActionSheetDatePicker alloc] initWithTitle:field.observationField.name
+        [[[ActionSheetDatePicker alloc] initWithTitle:pof.obsField.name
                                        datePickerMode:UIDatePickerModeTime
                                          selectedDate:date
                                             doneBlock:^(ActionSheetDatePicker *picker, id selectedDate, id origin) {
@@ -567,19 +564,19 @@ static NSString *LongTextFieldIdentifier = @"longtext";
                                                 [weakSelf saveVisibleObservationFieldValues];
                                             } cancelBlock:nil
                                                origin:self.view] showActionSheetPicker];
+        
     }
-    
 }
 
 #pragma mark - UITableView helpers
 
-- (CGFloat)heightForSimpleProjectField:(ProjectObservationField *)field inTableView:(UITableView *)tableView font:(UIFont *)font {
+- (CGFloat)heightForSimpleProjectField:(ExploreProjectObsFieldRealm *)pof inTableView:(UITableView *)tableView font:(UIFont *)font {
     NSDictionary *attrs = @{
                             NSFontAttributeName: font,
                             };
     
     CGFloat usableWidth = tableView.bounds.size.width * .6;
-    NSString *fieldName = field.observationField.name;
+    NSString *fieldName = pof.obsField.name;
     CGRect fieldBoundingRect = [fieldName boundingRectWithSize:CGSizeMake(usableWidth, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                     attributes:attrs
@@ -587,28 +584,26 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     return fieldBoundingRect.size.height + 24;
 }
 
-- (CGFloat)heightForLongTextProjectField:(ProjectObservationField *)field inTableView:(UITableView *)tableView font:(UIFont *)font {
+- (CGFloat)heightForLongTextProjectField:(ExploreProjectObsFieldRealm *)pof inTableView:(UITableView *)tableView font:(UIFont *)font {
     NSDictionary *attrs = @{
                             NSFontAttributeName: font,
                             };
 
     CGFloat usableWidth = tableView.bounds.size.width - 14;
-    NSString *fieldName = field.observationField.name;
+    NSString *fieldName = pof.obsField.name;
     CGRect fieldBoundingRect = [fieldName boundingRectWithSize:CGSizeMake(usableWidth, CGFLOAT_MAX)
                                                        options:NSStringDrawingUsesLineFragmentOrigin
                                                     attributes:attrs
                                                        context:nil];
     // 44 for the value
     return fieldBoundingRect.size.height + 44;
-    
-    // return 66;
 }
 
 - (void)configureCell:(UITableViewCell *)cell forIndexPath:(NSIndexPath *)indexPath {
-    Project *project = [self projectForSection:indexPath.section];
-    ProjectObservationField *field = [project sortedProjectObservationFields][indexPath.item];
+    ExploreProjectRealm *project = [self projectForSection:indexPath.section];
+    ExploreProjectObsFieldRealm *pof = [[project sortedProjectObservationFields] objectAtIndex:indexPath.item];
     
-    cell.textLabel.text = field.observationField.name;
+    cell.textLabel.text = pof.obsField.name;
     cell.textLabel.textColor = [UIColor grayColor];
     cell.textLabel.font = [UIFont systemFontOfSize:12.0f];
     cell.textLabel.numberOfLines = 2;
@@ -618,134 +613,134 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     cell.contentView.backgroundColor = [UIColor clearColor];
 }
 
-- (void)configureSimpleCell:(ObsFieldSimpleValueCell *)cell forObsField:(ProjectObservationField *)field {
-    cell.fieldLabel.text = field.observationField.name;
-    if (field.required.boolValue) {
+- (void)configureSimpleCell:(ObsFieldSimpleValueCell *)cell forProjectObsField:(ExploreProjectObsFieldRealm *)pof {
+    
+    cell.fieldLabel.text = pof.obsField.name;
+    if (pof.required) {
         cell.fieldLabel.font = [UIFont boldSystemFontOfSize:cell.fieldLabel.font.pointSize];
     } else {
         cell.fieldLabel.font = [UIFont systemFontOfSize:cell.fieldLabel.font.pointSize];
     }
     
-    ObservationFieldValue *ofv = [self.observation valueWithObservationFieldId:field.observationFieldID.integerValue];
+    ExploreObsFieldValueRealm *ofv = [self.observation valueForObsField:pof.obsField];
     if (ofv) {
-        if ([field.observationField.datatype isEqualToString:@"taxon"]) {
-            ExploreTaxonRealm *etr = [ExploreTaxonRealm objectForPrimaryKey:@(ofv.value.integerValue)];
-            if (etr) {
-                cell.valueLabel.text = etr.commonName ?: etr.scientificName;
+        if (pof.obsField.dataType == ExploreObsFieldDataTypeTaxon) {
+            ExploreTaxonRealm *taxon = [ExploreTaxonRealm objectForPrimaryKey:@(ofv.value.integerValue)];
+            if (taxon) {
+                cell.valueLabel.text = taxon.commonName ?: taxon.scientificName;
             } else {
                 cell.valueLabel.text = (ofv.value.length == 0) ? @"unknown" : ofv.value;
             }
-
         } else {
-            cell.valueLabel.text = ofv.value ?: ofv.defaultValue;
+            cell.valueLabel.text = ofv.value ?: pof.obsField.allowedValues.firstObject;
         }
     } else {
         // show default
-        NSString *defaultValue = field.observationField.allowedValuesArray.firstObject;
-        cell.valueLabel.text = defaultValue;
+        cell.valueLabel.text = pof.obsField.allowedValues.firstObject;
     }
-    
+        
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 }
 
-- (void)configureLongTextCell:(ObsFieldLongTextValueCell *)cell forObsField:(ProjectObservationField *)field {
-    cell.fieldLabel.text = field.observationField.name;
+- (void)configureLongTextCell:(ObsFieldLongTextValueCell *)cell forProjectObsField:(ExploreProjectObsFieldRealm *)pof {
+    cell.fieldLabel.text = pof.obsField.name;
     
-    if (field.required.boolValue) {
+    if (pof.required) {
         cell.fieldLabel.font = [UIFont boldSystemFontOfSize:cell.fieldLabel.font.pointSize];
     } else {
         cell.fieldLabel.font = [UIFont systemFontOfSize:cell.fieldLabel.font.pointSize];
     }
-
+    
     cell.textField.delegate = self;
     
-    ObservationFieldValue *ofv = [self.observation valueWithObservationFieldId:field.observationFieldID.integerValue];
+    ExploreObsFieldValueRealm *ofv = [self.observation valueForObsField:pof.obsField];
     if (ofv) {
-        cell.textField.text = ofv.value ?: ofv.defaultValue;
+        cell.textField.text = ofv.value ?: ofv.obsField.allowedValues.firstObject;
     } else {
         cell.textField.text = nil;
     }
     
     cell.accessoryType = UITableViewCellAccessoryNone;
 }
-
-
-- (BOOL)projectIsSelected:(Project *)project {
-    __block BOOL found = NO;
-    [[[self.observation.projectObservations allObjects] copy] enumerateObjectsUsingBlock:^(ProjectObservation *po, NSUInteger idx, BOOL *stop) {
-        if ([po.project isEqual:project]) {
-            found = YES;
-            *stop = YES;
+ 
+- (BOOL)projectIsSelected:(ExploreProjectRealm *)project {
+    for (ExploreProjectObservationRealm *po in self.observation.projectObservations) {
+        if (po.project.projectId == project.projectId) {
+            return YES;
         }
-    }];
-    return found;
+    }
+    
+    return NO;
 }
 
-- (Project *)projectForSection:(NSInteger)section {
-    if (self.isReadOnly) {
-        ProjectObservation *po = [self.observation.sortedProjectObservations objectAtIndex:section];
-        return po.project;
-    } else {
-        return [self.joinedProjects objectAtIndex:section];
-    }
+- (ExploreProjectRealm *)projectForSection:(NSInteger)section {
+    return [self.joinedProjects objectAtIndex:section];
 }
 
 - (void)selectedChanged:(UISwitch *)switcher {
-    
     NSInteger section = switcher.tag;
+    ExploreProjectRealm *project = [self projectForSection:section];
     
-    NSMutableArray *indexPathsForSection = [NSMutableArray array];
-    if (!switcher.isOn) {
-        // we may have index paths to delete
-        for (int i = 0; i < [self.tableView numberOfRowsInSection:section]; i++) {
-            [indexPathsForSection addObject:[NSIndexPath indexPathForItem:i inSection:section]];
-        }
-    }
+    NSIndexPath *sectionIp = [NSIndexPath indexPathForRow:NSNotFound inSection:section];
     
-    Project *project = [self projectForSection:section];
     if (switcher.isOn) {
-        ProjectObservation *po = [ProjectObservation object];
-        po.observation = self.observation;
-        po.project = project;
+        // have to create a ProjectObs and some OFVs for this observation
         
-        NSMutableSet *existingOfvs = [NSMutableSet setWithSet:self.observation.observationFieldValues];
-        for (ProjectObservationField *pof in po.project.sortedProjectObservationFields) {
-            ObservationFieldValue *ofv = [[existingOfvs objectsPassingTest:^BOOL(ObservationFieldValue *obj, BOOL *stop) {
-                return [obj.observationField isEqual:pof.observationField];
-            }] anyObject];
-            if (!ofv) {
-                ofv = [ObservationFieldValue object];
-                ofv.observation = self.observation;
-                ofv.observationField = pof.observationField;
-            }
+        // create and add project observation
+        ExploreProjectObservationRealm *po = [ExploreProjectObservationRealm new];
+        po.project = project;
+        po.uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
+        
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        [realm addOrUpdateObject:po];
+        [self.observation.projectObservations addObject:po];
+        [realm commitWriteTransaction];
+        
+        for (ExploreProjectObsFieldRealm *pof in project.sortedProjectObservationFields) {
+            ExploreObsFieldValueRealm *ofv = [ExploreObsFieldValueRealm new];
+            ofv.uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
+            ofv.obsField = pof.obsField;
+            ofv.value = pof.obsField.allowedValues.firstObject;
+            
+            [realm beginWriteTransaction];
+            [realm addOrUpdateObject:ofv];
+            [self.observation.observationFieldValues addObject:ofv];
+            [realm commitWriteTransaction];
         }
     } else {
-        for (ProjectObservation *po in [self.observation.projectObservations copy]) {
-            if ([po.project isEqual:project]) {
-                for (ProjectObservationField *pof in po.project.sortedProjectObservationFields) {
-                    ObservationFieldValue *ofv = [[self.observation.observationFieldValues objectsPassingTest:^BOOL(ObservationFieldValue *obj, BOOL *stop) {
-                        return [obj.observationField isEqual:pof.observationField];
-                    }] anyObject];
-                    [ofv deleteEntity];
-                }
-                
-                [self.observation removeProjectObservationsObject:po];
-                [po deleteEntity];
+        // delete the project observation
+        ExploreProjectObservationRealm *poToDelete = nil;
+        for (ExploreProjectObservationRealm *po in self.observation.projectObservations) {
+            if (po.project.projectId == project.projectId) {
+                poToDelete = po;
             }
+        }
+        
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        if (poToDelete) {
+            [realm beginWriteTransaction];
+            NSInteger indexToDelete = [self.observation.projectObservations indexOfObject:poToDelete];
+            [self.observation.projectObservations removeObjectAtIndex:indexToDelete];
+            [realm deleteObject:poToDelete];
+            [realm commitWriteTransaction];
+        }
+        
+        // delete the associated ofvs
+        for (ExploreProjectObsFieldRealm *pof in project.sortedProjectObservationFields) {
+            ExploreObsFieldValueRealm *ofvToDelete = [self.observation valueForObsField:pof.obsField];
+            NSInteger indexToDelete = [self.observation.observationFieldValues indexOfObject:ofvToDelete];
+            [realm beginWriteTransaction];
+            [self.observation.observationFieldValues removeObjectAtIndex:indexToDelete];
+            [realm deleteObject:ofvToDelete];
+            [realm commitWriteTransaction];
         }
     }
     
-    NSError *error = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    if (error) {
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Objectstore Save Error: %@", error.localizedDescription]];
-    }
-    
-    // reload the table view in a fraction of a second
-    // allow the switcher animation to finish
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.tableView reloadData];
-    });
+    [self.tableView reloadData];
+    [self.tableView scrollToRowAtIndexPath:sectionIp
+                          atScrollPosition:UITableViewScrollPositionTop
+                                  animated:YES];
 }
 
 - (id)currentValueForIndexPath:(NSIndexPath *)indexPath {
@@ -758,60 +753,5 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         return nil;
     }
 }
-
-#pragma mark - RKObjectLoaderDelegate
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
-    NSDate *now = [NSDate date];
-    for (INatModel *o in objects) {
-        [o setSyncedAt:now];
-    }
-    
-    if ([objectLoader.resourcePath rangeOfString:@"projects/user"].location != NSNotFound) {
-        NSArray *rejects = [ProjectUser objectsWithPredicate:[NSPredicate predicateWithFormat:@"syncedAt < %@", now]];
-        for (ProjectUser *pu in rejects) {
-            [pu deleteEntity];
-        }
-    }
-    
-    NSError *error = nil;
-    [[[RKObjectManager sharedManager] objectStore] save:&error];
-    if (error) {
-        [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Objectstore Save Error: %@", error.localizedDescription]];
-    }
-    
-    NSMutableArray *projects = [NSMutableArray array];
-    [[ProjectUser all] enumerateObjectsUsingBlock:^(ProjectUser *pu, NSUInteger idx, BOOL *stop) {
-        [projects addObject:pu.project];
-    }];
-    
-    self.joinedProjects = [projects sortedArrayUsingDescriptors:[self joinedProjectSortDescriptors]];
-    [self.tableView reloadData];
-}
-
-- (void)objectLoader:(RKObjectLoader *)objectLoader didFailWithError:(NSError *)error {
-    
-    // was running into a bug in release build config where the object loader was
-    // getting deallocated after handling an error.  This is a kludge.
-    self.loader = objectLoader;
-    
-    NSString *errorMsg;
-    bool jsonParsingError = false, authFailure = false;
-    switch (objectLoader.response.statusCode) {
-            // Unauthorized
-        case 401:
-            authFailure = true;
-            // UNPROCESSABLE ENTITY
-        case 422:
-            errorMsg = NSLocalizedString(@"Unprocessable entity",nil);
-            break;
-        default:
-            // KLUDGE!! RestKit doesn't seem to handle failed auth very well
-            jsonParsingError = [error.domain isEqualToString:@"JKErrorDomain"] && error.code == -1;
-            authFailure = [error.domain isEqualToString:@"NSURLErrorDomain"] && error.code == -1012;
-            errorMsg = error.localizedDescription;
-    }
-}
-
 
 @end

@@ -11,10 +11,9 @@
 #import <Toast/UIView+Toast.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <ARSafariActivity/ARSafariActivity.h>
-#import <RestKit/RestKit.h>
+#import <Realm/Realm.h>
 
 #import "ObsDetailV2ViewController.h"
-#import "Observation.h"
 #import "ObsDetailViewModel.h"
 #import "DisclosureCell.h"
 #import "SubtitleDisclosureCell.h"
@@ -24,7 +23,6 @@
 #import "Analytics.h"
 #import "AddCommentViewController.h"
 #import "AddIdentificationViewController.h"
-#import "ProjectObservationsViewController.h"
 #import "ObsEditV2ViewController.h"
 #import "ObsDetailSelectorHeaderView.h"
 #import "ObsDetailAddActivityFooter.h"
@@ -38,15 +36,16 @@
 #import "ExploreObservation.h"
 #import "ObservationAPI.h"
 #import "INatUITabBarController.h"
+#import "ExploreObservationRealm.h"
 
-@interface ObsDetailV2ViewController () <ObsDetailViewModelDelegate, RKObjectLoaderDelegate, RKRequestDelegate>
+@interface ObsDetailV2ViewController () <ObsDetailViewModelDelegate>
 
 @property IBOutlet UITableView *tableView;
 @property ObsDetailViewModel *viewModel;
 @property BOOL shouldScrollToNewestActivity;
 @property UIPopoverController *sharePopover;
-
 @property MBProgressHUD *progressHud;
+@property RLMNotificationToken *obsChangedToken;
 
 @end
 
@@ -121,10 +120,20 @@
                                                                                                action:@selector(editObs)];
     }
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(handleNSManagedObjectContextDidSaveNotification:)
-                                                 name:NSManagedObjectContextDidSaveNotification
-                                               object:[Observation managedObjectContext]];
+    if ([self.observation isKindOfClass:[ExploreObservationRealm class]]) {
+        // we want to observe changes on it, reload the UI if the object changes
+        ExploreObservationRealm *eor = [ExploreObservationRealm objectForPrimaryKey:self.observation.uuid];
+        __weak typeof(self)weakSelf = self;
+        self.obsChangedToken = [eor addNotificationBlock:^(BOOL deleted, NSArray<RLMPropertyChange *> * _Nullable changes, NSError * _Nullable error) {
+            if (!deleted) {
+                [weakSelf.tableView reloadData];
+            }
+        }];
+    }
+}
+
+- (void)dealloc {
+    [self.obsChangedToken invalidate];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -171,10 +180,6 @@
 
 }
 
-- (void)dealloc {
-    [[[RKObjectManager sharedManager] requestQueue] cancelRequestsWithDelegate:self];
-}
-
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([segue.identifier isEqualToString:@"addComment"]) {
         AddCommentViewController *vc = [segue destinationViewController];
@@ -184,10 +189,6 @@
         AddIdentificationViewController *vc = [segue destinationViewController];
         vc.observation = self.observation;
         vc.onlineEditingDelegate = self;
-    } else if ([segue.identifier isEqualToString:@"projects"]) {
-        ProjectObservationsViewController *vc = [segue destinationViewController];
-        vc.isReadOnly = YES;
-        vc.observation = self.observation;
     } else if ([segue.identifier isEqualToString:@"taxon"]) {
         TaxonDetailViewController *vc = [segue destinationViewController];
         vc.taxon = sender;
@@ -199,13 +200,15 @@
 }
 
 - (void)editObs {
-    ObsEditV2ViewController *edit = [[ObsEditV2ViewController alloc] initWithNibName:nil bundle:nil];
-    edit.shouldContinueUpdatingLocation = NO;
-    edit.observation = self.observation;
-    edit.isMakingNewObservation = NO;
-    
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:edit];
-    [self.navigationController presentViewController:nav animated:YES completion:nil];
+    if ([self.observation isEditable]) {
+        ObsEditV2ViewController *edit = [[ObsEditV2ViewController alloc] initWithNibName:nil bundle:nil];
+        edit.shouldContinueUpdatingLocation = NO;
+        edit.persistedObservation = self.observation;
+        edit.isMakingNewObservation = NO;
+        
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:edit];
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
+    }
 }
 
 - (void)reloadObservation {
@@ -214,30 +217,33 @@
         return;
     }
     
-    // load the full observation from the server, to fetch comments, ids & faves
-    [[Analytics sharedClient] debugLog:@"Network - Load complete observation details"];
-    if (!self.observation) {
-        NSString *path = [NSString stringWithFormat:@"/observations/%ld", (unsigned long)self.observationId];
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:path
-                                                     objectMapping:[Observation mapping]
-                                                          delegate:self];
-    } else if ([self.observation isKindOfClass:[Observation class]]) {
-        Observation *obs = (Observation *)self.observation;
-        [[RKObjectManager sharedManager] loadObjectsAtResourcePath:[NSString stringWithFormat:@"/observations/%@", obs.recordID]
-                                                     objectMapping:[Observation mapping]
-                                                          delegate:self];
-    } else if ([self.observation isKindOfClass:[ExploreObservation class]]) {
-        __weak typeof(self) weakSelf = self;
-        [[self observationApi] observationWithId:self.observation.inatRecordId
-                       handler:^(NSArray *results, NSInteger count, NSError *error) {
-                           __strong typeof(weakSelf) strongSelf = weakSelf;
-                           if (strongSelf && results && results.count == 1) {
-                               strongSelf.observation = results.firstObject;
-                               strongSelf.viewModel.observation = strongSelf.observation;
-                               [strongSelf.tableView reloadData];
-                           }
-                       }];
+    NSInteger obsIdToReload = 0;
+    if (self.observation) {
+        obsIdToReload = self.observation.recordId;
+    } else {
+        obsIdToReload = self.observationId;
     }
+    
+    if (obsIdToReload == 0) {
+        // nothing to reload
+        return;
+    }
+    
+    // load the full observation from the server, to fetch comments, ids & faves
+    __weak typeof(self)weakSelf = self;
+    [[self observationApi] observationWithId:obsIdToReload handler:^(NSArray *results, NSInteger count, NSError *error) {
+        
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        for (ExploreObservation *eo in results) {
+            [realm beginWriteTransaction];
+            ExploreObservationRealm *o = [ExploreObservationRealm createOrUpdateInRealm:realm
+                                                                              withValue:[ExploreObservationRealm valueForMantleModel:eo]];
+            [o setSyncedForSelfAndChildrenAt:[NSDate date]];
+            [realm commitWriteTransaction];
+        }
+        
+        [weakSelf.tableView reloadData];
+    }];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -277,26 +283,6 @@
         [self dismissViewControllerAnimated:YES completion:nil];
     } else {
         [self.navigationController popViewControllerAnimated:YES];
-    }
-}
-
-#pragma mark - notifications
-
-- (void)handleNSManagedObjectContextDidSaveNotification:(NSNotification *)notification {
-    BOOL updatedMe = NO;
-    for (id object in [notification.userInfo valueForKey:@"updated"]) {
-        if ([object isKindOfClass:[Observation class]]) {
-            Observation *update = (Observation *)object;
-            if ([update inatRecordId] == [self.observation inatRecordId]) {
-                updatedMe = YES;
-            }
-        }
-    }
-    
-    if (updatedMe) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
     }
 }
 
@@ -461,6 +447,7 @@
     [self.tableView endUpdates];
 }
 
+/*
 - (void)objectLoader:(RKObjectLoader *)objectLoader didLoadObjects:(NSArray *)objects {
     if (objects.count == 0) return;
     
@@ -508,7 +495,7 @@
     // do what here?
 
 }
-
+*/
 
 
 @end

@@ -8,9 +8,6 @@
 
 #import "ObservationField.h"
 
-static RKManagedObjectMapping *defaultMapping = nil;
-//static RKManagedObjectMapping *defaultSerializationMapping = nil;
-
 @implementation ObservationField
 
 @dynamic recordID;
@@ -26,25 +23,6 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic syncedAt;
 @dynamic observationFieldValues;
 @dynamic projectObservationFields;
-
-+ (RKManagedObjectMapping *)mapping
-{
-    if (!defaultMapping) {
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[self class] inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
-        [defaultMapping mapKeyPathsToAttributes:
-         @"id",                 @"recordID",
-         @"created_at_utc",     @"createdAt",
-         @"updated_at_utc",     @"updatedAt",
-         @"name",               @"name",
-         @"user_id",            @"userID",
-         @"allowed_values",     @"allowedValues",
-         @"description",        @"desc",
-         @"datatype",          @"datatype",
-         nil];
-        defaultMapping.primaryKeyAttribute = @"recordID";
-    }
-    return defaultMapping;
-}
 
 - (NSArray *)allowedValuesArray
 {

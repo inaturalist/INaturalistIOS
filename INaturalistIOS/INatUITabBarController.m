@@ -6,16 +6,18 @@
 //  Copyright (c) 2012 iNaturalist. All rights reserved.
 //
 
-#import <FontAwesomeKit/FAKIonIcons.h>
-#import <AVFoundation/AVFoundation.h>
-#import <BlocksKit+UIKit.h>
-#import <TapkuLibrary/TapkuLibrary.h>
+@import FontAwesomeKit;
+@import AVFoundation;
+@import BlocksKit;
+@import TapkuLibrary;
+@import Photos;
+@import Gallery;
+
+#import "Gallery-Swift.h"
+
 #import <objc/runtime.h>
-#import <Photos/Photos.h>
 
 #import "INatUITabBarController.h"
-#import "Observation.h"
-#import "ObservationPhoto.h"
 #import "INatWebController.h"
 #import "ConfirmPhotoViewController.h"
 #import "UIColor+INaturalist.h"
@@ -23,8 +25,6 @@
 #import "Taxon.h"
 #import "INatTooltipView.h"
 #import "Analytics.h"
-#import "ProjectObservation.h"
-#import "Project.h"
 #import "LoginController.h"
 #import "ObsEditV2ViewController.h"
 #import "INaturalistAppDelegate.h"
@@ -34,6 +34,8 @@
 #import "NewsPagerViewController.h"
 #import "ImageStore.h"
 #import "ExploreUserRealm.h"
+#import "ExploreTaxonRealm.h"
+#import "ExploreObservationRealm.h"
 
 #define EXPLORE_TAB_INDEX   0
 #define NEWS_TAB_INDEX      1
@@ -48,8 +50,7 @@ typedef NS_ENUM(NSInteger, INatPhotoSource) {
 };
 
 NSString *HasMadeAnObservationKey = @"hasMadeAnObservation";
-static char TAXON_ASSOCIATED_KEY;
-static char PROJECT_ASSOCIATED_KEY;
+static char TAXON_ID_ASSOCIATED_KEY;
 
 @interface INatUITabBarController () <UITabBarControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @end
@@ -86,7 +87,7 @@ static char PROJECT_ASSOCIATED_KEY;
     self.customizableViewControllers = nil;
 }
 
-- (void)triggerNewObservationFlowForTaxon:(Taxon *)taxon project:(Project *)project {
+- (void)triggerNewObservationFlowForTaxon:(Taxon *)taxon {
     
     // check for free disk space
     if ([NSFileManager freeDiskSpaceMB] < 100) {
@@ -100,12 +101,12 @@ static char PROJECT_ASSOCIATED_KEY;
         [self presentViewController:alert animated:YES completion:nil];
         return;
     }
-    
+        
     // check for access to camera
     switch ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo]) {
         case AVAuthorizationStatusAuthorized: {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self newObservationForTaxon:taxon project:project];
+                [self newObservationForTaxon:taxon];
             });
             break;
         }
@@ -123,7 +124,7 @@ static char PROJECT_ASSOCIATED_KEY;
                                                   }];
                 if (granted) {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        [self newObservationForTaxon:taxon project:project];
+                        [self newObservationForTaxon:taxon];
                     });
                 } else {
                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -177,7 +178,7 @@ static char PROJECT_ASSOCIATED_KEY;
     }
 }
 
-- (void)newObservationForTaxon:(Taxon *)taxon project:(Project *)project {
+- (void)newObservationForTaxon:(id <TaxonVisualization>)taxon {
     
     if (![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
         [[NSUserDefaults standardUserDefaults] setBool:YES forKey:HasMadeAnObservationKey];
@@ -192,13 +193,9 @@ static char PROJECT_ASSOCIATED_KEY;
         picker.showsCameraControls = NO;
         
         if (taxon) {
-            objc_setAssociatedObject(picker, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
+            objc_setAssociatedObject(picker, &TAXON_ID_ASSOCIATED_KEY, @([taxon taxonId]), OBJC_ASSOCIATION_RETAIN);
         }
-        
-        if (project) {
-            objc_setAssociatedObject(picker, &PROJECT_ASSOCIATED_KEY, project, OBJC_ASSOCIATION_RETAIN);
-        }
-        
+                
         ObsCameraOverlay *overlay = [[ObsCameraOverlay alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
         overlay.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
         
@@ -246,7 +243,7 @@ static char PROJECT_ASSOCIATED_KEY;
         
         [overlay.noPhoto bk_addEventHandler:^(id sender) {
             [[Analytics sharedClient] event:kAnalyticsEventNewObservationNoPhoto];
-            [weakSelf noPhotoTaxon:taxon project:project];
+            [weakSelf noPhotoTaxon:taxon];
         } forControlEvents:UIControlEventTouchUpInside];
         
         [overlay.shutter bk_addEventHandler:^(id sender) {
@@ -256,7 +253,7 @@ static char PROJECT_ASSOCIATED_KEY;
         
         [overlay.library bk_addEventHandler:^(id sender) {
             [[Analytics sharedClient] event:kAnalyticsEventNewObservationLibraryStart];
-            [weakSelf openLibraryTaxon:taxon project:project];
+            [weakSelf openLibraryTaxon:taxon];
         } forControlEvents:UIControlEventTouchUpInside];
         
         picker.cameraOverlayView = overlay;
@@ -280,13 +277,9 @@ static char PROJECT_ASSOCIATED_KEY;
         picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         
         if (taxon) {
-            objc_setAssociatedObject(picker, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
+            objc_setAssociatedObject(picker, &TAXON_ID_ASSOCIATED_KEY, @(taxon.taxonId), OBJC_ASSOCIATION_RETAIN);
         }
-        
-        if (project) {
-            objc_setAssociatedObject(picker, &PROJECT_ASSOCIATED_KEY, project, OBJC_ASSOCIATION_RETAIN);
-        }
-        
+                
         [self presentViewController:picker animated:YES completion:nil];
     }
 }
@@ -301,7 +294,7 @@ static char PROJECT_ASSOCIATED_KEY;
         [[Analytics sharedClient] event:kAnalyticsEventNewObservationStart withProperties:@{ @"From": @"TabBar" }];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self triggerNewObservationFlowForTaxon:nil project:nil];
+            [self triggerNewObservationFlowForTaxon:nil];
         });
         
         return NO;
@@ -364,13 +357,9 @@ static char PROJECT_ASSOCIATED_KEY;
         confirm.isSelectingFromLibrary = NO;
     }
     
-    Taxon *taxon = objc_getAssociatedObject(picker, &TAXON_ASSOCIATED_KEY);
-    if (taxon) {
-        confirm.taxon = taxon;
-    }
-    Project *project = objc_getAssociatedObject(picker, &PROJECT_ASSOCIATED_KEY);
-    if (project) {
-        confirm.project = project;
+    NSNumber *taxonId = objc_getAssociatedObject(picker, &TAXON_ID_ASSOCIATED_KEY);
+    if (taxonId && taxonId.integerValue != 0) {
+        confirm.taxon = [ExploreTaxonRealm objectForPrimaryKey:taxonId];
     }
     
     [picker pushViewController:confirm animated:NO];
@@ -383,7 +372,7 @@ static char PROJECT_ASSOCIATED_KEY;
 
 #pragma mark - Add New Observation methods
 
-- (void)openLibraryTaxon:(Taxon *)taxon project:(Project *)project {
+- (void)openLibraryTaxon:(id <TaxonVisualization>)taxon {
     PHAuthorizationStatus phAuthStatus = [PHPhotoLibrary authorizationStatus];
     switch (phAuthStatus) {
         case PHAuthorizationStatusRestricted:
@@ -401,7 +390,7 @@ static char PROJECT_ASSOCIATED_KEY;
                                                   }];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     if (status == PHAuthorizationStatusAuthorized) {
-                        [weakSelf openLibraryTaxon:taxon project:project];
+                        [weakSelf openLibraryTaxon:taxon];
                     } else {
                         [weakSelf presentAuthAlertForSource:INatPhotoSourcePhotos];
                     }
@@ -421,42 +410,33 @@ static char PROJECT_ASSOCIATED_KEY;
     picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
 
     if (taxon) {
-        objc_setAssociatedObject(picker, &TAXON_ASSOCIATED_KEY, taxon, OBJC_ASSOCIATION_RETAIN);
+        objc_setAssociatedObject(picker, &TAXON_ID_ASSOCIATED_KEY, @(taxon.taxonId), OBJC_ASSOCIATION_RETAIN);
     }
-    
-    if (project) {
-        objc_setAssociatedObject(picker, &PROJECT_ASSOCIATED_KEY, project, OBJC_ASSOCIATION_RETAIN);
-    }
-    
+        
     UIViewController *presentedVC = self.presentedViewController;
     [presentedVC presentViewController:picker animated:YES completion:nil];
 }
 
 
-- (void)noPhotoTaxon:(Taxon *)taxon project:(Project *)project {
-    Observation *o = [Observation object];
-    
-    NSDate *now = [NSDate date];
-    o.localCreatedAt = now;
+- (void)noPhotoTaxon:(id <TaxonVisualization>)taxon {
+    ExploreObservationRealm *o = [[ExploreObservationRealm alloc] init];
+    o.uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
+    o.timeCreated = [NSDate date];
+    o.timeUpdatedLocally = [NSDate date];
     
     // photoless observation defaults to now
-    o.observedOn = now;
-    o.localObservedOn = o.observedOn;
-    o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
+    o.timeObserved = [NSDate date];
     
     if (taxon) {
-        o.taxon = taxon;
-        o.speciesGuess = taxon.defaultName;
+        ExploreTaxonRealm *etr = [ExploreTaxonRealm objectForPrimaryKey:@(taxon.taxonId)];
+        if (etr) {
+            o.taxon = etr;
+        }
+        o.speciesGuess = taxon.commonName ?: taxon.scientificName;
     }
-    
-    if (project) {
-        ProjectObservation *po = [ProjectObservation object];
-        po.observation = o;
-        po.project = project;
-    }
-    
+        
     ObsEditV2ViewController *confirmObs = [[ObsEditV2ViewController alloc] initWithNibName:nil bundle:nil];
-    confirmObs.observation = o;
+    confirmObs.standaloneObservation = o;
     confirmObs.shouldContinueUpdatingLocation = YES;
     confirmObs.isMakingNewObservation = YES;
     

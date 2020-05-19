@@ -6,62 +6,60 @@
 //  Copyright © 2017 iNaturalist. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
-#import <RestKit/Testing.h>
+@import Realm;
+@import XCTest;
 
-#import "RKModelBaseTests.h"
-#import "Taxon.h"
+#import "MantleHelpers.h"
+#import "ExploreObservationRealm.h"
+#import "ExploreTaxonRealm.h"
 
-@interface TaxonTests : RKModelBaseTests
+@interface TaxonTests : XCTestCase
 @end
 
 @implementation TaxonTests
 
 - (void)setUp {
     [super setUp];
+    
+    RLMRealm.defaultRealm.configuration.inMemoryIdentifier = @"Database A";
 }
 
 - (void)tearDown {
     [super tearDown];
-}
-
-- (void)testWikipediaUrlNullTitle {
-    Taxon *taxon = [self taxonForFixture:@"Octopus_rubescens.json"];
-    XCTAssertTrue([[taxon wikipediaUrl] isEqual:[NSURL URLWithString:@"https://en.wikipedia.org/wiki/Octopus%20rubescens"]],
-                  @"Constructured URL for Octopus rubescens with null wikipedia title is incorrect.");
-}
-
-- (void)testWikipediaUrlEmptyTitle {
-    Taxon *taxon = [self taxonForFixture:@"Diptera.json"];
-    XCTAssertTrue([[taxon wikipediaUrl] isEqual:[NSURL URLWithString:@"https://en.wikipedia.org/wiki/Diptera"]],
-                  @"Constructured URL for Diptera with empty wikipedia title is incorrect.");
-}
-
-
-- (void)testWikipediaUrlValidTitle {
-    Taxon *taxon = [self taxonForFixture:@"Gollum.json"];
-    XCTAssertTrue([[taxon wikipediaUrl] isEqual:[NSURL URLWithString:@"https://en.wikipedia.org/wiki/Gollum_(genus)"]],
-                  @"Constructured URL for Diptera with empty wikipedia title is incorrect.");
-}
-
-
-- (Taxon *)taxonForFixture:(NSString *)fixtureFileName {
-    id parsedJSON = [RKTestFixture parsedObjectWithContentsOfFixture:fixtureFileName];
     
-    Taxon *taxon = [Taxon createEntity];
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    [realm deleteAllObjects];
+    [realm commitWriteTransaction];
+}
+
+- (void)testTaxonInRealmFromMantleObservation {
+    ExploreObservation *willet = [MantleHelpers willetFixture];
+    NSDictionary *willetDict = [ExploreObservationRealm valueForMantleModel:willet];
     
-    RKMappingTest *test = [RKMappingTest testForMapping:[Taxon mapping]
-                                           sourceObject:parsedJSON
-                                      destinationObject:taxon];
-    @try {
-        [test performMapping];
-    } @catch (NSException *exception) {
-        // restkit can throw spurious exceptions during taxon mappings
-        // maybe isn't correctly mapping relationships?
-        // do nothing
-    }
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    [ExploreObservationRealm createOrUpdateInRealm:realm withValue:willetDict];
+    [realm commitWriteTransaction];
     
-    return taxon;
+    // this taxon_id should be willet
+    ExploreTaxonRealm *taxon = [ExploreTaxonRealm objectForPrimaryKey:@(144491)];
+    XCTAssertNotNil(taxon);
+}
+
+- (void)testWikipediaUrl {
+    ExploreObservation *willet = [MantleHelpers willetFixture];
+    NSDictionary *willetDict = [ExploreObservationRealm valueForMantleModel:willet];
+    
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    [ExploreObservationRealm createOrUpdateInRealm:realm withValue:willetDict];
+    [realm commitWriteTransaction];
+    
+    // this taxon_id should be willet
+    ExploreTaxonRealm *taxon = [ExploreTaxonRealm objectForPrimaryKey:@(144491)];
+    XCTAssertTrue([[taxon wikipediaUrl] isEqual:[NSURL URLWithString:@"http://en.wikipedia.org/wiki/Willet"]],
+                  @"Constructured wikipedia URL for Willet .");
 }
 
 @end

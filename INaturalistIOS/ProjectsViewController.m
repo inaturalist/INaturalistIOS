@@ -152,24 +152,25 @@ static const int ListControlIndexNearby = 2;
 - (void)syncUserProjectsUserId:(NSInteger)userId page:(NSInteger)page {
     __weak typeof(self)weakSelf = self;
     [[self projectsApi] projectsForUser:userId page:page handler:^(NSArray *results, NSInteger totalCount, NSError *error) {
+        ExploreUserRealm *me = [ExploreUserRealm objectForPrimaryKey:@(userId)];
+        if (!me) { return; }        // can't sync user projects if we have no user
+        
         RLMRealm *realm = [RLMRealm defaultRealm];
         for (ExploreProject *eg in results) {
             NSDictionary *value = [ExploreProjectRealm valueForMantleModel:eg];
-            NSMutableDictionary *mutableValue = [value mutableCopy];
-            mutableValue[@"joined"] = @(YES);
-            value = [NSDictionary dictionaryWithDictionary:mutableValue];
             [realm beginWriteTransaction];
-            [ExploreProjectRealm createOrUpdateInDefaultRealmWithValue:value];
+            ExploreProjectRealm *project = [ExploreProjectRealm createOrUpdateInDefaultRealmWithValue:value];
+            [me.joinedProjects addObject:project];
             [realm commitWriteTransaction];
         }
 
         // update tableview
         [weakSelf.tableView reloadData];
         
-        NSInteger totalReceived = results.count + ((page-1) * [[self projectsApi] projectsPerPage]);
+        NSInteger totalReceived = results.count + ((page-1) * [[weakSelf projectsApi] projectsPerPage]);
         if (totalReceived < totalCount) {
             // recursively fetch another page of joined projects
-            [self syncUserProjectsUserId:userId page:page+1];
+            [weakSelf syncUserProjectsUserId:userId page:page+1];
         }
     }];
 }
@@ -321,13 +322,18 @@ static const int ListControlIndexNearby = 2;
     // prime the joined projects results
     // and set up a trigger to reload the tableview every time
     // the joined projects list changes
-    self.joinedProjects = [ExploreProjectRealm joinedProjects];
-    __weak typeof(self)weakSelf = self;
-    self.joinedToken = [self.joinedProjects addNotificationBlock:^(RLMResults * _Nullable results, RLMCollectionChange * _Nullable change, NSError * _Nullable error) {
-        [weakSelf.tableView reloadData];
-    }];
-
-
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (appDelegate.loginController.isLoggedIn) {
+        ExploreUserRealm *me = appDelegate.loginController.meUserLocal;
+        if (me) {
+            self.joinedProjects = me.joinedProjects;
+            
+            __weak typeof(self)weakSelf = self;
+            self.joinedToken = [self.joinedProjects addNotificationBlock:^(RLMResults * _Nullable results, RLMCollectionChange * _Nullable change, NSError * _Nullable error) {
+                [weakSelf.tableView reloadData];
+            }];
+        }
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

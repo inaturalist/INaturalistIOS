@@ -18,4 +18,14 @@
 - (void)fetchMeHandler:(INatAPIFetchCompletionCountHandler)done;
 - (void)setEmailAddress:(NSString *)email forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
 
+- (void)setSiteId:(NSInteger)siteId forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
+
+- (void)createUserEmail:(NSString *)email
+                  login:(NSString *)login
+               password:(NSString *)password
+                 siteId:(NSInteger)siteId
+                license:(NSString *)license
+              localeStr:(NSString *)localeStr
+                handler:(INatAPIFetchCompletionCountHandler)done;
+
 @end

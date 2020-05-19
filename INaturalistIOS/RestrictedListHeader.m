@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <FontAwesomeKit/FAKIonIcons.h>
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+@import FontAwesomeKit;
+@import UIColor_HTMLColors;
 
 #import "RestrictedListHeader.h"
 #import "UIColor+ExploreColors.h"

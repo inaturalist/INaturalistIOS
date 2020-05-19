@@ -31,4 +31,8 @@
     return @"updateId";
 }
 
++ (RLMResults *)updatesForObservationId:(NSInteger)observationId {
+    return [self.class objectsWhere:@"resourceId == %ld", observationId];
+}
+
 @end

@@ -10,9 +10,6 @@
 #import "Observation.h"
 #import "User.h"
 
-static RKManagedObjectMapping *defaultMapping = nil;
-static RKObjectMapping *defaultSerializationMapping = nil;
-
 @implementation Comment
 
 @dynamic recordID;
@@ -35,43 +32,6 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 
 - (NSURL *)userIconUrl {
     return [NSURL URLWithString:self.user.userIconURL];
-}
-
-+ (RKManagedObjectMapping *)mapping
-{
-    if (!defaultMapping) {
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[Comment class]
-                                            inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
-        [defaultMapping mapKeyPathsToAttributes:
-         @"id", @"recordID",
-         @"body", @"body",
-		 @"created_at", @"createdAt",
-		 @"updated_at", @"updatedAt",
-         @"parent_id", @"parentID",
-         @"parent_type", @"parentType",
-         @"user_id", @"userID",
-         nil];
-		[defaultMapping mapKeyPath:@"user"
-                    toRelationship:@"user"
-                       withMapping:[User mapping]
-                         serialize:NO];
-        defaultMapping.primaryKeyAttribute = @"recordID";
-    }
-    return defaultMapping;
-}
-
-+ (RKObjectMapping *)serializationMapping
-{
-    if (!defaultSerializationMapping) {
-        defaultSerializationMapping = [[RKManagedObjectMapping mappingForClass:[Comment class]
-                                                          inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]] inverseMapping];
-        [defaultSerializationMapping mapKeyPathsToAttributes:
-         @"parentType", @"identification[parent_type]",
-         @"parentID", @"identification[parent_id]",
-		 @"body", @"identification[body]",
-         nil];
-    }
-    return defaultSerializationMapping;
 }
 
 - (NSString *)createdAtPrettyString

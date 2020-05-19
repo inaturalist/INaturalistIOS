@@ -40,6 +40,7 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
 - (NSString *)placeGuess;
 - (BOOL)idPlease;
 - (NSString *)geoprivacy;
+
 - (BOOL)coordinatesObscuredToUser;
 - (NSString *)qualityGrade;
 - (ObsDataQuality)dataQuality;
@@ -50,11 +51,13 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
 - (NSArray *)sortedObservationPhotos;
 - (NSSet *)observationFieldValues;
 - (NSSet *)projectObservations;
+- (NSArray *)sortedProjectObservations;
 - (NSSet *)comments;
 - (NSSet *)identifications;
 - (NSSet *)faves;
 - (NSArray *)sortedActivity;
 - (NSArray *)sortedFaves;
+- (NSInteger)activityCount;
 
 - (NSInteger)inatRecordId;
 

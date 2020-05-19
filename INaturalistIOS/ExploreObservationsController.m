@@ -6,7 +6,6 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <RestKit/RestKit.h>
 #import <BlocksKit/BlocksKit.h>
 
 #import "ExploreObservationsController.h"
@@ -413,13 +412,7 @@
 #pragma mark - Notification
 
 - (BOOL)isFetching {
-	if ([[[RKClient sharedClient] requestQueue] count] == 0)
-		return NO;
-	
-	if ([[[RKClient sharedClient] requestQueue] loadingCount] == 0)
-		return NO;
-	
-	return YES;
+    return NO;
 }
 
 @end

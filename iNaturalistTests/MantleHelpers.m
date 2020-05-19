@@ -11,6 +11,7 @@
 #import "MantleHelpers.h"
 #import "ExploreObservation.h"
 #import "ExploreProject.h"
+#import "ExplorePost.h"
 
 @implementation MantleHelpers
 
@@ -46,6 +47,23 @@
     return [helper nodeProjectFromFixture:fixturePath];
 }
 
++ (ExplorePost *)sitePostFixture {
+    NSBundle *testBundle = [NSBundle bundleForClass:self.class];
+    NSString *fixturePath = [testBundle pathForResource:@"SiteBlogPost" ofType:@"json"];
+    
+    MantleHelpers *helper = [[MantleHelpers alloc] init];
+    return [helper nodePostFromFixture:fixturePath];
+}
+
++ (ExplorePost *)projectPostFixture {
+    NSBundle *testBundle = [NSBundle bundleForClass:self.class];
+    NSString *fixturePath = [testBundle pathForResource:@"ProjectBlogPost" ofType:@"json"];
+    
+    MantleHelpers *helper = [[MantleHelpers alloc] init];
+    return [helper nodePostFromFixture:fixturePath];
+}
+
+
 // this needs to be an instance method to use XCTAssert and cousins
 - (MTLModel *)mtlModelFromFixture:(NSString *)fixturePath classMapping:(Class)classForMapping {
     NSData *fixtureData = [NSData dataWithContentsOfFile:fixturePath];
@@ -59,10 +77,21 @@
                  deserializeError.localizedDescription);
     NSLog(@"JSON: %@", json);
     
-    NSArray *results = [json valueForKey:@"results"];
-    XCTAssertTrue(results.count == 1, @"too many results for fixture %@", fixturePath);
-    NSDictionary *fixtureJson = [results firstObject];
-    
+    NSDictionary *fixtureJson;
+    if ([json isKindOfClass:NSArray.class]) {
+        fixtureJson = [(NSArray *)json firstObject];
+    } else if ([json isKindOfClass:NSDictionary.class]) {
+        if ([json valueForKey:@"results"]) {
+            NSArray *results = [json valueForKey:@"results"];
+            XCTAssertTrue(results.count == 1, @"too many results for fixture %@", fixturePath);
+            fixtureJson = [results firstObject];
+        } else {
+            fixtureJson = json;
+        }
+    } else {
+        XCTAssert(false, @"error constructing Mantle object for %@", fixturePath);
+    }
+            
     NSError *mantleError = nil;
     MTLModel *result = [MTLJSONAdapter modelOfClass:classForMapping
                                  fromJSONDictionary:fixtureJson
@@ -101,6 +130,17 @@
                                    classMapping:[ExploreProject class]];
     if ([model isKindOfClass:[ExploreProject class]]) {
         return (ExploreProject *)model;
+    } else {
+        return nil;
+    }
+}
+
+// this needs to be an instance method to use XCTAssert and cousins
+- (ExplorePost *)nodePostFromFixture:(NSString *)fixturePath {
+    MTLModel *model = [self mtlModelFromFixture:fixturePath
+                                   classMapping:[ExplorePost class]];
+    if ([model isKindOfClass:[ExplorePost class]]) {
+        return (ExplorePost *)model;
     } else {
         return nil;
     }

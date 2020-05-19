@@ -6,14 +6,13 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
+@import Realm;
 
-@class Observation;
+#import "ExploreObservationRealm.h"
 
 @interface ProjectObservationsViewController : UITableViewController
 
-@property Observation *observation;
-@property NSArray *joinedProjects;
-@property BOOL isReadOnly;
+@property ExploreObservationRealm *observation;
 
 @end

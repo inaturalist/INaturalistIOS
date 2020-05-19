@@ -11,9 +11,6 @@
 #import "Observation.h"
 #import "ExploreDeletedRecord.h"
 
-static RKManagedObjectMapping *defaultMapping = nil;
-static RKManagedObjectMapping *defaultSerializationMapping = nil;
-
 @implementation ProjectObservation
 
 @dynamic localCreatedAt;
@@ -25,39 +22,6 @@ static RKManagedObjectMapping *defaultSerializationMapping = nil;
 @dynamic curatorIdentificationID;
 @dynamic project;
 @dynamic observation;
-
-+ (RKManagedObjectMapping *)mapping
-{
-    if (!defaultMapping) {
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[self class] inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
-        [defaultMapping mapKeyPathsToAttributes:
-         @"id", @"recordID",
-         @"created_at", @"createdAt",
-         @"updated_at", @"updatedAt",
-         @"project_id", @"projectID",
-         @"observation_id", @"observationID",
-         @"curator_identification_id", @"curatorIdentificationID",
-         nil];
-        [defaultMapping mapKeyPath:@"project"
-                    toRelationship:@"project"
-                       withMapping:[Project mapping]
-                         serialize:NO];
-        defaultMapping.primaryKeyAttribute = @"recordID";
-    }
-    return defaultMapping;
-}
-
-+ (RKManagedObjectMapping *)serializationMapping
-{
-    if (!defaultSerializationMapping) {
-        defaultSerializationMapping = [RKManagedObjectMapping mappingForClass:[self class] inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
-        [defaultSerializationMapping mapKeyPathsToAttributes:
-         @"projectID", @"project_observation[project_id]",
-         @"observationID", @"project_observation[observation_id]",
-         nil];
-    }
-    return defaultSerializationMapping;
-}
 
 // checks the associated observation for its recordID
 - (NSNumber *)observationID

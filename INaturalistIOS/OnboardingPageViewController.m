@@ -6,8 +6,8 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <BlocksKit/BlocksKit.h>
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+@import BlocksKit;
+@import UIColor_HTMLColors;
 
 #import "OnboardingPageViewController.h"
 #import "OnboardingLoginViewController.h"

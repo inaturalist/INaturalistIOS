@@ -6,7 +6,8 @@
 //  Copyright © 2019 iNaturalist. All rights reserved.
 //
 
-#import "RLMObject.h"
+@import Realm;
+
 #import "ExploreGuide.h"
 #import "Guide.h"
 

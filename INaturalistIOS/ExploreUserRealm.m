@@ -24,6 +24,47 @@
     return self;
 }
 
++ (NSDictionary *)valueForMantleModel:(ExploreUser *)model {
+    NSMutableDictionary *value = [NSMutableDictionary dictionary];
+    
+    value[@"userId"] = @(model.userId);
+    value[@"login"] = model.login;
+    value[@"name"] = model.name;
+    value[@"userIconString"] = model.userIcon.absoluteString;
+    value[@"email"] = model.email;
+    value[@"observationsCount"] = @(model.observationsCount);
+    value[@"siteId"] = @(model.siteId);
+    value[@"syncedAt"] = [NSDate date];
+        
+    return [NSDictionary dictionaryWithDictionary:value];
+}
+
++ (NSDictionary *)valueForCoreDataModel:(id)cdModel {
+    NSMutableDictionary *value = [NSMutableDictionary dictionary];
+    
+    if ([cdModel valueForKey:@"recordID"]) {
+        value[@"userId"] = [cdModel valueForKey:@"recordID"];
+    } else {
+        value[@"userId"] = @(0);
+    }
+    
+    if ([cdModel valueForKey:@"siteId"]) {
+        value[@"siteId"] = [cdModel valueForKey:@"siteId"];
+    } else {
+        value[@"siteId"] = @(1);
+    }
+
+    value[@"login"] = [cdModel valueForKey:@"login"];;
+    value[@"name"] = [cdModel valueForKey:@"name"];
+    value[@"userIconString"] = [cdModel valueForKey:@"userIconURL"];
+    value[@"email"] = [cdModel valueForKey:@"email"];
+    value[@"observationsCount"] = [cdModel valueForKey:@"observationsCount"];
+    value[@"syncedAt"] = [cdModel valueForKey:@"syncedAt"];
+        
+    return [NSDictionary dictionaryWithDictionary:value];
+}
+
+
 + (NSString *)primaryKey {
     return @"userId";
 }

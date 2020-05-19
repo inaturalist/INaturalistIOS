@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
-#import <RestKit/RestKit.h>
 
 #import "ExploreSearchPredicate.h"
 #import "ExploreRegion.h"
@@ -39,7 +38,6 @@ typedef NS_ENUM(NSInteger, ExploreLeaderboardSpan) {
 @end
 
 typedef void(^FetchCompletionHandler)(NSArray *results, NSError *error);
-typedef void(^PostCompletionHandler)(RKResponse *response, NSError *error);
 
 
 @class ExploreObservation;

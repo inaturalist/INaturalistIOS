@@ -20,7 +20,7 @@
 "LVz-7N-QYA.normalTitle" = "ÜYE OL";
 
 /* Class = "UIButton"; normalTitle = "X"; ObjectID = "MC0-kW-bph"; */
-"MC0-kW-bph.normalTitle" = "x";
+"MC0-kW-bph.normalTitle" = "X";
 
 /* Class = "UILabel"; text = "iNaturalist will automatically generate suggestions based on your photo and location."; ObjectID = "Nb8-x2-D2v"; */
 "Nb8-x2-D2v.text" = "iNaturalist, fotoğrafınızı ve konumunuzu kullanarak sizin için otomatik öneriler oluşturur.";
@@ -44,10 +44,10 @@
 "ixn-0U-lJ7.text" = "Bulgularınızın tartışmasını yapmak ve doğrulamasını sağlamak için gözleminizi toplulukla paylaşabilirsiniz.";
 
 /* Class = "UILabel"; text = "Your observation may be vetted as Research Grade and shared with scientists working to better understand and protect nature. "; ObjectID = "oro-uB-RY1"; */
-"oro-uB-RY1.text" = "Gözleminiz, araştırılabilir yada doğayı daha iyi anlayabilmek ve korumak için çalışan bilim insanları ile paylaşılabilir.";
+"oro-uB-RY1.text" = "Gözleminiz, Araştırma Sınıfı olarak incelenebilir ve doğayı daha iyi anlamak ve korumak için çalışan bilim insanlarıyla paylaşılabilir. ";
 
 /* Class = "UILabel"; text = "Sign Up"; ObjectID = "pbQ-o3-5Xy"; */
-"pbQ-o3-5Xy.text" = "ÜYE OL";
+"pbQ-o3-5Xy.text" = "Kaydol";
 
 /* Class = "UILabel"; text = "Contribute"; ObjectID = "sBd-1Y-eNL"; */
 "sBd-1Y-eNL.text" = "Katkı yap";

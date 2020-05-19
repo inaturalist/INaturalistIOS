@@ -6,10 +6,10 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <AFNetworking/UIImageView+AFNetworking.h>
-#import <FontAwesomeKit/FAKIonIcons.h>
-#import <MBProgressHUD/MBProgressHUD.h>
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+@import AFNetworking;
+@import FontAwesomeKit;
+@import MBProgressHUD;
+@import UIColor_HTMLColors;
 
 #import "ProjectDetailV2ViewController.h"
 #import "Project.h"
@@ -295,9 +295,6 @@
                 ExploreProject *ep = (ExploreProject *)weakSelf.project;
                 // make this project in realm, set joined to true
                 NSDictionary *value = [ExploreProjectRealm valueForMantleModel:ep];
-                NSMutableDictionary *mutableValue = [value mutableCopy];
-                mutableValue[@"joined"] = @(YES);
-                value = [NSDictionary dictionaryWithDictionary:mutableValue];
                 [realm beginWriteTransaction];
                 ExploreProjectRealm *epr = [ExploreProjectRealm createOrUpdateInDefaultRealmWithValue:value];
                 [realm commitWriteTransaction];

@@ -10,7 +10,7 @@
 
 #import "UploadManager.h"
 #import "INatModel.h"
-#import "Observation.h"
+#import "ExploreObservationRealm.h"
 #import "Analytics.h"
 #import "ObservationPhoto.h"
 #import "ObservationFieldValue.h"
@@ -30,7 +30,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 
 @interface UploadManager ()
 
-@property NSMutableArray *observationsToUpload;
+@property NSMutableArray *observationUUIDsToUpload;
 @property NSMutableArray *recordsToDelete;
 @property AFNetworkReachabilityManager *reachabilityMgr;
 @property NSMutableDictionary *photoUploads;
@@ -51,28 +51,34 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 #pragma mark - public methods
 
 /**
- * Public method that serially uploads a list of observations.
- */
-- (void)uploadObservations:(NSArray *)observations {
-    self.observationsToUpload = [observations mutableCopy];
-    [self syncUploads];
-}
-
-/**
- * Public method that serially syncs/uploads a list of deleted records,
- * then uploads a list of new or updated observations.
- */
-- (void)syncDeletedRecords:(NSArray *)deletedRecords thenUploadObservations:(NSArray *)recordsToUpload {
+* Public method that serially syncs/uploads a list of deleted records,
+* then uploads a list of new or updated observations.
+*/
+- (void)syncDeletedRecords:(NSArray <ExploreDeletedRecord *> *)deletedRecords thenUploadObservations:(NSArray <ExploreObservationRealm *> *)observations {
     self.cancelled = NO;
     self.recordsToDelete = [deletedRecords mutableCopy];
-    
-    self.observationsToUpload = [recordsToUpload mutableCopy];
-    
+    self.observationUUIDsToUpload = [NSMutableArray array];
+    for (ExploreObservationRealm *o in observations) {
+        [self.observationUUIDsToUpload addObject:[o uuid]];
+    }
+
     if (self.recordsToDelete.count > 0) {
         [self syncDeletes];
     } else {
         [self syncUploads];
     }
+}
+
+/**
+ * Public method that serially uploads a list of observations.
+ */
+- (void)uploadObservations:(NSArray <ExploreObservationRealm *> *)observations {
+    self.cancelled = NO;
+    self.observationUUIDsToUpload = [NSMutableArray array];
+    for (ExploreObservationRealm *o in observations) {
+        [self.observationUUIDsToUpload addObject:[o uuid]];
+    }
+    [self syncUploads];
 }
 
 - (void)syncDeletes {
@@ -139,13 +145,13 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
                                              forHTTPHeaderField:@"Authorization"];
         
         // add the observations to the queue
-        for (Observation *o in self.observationsToUpload) {
-            UploadObservationOperation *op = [[UploadObservationOperation alloc] init];
-            op.rootObjectId = o.objectID;
-            op.userSiteId = appDelegate.loginController.meUserLocal.siteId;
-            op.nodeSessionManager = weakSelf.nodeSessionManager;
-            op.delegate = weakSelf.delegate;
-            [weakSelf.uploadQueue addOperation:op];
+        for (NSString *obsUUID in self.observationUUIDsToUpload) {
+            UploadObservationOperation *operation = [[UploadObservationOperation alloc] init];
+            operation.rootObjectUUID = obsUUID;
+            operation.userSiteId = appDelegate.loginController.meUserLocal.siteId;
+            operation.nodeSessionManager = weakSelf.nodeSessionManager;
+            operation.delegate = weakSelf.delegate;
+            [weakSelf.uploadQueue addOperation:operation];
         }
     } failure:^(NSError *error) {
         NSError *jwtFailedError = [NSError errorWithDomain:INatJWTFailureErrorDomain
@@ -181,6 +187,8 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
  content that failed to upload last time due to server-side data validation issues.
  */
 - (void)autouploadPendingContentExcludeInvalids:(BOOL)excludeInvalids {
+    /*
+     TODO: handle autoupload
     if (!self.shouldAutoupload) { return; }
     
     NSMutableArray *recordsToDelete = [NSMutableArray array];
@@ -210,6 +218,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
         [self syncDeletedRecords:recordsToDelete
           thenUploadObservations:observationsToUpload];
     }
+     */
 }
 
 - (void)stopUploadActivity {
@@ -277,7 +286,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.delegate deleteSessionFinished];
             });
-            if (self.observationsToUpload.count > 0) {
+            if (self.observationUUIDsToUpload.count > 0) {
                 [self syncUploads];
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -335,10 +344,6 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     
     // don't trigger autoupload if we're already uploading or cancelling
     if ([self state] != UploadManagerStateIdle)
-        return NO;
-    
-    // restkit hasn't finished loading yet
-    if (![RKManagedObjectStore defaultObjectStore])
         return NO;
     
     return YES;

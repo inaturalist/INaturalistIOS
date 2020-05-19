@@ -11,8 +11,6 @@
 #import "NSString+Helpers.h"
 #import <TapkuLibrary/NSString+TKCategory.h>
 
-static RKManagedObjectMapping *defaultMapping = nil;
-
 @implementation Taxon
 
 @dynamic recordID;
@@ -40,41 +38,6 @@ static RKManagedObjectMapping *defaultMapping = nil;
 @dynamic rank;
 @dynamic taxonPhotos;
 @dynamic listedTaxa;
-
-+ (RKManagedObjectMapping *)mapping
-{
-    if (!defaultMapping) {
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[self class] inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
-        [defaultMapping mapKeyPathsToAttributes:
-         @"id", @"recordID",
-         @"created_at", @"createdAt",
-         @"updated_at", @"updatedAt",
-         @"name", @"name",
-         @"ancestry", @"ancestry",
-         @"conservation_status", @"conservationStatusCode",
-         @"conservation_status_name", @"conservationStatusName",
-         @"conservation_status_source.title", @"conservationStatusSourceName",
-         @"common_name.name", @"defaultName",
-         @"iconic_taxon_name", @"iconicTaxonName",
-         @"iconic_taxon_id", @"iconicTaxonID",
-         @"is_iconic", @"isIconic",
-         @"listed_taxa_count", @"listedTaxaCount",
-         @"observations_count", @"observationsCount",
-         @"parent_id", @"parentID",
-         @"rank", @"rank",
-         @"rank_level", @"rankLevel",
-         @"unique_name", @"uniqueName",
-         @"wikipedia_summary", @"wikipediaSummary",
-         @"wikipedia_title", @"wikipediaTitle",
-         nil];
-        [defaultMapping mapKeyPath:@"taxon_photos" 
-                    toRelationship:@"taxonPhotos" 
-                       withMapping:[TaxonPhoto mapping]
-                         serialize:NO];
-        defaultMapping.primaryKeyAttribute = @"recordID";
-    }
-    return defaultMapping;
-}
 
 + (UIColor *)iconicTaxonColor:(NSString *)iconicTaxonName
 {
@@ -127,16 +90,7 @@ static RKManagedObjectMapping *defaultMapping = nil;
 
 - (NSArray *)children
 {
-    NSString *queryAncestry;
-    if (self.ancestry && self.ancestry.length > 0) {
-        queryAncestry = [NSString stringWithFormat:@"%@/%d", self.ancestry, self.recordID.intValue];
-    } else {
-        queryAncestry = [NSString stringWithFormat:@"%d", self.recordID.intValue];
-    }
-    NSFetchRequest *request = [Taxon fetchRequest];
-    request.predicate = [NSPredicate predicateWithFormat:@"ancestry = %@", queryAncestry];
-    request.sortDescriptors = [NSArray arrayWithObject:[[NSSortDescriptor alloc] initWithKey:@"name" ascending:YES]];
-    return [Taxon objectsWithFetchRequest:request];
+    return @[ ];
 }
 
 - (BOOL)isSpeciesOrLower

@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import <Mantle/Mantle.h>
+
 #import "TaxonVisualization.h"
+#import "ExploreTaxonPhoto.h"
 
 @interface ExploreTaxon : MTLModel <MTLJSONSerializing, TaxonVisualization>
 

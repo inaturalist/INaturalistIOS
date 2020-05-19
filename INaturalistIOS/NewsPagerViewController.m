@@ -6,8 +6,8 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
-#import <FontAwesomeKit/FAKIonIcons.h>
+@import UIColor_HTMLColors;
+@import FontAwesomeKit;
 
 #import "NewsPagerViewController.h"
 #import "UIColor+INaturalist.h"

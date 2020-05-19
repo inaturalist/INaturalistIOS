@@ -11,9 +11,6 @@
 #import "ObservationField.h"
 #import "Analytics.h"
 
-static RKManagedObjectMapping *defaultMapping = nil;
-static RKObjectMapping *defaultSerializationMapping = nil;
-
 @implementation ObservationFieldValue
 
 @dynamic recordID;
@@ -27,43 +24,6 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 @dynamic localUpdatedAt;
 @dynamic observationField;
 @dynamic observation;
-
-+ (RKManagedObjectMapping *)mapping
-{
-    if (!defaultMapping) {
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[ObservationFieldValue class]
-                                            inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
-        [defaultMapping mapKeyPathsToAttributes:
-         @"id",                     @"recordID",
-         @"created_at_utc",         @"createdAt",
-         @"updated_at_utc",         @"updatedAt",
-         @"value",                  @"value",
-         @"observation_id",         @"observationID",
-         @"observation_field_id",   @"observationFieldID",
-         nil];
-        [defaultMapping mapKeyPath:@"observation_field" 
-                    toRelationship:@"observationField" 
-                       withMapping:[ObservationField mapping]
-                         serialize:NO];
-        defaultMapping.primaryKeyAttribute = @"recordID";
-    }
-    return defaultMapping;
-}
-
-+ (RKObjectMapping *)serializationMapping
-{
-    if (!defaultSerializationMapping) {
-        defaultSerializationMapping = [[RKManagedObjectMapping mappingForClass:[ObservationFieldValue class]
-                                                          inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]] inverseMapping];
-        [defaultSerializationMapping mapKeyPathsToAttributes:
-         @"recordID",           @"observation_field_value[id]",
-         @"value",              @"observation_field_value[value]",
-         @"observationID",      @"observation_field_value[observation_id]",
-         @"observationFieldID", @"observation_field_value[observation_field_id]",
-         nil];
-    }
-    return defaultSerializationMapping;
-}
 
 - (NSString *)defaultValue
 {

@@ -6,11 +6,10 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <BlocksKit/BlocksKit+UIKit.h>
-#import <FontAwesomeKit/FAKIonIcons.h>
-#import <FontAwesomeKit/FAKFoundationIcons.h>
-#import <SVPullToRefresh/SVPullToRefresh.h>
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+@import BlocksKit;
+@import FontAwesomeKit;
+@import SVPullToRefresh;
+@import UIColor_HTMLColors;
 
 #import "ExploreListViewController.h"
 #import "ExploreObservation.h"

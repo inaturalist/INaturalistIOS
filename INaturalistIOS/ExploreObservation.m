@@ -14,32 +14,79 @@
 #import "ExploreUser.h"
 #import "ExploreTaxon.h"
 #import "ExploreTaxonRealm.h"
+#import "ExploreProjectObservation.h"
+#import "ExploreObsFieldValue.h"
 
 @implementation ExploreObservation
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey{
     return @{
              @"observationId": @"id",
-             @"location": @"location",
+             @"publicLocation": @"location",
+             @"privateLocation": @"private_location",
              @"inatDescription": @"description",
              @"speciesGuess": @"species_guess",
-             @"timeObservedAt": @"time_observed_at_utc",
-             @"observedOn": @"observed_on",
-             @"qualityGrade": @"quality_grade",
-             @"idPlease": @"id_please",
+             @"timeObserved": @"time_observed_at",
+             @"timeCreated": @"created_at",
              @"identificationsCount": @"identifications_count",
              @"commentsCount": @"comments_count",
              @"mappable": @"mappable",
              @"publicPositionalAccuracy": @"public_positional_accuracy",
+             @"privatePositionalAccuracy": @"private_positional_accuracy",
              @"coordinatesObscuredToUser": @"obscured",
              @"placeGuess": @"place_guess",
              @"user": @"user",
-             @"observationPhotos": @"photos",
+             @"observationPhotos": @"observation_photos",
              @"comments": @"comments",
              @"identifications": @"identifications",
              @"faves": @"faves",
+             @"projectObservations": @"project_observations",
              @"taxon": @"taxon",
+             @"dataQuality": @"quality_grade",
+             @"uuid": @"uuid",
+             @"captive": @"captive",
+             @"geoprivacy": @"geoprivacy",
+             @"ownersIdentificationFromVision": @"owners_identification_from_vision",
+             @"observationFieldValues": @"ofvs",
              };
+}
+
++ (NSValueTransformer *)dataQualityJSONTransformer {
+    NSDictionary *dataQualityMappings = @{
+        @"casual": @(ObsDataQualityCasual),
+        @"needs_id": @(ObsDataQualityNeedsID),
+        @"research": @(ObsDataQualityResearch),
+    };
+    
+    return [NSValueTransformer mtl_valueMappingTransformerWithDictionary:dataQualityMappings];
+}
+
++ (NSValueTransformer *)timeObservedJSONTransformer {
+    static NSDateFormatter *_dateFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        _dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        _dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
+    });
+
+    return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
+        return [_dateFormatter dateFromString:dateString];
+    }];
+}
+
++ (NSValueTransformer *)timeCreatedJSONTransformer {
+    static NSDateFormatter *_dateFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        _dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        _dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
+    });
+
+    return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
+        return [_dateFormatter dateFromString:dateString];
+    }];
 }
 
 + (NSValueTransformer *)observationPhotosJSONTransformer {
@@ -58,6 +105,14 @@
 	return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreFave.class];
 }
 
++ (NSValueTransformer *)projectObservationsJSONTransformer {
+    return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreProjectObservation.class];
+}
+
++ (NSValueTransformer *)observationFieldValuesJSONTransformer {
+    return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreObsFieldValue.class];
+}
+
 + (NSValueTransformer *)taxonJSONTransformer {
 	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreTaxon.class];
 }
@@ -66,38 +121,38 @@
 	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreUser.class];
 }
 
-+ (NSValueTransformer *)observedOnJSONTransformer {
-	static NSDateFormatter *_dateFormatter = nil;
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		_dateFormatter = [[NSDateFormatter alloc] init];
-		_dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
-		_dateFormatter.dateFormat = @"yyyy-MM-dd";
-	});
-
-    return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
-        return [_dateFormatter dateFromString:dateString];
++ (NSValueTransformer *)publicLocationJSONTransformer {
+    return [MTLValueTransformer transformerWithBlock:^id(NSString *locationCoordinateString) {
+        NSArray *c = [locationCoordinateString componentsSeparatedByString:@","];
+        if (c.count == 2) {
+            CLLocationDegrees latitude = [((NSString *)c[0]) doubleValue];
+            CLLocationDegrees longitude = [((NSString *)c[1]) doubleValue];
+            CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(latitude, longitude);
+            return [NSValue valueWithMKCoordinate:coords];
+        } else {
+            NSValue *val = [NSValue valueWithMKCoordinate:kCLLocationCoordinate2DInvalid];
+            return val;
+        }
     }];
 }
 
-+ (NSValueTransformer *)locationJSONTransformer {
++ (NSValueTransformer *)privateLocationJSONTransformer {
     return [MTLValueTransformer transformerWithBlock:^id(NSString *locationCoordinateString) {
-    	NSArray *c = [locationCoordinateString componentsSeparatedByString:@","];
-    	if (c.count == 2) {
-    		CLLocationDegrees latitude = [((NSString *)c[0]) floatValue];
-    		CLLocationDegrees longitude = [((NSString *)c[1]) floatValue];
-    		CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(latitude, longitude);
-    		return [NSValue valueWithMKCoordinate:coords];
-    	} else {
-    		return nil;
-    	}
+        NSArray *c = [locationCoordinateString componentsSeparatedByString:@","];
+        if (c.count == 2) {
+            CLLocationDegrees latitude = [((NSString *)c[0]) doubleValue];
+            CLLocationDegrees longitude = [((NSString *)c[1]) doubleValue];
+            CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(latitude, longitude);
+            return [NSValue valueWithMKCoordinate:coords];
+        } else {
+            NSValue *val = [NSValue valueWithMKCoordinate:kCLLocationCoordinate2DInvalid];
+            return val;
+        }
     }];
 }
 
 - (void)setNilValueForKey:(NSString *)key {
-    if ([key isEqualToString:@"idPlease"]) {
-        self.idPlease = NO;
-    } else if ([key isEqualToString:@"identificationsCount"]) {
+    if ([key isEqualToString:@"identificationsCount"]) {
         self.identificationsCount = 0;
     } else if ([key isEqualToString:@"commentsCount"]) {
         self.commentsCount = 0;
@@ -107,11 +162,34 @@
         self.coordinatesObscuredToUser = NO;
     } else if ([key isEqualToString:@"publicPositionalAccuracy"]) {
         self.publicPositionalAccuracy = 0;
-    } else if ([key isEqualToString:@"location"]) {
-    	self.location = CLLocationCoordinate2DMake(-19999.0,-19999.0);
-    	// do nothing?
+    } else if ([key isEqualToString:@"privatePositionalAccuracy"]) {
+        self.privatePositionalAccuracy = 0;
+    } else if ([key isEqualToString:@"publicLocation"]) {
+        self.publicLocation = kCLLocationCoordinate2DInvalid;
+    } else if ([key isEqualToString:@"privateLocation"]) {
+        self.privateLocation = kCLLocationCoordinate2DInvalid;
+    } else if ([key isEqualToString:@"captive"]) {
+        self.captive = NO;
+    } else if ([key isEqualToString:@"ownersIdentificationFromVision"]) {
+        self.ownersIdentificationFromVision = NO;
     } else {
         [super setNilValueForKey:key];
+    }
+}
+
+- (CLLocationCoordinate2D)location {
+    if (CLLocationCoordinate2DIsValid(self.privateLocation)) {
+        return self.privateLocation;
+    } else {
+        return self.publicLocation;
+    }
+}
+
+- (CLLocationAccuracy)positionalAccuracy {
+    if (self.privatePositionalAccuracy != 0) {
+        return self.privatePositionalAccuracy;
+    } else {
+        return self.publicPositionalAccuracy;
     }
 }
 
@@ -136,10 +214,6 @@
 
 #pragma mark - ObservationVisualization
 
-- (BOOL)isCaptive {
-	return self.captive;
-}
-
 - (NSString *)iconicTaxonName {
     return self.taxon.iconicTaxonName;
 }
@@ -156,16 +230,9 @@
 	return self.user.userIcon;
 }
 
-- (CLLocationDegrees)privateLatitude {
-    return 0;
-}
-
-- (CLLocationDegrees)privateLongitude {
-    return 0;
-}
-
-- (CLLocationAccuracy)privatePositionalAccuracy {
-    return 0;
+- (NSArray *)sortedProjectObservations {
+    NSSortDescriptor *titleSort = [NSSortDescriptor sortDescriptorWithKey:@"project.title" ascending:YES];
+    return [self.projectObservations sortedArrayUsingDescriptors:@[ titleSort ]];
 }
 
 - (NSArray *)sortedFaves {
@@ -173,34 +240,29 @@
         // newest first
         return [obj2.faveDate compare:obj1.faveDate];
     }];
-    return @[];
 }
 
 - (NSArray *)sortedActivity {
     NSArray *activity = [self.comments arrayByAddingObjectsFromArray:self.identifications];
-    
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"createdAt" ascending:YES];
     NSArray *sortedActivity = [activity sortedArrayUsingDescriptors:@[ sortDescriptor ]];
-    /*
-    NSArray *sortedActivity = [activity sortedArrayUsingComparator:^NSComparisonResult(id <ActivityVisualization> obj1, id  <ActivityVisualization> obj2) {
-        NSDate *obj1Date = [obj1 createdAt];
-        NSDate *obj2Date = [obj2 createdAt];
-        NSLog(@"comparing %@ with %@", obj1Date, obj2Date);
-        return [obj1Date compare:obj2Date];
-    }];
-     */
-    
     return sortedActivity;
 }
 
-- (ObsDataQuality)dataQuality {
-    if ([self.qualityGrade isEqualToString:@"research"]) {
-        return ObsDataQualityResearch;
-    } else if ([self.qualityGrade isEqualToString:@"needs_id"]) {
-        return ObsDataQualityNeedsID;
-    } else {
-        // must be casual?
-        return ObsDataQualityCasual;
+- (NSString *)qualityGrade {
+    switch (self.dataQuality) {
+        case ObsDataQualityResearch:
+            return @"research";
+            break;
+        case ObsDataQualityNeedsID:
+            return @"needs_id";
+            break;
+        case ObsDataQualityCasual:
+            return @"casual";
+            break;
+        default:
+            return @"";
+            break;
     }
 }
 
@@ -227,20 +289,11 @@
 }
 
 - (NSString *)sortable {
-    return [NSString stringWithFormat:@"%f", self.timeObservedAt.timeIntervalSinceNow];
-}
-
-- (NSString *)uuid {
-    // TODO: fetch uuid
-    return  [[[NSUUID alloc] init] UUIDString];
+    return [NSString stringWithFormat:@"%f", self.timeObserved.timeIntervalSinceNow];
 }
 
 - (NSInteger)taxonRecordID {
 	return self.taxon.taxonId;
-}
-
-- (NSSet *)observationFieldValues {
-    return [NSSet set];
 }
 
 - (BOOL)captive {
@@ -255,20 +308,8 @@
     return @"";
 }
 
-- (NSSet *)projectObservations {
-    return [NSSet set];
-}
-
 - (NSArray *)sortedObservationPhotos {
     return self.observationPhotos;
-}
-
-- (CLLocationAccuracy)positionalAccuracy {
-    return self.publicPositionalAccuracy;
-}
-
-- (CLLocationCoordinate2D)coordinate {
-	return self.location;
 }
 
 - (CLLocationDegrees)latitude {
@@ -318,13 +359,20 @@
 	if (CLLocationCoordinate2DIsValid(self.location)) {
 		return self.location;
 	} else {
-		// invalid location
-		return CLLocationCoordinate2DMake(-19999.0,-19999.0);
+        return kCLLocationCoordinate2DInvalid;
 	}
 }
 
 - (CLLocationDistance)visiblePositionalAccuracy {
 	return self.publicPositionalAccuracy;
+}
+
+- (NSInteger)activityCount {
+    if (self.taxon) {
+        return MAX(0, self.sortedActivity.count - 1);
+    } else {
+        return MAX(0, self.sortedActivity.count);
+    }
 }
 
 

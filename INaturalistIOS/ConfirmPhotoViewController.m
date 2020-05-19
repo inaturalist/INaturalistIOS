@@ -6,27 +6,21 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
+@import Photos;
+
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <CoreLocation/CoreLocation.h>
 #import <BlocksKit/BlocksKit.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <FontAwesomeKit/FAKFontAwesome.h>
-#import <Photos/Photos.h>
 #import <M13ProgressSuite/M13ProgressViewPie.h>
 
 #import "ConfirmPhotoViewController.h"
-#import "Taxon.h"
-#import "TaxonPhoto.h"
 #import "ImageStore.h"
-#import "Observation.h"
-#import "ObservationPhoto.h"
 #import "MultiImageView.h"
 #import "TaxaSearchViewController.h"
 #import "UIColor+ExploreColors.h"
-#import "Observation.h"
 #import "Analytics.h"
-#import "Project.h"
-#import "ProjectObservation.h"
 #import "ObsEditV2ViewController.h"
 #import "UIColor+INaturalist.h"
 #import "INaturalistAppDelegate.h"
@@ -34,20 +28,18 @@
 #import "UIImage+INaturalist.h"
 #import "NSData+INaturalist.h"
 #import "UIViewController+INaturalist.h"
+#import "ExploreObservationRealm.h"
 
 #define CHICLETWIDTH 100.0f
 #define CHICLETHEIGHT 98.0f
 #define CHICLETPADDING 2.0
 
 @interface ConfirmPhotoViewController () {
-    PHPhotoLibrary *phLib;
     UIButton *retake, *confirm;
 }
-@property NSArray *iconicTaxa;
 @property NSMutableArray *downloadedImages;
 @property (copy) CLLocation *obsLocation;
 @property (copy) NSDate *obsDate;
-@property CLLocationManager *locationManager;
 @end
 
 @implementation ConfirmPhotoViewController
@@ -56,11 +48,7 @@
     [super viewDidLoad];
     
     self.view.backgroundColor = [UIColor blackColor];
-    
-    // fetch location to insert into image exif when we save it
-    self.locationManager = [[CLLocationManager alloc] init];
-    [self.locationManager startUpdatingLocation];
-    
+        
     self.downloadedImages = [NSMutableArray array];
     
     if (!self.confirmFollowUpAction) {
@@ -69,86 +57,79 @@
             __strong typeof(weakSelf) strongSelf = weakSelf;
             
             // go straight to making the observation
-            Observation *o = [Observation object];
-            o.localCreatedAt = [NSDate date];
-            o.localUpdatedAt = [NSDate date];
+            ExploreObservationRealm *o = [[ExploreObservationRealm alloc] init];
+            o.uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
+            o.timeCreated = [NSDate date];
+            o.timeSynced = nil;
+            o.timeUpdatedLocally = [NSDate date];
             
             if (strongSelf.obsLocation) {
-                o.latitude = @(strongSelf.obsLocation.coordinate.latitude);
-                o.longitude = @(strongSelf.obsLocation.coordinate.longitude);
-                o.positionalAccuracy = @(strongSelf.obsLocation.horizontalAccuracy);
+                o.privateLatitude = strongSelf.obsLocation.coordinate.latitude;
+                o.privateLongitude = strongSelf.obsLocation.coordinate.longitude;
+                o.privatePositionalAccuracy = strongSelf.obsLocation.horizontalAccuracy;
             }
             
             if (strongSelf.obsDate) {
-                o.observedOn = strongSelf.obsDate;
-                o.localObservedOn = o.observedOn;
-                o.observedOnString = [Observation.jsDateFormatter stringFromDate:o.localObservedOn];
+                o.timeObserved = strongSelf.obsDate;
             }
             
             if (weakSelf.taxon) {
                 o.taxon = weakSelf.taxon;
-                o.speciesGuess = weakSelf.taxon.defaultName ?: weakSelf.taxon.name;
-            }
-            
-            if (weakSelf.project) {
-                ProjectObservation *po = [ProjectObservation object];
-                po.observation = o;
-                po.project = weakSelf.project;
+                o.speciesGuess = weakSelf.taxon.commonName ?: weakSelf.taxon.scientificName;
             }
             
             NSInteger idx = 0;
             for (UIImage *image in confirmedImages) {
-                ObservationPhoto *op = [ObservationPhoto object];
-                op.position = @(idx);
-                [op setObservation:o];
-                [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
+                ExploreObservationPhotoRealm *op = [[ExploreObservationPhotoRealm alloc] init];
+                op.uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
+                op.timeCreated = [NSDate date];
+                op.timeSynced = nil;
+                op.timeUpdatedLocally = [NSDate date];
+                op.position = idx;
+                op.photoKey = [[ImageStore sharedImageStore] createKey];
                 
                 NSError *saveError = nil;
                 BOOL saved = [[ImageStore sharedImageStore] storeImage:image
                                                                 forKey:op.photoKey
                                                                  error:&saveError];
+                
+                NSString *saveFailedTitle = NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg");
+                NSString *saveFailedMsg = NSLocalizedString(@"Unknown error", @"Message body when we don't know the error");
                 if (saveError) {
-                    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg")
-                                                message:saveError.localizedDescription
-                                               delegate:nil
-                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                      otherButtonTitles:nil] show];
-                    [o destroy];
-                    [op destroy];
-                    return;
-                } else if (!saved) {
-                    [[[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg")
-                                                message:NSLocalizedString(@"Unknown error", @"Message body when we don't know the error")
-                                               delegate:nil
-                                      cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                                      otherButtonTitles:nil] show];
-                    [o destroy];
-                    [op destroy];
-                    return;
+                    saveFailedTitle = saveError.localizedDescription;
+                    saveFailedMsg = saveError.localizedRecoverySuggestion;
                 }
                 
-                op.localCreatedAt = [NSDate date];
-                op.localUpdatedAt = [NSDate date];
-
+                if (!saved) {
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveFailedTitle
+                                                                                   message:saveFailedMsg
+                                                                            preferredStyle:UIAlertControllerStyleAlert];
+                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                              style:UIAlertActionStyleDefault
+                                                            handler:nil]];
+                    [weakSelf presentViewController:alert animated:YES completion:nil];
+                    
+                    return;
+                } else {
+                    // TODO: localUpdatedAt in obs photos in realm
+                    // op.localUpdatedAt = [NSDate date];
+                    
+                    [o.observationPhotos addObject:op];
+                }
+                
                 idx++;
             }
             
             ObsEditV2ViewController *editObs = [[ObsEditV2ViewController alloc] initWithNibName:nil bundle:nil];
-            editObs.observation = o;
+            editObs.standaloneObservation = o;
             editObs.shouldContinueUpdatingLocation = strongSelf.shouldContinueUpdatingLocation;
             editObs.isMakingNewObservation = YES;
-            
-            // for sizzle
-            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-            [strongSelf.navigationController setDelegate:appDelegate];
-            
+                        
             [strongSelf.navigationController setNavigationBarHidden:NO animated:YES];
             [strongSelf.navigationController pushViewController:editObs animated:YES];
         };
     }
-    
-    phLib = [PHPhotoLibrary sharedPhotoLibrary];
-    
+        
     self.multiImageView = ({
         MultiImageView *iv = [[MultiImageView alloc] initWithFrame:CGRectZero];
         iv.translatesAutoresizingMaskIntoConstraints = NO;
@@ -295,21 +276,18 @@
 }
 
 - (void)moveOnToSaveNewObservation {
-    if ([self isSelectingFromLibrary]) {
-        if (self.photoTakenLocation) {
-            self.obsLocation = self.photoTakenLocation;
+    // prefer to set the date/location to that of the first photo chosen
+    for (PHAsset *asset in self.assets.reverseObjectEnumerator) {
+        if (asset.creationDate) {
+            self.obsDate = asset.creationDate;
         }
-        if (self.photoTakenDate) {
-            self.obsDate = self.photoTakenDate;
+        if (asset.location) {
+            self.obsLocation = asset.location;
         }
-    } else {
-        self.obsLocation = self.locationManager.location;
-        self.obsDate = [NSDate date];
     }
     
-    
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.confirmFollowUpAction(self.downloadedImages ?: @[ self.image ]);
+        self.confirmFollowUpAction(self.downloadedImages);
     });
 }
 
@@ -320,64 +298,7 @@
     confirm.hidden = YES;
     retake.hidden = YES;
     
-    if (self.isSelectingFromLibrary) {
-        // can proceed directly to followup
-        [self moveOnToSaveNewObservation];
-    } else {
-        // we need to save to the Photos library
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        hud.labelText = NSLocalizedString(@"Saving new photo...", @"status while saving your image");
-        hud.removeFromSuperViewOnHide = YES;
-        hud.dimBackground = YES;
-        
-        // build the metadata dictionary, with GPS if available
-        NSMutableDictionary *mutableMetadata = [self.metadata mutableCopy];
-        if (self.locationManager && self.locationManager.location) {
-            // update the provided GPSDictionary with values from the location manager
-            NSMutableDictionary *gpsDictionary = [[mutableMetadata objectForKey:(NSString *)kCGImagePropertyGPSDictionary] mutableCopy];
-            if (!gpsDictionary) {
-                gpsDictionary = [NSMutableDictionary dictionary];
-            }
-            [gpsDictionary setValuesForKeysWithDictionary:[self.locationManager.location inat_GPSDictionary]];
-            mutableMetadata[(NSString *)kCGImagePropertyGPSDictionary] = gpsDictionary;
-        }
-        
-        // convert the UIImage into an NSData object, with the metadata included
-        // including GPS if we added it in the previous step
-        NSData *imageData = [self.image inat_JPEGDataRepresentationWithMetadata:[NSDictionary dictionaryWithDictionary:mutableMetadata]];
-        
-        [phLib performChanges:^{
-            PHAssetCreationRequest *request = [PHAssetCreationRequest creationRequestForAsset];
-            [request addResourceWithType:PHAssetResourceTypePhoto data:imageData options:nil];
-            
-            // this updates the iOS photos database but not EXIF
-            if (self.locationManager) {
-                request.location = self.locationManager.location;
-            }
-            request.creationDate = [NSDate date];
-        } completionHandler:^(BOOL success, NSError * _Nullable error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-                
-                if (error) {
-                    [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error saving image: %@",
-                                                        error.localizedDescription]];
-                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error Saving Image", @"image save error title")
-                                                                                   message:error.localizedDescription
-                                                                            preferredStyle:UIAlertControllerStyleAlert];
-                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                              style:UIAlertActionStyleCancel
-                                                            handler:nil]];
-                    [self presentViewController:alert animated:YES completion:nil];
-                } else {
-                    if (success) {
-                        [self moveOnToSaveNewObservation];
-                    }
-                }
-            });
-
-        }];
-    }
+    [self moveOnToSaveNewObservation];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -391,6 +312,55 @@
         [self.downloadedImages addObject:self.image];
         [self configureNextButton];
     }
+    
+    if (self.assets) {
+        self.multiImageView.imageCount = self.assets.count;
+        
+        [self.assets enumerateObjectsUsingBlock:^(PHAsset * _Nonnull asset, NSUInteger idx, BOOL * _Nonnull stop) {
+            // fetch the asset, updating the progress bar
+            // put the image in the accompanying imageview
+            UIImageView *imageView = self.multiImageView.imageViews[idx];
+            M13ProgressView *progressView = self.multiImageView.progressViews[idx];
+            UIImageView *alertView = self.multiImageView.alertViews[idx];
+            
+            PHImageManager *manager = [PHImageManager defaultManager];
+            
+            PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+            options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+            options.synchronous = NO;
+            options.networkAccessAllowed = YES;
+            options.progressHandler = ^(double progress, NSError * _Nullable error, BOOL * _Nonnull stop, NSDictionary * _Nullable info) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    progressView.hidden = NO;
+                    [progressView setProgress:progress animated:YES];
+                });
+            };
+
+            [manager requestImageForAsset:asset
+                               targetSize:CGSizeMake(asset.pixelWidth, asset.pixelHeight)
+                              contentMode:PHImageContentModeAspectFill
+                                  options:options
+                            resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                
+                if ([info valueForKey:PHImageErrorKey] != nil) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        alertView.hidden = NO;
+                        progressView.hidden = YES;
+                    });
+                } else if (![[info valueForKey:PHImageResultIsDegradedKey] boolValue]) {
+                    // we are not degraded
+                    [self.downloadedImages addObject:result];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        progressView.hidden = YES;
+                        alertView.hidden = YES;
+                        imageView.image = result;
+                        [self configureNextButton];
+                    });
+                }
+            }];
+        }];
+        
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -402,7 +372,7 @@
 }
 
 - (void)configureNextButton {
-    if (self.image) {
+    if (self.downloadedImages.count == self.assets.count) {
         confirm.enabled = YES;
     } else {
         confirm.enabled = NO;

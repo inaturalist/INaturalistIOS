@@ -7,9 +7,8 @@
 //
 
 @import MapKit;
-
-#import <FontAwesomeKit/FAKIonIcons.h>
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+@import FontAwesomeKit;
+@import UIColor_HTMLColors;
 
 #import "ObsDetailInfoViewModel.h"
 #import "Observation.h"
@@ -22,6 +21,7 @@
 #import "FAKINaturalist.h"
 #import "Analytics.h"
 #import "UIImage+MapAnnotations.h"
+#import "iNaturalist-Swift.h"
 
 @interface ObsDetailInfoViewModel () <MKMapViewDelegate>
 @end
@@ -151,30 +151,16 @@
             ObsDetailNotesCell *cell = [tableView dequeueReusableCellWithIdentifier:@"notes"];
             cell.notesTextView.dataDetectorTypes = UIDataDetectorTypeLink;
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            
-            // disable user interaction on this textview to make the cell
-            // fully selectable (only for kAnalyticsEventObservationDescriptionTapped)
-            cell.notesTextView.userInteractionEnabled = NO;
-            
-            NSError *err;
-            NSDictionary *opts = @{
-                                  NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType,
-                                  NSCharacterEncodingDocumentAttribute: @(NSUTF8StringEncoding),
-                                  };
-            NSMutableAttributedString *notes = [[[NSAttributedString alloc] initWithData:[self.observation.inatDescription dataUsingEncoding:NSUTF8StringEncoding]
-                                                                                 options:opts
-                                                                      documentAttributes:nil
-                                                                                   error:&err] mutableCopy];
-            
-            // reading this as HTML gives it a with-serif font
-            [notes addAttribute:NSFontAttributeName
-                          value:[UIFont systemFontOfSize:14]
-                          range:NSMakeRange(0, notes.length)];
-            if (notes) {
-                cell.notesTextView.attributedText = notes;
-            } else {
-                cell.notesTextView.text = @"";
-            }
+                        
+            NSString *path = [[NSBundle mainBundle] pathForResource:@"bootstrap" ofType:@"min.css"];
+            NSError *error = nil;
+            NSString *css = [NSString stringWithContentsOfFile:path
+                                                      encoding:kCFStringEncodingUTF8
+                                                         error:&error];
+            DownWrapper *dw = [[DownWrapper alloc] init];
+            NSAttributedString *attrStr = [dw markdownToAttributedStringWithMarkdownStr:self.observation.inatDescription
+                                                                                    css:css];
+            cell.notesTextView.attributedText = attrStr;
             
             return cell;
         }
@@ -184,25 +170,6 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.dataQuality = self.observation.dataQuality;
         
-        return cell;
-    
-    } else if (indexPath.section == 4) {
-        // projects
-        DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
-        
-        cell.titleLabel.text = NSLocalizedString(@"Projects", nil);
-        FAKIcon *project = [FAKIonIcons iosBriefcaseOutlineIconWithSize:44];
-        [project addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
-        cell.cellImageView.image = [project imageWithSize:CGSizeMake(44, 44)];
-        
-        cell.secondaryLabel.text = [NSString stringWithFormat:@"%ld", (unsigned long)self.observation.projectObservations.count];
-        
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-        if (self.observation.projectObservations.count > 0) {
-            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        } else {
-            cell.accessoryType = UITableViewCellAccessoryNone;
-        }
         return cell;
     }
     
@@ -222,7 +189,6 @@
             return NSLocalizedString(@"Data Quality", @"Header for data quality section of obs detail");
             break;
         case 2:     // notes/map - no header
-        case 4:     // projects - no header
         default:
             return nil;
             break;
@@ -238,10 +204,6 @@
         case 3:
             // data quality
             return 44;
-        case 4:
-            // projects
-            return 34;
-            break;
         case 2:
         default:
             return 0;
@@ -254,7 +216,7 @@
         return [super tableView:tableView heightForFooterInSection:section];
     } else if (section == 3) {
         // data quality
-        if ([self.observation.qualityGrade isEqualToString:@"research"]) {
+        if (self.observation.dataQuality == ObsDataQualityResearch) {
             return CGFLOAT_MIN;
         } else if (!self.observation.inatRecordId) {
             return CGFLOAT_MIN;
@@ -271,7 +233,7 @@
         return [super tableView:tableView viewForFooterInSection:section];
     } else if (section == 3) {
         // data quality
-        if ([self.observation.qualityGrade isEqualToString:@"research"]) {
+        if (self.observation.dataQuality == ObsDataQualityResearch) {
             return nil;
         } else if (!self.observation.inatRecordId) {
             return nil;
@@ -318,8 +280,8 @@
         } else {
             return 1;
         }
-    } else if (section == 3 || section == 4) {
-        // data quality, projects
+    } else if (section == 3) {
+        // data quality
         return 1;
     } else {
         return 0;
@@ -329,12 +291,6 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // notes/map, data quality
     NSInteger numSections = [super numberOfSectionsInTableView:tableView] + 2;
-    
-    if (self.observation.projectObservations.count > 0) {
-        // show projects section
-        numSections++;
-    }
-    
     return numSections;
 }
 
@@ -362,13 +318,6 @@
             if (dataQualityURL) {
                 [[UIApplication sharedApplication] openURL:dataQualityURL];
             }
-        }
-    } else if (indexPath.section == 4) {
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
-        // projects
-        if (self.observation.projectObservations.count > 0) {
-            // show the projects view
-            [self.delegate inat_performSegueWithIdentifier:@"projects" sender:nil];
         }
     }
 }

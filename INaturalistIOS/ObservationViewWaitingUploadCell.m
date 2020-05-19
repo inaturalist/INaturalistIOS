@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
-#import <FontAwesomeKit/FAKIonicons.h>
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
+@import FontAwesomeKit;
+@import UIColor_HTMLColors;
 
 #import "ObservationViewWaitingUploadCell.h"
 #import "UIColor+INaturalist.h"

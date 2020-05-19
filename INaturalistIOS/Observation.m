@@ -22,9 +22,6 @@
 #import "ExploreUpdateRealm.h"
 #import "ExploreDeletedRecord.h"
 
-static RKManagedObjectMapping *defaultMapping = nil;
-static RKObjectMapping *defaultSerializationMapping = nil;
-
 @implementation Observation
 
 @dynamic speciesGuess;
@@ -68,9 +65,8 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 @dynamic favesCount;
 @dynamic ownersIdentificationFromVision;
 
-+ (NSArray *)all
-{
-    return [self objectsWithFetchRequest:self.defaultDescendingSortedFetchRequest];
++ (NSArray *)all {
+    return @[ ];
 }
 
 - (ExploreTaxonRealm *)exploreTaxonRealm {
@@ -80,6 +76,8 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 
 + (Observation *)stub
 {
+    return nil;
+    /*
     NSArray *speciesGuesses = [[NSArray alloc] initWithObjects:
                                @"House Sparrow", 
                                @"Mourning Dove", 
@@ -100,100 +98,7 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     o.positionalAccuracy = [NSNumber numberWithInt:rand() % 500];
     o.inatDescription = @"";
     return o;
-}
-
-+ (RKManagedObjectMapping *)mapping
-{
-    if (!defaultMapping) {
-        defaultMapping = [RKManagedObjectMapping mappingForClass:[Observation class]
-                                            inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]];
-        [defaultMapping mapKeyPathsToAttributes:
-         @"id", @"recordID",
-         @"species_guess", @"speciesGuess",
-         @"description", @"inatDescription",
-         @"created_at_utc", @"createdAt",
-         @"updated_at_utc", @"updatedAt",
-         @"observed_on", @"observedOn",
-         @"observed_on_string", @"observedOnString",
-         @"time_observed_at_utc", @"timeObservedAt",
-         @"place_guess", @"placeGuess",
-         @"latitude", @"latitude",
-         @"longitude", @"longitude",
-         @"positional_accuracy", @"positionalAccuracy",
-         @"private_latitude", @"privateLatitude",
-         @"private_longitude", @"privateLongitude",
-         @"private_positional_accuracy", @"privatePositionalAccuracy",
-         @"taxon_id", @"taxonID",
-         @"iconic_taxon_id", @"iconicTaxonID",
-         @"iconic_taxon_name", @"iconicTaxonName",
-		 @"comments_count", @"commentsCount",
-		 @"identifications_count", @"identificationsCount",
-         @"cached_votes_total", @"favesCount",
-		 @"last_activity_at_utc", @"lastActivityAt",
-         @"uuid", @"uuid",
-         @"id_please", @"idPlease",
-         @"geoprivacy", @"geoprivacy",
-         @"user_id", @"userID",
-         @"quality_grade", @"qualityGrade",
-         @"captive_flag", @"captive",
-         @"owners_identification_from_vision", @"ownersIdentificationFromVision",
-         nil];
-        [defaultMapping mapKeyPath:@"taxon" 
-                    toRelationship:@"taxon" 
-                       withMapping:[Taxon mapping]
-                         serialize:NO];
-		[defaultMapping mapKeyPath:@"comments"
-                    toRelationship:@"comments"
-                       withMapping:[Comment mapping]
-                         serialize:NO];
-		[defaultMapping mapKeyPath:@"identifications"
-                    toRelationship:@"identifications"
-                       withMapping:[Identification mapping]
-                         serialize:NO];
-        [defaultMapping mapKeyPath:@"observation_field_values"
-                    toRelationship:@"observationFieldValues"
-                       withMapping:[ObservationFieldValue mapping]
-                         serialize:NO];
-		[defaultMapping mapKeyPath:@"observation_photos"
-                    toRelationship:@"observationPhotos"
-                       withMapping:[ObservationPhoto mapping]
-                         serialize:NO];
-        [defaultMapping mapKeyPath:@"project_observations"
-                    toRelationship:@"projectObservations"
-                       withMapping:[ProjectObservation mapping]
-                         serialize:NO];
-        [defaultMapping mapKeyPath:@"faves"
-                    toRelationship:@"faves"
-                       withMapping:[Fave mapping]
-                         serialize:NO];
-        defaultMapping.primaryKeyAttribute = @"recordID";
-    }
-    return defaultMapping;
-}
-
-+ (RKObjectMapping *)serializationMapping
-{
-    if (!defaultSerializationMapping) {
-        defaultSerializationMapping = [[RKManagedObjectMapping mappingForClass:[Observation class]
-                                                          inManagedObjectStore:[RKManagedObjectStore defaultObjectStore]] inverseMapping];
-        [defaultSerializationMapping mapKeyPathsToAttributes:
-         @"speciesGuess", @"observation[species_guess]",
-         @"inatDescription", @"observation[description]",
-         @"observedOnString", @"observation[observed_on_string]",
-         @"placeGuess", @"observation[place_guess]",
-         @"latitude", @"observation[latitude]",
-         @"longitude", @"observation[longitude]",
-         @"positionalAccuracy", @"observation[positional_accuracy]",
-         @"taxonID", @"observation[taxon_id]",
-         @"iconicTaxonID", @"observation[iconic_taxon_id]",
-         @"idPlease", @"observation[id_please]",
-         @"geoprivacy", @"observation[geoprivacy]",
-         @"uuid", @"observation[uuid]",
-         @"captive", @"observation[captive_flag]",
-         @"ownersIdentificationFromVision", @"observation[owners_identification_from_vision]",
-         nil];
-    }
-    return defaultSerializationMapping;
+     */
 }
 
 - (void)awakeFromInsert {
@@ -355,22 +260,6 @@ static RKObjectMapping *defaultSerializationMapping = nil;
     NSSortDescriptor *sd1 = [[NSSortDescriptor alloc] initWithKey:@"sortable" ascending:YES];
     [request setSortDescriptors:[NSArray arrayWithObjects:sd1, nil]];
     return request;
-}
-
-- (Observation *)prevObservation
-{
-    NSFetchRequest *request = [Observation defaultDescendingSortedFetchRequest];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"sortable < %@", self.sortable]];
-    Observation *prev = [Observation objectWithFetchRequest:request];
-    return prev;
-}
-
-- (Observation *)nextObservation
-{
-    NSFetchRequest *request = [Observation defaultAscendingSortedFetchRequest];
-    [request setPredicate:[NSPredicate predicateWithFormat:@"sortable > %@", self.sortable]];
-    Observation *next = [Observation objectWithFetchRequest:request];
-    return next;
 }
 
 - (void)willSave
@@ -570,13 +459,11 @@ static RKObjectMapping *defaultSerializationMapping = nil;
 }
 
 - (NSString *)username {
-    User *user = [[User objectsWithPredicate:[NSPredicate predicateWithFormat:@"recordID == %d", self.userID.integerValue]] firstObject];
-    return user.login;
+    return nil;
 }
 
 - (NSURL *)userThumbUrl {
-    User *user = [[User objectsWithPredicate:[NSPredicate predicateWithFormat:@"recordID == %d", self.userID.integerValue]] firstObject];
-    return [NSURL URLWithString:user.userIconURL];
+    return nil;
 }
 
 - (BOOL)isEditable {

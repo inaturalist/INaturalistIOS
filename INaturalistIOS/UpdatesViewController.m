@@ -6,11 +6,11 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <AFNetworking/UIImageView+AFNetworking.h>
-#import <YLMoment/YLMoment.h>
-#import <SVPullToRefresh/SVPullToRefresh.h>
-#import <UIColor-HTMLColors/UIColor+HTMLColors.h>
-#import <RestKit/RestKit.h>
+@import AFNetworking;
+@import YLMoment;
+@import SVPullToRefresh;
+@import UIColor_HTMLColors;
+@import Realm;
 
 #import "ExploreUpdateRealm.h"
 #import "UpdatesViewController.h"
@@ -18,7 +18,6 @@
 #import "LoginController.h"
 #import "ObservationAPI.h"
 #import "Analytics.h"
-#import "Observation.h"
 #import "UpdatesItemCell.h"
 #import "ObservationPhoto.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
@@ -26,6 +25,7 @@
 #import "ObsDetailV2ViewController.h"
 #import "UIColor+INaturalist.h"
 #import "INatUITabBarController.h"
+#import "ExploreObservationRealm.h"
 
 @interface UpdatesViewController ()
 @property RLMResults *updates;
@@ -123,17 +123,17 @@
     [[RLMRealm defaultRealm] transactionWithBlock:^{
         [self.updates setValue:@(YES) forKey:@"viewed"];
     }];
-        
+    
     for (NSNumber *obsId in obsIds) {
         [[self observationApi] seenUpdatesForObservationId:obsId.integerValue handler:^(NSArray *results, NSInteger count, NSError *error) {
-            // update hasUnviewedActivity flag
-            NSPredicate *obsPredicate = [NSPredicate predicateWithFormat:@"recordID == %@", obsId];
-            Observation *obs = [[Observation objectsWithPredicate:obsPredicate] firstObject];
-            if (obs) {
-                obs.hasUnviewedActivity = [NSNumber numberWithBool:NO];
-                NSError *error = nil;
-                [[[RKObjectManager sharedManager] objectStore] save:&error];
-            }
+            
+            RLMResults *updates = [ExploreUpdateRealm updatesForObservationId:obsId.integerValue];
+
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            [realm beginWriteTransaction];
+            [updates setValue:@(YES) forKey:@"viewed"];
+            [updates setValue:@(YES) forKey:@"viewedLocally"];
+            [realm commitWriteTransaction];
         }];
     }
 }
@@ -182,7 +182,9 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     ExploreUpdateRealm *eur = [self.updates objectAtIndex:indexPath.item];
-    [self performSegueWithIdentifier:@"obsDetail" sender:eur];
+    if (eur) {
+        [self performSegueWithIdentifier:@"obsDetail" sender:eur];
+    }
 }
 
 #pragma mark - Table view data source
@@ -207,11 +209,11 @@
     
     ExploreUpdateRealm *eur = [self.updates objectAtIndex:indexPath.item];
     
-    NSPredicate *obsPredicate = [NSPredicate predicateWithFormat:@"recordID == %d", eur.resourceId];
-    Observation *o = [Observation objectWithPredicate:obsPredicate];
+    NSPredicate *obsPredicate = [NSPredicate predicateWithFormat:@"observationId == %d", eur.resourceId];
+    ExploreObservationRealm *o = [[ExploreObservationRealm objectsWithPredicate:obsPredicate] firstObject];
     if (!o) {
         // fetch this observation, reload the cell
-        [[self observationApi] railsObservationWithId:eur.resourceId handler:^(NSArray *results, NSInteger count, NSError *error) {
+        [[self observationApi] observationWithId:eur.resourceId handler:^(NSArray *results, NSInteger count, NSError *error) {
             if (error) {
                 // just get rid of this update
                 RLMRealm *realm = [RLMRealm defaultRealm];
@@ -219,6 +221,15 @@
                 [realm deleteObjects:@[ eur ]];
                 [realm commitWriteTransaction];
             } else {
+                // stash in realm
+                RLMRealm *realm = [RLMRealm defaultRealm];
+                for (ExploreObservation *eo in results) {
+                    NSDictionary *value = [ExploreObservationRealm valueForMantleModel:eo];
+                    [realm beginWriteTransaction];
+                    [ExploreObservationRealm createOrUpdateInRealm:realm withValue:value];
+                    [realm commitWriteTransaction];
+                }
+                // reload this tableview
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [tableView reloadRowsAtIndexPaths:@[ indexPath ]
                                      withRowAnimation:UITableViewRowAnimationFade];
@@ -226,8 +237,9 @@
             }
         }];
     }
+    
     if (o.observationPhotos.count > 0) {
-        ObservationPhoto *op = [o.sortedObservationPhotos firstObject];
+        id <INatPhoto> op = [o.sortedObservationPhotos firstObject];
         [cell.observationImageView setImageWithURL:op.squarePhotoUrl];
     } else {
         NSString *iconicTaxonName = o.iconicTaxonName;
@@ -281,8 +293,9 @@
         ObsDetailV2ViewController *vc = (ObsDetailV2ViewController *)segue.destinationViewController;
         vc.shouldShowActivityOnLoad = YES;
         
-        NSPredicate *obsPredicate = [NSPredicate predicateWithFormat:@"recordID == %d", eur.resourceId];
-        Observation *o = [Observation objectWithPredicate:obsPredicate];
+        NSPredicate *obsPredicate = [NSPredicate predicateWithFormat:@"observationId == %ld", (long)eur.resourceId];
+        ExploreObservationRealm *o = [[ExploreObservationRealm objectsWithPredicate:obsPredicate] firstObject];
+        
         if (o) {
             vc.observation = o;
         } else {

@@ -6,7 +6,7 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import "UIColor-HTMLColors/UIColor+HTMLColors.h"
+@import UIColor_HTMLColors;
 
 #import "ProjectObservationHeaderView.h"
 

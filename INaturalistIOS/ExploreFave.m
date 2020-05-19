@@ -15,12 +15,28 @@
 	return @{
 		@"faver": @"user",
 		@"faveDate": @"created_at",
+        @"faveId": @"faveId",
 	};
 }
 
 + (NSValueTransformer *)faverJSONTransformer {
 	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreUser.class];
 }
+
++ (NSValueTransformer *)faveDateJSONTransformer {
+    static NSDateFormatter *_dateFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        _dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        _dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
+    });
+
+    return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
+        return [_dateFormatter dateFromString:dateString];
+    }];
+}
+
 
 #pragma mark - Fave Visualization
 

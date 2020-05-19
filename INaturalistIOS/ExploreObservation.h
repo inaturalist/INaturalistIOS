@@ -23,24 +23,35 @@
 @property (nonatomic, copy) NSString *speciesGuess;
 @property (nonatomic, copy) NSString *inatDescription;
 @property (nonatomic, copy) NSArray *observationPhotos;
-@property (nonatomic, copy) NSDate *timeObservedAt;
-@property (nonatomic, copy) NSDate *observedOn;
-@property (nonatomic, copy) NSString *qualityGrade;
-@property (nonatomic, assign) BOOL idPlease;
+@property (nonatomic, copy) NSDate *timeObserved;
+@property (nonatomic, copy) NSDate *timeCreated;
+@property (nonatomic, assign) ObsDataQuality dataQuality;
 @property (nonatomic, assign) NSInteger identificationsCount;
 @property (nonatomic, assign) NSInteger commentsCount;
 @property (nonatomic, copy) NSArray *identifications;
 @property (nonatomic, copy) NSArray *comments;
 @property (nonatomic, copy) NSArray *faves;
+@property (nonatomic, copy) NSArray *projectObservations;
+@property (nonatomic, copy) NSArray *observationFieldValues;
 @property (nonatomic, assign) BOOL mappable;
-@property (nonatomic, assign) NSInteger publicPositionalAccuracy;
-@property (nonatomic, assign) BOOL coordinatesObscuredToUser;
 @property (nonatomic, copy) NSString *placeGuess;
-@property (nonatomic, assign) CLLocationCoordinate2D location;
+@property (nonatomic, assign, getter=isCaptive) BOOL captive;
+@property (nonatomic, copy) NSString *geoprivacy;
+@property (nonatomic, assign) BOOL ownersIdentificationFromVision;
+
+@property (nonatomic, assign) CLLocationCoordinate2D publicLocation;
+@property (nonatomic, assign) CLLocationCoordinate2D privateLocation;
+@property (readonly) CLLocationCoordinate2D location;
+
+@property (nonatomic, assign) CLLocationAccuracy publicPositionalAccuracy;
+@property (nonatomic, assign) CLLocationAccuracy privatePositionalAccuracy;
+@property (readonly) CLLocationAccuracy positionalAccuracy;
+
+@property (nonatomic, assign) BOOL coordinatesObscuredToUser;
+
 @property (readonly) CLLocationDegrees latitude;
 @property (readonly) CLLocationDegrees longitude;
-
-@property (nonatomic, readonly) BOOL hasTime;
+@property (nonatomic, copy) NSString *uuid;
 
 @property (nonatomic, readonly) BOOL commentsAndIdentificationsSynchronized;
 

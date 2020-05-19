@@ -23,7 +23,7 @@
     
     if (self.etpr) {
         __weak typeof(self)weakSelf = self;
-        [self.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:self.etpr.mediumUrl]
+        [self.imageView setImageWithURLRequest:self.etpr.mediumPhotoUrl
                               placeholderImage:self.backupImage
                                        success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
                                            weakSelf.blurredImageView.image = image;
