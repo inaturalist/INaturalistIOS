@@ -4,3 +4,5 @@
 
 #import "ExploreTaxonRealm.h"
 #import "ConfirmPhotoViewController.h"
+#import "ExploreObservationRealm.h"
+#import "ObsEditV2ViewController.h"
