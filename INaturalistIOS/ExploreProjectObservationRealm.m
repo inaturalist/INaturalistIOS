@@ -29,6 +29,11 @@
     if (mtlModel.project) {
         value[@"project"] = [ExploreProjectRealm valueForMantleModel:mtlModel.project];
     }
+    
+    // synced from node to mantle now
+    value[@"timeSynced"] = [NSDate date];
+    // no local changes yet
+    value[@"timeUpdatedLocally"] = nil;
         
     return [NSDictionary dictionaryWithDictionary:value];
 }
@@ -47,6 +52,9 @@
     if ([cdModel valueForKey:@"project"]) {
         value[@"project"] = [ExploreProjectRealm valueForCoreDataModel:[cdModel valueForKey:@"project"]];
     }
+    
+    value[@"timeSynced"] = [cdModel valueForKey:@"syncedAt"];
+    value[@"timeUpdatedLocally"] = [cdModel valueForKey:@"localUpdatedAt"];
     
     return [NSDictionary dictionaryWithDictionary:value];
 }
