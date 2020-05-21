@@ -42,13 +42,55 @@ class INatTabBarController: UITabBarController {
         Gallery.Config.Camera.imageLimit = 4;
     }
     
-    func triggerNewObservationFlow() {        
-        self.observingTaxon = nil;
-        let gallery = GalleryController();
-        gallery.delegate = self;
-        let galleryNav = UINavigationController(rootViewController: gallery);
-        galleryNav.navigationBar.isHidden = true;
-        present(galleryNav, animated: true, completion: nil);
+    func triggerNewObservationFlow() {
+        
+        let sheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let takePhotoTitle = NSLocalizedString("Take Picture", comment: "Title for take photo button in new obs flow")
+        sheet.addAction(UIAlertAction(title: takePhotoTitle, style: .default, handler: { _ in
+            let gallery = GalleryController()
+            Gallery.Config.tabsToShow = [.cameraTab]
+            Gallery.Config.initialTab = .cameraTab;
+            gallery.delegate = self
+            let galleryNav = UINavigationController(rootViewController: gallery);
+            galleryNav.navigationBar.isHidden = true;
+            self.present(galleryNav, animated: true, completion: nil);
+        }))
+        
+        let photoLibraryTitle = NSLocalizedString("Photo Library", comment: "Title for photo library button in new obs flow")
+        sheet.addAction(UIAlertAction(title: photoLibraryTitle, style: .default, handler: { _ in
+            let gallery = GalleryController()
+            Gallery.Config.tabsToShow = [.imageTab]
+            Gallery.Config.initialTab = .imageTab;
+            gallery.delegate = self
+            let galleryNav = UINavigationController(rootViewController: gallery);
+            galleryNav.navigationBar.isHidden = true;
+            self.present(galleryNav, animated: true, completion: nil);
+        }))
+        
+        let noPhotoTitle = NSLocalizedString("No Photo", comment: "Title for photo library button in new obs flow")
+        sheet.addAction(UIAlertAction(title: noPhotoTitle, style: .default, handler: { _ in
+            let o = ExploreObservationRealm()
+            o.uuid = UUID().uuidString.lowercased()
+            o.timeCreated = Date()
+            o.timeUpdatedLocally = Date()
+            // photoless observation defaults to now
+            o.timeObserved = Date()
+            
+            let confirmVC = ObsEditV2ViewController(nibName: nil, bundle: nil)
+            confirmVC.standaloneObservation = o
+            confirmVC.shouldContinueUpdatingLocation = true
+            confirmVC.isMakingNewObservation = true
+            
+            let nav = UINavigationController(rootViewController: confirmVC)
+            self.present(nav, animated: true, completion: nil)
+            // TODO: taxon
+        }))
+        
+        let cancelTitle = NSLocalizedString("Cancel", comment: "")
+        sheet.addAction(UIAlertAction(title: cancelTitle, style: .cancel, handler: nil))
+        
+        present(sheet, animated: true, completion: nil)
     }
     
     @objc func triggerNewObservationFlowForTaxon(_ taxon: ExploreTaxonRealm?) {
@@ -76,6 +118,12 @@ extension INatTabBarController: UITabBarControllerDelegate {
     }
 }
 
+extension INatTabBarController: UIViewControllerTransitioningDelegate {
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        return HalfSizePresentationController(presentedViewController: presented, presenting: presenting)
+    }
+}
+
 extension INatTabBarController: GalleryControllerDelegate {
     func galleryController(_ controller: GalleryController, didSelectImages images: [Image]) {
         let confirm = ConfirmPhotoViewController()
@@ -99,4 +147,10 @@ extension INatTabBarController: GalleryControllerDelegate {
         controller.dismiss(animated: true, completion: nil);
     }
 
+}
+
+class HalfSizePresentationController: UIPresentationController {
+    override var frameOfPresentedViewInContainerView: CGRect {
+        return CGRect(x: 0, y: containerView!.bounds.height/2, width: containerView!.bounds.width, height: containerView!.bounds.height/2)
+    }
 }
