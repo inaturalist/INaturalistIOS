@@ -37,9 +37,11 @@
         value[@"obsField"] = [ExploreObsFieldRealm valueForMantleModel:mtlModel.obsField];
     }
     
+    // synced from node to mantle now
     value[@"timeSynced"] = [NSDate date];
+    // no local changes yet
     value[@"timeUpdatedLocally"] = nil;
-    
+
     return [NSDictionary dictionaryWithDictionary:value];
 }
 
