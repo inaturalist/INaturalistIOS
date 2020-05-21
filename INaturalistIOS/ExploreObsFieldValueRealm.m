@@ -64,8 +64,8 @@
         value[@"obsField"] = [ExploreObsFieldRealm valueForCoreDataModel:[cdModel valueForKey:@"observationField"]];
     }
     
-    value[@"timeSynced"] = cdModel[@"syncedAt"];
-    value[@"timeUpdatedLocally"] = cdModel[@"localUpdatedAt"];
+    value[@"timeSynced"] = [cdModel valueForKey:@"syncedAt"];
+    value[@"timeUpdatedLocally"] = [cdModel valueForKey:@"localUpdatedAt"];
     
     return [NSDictionary dictionaryWithDictionary:value];
 }
