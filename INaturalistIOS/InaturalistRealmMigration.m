@@ -47,48 +47,65 @@
     return moc;
 }
 
-- (void)migrateTaxaToRealm {
-    // migrate old core data taxon objects to realm
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Taxon"];
-    
-    NSError *error = nil;
-    NSArray *results = [[self coreDataMOC] executeFetchRequest:request error:&error];
-    RLMRealm *realm = [RLMRealm defaultRealm];
-    for (id cdTaxon in results) {
-        
-        NSDictionary *value = [ExploreTaxonRealm valueForCoreDataModel:cdTaxon];
-        [realm beginWriteTransaction];
-        [ExploreTaxonRealm createOrUpdateInRealm:realm
-                                       withValue:value];
-        [realm commitWriteTransaction];
-    }
-    
-    if (!results) {
-        NSLog(@"Error fetching Taxon objects: %@\n%@", [error localizedDescription], [error userInfo]);
-        // not the end of the world if we can't migrate a core data taxon
-    }
+- (void)migrateObservationsToRealmProgress:(INatRealmMigrationProgressHandler)progressBlock finished:(INatRealmMigrationCompletionHandler)done {
+    // migrate old observations to realm
+    // do this on a background thread so we can update the UI
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Observation"];
+        NSError *error = nil;
+        NSArray *results = [[self coreDataMOC] executeFetchRequest:request error:&error];
+        if (error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                done(NO, error);
+            });
+        } else {
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            CGFloat totalObservations = (CGFloat)results.count;
+            NSInteger processedObservations = 0;
+            for (id cdObservation in results) {
+                // update the progress UI
+                processedObservations += 1;
+                CGFloat progress = (CGFloat)processedObservations / totalObservations;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    progressBlock(progress);
+                });
+                
+                NSDictionary *value = [ExploreObservationRealm valueForCoreDataModel:cdObservation];
+                [realm beginWriteTransaction];
+                [ExploreObservationRealm createOrUpdateInRealm:realm
+                                                     withValue:value];
+                [realm commitWriteTransaction];
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                done(YES, nil);
+            });
+        }
+    });
 }
 
-- (void)migrateObservationsToRealm {
+- (void)migrateObservationsToRealmFinished:(INatRealmMigrationCompletionHandler)done {
     // migrate old observations to realm
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Observation"];
-    
     NSError *error = nil;
     NSArray *results = [[self coreDataMOC] executeFetchRequest:request error:&error];
-    RLMRealm *realm = [RLMRealm defaultRealm];
-    for (id cdObservation in results) {
-        NSDictionary *value = [ExploreObservationRealm valueForCoreDataModel:cdObservation];
-        [realm beginWriteTransaction];
-        [ExploreObservationRealm createOrUpdateInRealm:realm
-                                             withValue:value];
-        [realm commitWriteTransaction];
-    }
-    
-    if (!results) {
-        if (error) {
-            NSLog(@"Error fetching Observation objects: %@\n%@", [error localizedDescription], [error userInfo]);
-            // TOOD: what should we do here?
+    if (error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            done(NO, error);
+        });
+    } else {
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        for (id cdObservation in results) {
+            NSDictionary *value = [ExploreObservationRealm valueForCoreDataModel:cdObservation];
+            [realm beginWriteTransaction];
+            [ExploreObservationRealm createOrUpdateInRealm:realm
+                                                 withValue:value];
+            [realm commitWriteTransaction];
         }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            done(YES, nil);
+        });
     }
 }
 

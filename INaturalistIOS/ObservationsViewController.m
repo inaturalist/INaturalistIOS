@@ -1287,7 +1287,6 @@
     static NSString *FirstSignInKey = @"firstSignInSeen";
     static NSString *SeenV262Key = @"seenVersion262";
     static NSString *SeenV27Key = @"seenVersion27";
-    static NSString *MigratedObservationsToRealmKey = @"migratedObservationsToRealmKey";
     
     // re-using 'firstSignInSeen' BOOL, which used to be set during the initial launch
     // when the user saw the login prompt for the first time.
@@ -1333,6 +1332,7 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     
+    static NSString *MigratedObservationsToRealmKey = @"migratedObservationsToRealmKey";
     if (![[NSUserDefaults standardUserDefaults] boolForKey:MigratedObservationsToRealmKey]) {
         /*
          do this every launch while testing
@@ -1341,10 +1341,40 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
          */
         
-        //[[self migrationAssistant] migrateTaxaToRealm];
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tabBarController.view animated:YES];
+        hud.removeFromSuperViewOnHide = YES;
+        hud.dimBackground = YES;
+        hud.labelText = NSLocalizedString(@"Updating database...", nil);
+        hud.mode = MBProgressHUDModeAnnularDeterminate;
         
-        //[[self migrationAssistant] migrateObservationsToRealm];
+        __weak typeof(self) weakSelf = self;
+        [[self migrationAssistant] migrateObservationsToRealmProgress:^(CGFloat progress) {
+            hud.progress = progress;
+        } finished:^(BOOL success, NSError *error) {
+            // hide the hud regardless of success
+            [MBProgressHUD hideAllHUDsForView:weakSelf.tabBarController.view animated:YES];
+            if (!success) {
+                NSString *migrationFailedTitle = NSLocalizedString(@"Migration Failed", @"Title for alert when db migration fails.");
+                NSString *migrationFailedMsg = NSLocalizedString(@"Unknown error", nil);
+                if (error) {
+                    if (error.localizedRecoverySuggestion) {
+                        migrationFailedMsg = error.localizedRecoverySuggestion;
+                    } else {
+                        migrationFailedMsg = error.localizedDescription;
+                    }
+                }
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:migrationFailedTitle
+                                                                               message:migrationFailedMsg
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil]];
+                [weakSelf presentViewController:alert animated:YES completion:nil];
+            }
+        }];
     }
+
+    
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(userSignedIn)
