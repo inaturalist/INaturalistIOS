@@ -1344,15 +1344,19 @@
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tabBarController.view animated:YES];
         hud.removeFromSuperViewOnHide = YES;
         hud.dimBackground = YES;
-        hud.labelText = NSLocalizedString(@"Updating database...", nil);
+        hud.labelText = NSLocalizedString(@"Updating database...", @"Title for progress view when migrating db");
         hud.mode = MBProgressHUDModeAnnularDeterminate;
         
         __weak typeof(self) weakSelf = self;
+        // migration work happens on background
         [[self migrationAssistant] migrateObservationsToRealmProgress:^(CGFloat progress) {
+            // callback comes in on main thread
             hud.progress = progress;
         } finished:^(BOOL success, NSError *error) {
+            // callback comes in on main thread
             // hide the hud regardless of success
             [MBProgressHUD hideAllHUDsForView:weakSelf.tabBarController.view animated:YES];
+            // not much we can do, but at least notify the user
             if (!success) {
                 NSString *migrationFailedTitle = NSLocalizedString(@"Migration Failed", @"Title for alert when db migration fails.");
                 NSString *migrationFailedMsg = NSLocalizedString(@"Unknown error", nil);
