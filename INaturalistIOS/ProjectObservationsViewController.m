@@ -709,31 +709,46 @@ static NSString *LongTextFieldIdentifier = @"longtext";
             [realm commitWriteTransaction];
         }
     } else {
-        // delete the project observation
         ExploreProjectObservationRealm *poToDelete = nil;
         for (ExploreProjectObservationRealm *po in self.observation.projectObservations) {
             if (po.project.projectId == project.projectId) {
                 poToDelete = po;
             }
         }
-        
-        RLMRealm *realm = [RLMRealm defaultRealm];
+                
+        // delete the project observation
         if (poToDelete) {
+            NSInteger indexOfPo = [self.observation.projectObservations indexOfObject:poToDelete];
+
+            // delete it from the observation
+            RLMRealm *realm = [RLMRealm defaultRealm];
             [realm beginWriteTransaction];
-            NSInteger indexToDelete = [self.observation.projectObservations indexOfObject:poToDelete];
-            [self.observation.projectObservations removeObjectAtIndex:indexToDelete];
-            [realm deleteObject:poToDelete];
+            [self.observation.projectObservations removeObjectAtIndex:indexOfPo];
             [realm commitWriteTransaction];
+            
+            if ([poToDelete timeSynced]) {
+                [ExploreProjectObservationRealm syncedDelete:poToDelete];
+            } else {
+                [ExploreProjectObservationRealm deleteWithoutSync:poToDelete];
+            }
         }
         
-        // delete the associated ofvs
-        for (ExploreProjectObsFieldRealm *pof in project.sortedProjectObservationFields) {
+        // do the ofvs for this project's pofs
+        for (ExploreProjectObsFieldRealm *pof in project.projectObsFields) {
             ExploreObsFieldValueRealm *ofvToDelete = [self.observation valueForObsField:pof.obsField];
-            NSInteger indexToDelete = [self.observation.observationFieldValues indexOfObject:ofvToDelete];
+            NSInteger indexOfOfv = [self.observation.observationFieldValues indexOfObject:ofvToDelete];
+            
+            // delete it from the observation
+            RLMRealm *realm = [RLMRealm defaultRealm];
             [realm beginWriteTransaction];
-            [self.observation.observationFieldValues removeObjectAtIndex:indexToDelete];
-            [realm deleteObject:ofvToDelete];
+            [self.observation.observationFieldValues removeObjectAtIndex:indexOfOfv];
             [realm commitWriteTransaction];
+            
+            if ([ofvToDelete timeSynced]) {
+                [ExploreObsFieldValueRealm syncedDelete:ofvToDelete];
+            } else {
+                [ExploreObsFieldValueRealm deleteWithoutSync:ofvToDelete];
+            }
         }
     }
     
