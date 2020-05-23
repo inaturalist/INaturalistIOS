@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "ExploreDeletedRecord.h"
+
 @protocol Uploadable <NSObject>
 
 - (NSArray *)childrenNeedingUpload;
@@ -21,6 +23,14 @@
 - (void)setRecordId:(NSInteger)newRecordId;
 - (NSInteger)recordId;
 
+// uploadable stuff needs to be deletable, too
+- (ExploreDeletedRecord *)deletedRecordForModel;
+// would be nice to be generic here
++ (void)syncedDelete:(id <Uploadable>)model;
++ (void)deleteWithoutSync:(id <Uploadable>)model;
+
+
 @optional
 - (NSString *)fileUploadParameter;
+- (void)deleteFileSystemAssociations;
 @end

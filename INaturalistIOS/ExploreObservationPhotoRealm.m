@@ -147,5 +147,46 @@
     };
 }
 
++ (void)syncedDelete:(ExploreObservationPhotoRealm *)model {
+    // delete the associated photo in the imagestore
+    [model deleteFileSystemAssociations];
+
+    // create a deleted record for the observation
+    ExploreDeletedRecord *dr = [model deletedRecordForModel];
+    
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    // insert the deleted obs
+    [realm addOrUpdateObject:dr];
+    // delete the model object
+    [realm deleteObject:model];
+    [realm commitWriteTransaction];
+}
+
++ (void)deleteWithoutSync:(ExploreObservationPhotoRealm *)model {
+    // delete the associated photo in the imagestore
+    [model deleteFileSystemAssociations];
+    
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    // delete the model object
+    [realm deleteObject:model];
+    [realm commitWriteTransaction];
+}
+
+- (ExploreDeletedRecord *)deletedRecordForModel {
+    ExploreDeletedRecord *dr = [[ExploreDeletedRecord alloc] initWithRecordId:self.recordId
+                                                                    modelName:@"ObservationPhoto"];
+    dr.endpointName = [self.class endpointName];
+    dr.synced = NO;
+    return dr;
+}
+
+- (void)deleteFileSystemAssociations {
+    // would be nice if realm had a pre-delete hook like core data's
+    // -preapreForDeletion
+    [[ImageStore sharedImageStore] destroy:self.photoKey];
+}
+
 
 @end

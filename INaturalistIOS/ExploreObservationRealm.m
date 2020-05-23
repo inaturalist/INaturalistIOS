@@ -7,6 +7,7 @@
 //
 
 #import "ExploreObservationRealm.h"
+#import "ExploreDeletedRecord.h"
 
 @implementation ExploreObservationRealm
 
@@ -577,5 +578,72 @@
         ofv.timeSynced = syncDate;
     }
 }
+
++ (void)syncedDelete:(ExploreObservationRealm *)observation {
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    
+    // cached filesystem images
+    for (ExploreObservationPhotoRealm *photo in observation.observationPhotos) {
+        [photo deleteFileSystemAssociations];
+    }
+    
+    // the server will cascade delete these for us
+    // so just cascade the local stuff
+    [realm deleteObjects:observation.observationPhotos];
+    [realm deleteObjects:observation.projectObservations];
+    [realm deleteObjects:observation.observationFieldValues];
+    [realm deleteObjects:observation.comments];
+    [realm deleteObjects:observation.identifications];
+    
+    // create a deleted record for the observation
+    ExploreDeletedRecord *dr = [observation deletedRecordForModel];
+    [realm addOrUpdateObject:dr];
+    
+    // delete the observation
+    [realm deleteObject:observation];
+    [realm commitWriteTransaction];
+}
+
++ (void)deleteWithoutSync:(ExploreObservationRealm *)observation {
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    
+    // cascade
+    [realm deleteObjects:observation.observationPhotos];
+    [realm deleteObjects:observation.projectObservations];
+    [realm deleteObjects:observation.observationFieldValues];
+    [realm deleteObjects:observation.comments];
+    [realm deleteObjects:observation.identifications];
+    
+    // delete the model object
+    [realm deleteObject:observation];
+    [realm commitWriteTransaction];
+}
+
+- (ExploreDeletedRecord *)deletedRecordForModel {
+    ExploreDeletedRecord *dr = [[ExploreDeletedRecord alloc] initWithRecordId:self.recordId
+                                                                    modelName:@"Observation"];
+    dr.endpointName = [self.class endpointName];
+    dr.synced = NO;
+    return dr;
+}
+
+
+- (instancetype)standaloneCopyWithPhotos {
+    ExploreObservationRealm *copy = [[ExploreObservationRealm alloc] initWithValue:self];
+    
+    // remove photo relations, since they were shallowly copied
+    [copy.observationPhotos removeAllObjects];
+    
+    // re-add photo relations, with shallow copies
+    for (ExploreObservationPhotoRealm *photo in self.observationPhotos) {
+        ExploreObservationPhotoRealm *photoCopy = [[ExploreObservationPhotoRealm alloc] initWithValue:photo];
+        [copy.observationPhotos addObject:photoCopy];
+    }
+    
+    return copy;
+}
+
 
 @end

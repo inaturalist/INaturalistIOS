@@ -60,7 +60,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 @property (readonly) CLLocationManager *locationManager;
 @property UITapGestureRecognizer *tapDismissTextViewGesture;
 @property CLGeocoder *geoCoder;
-@property NSMutableArray *deletedRecordsToSave;
+@property NSMutableArray *recordsToDelete;
 
 @end
 
@@ -171,10 +171,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     }
     
     if (!self.standaloneObservation && self.persistedObservation) {
-        self.standaloneObservation = [[ExploreObservationRealm alloc] initWithValue:self.persistedObservation];
+        // standalone copy of the observation, with copies of the photos
+        // so that we can delete or re-order photos as needed.
+        self.standaloneObservation = [self.persistedObservation standaloneCopyWithPhotos];
     }
     
-    self.deletedRecordsToSave = [NSMutableArray array];
+    self.recordsToDelete = [NSMutableArray array];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -235,18 +237,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         [tab dismissViewControllerAnimated:YES completion:^{
             [nav popToRootViewControllerAnimated:NO];
             
-            // create deleted record
-            ExploreDeletedRecord *edr = [[ExploreDeletedRecord alloc] initWithRecordId:self.persistedObservation.recordId
-                                                                             modelName:@"Observation"];
-            edr.synced = NO;
-            edr.endpointName = [ExploreObservationRealm endpointName];
-
-            // delete locally
-            [realm beginWriteTransaction];
-            [realm deleteObject:self.persistedObservation];
-            // stash the deleted record, too
-            [realm addOrUpdateObject:edr];
-            [realm commitWriteTransaction];
+            // if it's ever been synced
+            if (self.persistedObservation.timeSynced) {
+                [ExploreObservationRealm syncedDelete:self.persistedObservation];
+            } else {
+                [ExploreObservationRealm deleteWithoutSync:self.persistedObservation];
+            }
             
             // trigger the delete to happen on the server
             [self triggerAutoUpload];
@@ -337,15 +333,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)photoScrollView:(PhotoScrollViewCell *)psv deletedIndex:(NSInteger)idx {
-    ExploreObservationPhotoRealm *eopr = [[self.standaloneObservation observationPhotos] objectAtIndex:idx];
-    
-    // create a deleted record, stash it, don't sync it yet
-    ExploreDeletedRecord *edr = [[ExploreDeletedRecord alloc] initWithRecordId:eopr.observationPhotoId
-                                                                     modelName:@"ObservationPhoto"];
-    edr.endpointName = [ExploreObservationPhotoRealm.class endpointName];
-    edr.synced = NO;
-
-    [self.deletedRecordsToSave addObject:edr];
+    ExploreObservationPhotoRealm *photoToDelete = [[self.standaloneObservation observationPhotos] objectAtIndex:idx];
+    // stash it for deletion when we save
+    [self.recordsToDelete addObject:photoToDelete];
     
     [self.standaloneObservation.observationPhotos removeObjectAtIndex:idx];
     
@@ -845,10 +835,17 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         [realm addOrUpdateObject:self.standaloneObservation];
         [realm commitWriteTransaction];
         
-        // put all our deleted records into realm
-        [realm beginWriteTransaction];
-        [realm addOrUpdateObjects:self.deletedRecordsToSave];
-        [realm commitWriteTransaction];
+        // time to make deleted records for our stuff
+        // would be nice to make this an inherited or protocol method
+        for (id <Uploadable> recordToDelete in self.recordsToDelete) {
+            if ([recordToDelete timeSynced]) {
+                // has been synced, need to do a synced delete
+                [[recordToDelete class] syncedDelete:recordToDelete];
+            } else {
+                // hasn't been synced, can be safely locally deleted
+                [[recordToDelete class] deleteWithoutSync:recordToDelete];
+            }
+        }
     }
     
     [self triggerAutoUpload];

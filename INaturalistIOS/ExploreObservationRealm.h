@@ -80,4 +80,6 @@
 
 - (void)setSyncedForSelfAndChildrenAt:(NSDate *)syncDate;
 
+- (instancetype)standaloneCopyWithPhotos;
+
 @end
