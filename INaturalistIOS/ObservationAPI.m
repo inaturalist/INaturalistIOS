@@ -74,4 +74,18 @@
     [self delete:path handler:done];
 }
 
+- (void)fetchDeletedObservationsSinceDate:(NSDate *)sinceDate handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - fetch deleted observations via node"];
+    
+    static NSDateFormatter *dateFormatter;
+    if (!dateFormatter) {
+        dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.dateFormat = @"yyyy-MM-dd";
+    }
+    NSString *sinceDateString = [dateFormatter stringFromDate:sinceDate];
+    
+    NSString *path = [NSString stringWithFormat:@"observations/deleted?since=%@", sinceDateString];
+    [self fetch:path classMapping:NSNumber.class handler:done];
+}
+
 @end

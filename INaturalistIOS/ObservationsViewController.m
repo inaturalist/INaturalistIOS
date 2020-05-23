@@ -549,28 +549,30 @@
 - (void)checkForDeleted {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     if ([appDelegate.loginController isLoggedIn]) {
-        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
-
         NSDate *lastSyncDate = [[NSUserDefaults standardUserDefaults] objectForKey:INatLastDeletedSync];
         if (!lastSyncDate) {
-            // have never synced; use unix timestamp date of 0
-            lastSyncDate = [NSDate dateWithTimeIntervalSince1970:0];
+            lastSyncDate = [NSDate distantPast];
         } else {
             // move last sync date back by a day
             [lastSyncDate dateByAddingTimeInterval:-(60*60*24)];
         }
         
-        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-        NSLocale *enUSPOSIXLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-        [dateFormatter setLocale:enUSPOSIXLocale];
-        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
-        
-        NSString *iso8601String = [dateFormatter stringFromDate:lastSyncDate];
-        
-        [[Analytics sharedClient] debugLog:@"Network - Get My Recent Observations"];
-        
-        // TODO: fetch deleted stuff in from node
-        //[[RKClient sharedClient] get:[NSString stringWithFormat:@"/observations/%@?updated_since=%@", me.login, iso8601String] delegate:self];
+        [[self obsApi] fetchDeletedObservationsSinceDate:lastSyncDate handler:^(NSArray *results, NSInteger count, NSError *error) {
+            // do nothing if we error here
+            if (!error) {
+                for (NSNumber *obsIdToDelete in results) {
+                    RLMResults *observationsToDelete = [ExploreObservationRealm objectsWhere:@"observationId == %@", obsIdToDelete];
+                    for (ExploreObservationRealm *o in observationsToDelete) {
+                        // already gone on the server, so just delete locally
+                        [ExploreObservationRealm deleteWithoutSync:o];
+                    }
+                }
+                
+                
+                [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:INatLastDeletedSync];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            }
+        }];
     }
 }
 
