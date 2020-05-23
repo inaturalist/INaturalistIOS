@@ -323,7 +323,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     // update sortable
     for (int i = 1; i < self.standaloneObservation.sortedObservationPhotos.count; i++) {
         ExploreObservationPhotoRealm *op = self.standaloneObservation.sortedObservationPhotos[i];
-        op.position = @(i);
+        op.position = i;
         op.timeUpdatedLocally = [NSDate date];
     }
     
@@ -352,7 +352,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     // update sortable
     for (int i = 0; i < self.standaloneObservation.sortedObservationPhotos.count; i++) {
         ExploreObservationPhotoRealm *op = self.standaloneObservation.sortedObservationPhotos[i];
-        op.position = @(i);
+        op.position = i;
         op.timeUpdatedLocally = [NSDate date];
     }
     
