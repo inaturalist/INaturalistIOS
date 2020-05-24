@@ -118,12 +118,6 @@ extension INatTabBarController: UITabBarControllerDelegate {
     }
 }
 
-extension INatTabBarController: UIViewControllerTransitioningDelegate {
-    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-        return HalfSizePresentationController(presentedViewController: presented, presenting: presenting)
-    }
-}
-
 extension INatTabBarController: GalleryControllerDelegate {
     func galleryController(_ controller: GalleryController, didSelectImages images: [Image]) {
         let confirm = ConfirmPhotoViewController()
@@ -145,12 +139,5 @@ extension INatTabBarController: GalleryControllerDelegate {
     
     func galleryControllerDidCancel(_ controller: GalleryController) {
         controller.dismiss(animated: true, completion: nil);
-    }
-
-}
-
-class HalfSizePresentationController: UIPresentationController {
-    override var frameOfPresentedViewInContainerView: CGRect {
-        return CGRect(x: 0, y: containerView!.bounds.height/2, width: containerView!.bounds.width, height: containerView!.bounds.height/2)
     }
 }
