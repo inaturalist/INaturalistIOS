@@ -1289,6 +1289,7 @@
     static NSString *FirstSignInKey = @"firstSignInSeen";
     static NSString *SeenV262Key = @"seenVersion262";
     static NSString *SeenV27Key = @"seenVersion27";
+    static NSString *RanMigrationToRealmKey = @"ranMigrationToRealmKey";
     
     // re-using 'firstSignInSeen' BOOL, which used to be set during the initial launch
     // when the user saw the login prompt for the first time.
@@ -1334,14 +1335,13 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     
-    static NSString *MigratedObservationsToRealmKey = @"migratedObservationsToRealmKey";
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:MigratedObservationsToRealmKey]) {
-        /*
-         do this every launch while testing
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:RanMigrationToRealmKey]) {
+        // only try this migration once, even if it fails,
+        // since it's automatic at launch. if there's a problem
+        // there's nothing the user can do about it.
         [[NSUserDefaults standardUserDefaults] setBool:YES
-                                                forKey:MigratedObservationsToRealmKey];
+                                                forKey:RanMigrationToRealmKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
-         */
         
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tabBarController.view animated:YES];
         hud.removeFromSuperViewOnHide = YES;
