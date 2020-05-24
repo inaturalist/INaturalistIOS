@@ -30,13 +30,13 @@ extension GalleryWrapper: GalleryControllerDelegate {
     func galleryController(_ controller: GalleryController, didSelectImages images: [Image]) {
         Image.resolve(images: images) { [unowned self] uiimages in
             // just skip anything we can't resolve
-            self.wrapperDelegate?.didSelect( uiimages.compactMap { $0 })
+            self.wrapperDelegate?.galleryDidSelect( uiimages.compactMap { $0 })
         }
     }
     
     func galleryController(_ controller: GalleryController, didSelectVideo video: Video) {
         // we don't support video
-        wrapperDelegate?.didCancel()
+        wrapperDelegate?.galleryDidCancel()
     }
     
     func galleryController(_ controller: GalleryController, requestLightbox images: [Image]) {
@@ -45,6 +45,6 @@ extension GalleryWrapper: GalleryControllerDelegate {
     }
     
     func galleryControllerDidCancel(_ controller: GalleryController) {
-        wrapperDelegate?.didCancel()
+        wrapperDelegate?.galleryDidCancel()
     }
 }
