@@ -259,6 +259,10 @@
     };
     
     void (^progressBlock)(NSProgress *) = ^(NSProgress * _Nonnull uploadProgress) {
+        // silently do nothing if we can't fetch a UUID for a child
+        // this shouldn't happen but also shouldn't crash the app
+        if (!childUUID) { return; }
+        
         // update the local counter for this particular upload operation
         self.uploadedBytes[childUUID] = @(uploadProgress.completedUnitCount);
         
