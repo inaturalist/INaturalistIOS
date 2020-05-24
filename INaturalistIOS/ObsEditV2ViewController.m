@@ -43,6 +43,7 @@
 #import "CLPlacemark+INat.h"
 #import "ExploreObservationRealm.h"
 #import "ExploreDeletedRecord.h"
+#import "iNaturalist-Swift.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -51,7 +52,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionDelete,
 };
 
-@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, TaxaSearchViewControllerDelegate, CLLocationManagerDelegate> {
+@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, TaxaSearchViewControllerDelegate, CLLocationManagerDelegate, GalleryWrapperDelegate> {
     
     CLLocationManager *_locationManager;
 }
@@ -61,6 +62,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 @property UITapGestureRecognizer *tapDismissTextViewGesture;
 @property CLGeocoder *geoCoder;
 @property NSMutableArray *recordsToDelete;
+@property GalleryWrapper *galleryWrapper;
 
 @end
 
@@ -177,6 +179,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     }
     
     self.recordsToDelete = [NSMutableArray array];
+    self.galleryWrapper = [[GalleryWrapper alloc] init];
+    self.galleryWrapper.wrapperDelegate = self;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -399,209 +403,71 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)photoScrollViewAddPressed:(PhotoScrollViewCell *)psv {
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        [self pushCamera];
-    } else {
-        [self pushLibrary];
-    }
+    UIViewController *gallery = self.galleryWrapper.gallery;
+    [self presentViewController:gallery animated:YES completion:nil];
 }
 
-#pragma mark - PhotoScrollView helpers
+#pragma mark - GalleryWrapperDelegate methods
 
-
-- (void)pushLibrary {
-    // select from photo library
-    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-    picker.delegate = self;
-    picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    
-    //UIViewController *presentedVC = self.presentedViewController;
-    [self presentViewController:picker animated:YES completion:nil];
-}
-
-- (void)pushCamera {
-    UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-    picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-    picker.delegate = self;
-    picker.allowsEditing = NO;
-    picker.showsCameraControls = NO;
-    
-    ObsCameraOverlay *overlay = [[ObsCameraOverlay alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    overlay.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-    
-    picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
-    [overlay configureFlashForMode:picker.cameraFlashMode];
-    
-    [overlay.close bk_addEventHandler:^(id sender) {
-        [self dismissViewControllerAnimated:YES completion:nil];
-    } forControlEvents:UIControlEventTouchUpInside];
-    
-    // hide flash if it's not available for the default camera
-    if (![UIImagePickerController isFlashAvailableForCameraDevice:picker.cameraDevice]) {
-        overlay.flash.hidden = YES;
+- (void)galleryDidSelect:(NSArray<UIImage *> *)images {
+    NSInteger idx = 0;
+    ExploreObservationPhotoRealm *lastOp = [[self.standaloneObservation sortedObservationPhotos] lastObject];
+    if (lastOp) {
+        idx = lastOp.position + 1;
     }
-    
-    [overlay.flash bk_addEventHandler:^(id sender) {
-        if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeAuto) {
-            picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
-        } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn) {
-            picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
-        } else if (picker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff) {
-            picker.cameraFlashMode = UIImagePickerControllerCameraFlashModeAuto;
-        }
-        [overlay configureFlashForMode:picker.cameraFlashMode];
-    } forControlEvents:UIControlEventTouchUpInside];
-    
-    // hide camera selector unless both front and rear cameras are available
-    if (![UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceFront] ||
-        ![UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear]) {
-        overlay.camera.hidden = YES;
-    }
-    
-    [overlay.camera bk_addEventHandler:^(id sender) {
-        if (picker.cameraDevice == UIImagePickerControllerCameraDeviceFront) {
-            picker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
-        } else {
-            picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
-        }
-        // hide flash button if flash isn't available for the chosen camera
-        overlay.flash.hidden = ![UIImagePickerController isFlashAvailableForCameraDevice:picker.cameraDevice];
-    } forControlEvents:UIControlEventTouchUpInside];
-    
-    overlay.noPhoto.hidden = YES;
-    
-    [overlay.shutter bk_addEventHandler:^(id sender) {
-        [picker takePicture];
-    } forControlEvents:UIControlEventTouchUpInside];
-    
-    [overlay.library bk_addEventHandler:^(id sender) {
-        [self pushLibrary];
-    } forControlEvents:UIControlEventTouchUpInside];
-    
-    picker.cameraOverlayView = overlay;
-    
-    UIScreen *screen = [UIScreen mainScreen];
-    CGFloat cameraAspectRatio = 4.0 / 3.0;
-    CGFloat cameraPreviewHeight = screen.nativeBounds.size.width * cameraAspectRatio;
-    CGFloat screenHeight = screen.nativeBounds.size.height;
-    CGFloat transformHeight = (screenHeight-cameraPreviewHeight) / screen.nativeScale / 2.0f;
-    
-    picker.cameraViewTransform = CGAffineTransformMakeTranslation(0, transformHeight);
-    [self presentViewController:picker animated:YES completion:nil];
-}
-
-#pragma mark - UIImagePickerControllerDelegate methods
-
-/*
- TODO: convert obseditVC to gallery VC - can i do that without rewriting this VC in swift?
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    UIImage *originalImage = [info valueForKey:UIImagePickerControllerOriginalImage];
-    if (!originalImage) {
+    for (UIImage *image in images) {
+        ExploreObservationPhotoRealm *op = [ExploreObservationPhotoRealm new];
+        op.position = idx;
+        op.uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
+        [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
         
-        NSString *alertTitle = NSLocalizedString(@"Camera Problem", @"Title for failure to get a photo from photo picker or camera alert");
-        NSString *alertMsg = NSLocalizedString(@"Couldn't load data for the selected photo. Please try again.", @"Please try again message, in an alert view, for when we can't get a photo from the camera/library.");
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
-                                                                       message:alertMsg
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:nil]];
-        [picker presentViewController:alert animated:YES completion:nil];
+        NSError *saveError = nil;
+        BOOL saved = [[ImageStore sharedImageStore] storeImage:image
+                                                        forKey:op.photoKey
+                                                         error:&saveError];
         
-        return;
-    }
-
-    ConfirmPhotoViewController *confirm = [[ConfirmPhotoViewController alloc] initWithNibName:nil bundle:nil];
-    confirm.image = originalImage;
-    confirm.metadata = [info objectForKey:UIImagePickerControllerMediaMetadata];
-    
-    [[Analytics sharedClient] event:kAnalyticsEventObservationAddPhoto
-                     withProperties:@{
-                                      @"Via": [self analyticsVia],
-                                      @"Source": @"Camera",
-                                      @"Count": @(1)
-                                      }];
-    
-    BOOL selectedFromLibrary = NO;
-    if (@available(iOS 11.0, *)) {
-        if ([info valueForKey:UIImagePickerControllerPHAsset]) {
-            selectedFromLibrary = YES;
-        }
-    } else {
-        if ([info valueForKey:UIImagePickerControllerReferenceURL]) {
-            selectedFromLibrary = YES;
-        }
-    }
-    confirm.isSelectingFromLibrary = selectedFromLibrary;
-    
-    // set the follow up action
-    __weak typeof(self)weakSelf = self;
-    confirm.confirmFollowUpAction = ^(NSArray *assets) {
-        __strong typeof(weakSelf)strongSelf = weakSelf;
-        
-        NSInteger idx = 0;
-        ObservationPhoto *lastOp = [[self.observation sortedObservationPhotos] lastObject];
-        if (lastOp) {
-            idx = [[lastOp position] integerValue] + 1;
-        }
-        for (UIImage *image in assets) {
-            ObservationPhoto *op = [ObservationPhoto new];
-            op.position = @(idx);
-            [op setObservation:strongSelf.observation];
-            [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-            
-            NSError *saveError = nil;
-            BOOL saved = [[ImageStore sharedImageStore] storeImage:image
-                                                            forKey:op.photoKey
-                                                             error:&saveError];
-            NSString *saveErrorTitle = NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg");
-            if (saveError) {
-                [op destroy];
-                [self dismissViewControllerAnimated:YES completion:^{
-                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
-                                                                                   message:saveError.localizedDescription
-                                                                            preferredStyle:UIAlertControllerStyleAlert];
-                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                              style:UIAlertActionStyleDefault
-                                                            handler:nil]];
-                    [strongSelf presentViewController:alert animated:YES completion:nil];
-                }];
-                return;
-            } else if (!saved) {
-                [op destroy];
-                [self dismissViewControllerAnimated:YES completion:^{
-                    NSString *unknownErrMsg = NSLocalizedString(@"Unknown error", @"Message body when we don't know the error");
-                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
-                                                                                   message:unknownErrMsg
-                                                                            preferredStyle:UIAlertControllerStyleAlert];
-                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                              style:UIAlertActionStyleDefault
-                                                            handler:nil]];
-                    [strongSelf presentViewController:alert animated:YES completion:nil];
-                }];
-                return;
-            }
-            
-            op.localCreatedAt = [NSDate date];
-            op.localUpdatedAt = [NSDate date];
-            
-            idx++;
+        NSString *saveErrorTitle = NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg");
+        if (saveError) {
+            [self dismissViewControllerAnimated:YES completion:^{
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
+                                                                               message:saveError.localizedDescription
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil]];
+                [self presentViewController:alert animated:YES completion:nil];
+            }];
+            return;
+        } else if (!saved) {
+            [self dismissViewControllerAnimated:YES completion:^{
+                NSString *unknownErrMsg = NSLocalizedString(@"Unknown error", @"Message body when we don't know the error");
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
+                                                                               message:unknownErrMsg
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil]];
+                [self presentViewController:alert animated:YES completion:nil];
+            }];
+            return;
         }
         
-        [strongSelf.tableView reloadData];
-        [strongSelf dismissViewControllerAnimated:YES completion:nil];
-    };
-    
-    [picker pushViewController:confirm animated:YES];
+        op.timeCreated = [NSDate date];
+        op.timeUpdatedLocally = [NSDate date];
+
+        [self.standaloneObservation.observationPhotos addObject:op];
+
+        idx++;
+    }
+
+    [self.tableView reloadData];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    // workaround for a crash in Apple's didHideZoomSlider
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self dismissViewControllerAnimated:YES completion:nil];
-    });
+- (void)galleryDidCancel {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
- */
+
 
 #pragma mark - CLLocationManagerDelegate
 
