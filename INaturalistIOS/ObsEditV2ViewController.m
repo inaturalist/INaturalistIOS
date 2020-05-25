@@ -404,7 +404,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 - (void)photoScrollViewAddPressed:(PhotoScrollViewCell *)psv {
     UIViewController *gallery = self.galleryWrapper.gallery;
-    gallery.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController:gallery animated:YES completion:nil];
 }
 

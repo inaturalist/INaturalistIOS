@@ -45,14 +45,13 @@ class INatTabBarController: UITabBarController {
    
    func showCamera() {
       let gallery = GalleryController()
-      gallery.modalPresentationStyle = .fullScreen
       Gallery.Config.tabsToShow = [.cameraTab]
       Gallery.Config.initialTab = .cameraTab
       gallery.delegate = self
       let galleryNav = UINavigationController(rootViewController: gallery)
       galleryNav.navigationBar.isHidden = true
       
-      // dismiss the sheet, present the camera
+      // dismiss the media picker, present the camera
       self.dismiss(animated: true) {
          self.present(galleryNav, animated: true, completion: nil)
       }
@@ -60,14 +59,13 @@ class INatTabBarController: UITabBarController {
    
    func showCameraRoll() {
       let gallery = GalleryController()
-      gallery.modalPresentationStyle = .fullScreen
       Gallery.Config.tabsToShow = [.imageTab]
       Gallery.Config.initialTab = .imageTab
       gallery.delegate = self
       let galleryNav = UINavigationController(rootViewController: gallery)
       galleryNav.navigationBar.isHidden = true
       
-      // dismiss the sheet, present the photo library
+      // dismiss the media picker, present the photo library
       self.dismiss(animated: true) {
          self.present(galleryNav, animated: true, completion: nil)
       }
@@ -88,15 +86,14 @@ class INatTabBarController: UITabBarController {
       }
 
       let confirmVC = ObsEditV2ViewController(nibName: nil, bundle: nil)
-      confirmVC.modalPresentationStyle = .fullScreen
       confirmVC.standaloneObservation = o
       confirmVC.shouldContinueUpdatingLocation = true
       confirmVC.isMakingNewObservation = true
       
       
       let nav = UINavigationController(rootViewController: confirmVC)
-      
-      // dismiss the sheet, present the edit obs VC
+
+      // dismiss the media picker, present the edit obs VC
       self.dismiss(animated: true) {
          self.present(nav, animated: true, completion: nil)
       }
