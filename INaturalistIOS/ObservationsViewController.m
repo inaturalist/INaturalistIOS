@@ -929,6 +929,8 @@
                 [weakSelf configureHeaderView:self.meHeader forUser:me];
             }
         }];
+    } else {
+        self.navigationItem.title = NSLocalizedString(@"Me", @"Placeholder text for not logged title on me tab.");
     }
 }
 
