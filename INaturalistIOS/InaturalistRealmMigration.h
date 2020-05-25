@@ -15,6 +15,4 @@ typedef void(^INatRealmMigrationProgressHandler)(CGFloat progress);
 
 - (void)migrateObservationsToRealmProgress:(INatRealmMigrationProgressHandler)progress finished:(INatRealmMigrationCompletionHandler)done;
 
-- (void)migrateObservationsToRealmFinished:(INatRealmMigrationCompletionHandler)done;
-
 @end

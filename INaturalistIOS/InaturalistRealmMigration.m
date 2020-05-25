@@ -84,30 +84,4 @@
     });
 }
 
-- (void)migrateObservationsToRealmFinished:(INatRealmMigrationCompletionHandler)done {
-    // migrate old observations to realm
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Observation"];
-    NSError *error = nil;
-    NSArray *results = [[self coreDataMOC] executeFetchRequest:request error:&error];
-    if (error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            done(NO, error);
-        });
-    } else {
-        RLMRealm *realm = [RLMRealm defaultRealm];
-        for (id cdObservation in results) {
-            NSDictionary *value = [ExploreObservationRealm valueForCoreDataModel:cdObservation];
-            [realm beginWriteTransaction];
-            [ExploreObservationRealm createOrUpdateInRealm:realm
-                                                 withValue:value];
-            [realm commitWriteTransaction];
-        }
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            done(YES, nil);
-        });
-    }
-}
-
-
 @end
