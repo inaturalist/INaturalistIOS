@@ -10,11 +10,10 @@
 
 #import "UploadObservationOperation.h"
 #import "ExploreObservationRealm.h"
-#import "ProjectObservation.h"
-#import "Project.h"
-#import "ObservationFieldValue.h"
+#import "ExploreProjectObservationRealm.h"
+#import "ExploreObsFieldValueRealm.h"
 #import "Analytics.h"
-#import "ExploreObservationRealm.h"
+#import "Uploadable.h"
 
 @interface UploadObservationOperation ()
 @property NSInteger totalBytesToUpload;
@@ -79,7 +78,7 @@
     
     // figure out total bytes to upload
     self.totalBytesToUpload = 0;
-    for (INatModel <Uploadable> *child in o.childrenNeedingUpload) {
+    for (id <Uploadable> child in o.childrenNeedingUpload) {
         NSFileManager *fm = [NSFileManager defaultManager];
         if ([child respondsToSelector:@selector(fileUploadParameter)]) {
             NSString *path = [child fileUploadParameter];
@@ -229,11 +228,10 @@
                 }
 
                 RLMRealm *realm = [RLMRealm defaultRealm];
-                if ([localChild isKindOfClass:ProjectObservation.class]) {
+                if ([localChild isKindOfClass:ExploreProjectObservationRealm.class]) {
                     // add project validation error notice
                     ExploreObservationRealm *eor = [ExploreObservationRealm objectForPrimaryKey:self.rootObjectUUID];
-                    // TODO: update for realm po
-                    ProjectObservation *po = (ProjectObservation *)child;
+                    ExploreProjectObservationRealm *po = [ExploreProjectObservationRealm objectForPrimaryKey:childUUID];
                     NSString *baseErrMsg = NSLocalizedString(@"Couldn't be added to project %@. %@",
                                                              @"Project validation error. first string is project title, second is the specific error");
                     [realm beginWriteTransaction];
@@ -242,7 +240,7 @@
                     [realm commitWriteTransaction];
                     
                     // fall through to failing and reporting the error
-                } else if ([localChild isKindOfClass:ObservationFieldValue.class]) {
+                } else if ([localChild isKindOfClass:ExploreObsFieldValueRealm.class]) {
                     // add observation field validation error notice
                     ExploreObservationRealm *eor = [ExploreObservationRealm objectForPrimaryKey:self.rootObjectUUID];
                     NSString *baseErrMsg = NSLocalizedString(@"Observation Field Validation error: %@",
