@@ -29,9 +29,9 @@
     
     self.loginButton.tintColor = [UIColor inatTint];
     self.loginButton.backgroundColor = [UIColor whiteColor];
+    self.loginButton.layer.cornerRadius = 44.0f/2.0f;
+    self.loginButton.clipsToBounds = YES;
     self.loginButton.titleLabel.font = [UIFont boldSystemFontOfSize:self.loginButton.titleLabel.font.pointSize];
-    
-    self.loginButton.layer.cornerRadius = 17.0f;
 
     [self.loginButton setTitle:NSLocalizedString(@"Log In", @"Title for button that allows users to log in to their existing iNat account")
                       forState:UIControlStateNormal];
@@ -39,9 +39,9 @@
     
     self.signupButton.tintColor = [UIColor inatTint];
     self.signupButton.backgroundColor = [UIColor whiteColor];
+    self.signupButton.layer.cornerRadius = 44.0f/2.0f;
+    self.signupButton.clipsToBounds = YES;
     self.signupButton.titleLabel.font = [UIFont boldSystemFontOfSize:self.signupButton.titleLabel.font.pointSize];
-    
-    self.signupButton.layer.cornerRadius = 17.0f;
     
     [self.signupButton setTitle:NSLocalizedString(@"Sign Up", @"Title for button that allows users to sign up for a new iNat account")
                        forState:UIControlStateNormal];
