@@ -45,6 +45,7 @@ class INatTabBarController: UITabBarController {
    
    func showCamera() {
       let gallery = GalleryController()
+      gallery.modalPresentationStyle = .fullScreen
       Gallery.Config.tabsToShow = [.cameraTab]
       Gallery.Config.initialTab = .cameraTab
       gallery.delegate = self
@@ -59,6 +60,7 @@ class INatTabBarController: UITabBarController {
    
    func showCameraRoll() {
       let gallery = GalleryController()
+      gallery.modalPresentationStyle = .fullScreen
       Gallery.Config.tabsToShow = [.imageTab]
       Gallery.Config.initialTab = .imageTab
       gallery.delegate = self
@@ -86,6 +88,7 @@ class INatTabBarController: UITabBarController {
       }
 
       let confirmVC = ObsEditV2ViewController(nibName: nil, bundle: nil)
+      confirmVC.modalPresentationStyle = .fullScreen
       confirmVC.standaloneObservation = o
       confirmVC.shouldContinueUpdatingLocation = true
       confirmVC.isMakingNewObservation = true
