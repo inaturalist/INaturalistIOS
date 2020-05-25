@@ -38,6 +38,8 @@
     value[@"publicLongitude"] = @(mtlModel.publicLocation.longitude);
     value[@"publicPositionalAccuracy"] = @(mtlModel.publicPositionalAccuracy);
     
+    if (mtlModel.placeGuess) { value[@"placeGuess"] = mtlModel.placeGuess; }
+    
     value[@"coordinatesObscuredToUser"] = @(mtlModel.coordinatesObscuredToUser);
     
     value[@"captive"] = @(mtlModel.captive);
