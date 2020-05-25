@@ -250,6 +250,10 @@
 		FAB0B8E8237F17DE00E73681 /* GuidesAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB0B8E7237F17DE00E73681 /* GuidesAPI.m */; };
 		FAB0B8EB237F1B0300E73681 /* INatRailsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB0B8EA237F1B0300E73681 /* INatRailsAPI.m */; };
 		FAB0B8EE237F37C000E73681 /* ExploreGuideRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB0B8ED237F37C000E73681 /* ExploreGuideRealm.m */; };
+		FAB341F3247B531800992A80 /* MediaPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB341F2247B531800992A80 /* MediaPickerViewController.swift */; };
+		FAB341F6247B70C300992A80 /* MediaPickerSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB341F5247B70C300992A80 /* MediaPickerSegue.swift */; };
+		FAB341F8247B710B00992A80 /* SlideInPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB341F7247B710B00992A80 /* SlideInPresentationController.swift */; };
+		FAB341FA247B714000992A80 /* SlideInPresentationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAB341F9247B714000992A80 /* SlideInPresentationManager.swift */; };
 		FAB6214C1D73830E0026FDC6 /* IconAndTextControl.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */; };
 		FAB6214D1D7397A70026FDC6 /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAB6214F1D7397A70026FDC6 /* Onboarding.storyboard */; };
 		FAB7028821431BD600462F62 /* UIViewController+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB7028721431BD600462F62 /* UIViewController+INaturalist.m */; };
@@ -532,7 +536,7 @@
 		FA30C2F22090D882006F7629 /* cs */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = cs; path = cs.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA31E8DB1BB9CD1A0051B199 /* INaturalist2.8.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.8.xcdatamodel; sourceTree = "<group>"; };
 		FA3759CE23EB467E0053F783 /* iNaturalist-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iNaturalist-Bridging-Header.h"; sourceTree = "<group>"; };
-		FA3759CF23EB467E0053F783 /* INatTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = INatTabBarController.swift; sourceTree = "<group>"; };
+		FA3759CF23EB467E0053F783 /* INatTabBarController.swift */ = {isa = PBXFileReference; indentWidth = 3; lastKnownFileType = sourcecode.swift; path = INatTabBarController.swift; sourceTree = "<group>"; };
 		FA38139D1BC32CD7004DBAD0 /* INaturalist2.9.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.9.xcdatamodel; sourceTree = "<group>"; };
 		FA394EB7218909AF004AE0FE /* ProjectObservationHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProjectObservationHeaderView.xib; sourceTree = "<group>"; };
 		FA399A981DDBDB3E007ABD3E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Projects.storyboard; sourceTree = "<group>"; };
@@ -917,6 +921,10 @@
 		FAB1FCAA21405713001CE431 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Guides.strings; sourceTree = "<group>"; };
 		FAB1FCAB21405713001CE431 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FAB1FCAC21405713001CE431 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FAB341F2247B531800992A80 /* MediaPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaPickerViewController.swift; sourceTree = "<group>"; };
+		FAB341F5247B70C300992A80 /* MediaPickerSegue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaPickerSegue.swift; sourceTree = "<group>"; };
+		FAB341F7247B710B00992A80 /* SlideInPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideInPresentationController.swift; sourceTree = "<group>"; };
+		FAB341F9247B714000992A80 /* SlideInPresentationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideInPresentationManager.swift; sourceTree = "<group>"; };
 		FAB6214A1D73830E0026FDC6 /* IconAndTextControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IconAndTextControl.h; sourceTree = "<group>"; };
 		FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IconAndTextControl.m; sourceTree = "<group>"; };
 		FAB6214E1D7397A70026FDC6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Onboarding.storyboard; sourceTree = "<group>"; };
@@ -1305,6 +1313,7 @@
 		19F621A2150ECD3000C58F28 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				FAB341F4247B709100992A80 /* MediaPicker */,
 				19AE897A18DD0AA700505918 /* AddCommentViewController.h */,
 				19AE897B18DD0AA700505918 /* AddCommentViewController.m */,
 				19AE897C18DD0AA700505918 /* AddIdentificationViewController.h */,
@@ -1890,6 +1899,17 @@
 				FA4714F71ED7A88F00D57FDE /* TaxonSelectButtonCell.m */,
 			);
 			name = "Taxon Details";
+			sourceTree = "<group>";
+		};
+		FAB341F4247B709100992A80 /* MediaPicker */ = {
+			isa = PBXGroup;
+			children = (
+				FAB341F2247B531800992A80 /* MediaPickerViewController.swift */,
+				FAB341F5247B70C300992A80 /* MediaPickerSegue.swift */,
+				FAB341F7247B710B00992A80 /* SlideInPresentationController.swift */,
+				FAB341F9247B714000992A80 /* SlideInPresentationManager.swift */,
+			);
+			name = MediaPicker;
 			sourceTree = "<group>";
 		};
 		FABCAD1223C6BA34006479CA /* Me Tab Header */ = {
@@ -2543,6 +2563,7 @@
 				1902812814F315F3005AC8D2 /* INatModel.m in Sources */,
 				FA176D9122FBBCF600A5560E /* CLPlacemark+INat.m in Sources */,
 				FA0F1AFB1BBB410000533ED5 /* ObservationViewUploadingCell.m in Sources */,
+				FAB341FA247B714000992A80 /* SlideInPresentationManager.swift in Sources */,
 				FA4C19671B30EEE60066CA22 /* PartnerController.m in Sources */,
 				FAFAF7021BA0D64700CCADC2 /* SubtitleDisclosureCell.m in Sources */,
 				FA8B8DD523CE7266007FBA63 /* ExploreObsFieldRealm.m in Sources */,
@@ -2686,6 +2707,7 @@
 				FA3F1F941A12CABA00928102 /* ExploreUser+SearchResultsHelper.m in Sources */,
 				FA4E72EA19FACE6900A9AB5D /* ExploreListTableViewCell.m in Sources */,
 				FA4E730519FAD14E00A9AB5D /* ExploreGridViewController.m in Sources */,
+				FAB341F3247B531800992A80 /* MediaPickerViewController.swift in Sources */,
 				897569FF1B4557B500F0BFAD /* ObservationViewNormalCell.m in Sources */,
 				FA97666620D1E28F00D172DC /* AboutViewController.m in Sources */,
 				FA4E730619FAD14E00A9AB5D /* ExploreListViewController.m in Sources */,
@@ -2742,6 +2764,7 @@
 				FA3F202E1A141AD800928102 /* AutocompleteSearchItem.m in Sources */,
 				FAD125442296060C006E70FC /* InsetLabel.m in Sources */,
 				1955FCFD17F102FA004F57F2 /* GuideXML.m in Sources */,
+				FAB341F8247B710B00992A80 /* SlideInPresentationController.swift in Sources */,
 				FA711AAE1D53E52600C4FFDB /* OnboardingLoginViewController.m in Sources */,
 				FA4E72D319FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m in Sources */,
 				19AE897618DD08B600505918 /* Identification.m in Sources */,
@@ -2760,6 +2783,7 @@
 				FA0F1B051BBB561600533ED5 /* ObservationViewCell.m in Sources */,
 				FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */,
 				197FD41C17FE13CE0099BDE6 /* GuideTaxonXML.m in Sources */,
+				FAB341F6247B70C300992A80 /* MediaPickerSegue.swift in Sources */,
 				191426EB180DC20F005165D8 /* GuidePageViewController.m in Sources */,
 				FA7FF84A1BAB622200885034 /* UIAlertController+IOS9_Autorotate.m in Sources */,
 			);

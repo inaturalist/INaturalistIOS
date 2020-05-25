@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ln2-Xm-kuL">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ln2-Xm-kuL">
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -768,11 +768,30 @@
                         <segue destination="cnB-zK-8oP" kind="relationship" relationship="viewControllers" id="IRS-f9-29H"/>
                         <segue destination="eb4-Vc-Jmp" kind="relationship" relationship="viewControllers" id="czP-7w-2zY"/>
                         <segue destination="4eK-mN-1Hq" kind="relationship" relationship="viewControllers" id="Pts-Hu-p0Y"/>
+                        <segue destination="dRi-NX-KMO" kind="custom" identifier="MediaPickerSegue" customClass="MediaPickerSegue" customModule="iNaturalist" customModuleProvider="target" id="T1I-ae-HCT"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="g9h-gt-HSi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-3316.8000000000002" y="1091.1544227886059"/>
+        </scene>
+        <!--Media Picker View Controller-->
+        <scene sceneID="fRY-R3-JVu">
+            <objects>
+                <viewController id="dRi-NX-KMO" customClass="MediaPickerViewController" customModule="iNaturalist" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Xa6-YN-q7E"/>
+                        <viewControllerLayoutGuide type="bottom" id="cX9-8S-I32"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="WWM-BT-lUE">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4ND-vY-YKU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3903" y="418"/>
         </scene>
         <!--Observe-->
         <scene sceneID="LIE-wk-Ao0">
