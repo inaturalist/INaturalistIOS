@@ -9,13 +9,15 @@
 import UIKit
 
 class MediaPickerSegue: UIStoryboardSegue {
-   private var selfRetainer: MediaPickerSegue? = nil
-   lazy var slideInTransitioningDelegate = SlideInPresentationManager()
-
-   override func perform() {
-      destination.transitioningDelegate = slideInTransitioningDelegate
-      selfRetainer = self
-      destination.modalPresentationStyle = .custom
-      source.present(destination, animated: true, completion: nil)
-   }
+    private var selfRetainer: MediaPickerSegue? = nil
+    lazy var slideInTransitioningDelegate = SlideInPresentationManager()
+    
+    override func perform() {
+        destination.transitioningDelegate = slideInTransitioningDelegate
+        // hold a strong reference to self so that the the transitioning delegate
+        // doesn't get dealloced while we're running the dismiss animation(s)
+        selfRetainer = self
+        destination.modalPresentationStyle = .custom
+        source.present(destination, animated: true, completion: nil)
+    }
 }

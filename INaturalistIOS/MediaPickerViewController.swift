@@ -17,10 +17,10 @@ class MediaPickerViewController: UIViewController {
     var taxon: ExploreTaxonRealm?
     weak var mediaPickerDelegate: MediaPickerDelegate?
     weak var collectionView: UICollectionView!
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -45,11 +45,11 @@ extension MediaPickerViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 3
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MediaPickerCell", for: indexPath) as! MediaPickerCell
         
@@ -137,7 +137,7 @@ class MediaPickerCell: UICollectionViewCell {
             stack.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor),
             stack.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor),
         ])
-
+        
         self.titleLabel = titleLabel
         self.iconImageView = iconImageView
     }
@@ -146,15 +146,15 @@ class MediaPickerCell: UICollectionViewCell {
         super.init(coder: aDecoder)
         fatalError("Interface Builder is not supported!")
     }
-
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         fatalError("Interface Builder is not supported!")
     }
-
+    
     override func prepareForReuse() {
         super.prepareForReuse()
-
+        
         self.titleLabel.text = nil
         self.iconImageView.image = nil
     }
