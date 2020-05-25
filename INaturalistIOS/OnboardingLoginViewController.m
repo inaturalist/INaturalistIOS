@@ -467,7 +467,6 @@
     hud.dimBackground = YES;
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-    __weak typeof(self)weakSelf = self;
     [appDelegate.loginController createAccountWithEmail:self.emailField.text
                                                password:self.passwordField.text
                                                username:self.usernameField.text
@@ -558,7 +557,6 @@
                                                 [[NSUserDefaults standardUserDefaults] setObject:nil
                                                                                           forKey:kInatCustomBaseURLStringKey];
                                                 [[NSUserDefaults standardUserDefaults] synchronize];
-                                                [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) reconfigureForNewBaseUrl];
                                             }]];
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
                                               style:UIAlertActionStyleDefault
@@ -570,7 +568,6 @@
                                                     [[NSUserDefaults standardUserDefaults] setObject:partnerURL.absoluteString
                                                                                               forKey:kInatCustomBaseURLStringKey];
                                                     [[NSUserDefaults standardUserDefaults] synchronize];
-                                                    [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) reconfigureForNewBaseUrl];
                                                     self.selectedPartner = partner;
                                                 }
                                             }]];

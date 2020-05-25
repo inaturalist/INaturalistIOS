@@ -344,8 +344,7 @@ static const int ChangePartnerMinimumInterval = 86400;
     }];
 }
 
-- (void)signOut
-{
+- (void)signOut {
     [[Analytics sharedClient] event:kAnalyticsEventLogout];
     [[Analytics sharedClient] debugLog:@"User Logout"];
     
@@ -359,10 +358,7 @@ static const int ChangePartnerMinimumInterval = 86400;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.01 * NSEC_PER_SEC);
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){        
         [self localSignOut];
-        
-        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-        [appDelegate rebuildDatabase];
-        
+                
         [hud hide:YES afterDelay:2.0f];
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -371,8 +367,7 @@ static const int ChangePartnerMinimumInterval = 86400;
     });
 }
 
-- (void)localSignOut
-{
+- (void)localSignOut {
     // clear all preferences
     [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:NSBundle.mainBundle.bundleIdentifier];
     
@@ -401,10 +396,6 @@ static const int ChangePartnerMinimumInterval = 86400;
     for (NXOAuth2Account *account in [[NXOAuth2AccountStore sharedStore] accounts]) {
         [[NXOAuth2AccountStore sharedStore] removeAccount:account];
     }
-        
-    // since we've removed any custom base URL, reconfigure RestKit again
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-    [appDelegate reconfigureForNewBaseUrl];
     
     // clear realm
     RLMRealm *realm = [RLMRealm defaultRealm];
@@ -413,6 +404,7 @@ static const int ChangePartnerMinimumInterval = 86400;
     [realm commitWriteTransaction];
     
     // clear anything stashed in login
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.loginController logout];
     
     // clear the imagestore

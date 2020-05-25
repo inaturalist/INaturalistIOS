@@ -299,7 +299,6 @@ didSignInForUser:(GIDGoogleUser *)user
     [[NSUserDefaults standardUserDefaults] setObject:partnerURL.absoluteString
                                               forKey:kInatCustomBaseURLStringKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) reconfigureForNewBaseUrl];
     
     // put user object changing site id
     ExploreUserRealm *me = [self meUserLocal];
