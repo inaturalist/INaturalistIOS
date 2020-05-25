@@ -187,21 +187,21 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
  content that failed to upload last time due to server-side data validation issues.
  */
 - (void)autouploadPendingContentExcludeInvalids:(BOOL)excludeInvalids {
-    /*
-     TODO: handle autoupload
     if (!self.shouldAutoupload) { return; }
     
     NSMutableArray *recordsToDelete = [NSMutableArray array];
-    for (Class klass in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
-        [recordsToDelete addObjectsFromArray:[ExploreDeletedRecord needingSyncForModelName:NSStringFromClass(klass)]];
+    for (NSString *modelName in @[ @"Observation", @"ObservationPhoto", @"ObservationFieldValue", @"ProjectObservation" ]) {
+        RLMResults *needingDelete = [ExploreDeletedRecord needingSyncForModelName:modelName];
+        // convert to array and add to our list of all things to delete
+        [recordsToDelete addObjectsFromArray:[needingDelete valueForKey:@"self"]];
     }
     
     // invalid observations failed validation their last upload
-    NSPredicate *noInvalids = [NSPredicate predicateWithBlock:^BOOL(Observation *observation, NSDictionary *bindings) {
+    NSPredicate *noInvalids = [NSPredicate predicateWithBlock:^BOOL(ExploreObservationRealm *observation, NSDictionary *bindings) {
         return !(observation.validationErrorMsg && observation.validationErrorMsg.length > 0);
     }];
     
-    NSArray *observationsToUpload = [Observation needingUpload];
+    NSArray *observationsToUpload = [ExploreObservationRealm needingUpload];
     if (excludeInvalids) {
         observationsToUpload = [observationsToUpload filteredArrayUsingPredicate:noInvalids];
     }
@@ -218,7 +218,6 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
         [self syncDeletedRecords:recordsToDelete
           thenUploadObservations:observationsToUpload];
     }
-     */
 }
 
 - (void)stopUploadActivity {
