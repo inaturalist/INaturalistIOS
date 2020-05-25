@@ -1143,11 +1143,14 @@
 #pragma mark - NSNotificationCenter
 
 - (void)userSignedIn {
-    [self refreshRequestedNotify:YES];
-    
-    [self loadUserForHeader];
-                
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    // this notification can come in off the main thread
+    // update the ui for the logged in user on the main thread
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // request the users' observations from iNat
+        [self refreshRequestedNotify:YES];
+        // load & configure the header for the user
+        [self loadUserForHeader];
+    });
 }
 
 #pragma mark - View lifecycle
