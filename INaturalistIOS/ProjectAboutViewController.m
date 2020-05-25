@@ -7,7 +7,6 @@
 //
 
 #import "ProjectAboutViewController.h"
-#import "Project.h"
 #import "ProjectAboutInfoCell.h"
 #import "NSString+Helpers.h"
 

@@ -18,7 +18,6 @@
 #import "Analytics.h"
 #import "NewsItemViewController.h"
 #import "NewsItemCell.h"
-#import "Project.h"
 #import "UIColor+INaturalist.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"

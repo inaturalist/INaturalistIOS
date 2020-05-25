@@ -10,8 +10,6 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ProjectsViewController.h"
-#import "Project.h"
-#import "ProjectUser.h"
 #import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
 #import "INaturalistAppDelegate.h"

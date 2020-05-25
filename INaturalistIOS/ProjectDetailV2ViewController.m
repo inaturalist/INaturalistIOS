@@ -12,8 +12,6 @@
 @import UIColor_HTMLColors;
 
 #import "ProjectDetailV2ViewController.h"
-#import "Project.h"
-#import "ProjectUser.h"
 #import "ProjectDetailPageViewController.h"
 #import "ObsDetailV2ViewController.h"
 #import "TaxonDetailViewController.h"

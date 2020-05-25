@@ -18,11 +18,6 @@
 
 #import "ObservationsViewController.h"
 #import "LoginController.h"
-#import "Observation.h"
-#import "ObservationFieldValue.h"
-#import "ObservationPhoto.h"
-#import "ProjectObservation.h"
-#import "Project.h"
 #import "ImageStore.h"
 #import "INatUITabBarController.h"
 #import "INaturalistAppDelegate.h"
@@ -222,8 +217,9 @@
         [self stopSyncPressed];
     } else {
         NSMutableArray *recordsToDelete = [NSMutableArray array];
-        for (Class class in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
-            for (ExploreDeletedRecord *dr in [ExploreDeletedRecord needingSyncForModelName:NSStringFromClass(class)]) {
+        
+        for (NSString *modelName in @[ @"Observation", @"ObservationPhoto", @"ObservationFieldValue", @"ProjectObservation" ]) {
+            for (ExploreDeletedRecord *dr in [ExploreDeletedRecord needingSyncForModelName:modelName]) {
                 [recordsToDelete addObject:dr];
             }
         }
@@ -371,8 +367,8 @@
     }
     
     NSMutableArray *recordsToDelete = [NSMutableArray array];
-    for (Class class in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
-        for (ExploreDeletedRecord *dr in [ExploreDeletedRecord needingSyncForModelName:NSStringFromClass(class)]) {
+    for (NSString *modelName in @[ @"Observation", @"ObservationPhoto", @"ObservationFieldValue", @"ProjectObservation" ]) {
+        for (ExploreDeletedRecord *dr in [ExploreDeletedRecord needingSyncForModelName:modelName]) {
             [recordsToDelete addObject:dr];
         }
     }
@@ -481,8 +477,8 @@
     
     
     NSInteger itemsToUpload = [[ExploreObservationRealm needingUpload] count];
-    for (Class class in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
-        itemsToUpload += [[ExploreDeletedRecord needingSyncForModelName:NSStringFromClass(class)] count];
+    for (NSString *modelName in @[ @"Observation", @"ObservationPhoto", @"ObservationFieldValue", @"ProjectObservation" ]) {
+        itemsToUpload += [[ExploreDeletedRecord needingSyncForModelName:modelName] count];
     }
 
     if (itemsToUpload > 0) {
@@ -963,9 +959,8 @@
     NSInteger needingUploadCount = [[ExploreObservationRealm needingUpload] count];
     
     NSInteger needingDeleteCount = 0;
-    // TODO: realm
-    for (Class class in @[ [Observation class], [ObservationPhoto class], [ObservationFieldValue class], [ProjectObservation class] ]) {
-        needingDeleteCount += [[ExploreDeletedRecord needingSyncForModelName:NSStringFromClass(class)] count];
+    for (NSString *modelName in @[ @"Observation", @"ObservationPhoto", @"ObservationFieldValue", @"ProjectObservation" ]) {
+        needingDeleteCount += [[ExploreDeletedRecord needingSyncForModelName:modelName] count];
     }
     
     if (needingUploadCount > 0 || needingDeleteCount > 0) {
@@ -1488,7 +1483,7 @@
 {
     if ([segue.identifier isEqualToString:@"obsDetailV2"]) {
         ObsDetailV2ViewController *ovc = [segue destinationViewController];
-        ovc.observation = (Observation *)sender;
+        ovc.observation = (ExploreObservationRealm *)sender;
         [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
                          withProperties:@{ @"via": @"Me Tab" }];
     }
