@@ -40,14 +40,19 @@
 
 + (NSDictionary *)valueForCoreDataModel:(id)cdModel {
     NSMutableDictionary *value = [NSMutableDictionary dictionary];
-    value[@"projectObsId"] = [cdModel valueForKey:@"recordID"];
+    if ([cdModel valueForKey:@"recordID"]) {
+        value[@"projectObsId"] = [cdModel valueForKey:@"recordID"];
+    } else {
+        value[@"projectObsId"] = @(0);
+    }
             
     // uuid is the primary key, cannot be nil
     // however, we don't have UUIDs for project observations in CoreData
     // so just make one up for now. it will get reset next time the
     // observation syncs
-    // TODO: this is only safe if the cdModel was not previously synced
-    value[@"uuid"] = [[[NSUUID UUID] UUIDString] lowercaseString];
+    if (![cdModel valueForKey:@"syncedAt"]) {
+        value[@"uuid"] = [[[NSUUID UUID] UUIDString] lowercaseString];
+    }
     
     if ([cdModel valueForKey:@"project"]) {
         value[@"project"] = [ExploreProjectRealm valueForCoreDataModel:[cdModel valueForKey:@"project"]];

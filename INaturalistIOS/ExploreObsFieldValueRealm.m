@@ -47,7 +47,11 @@
 
 + (NSDictionary *)valueForCoreDataModel:(id)cdModel {
     NSMutableDictionary *value = [NSMutableDictionary dictionary];
-    value[@"obsFieldValueId"] = [cdModel valueForKey:@"recordID"];
+    if ([cdModel valueForKey:@"recordID"]) {
+        value[@"obsFieldValueId"] = [cdModel valueForKey:@"recordID"];
+    } else {
+        value[@"obsFieldValueId"] = @(0);
+    }
     
     // as if this isn't confusing enough already, this naming scheme overlap
     // sorry!
@@ -59,8 +63,10 @@
     // however, we don't have UUIDs for obsFieldValues in CoreData
     // so just make one up for now. it will get reset next time the
     // observation syncs
-    // TODO: this is only safe if the cdModel was not previously synced
-    value[@"uuid"] = [[[NSUUID UUID] UUIDString] lowercaseString];
+    // this is only safe if the cdModel was not previously synced
+    if (![cdModel valueForKey:@"syncedAt"]) {
+        value[@"uuid"] = [[[NSUUID UUID] UUIDString] lowercaseString];
+    }
     
     if ([cdModel valueForKey:@"observationField"]) {
         value[@"obsField"] = [ExploreObsFieldRealm valueForCoreDataModel:[cdModel valueForKey:@"observationField"]];
