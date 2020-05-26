@@ -217,6 +217,11 @@
         return;
     }
     
+    if ([self.observation isKindOfClass:ExploreObservation.class]) {
+        // don't re-download observations on explore tab
+        return;
+    }
+    
     NSInteger obsIdToReload = 0;
     if (self.observation) {
         obsIdToReload = self.observation.recordId;
