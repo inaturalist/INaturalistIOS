@@ -376,7 +376,7 @@
     if (!formatter) {
         formatter = [[NSDateFormatter alloc] init];
         [formatter setDateStyle:NSDateFormatterShortStyle];
-        [formatter setTimeStyle:NSDateFormatterNoStyle];
+        [formatter setTimeStyle:NSDateFormatterShortStyle];
     }
     return [formatter stringFromDate:self.timeObserved];
 }
