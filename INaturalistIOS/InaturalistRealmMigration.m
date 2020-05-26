@@ -71,9 +71,27 @@
                 });
                 
                 NSDictionary *value = [ExploreObservationRealm valueForCoreDataModel:cdObservation];
+                if (!value) {
+                    NSError *error = [[NSError alloc] initWithDomain:@"org.inaturalist"
+                                                                code:-1015
+                                                            userInfo:@{ NSLocalizedDescriptionKey: @"nil value for cd observation" }];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        done(NO, error);
+                    });
+                    return;
+                }
                 [realm beginWriteTransaction];
-                [ExploreObservationRealm createOrUpdateInRealm:realm
-                                                     withValue:value];
+                ExploreObservationRealm *o = [ExploreObservationRealm createOrUpdateInRealm:realm
+                                                                                  withValue:value];
+                if (!o) {
+                    NSError *error = [[NSError alloc] initWithDomain:@"org.inaturalist"
+                                                                code:-1016
+                                                            userInfo:@{ NSLocalizedDescriptionKey: @"value failed to insert to realm" }];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        done(NO, error);
+                    });
+                    return;
+                }
                 [realm commitWriteTransaction];
             }
             
