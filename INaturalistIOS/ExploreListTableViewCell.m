@@ -399,7 +399,7 @@ static NSDateFormatter *shortFormatter;
         scientificNameLabel.font = [UIFont fontForTaxonRankName:taxonRank ofSize:14.0f];
     }
     
-    observerNameLabel.text = observation.user.name;
+    observerNameLabel.text = observation.username;
     
     NSDate *date = [observation timeObserved];
     // looks like time_observed_at_utc can be null?
