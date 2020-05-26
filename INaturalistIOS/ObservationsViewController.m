@@ -1335,13 +1335,6 @@
     }
     
     if (![[NSUserDefaults standardUserDefaults] boolForKey:RanMigrationToRealmKey]) {
-        // only try this migration once, even if it fails,
-        // since it's automatic at launch. if there's a problem
-        // there's nothing the user can do about it.
-        [[NSUserDefaults standardUserDefaults] setBool:YES
-                                                forKey:RanMigrationToRealmKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tabBarController.view animated:YES];
         hud.removeFromSuperViewOnHide = YES;
         hud.dimBackground = YES;
@@ -1358,7 +1351,12 @@
             // hide the hud regardless of success
             [MBProgressHUD hideAllHUDsForView:weakSelf.tabBarController.view animated:YES];
             // not much we can do, but at least notify the user
-            if (!success) {
+            if (success) {
+                // mark the migration as a success
+                [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                        forKey:RanMigrationToRealmKey];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            } else {
                 NSString *migrationFailedTitle = NSLocalizedString(@"Migration Failed", @"Title for alert when db migration fails.");
                 NSString *migrationFailedMsg = NSLocalizedString(@"Unknown error", nil);
                 if (error) {
