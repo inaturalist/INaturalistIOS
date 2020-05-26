@@ -404,7 +404,7 @@ static NSDateFormatter *shortFormatter;
     NSDate *date = [observation timeObserved];
     // looks like time_observed_at_utc can be null?
     if (!date)
-        date = [observation observedOn];
+        date = [observation dateObserved];
     @synchronized(shortFormatter) {
         observedOnLabel.text = [shortFormatter stringFromDate:date];
     }
