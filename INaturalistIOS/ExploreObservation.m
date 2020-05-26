@@ -19,6 +19,17 @@
 
 @implementation ExploreObservation
 
+- (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError *__autoreleasing *)error {
+    // set defaults for these
+    NSDictionary *defaults = @{
+        @"publicLocation": [NSValue valueWithMKCoordinate:kCLLocationCoordinate2DInvalid],
+        @"privateLocation": [NSValue valueWithMKCoordinate:kCLLocationCoordinate2DInvalid],
+    };
+    dictionaryValue = [defaults mtl_dictionaryByAddingEntriesFromDictionary:dictionaryValue];
+    return [super initWithDictionary:dictionaryValue error:error];
+}
+
+
 + (NSDictionary *)JSONKeyPathsByPropertyKey{
     return @{
              @"observationId": @"id",
@@ -161,8 +172,7 @@
             CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(latitude, longitude);
             return [NSValue valueWithMKCoordinate:coords];
         } else {
-            NSValue *val = [NSValue valueWithMKCoordinate:kCLLocationCoordinate2DInvalid];
-            return val;
+            return [NSValue valueWithMKCoordinate:kCLLocationCoordinate2DInvalid];
         }
     }];
 }
@@ -296,6 +306,10 @@
     return self.observationId;
 }
 
+- (NSInteger)recordId {
+    return self.observationId;
+}
+
 - (BOOL)hasUnviewedActivityBool {
     return NO;
 }
@@ -372,11 +386,11 @@
 }
 
 - (CLLocationCoordinate2D)visibleLocation {
-	if (CLLocationCoordinate2DIsValid(self.location)) {
-		return self.location;
-	} else {
-        return kCLLocationCoordinate2DInvalid;
-	}
+    if (CLLocationCoordinate2DIsValid(self.privateLocation)) {
+        return self.privateLocation;
+    } else {
+        return self.publicLocation;
+    }
 }
 
 - (CLLocationDistance)visiblePositionalAccuracy {
@@ -391,5 +405,14 @@
     }
 }
 
+#pragma mark - MKAnnotation coordinate
+
+- (CLLocationCoordinate2D)coordinate {
+    if (CLLocationCoordinate2DIsValid(self.privateLocation)) {
+        return self.privateLocation;
+    } else {
+        return self.publicLocation;
+    }
+}
 
 @end
