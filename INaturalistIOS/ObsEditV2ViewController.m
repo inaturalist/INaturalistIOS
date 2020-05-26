@@ -249,27 +249,22 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             }
             
             // trigger the delete to happen on the server
-            [self triggerAutoUpload];
+            
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            UploadManager *uploader = appDelegate.loginController.uploadManager;
+            if ([uploader shouldAutoupload]) {
+                if (uploader.isNetworkAvailableForUpload) {
+                    [uploader autouploadPendingContent];
+                } else {
+                    if (uploader.shouldNotifyAboutNetworkState) {
+                        [JDStatusBarNotification showWithStatus:NSLocalizedString(@"Network Unavailable", nil)
+                                                   dismissAfter:4];
+                        [uploader notifiedAboutNetworkState];
+                    }
+                }
+            }
         }];
     });
-}
-
-#pragma mark - Autoupload Helper
-
-- (void)triggerAutoUpload {
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    UploadManager *uploader = appDelegate.loginController.uploadManager;
-    if ([uploader shouldAutoupload]) {
-        if (uploader.isNetworkAvailableForUpload) {
-            [uploader autouploadPendingContent];
-        } else {
-            if (uploader.shouldNotifyAboutNetworkState) {
-                [JDStatusBarNotification showWithStatus:NSLocalizedString(@"Network Unavailable", nil)
-                                           dismissAfter:4];
-                [uploader notifiedAboutNetworkState];
-            }
-        }
-    }
 }
 
 #pragma mark - UITextViewDelegate
@@ -713,10 +708,22 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             }
         }
     }
-    
-    [self triggerAutoUpload];
-    
-    [self.view.window.rootViewController dismissViewControllerAnimated:YES completion:nil];
+        
+    [self.view.window.rootViewController dismissViewControllerAnimated:YES completion:^{
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        UploadManager *uploader = appDelegate.loginController.uploadManager;
+        if ([uploader shouldAutoupload]) {
+            if (uploader.isNetworkAvailableForUpload) {
+                [uploader autouploadPendingContent];
+            } else {
+                if (uploader.shouldNotifyAboutNetworkState) {
+                    [JDStatusBarNotification showWithStatus:NSLocalizedString(@"Network Unavailable", nil)
+                                               dismissAfter:4];
+                    [uploader notifiedAboutNetworkState];
+                }
+            }
+        }
+    }];
 }
 
 #pragma mark - Taxa Search
