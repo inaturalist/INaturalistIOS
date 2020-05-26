@@ -23,7 +23,10 @@
 @property (nonatomic, copy) NSString *speciesGuess;
 @property (nonatomic, copy) NSString *inatDescription;
 @property (nonatomic, copy) NSArray *observationPhotos;
+// both time and date for observations with both
 @property (nonatomic, copy) NSDate *timeObserved;
+// for observations with a date but without a time
+@property (nonatomic, copy) NSDate *dateObserved;
 @property (nonatomic, copy) NSDate *timeCreated;
 @property (nonatomic, assign) ObsDataQuality dataQuality;
 @property (nonatomic, assign) NSInteger identificationsCount;

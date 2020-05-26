@@ -27,6 +27,7 @@
              @"inatDescription": @"description",
              @"speciesGuess": @"species_guess",
              @"timeObserved": @"time_observed_at",
+             @"dateObserved": @"observed_on",
              @"timeCreated": @"created_at",
              @"identificationsCount": @"identifications_count",
              @"commentsCount": @"comments_count",
@@ -74,6 +75,21 @@
         return [_dateFormatter dateFromString:dateString];
     }];
 }
+
++ (NSValueTransformer *)dateObservedJSONTransformer {
+    static NSDateFormatter *_dateFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        _dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
+        _dateFormatter.dateFormat = @"yyyy-MM-dd";
+    });
+
+    return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
+        return [_dateFormatter dateFromString:dateString];
+    }];
+}
+
 
 + (NSValueTransformer *)timeCreatedJSONTransformer {
     static NSDateFormatter *_dateFormatter = nil;
@@ -273,7 +289,7 @@
         [formatter setDateStyle:NSDateFormatterShortStyle];
         [formatter setTimeStyle:NSDateFormatterNoStyle];
     }
-    return [formatter stringFromDate:self.observedOn];
+    return [formatter stringFromDate:self.dateObserved];
 }
 
 - (NSInteger)inatRecordId {
