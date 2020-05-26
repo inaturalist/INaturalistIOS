@@ -44,6 +44,8 @@ class INatTabBarController: UITabBarController {
    }
    
    func showCamera() {
+      Analytics.sharedClient()?.event(kAnalyticsEventNewObservationCameraStart)
+
       let gallery = GalleryController()
       Gallery.Config.tabsToShow = [.cameraTab]
       Gallery.Config.initialTab = .cameraTab
@@ -58,6 +60,8 @@ class INatTabBarController: UITabBarController {
    }
    
    func showCameraRoll() {
+      Analytics.sharedClient()?.event(kAnalyticsEventNewObservationLibraryStart)
+
       let gallery = GalleryController()
       Gallery.Config.tabsToShow = [.imageTab]
       Gallery.Config.initialTab = .imageTab
@@ -72,6 +76,8 @@ class INatTabBarController: UITabBarController {
    }
    
    func newObsNoPhoto() {
+      Analytics.sharedClient()?.event(kAnalyticsEventNewObservationNoPhotoStart)
+      
       let o = ExploreObservationRealm()
       o.uuid = UUID().uuidString.lowercased()
       o.timeCreated = Date()
