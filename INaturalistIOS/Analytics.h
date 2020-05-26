@@ -63,6 +63,10 @@ extern NSString *kAnalyticsEventPartnerAlertResponse;
 extern NSString *kAnalyticsEventObservationlessOFVSaved;
 
 // new observation flow
+extern NSString *kAnalyticsEventNewObservationLibraryStart;
+extern NSString *kAnalyticsEventNewObservationCameraStart;
+extern NSString *kAnalyticsEventNewObservationNoPhotoStart;
+
 extern NSString *kAnalyticsEventNewObservationStart;
 extern NSString *kAnalyticsEventNewObservationShutter;
 extern NSString *kAnalyticsEventNewObservationLibraryStart;

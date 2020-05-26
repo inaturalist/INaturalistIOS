@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <Firebase/Firebase.h>
-#import <Crashlytics/Crashlytics.h>
+@import Firebase;
+@import Crashlytics;
 
 #import "Analytics.h"
 
@@ -21,6 +21,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _sharedClient = [[Analytics alloc] init];
+        [FIRApp configure];
     });
     return _sharedClient;
 }
@@ -38,11 +39,11 @@
 }
 
 - (void)debugLog:(NSString *)logMessage {
-    // do nothing
+    CLSLog(@"Debug Log: %@", logMessage);
 }
 
 - (void)registerUserWithIdentifier:(NSString *)userIdentifier {
-    // do nothing
+    [FIRAnalytics setUserID:userIdentifier];
 }
 
 @end
@@ -52,127 +53,130 @@
 
 NSString *kAnalyticsEventAppLaunch = @"AppLaunch";
 
-NSString *kAnalyticsEventNavigateObservationDetail =            @"Navigate - Observations - Details";
+NSString *kAnalyticsEventNavigateObservationDetail =            @"Navigate_Observations_Details";
 
 // search in explore
-NSString *kAnalyticsEventExploreSearchPeople =                  @"Explore - Search - People";
-NSString *kAnalyticsEventExploreSearchProjects =                @"Explore - Search - Projects";
-NSString *kAnalyticsEventExploreSearchPlaces =                  @"Explore - Search - Places";
-NSString *kAnalyticsEventExploreSearchCritters =                @"Explore - Search - Critters";
-NSString *kAnalyticsEventExploreSearchNearMe =                  @"Explore - Search - Near Me";
-NSString *kAnalyticsEventExploreSearchMine =                    @"Explore - Search - Mine";
+NSString *kAnalyticsEventExploreSearchPeople =                  @"Explore_Search_People";
+NSString *kAnalyticsEventExploreSearchProjects =                @"Explore_Search_Projects";
+NSString *kAnalyticsEventExploreSearchPlaces =                  @"Explore_Search_Places";
+NSString *kAnalyticsEventExploreSearchCritters =                @"Explore_Search_Critters";
+NSString *kAnalyticsEventExploreSearchNearMe =                  @"Explore_Search_Near_Me";
+NSString *kAnalyticsEventExploreSearchMine =                    @"Explore_Search_Mine";
 
 // add comments & ids in explore
-NSString *kAnalyticsEventExploreAddComment =                    @"Explore - Add Comment";
-NSString *kAnalyticsEventExploreAddIdentification =             @"Explore - Add Identification";
+NSString *kAnalyticsEventExploreAddComment =                    @"Explore_Add_Comment";
+NSString *kAnalyticsEventExploreAddIdentification =             @"Explore_Add_Identification";
 
 // observation activities
-NSString *kAnalyticsEventCreateObservation =                    @"Create Observation";
-NSString *kAnalyticsEventSyncObservation =                      @"Sync Observation";
-NSString *kAnalyticsEventSyncStopped =                          @"Sync Stopped";
-NSString *kAnalyticsEventSyncFailed =                           @"Sync Failed";
+NSString *kAnalyticsEventCreateObservation =                    @"Create_Observation";
+NSString *kAnalyticsEventSyncObservation =                      @"Sync_Observation";
+NSString *kAnalyticsEventSyncStopped =                          @"Sync_Stopped";
+NSString *kAnalyticsEventSyncFailed =                           @"Sync_Failed";
 
 // login
-NSString *kAnalyticsEventLogin =                                @"Login";
-NSString *kAnalyticsEventLoginFailed =                          @"Login Failed";
-NSString *kAnalyticsEventSignup =                               @"Create Account";
+NSString *kAnalyticsEventLogin =                                @"Login_Success";
+NSString *kAnalyticsEventLoginFailed =                          @"Login_Failed";
+NSString *kAnalyticsEventSignup =                               @"Create_Account";
 NSString *kAnalyticsEventLogout =                               @"Logout";
-NSString *kAnalyticsEventForgotPassword =                       @"Forgot Password";
+NSString *kAnalyticsEventForgotPassword =                       @"Forgot_Password";
 
 // partners
-NSString *kAnalyticsEventPartnerAlertPresented =                @"Partner Alert Presented";
-NSString *kAnalyticsEventPartnerAlertResponse =                 @"Partner Alert Response";
+NSString *kAnalyticsEventPartnerAlertPresented =                @"Partner_Alert_Presented";
+NSString *kAnalyticsEventPartnerAlertResponse =                 @"Partner_Alert_Response";
 
 // model integrity
-NSString *kAnalyticsEventObservationlessOFVSaved =              @"Observationless OFV Created";
+NSString *kAnalyticsEventObservationlessOFVSaved =              @"Observationles_OFV_Created";
 
 // new observation flow
-NSString *kAnalyticsEventNewObservationStart =                  @"New Obs - Start";
-NSString *kAnalyticsEventNewObservationShutter =                @"New Obs - Shutter";
-NSString *kAnalyticsEventNewObservationLibraryStart =           @"New Obs - Library Start";
-NSString *kAnalyticsEventNewObservationLibraryPicked =          @"New Obs - Library Picked";
-NSString *kAnalyticsEventNewObservationNoPhoto =                @"New Obs - No Photo";
-NSString *kAnalyticsEventNewObservationCancel =                 @"New Obs - Cancel";
-NSString *kAnalyticsEventNewObservationConfirmPhotos =          @"New Obs - Confirm Photos";
-NSString *kAnalyticsEventNewObservationRetakePhotos =           @"New Obs - Retake Photos";
-NSString *kAnalyticsEventNewObservationCategorizeTaxon =        @"New Obs - Categorize Taxon";
-NSString *kAnalyticsEventNewObservationSkipCategorize =         @"New Obs - Skip Categorize";
-NSString *kAnalyticsEventNewObservationSaveObservation =        @"New Obs - Save New Observation";
+
+NSString *kAnalyticsEventNewObservationLibraryStart =           @"New_Obs_Start_Library";
+NSString *kAnalyticsEventNewObservationCameraStart =            @"New_Obs_Start_Camera";
+NSString *kAnalyticsEventNewObservationNoPhotoStart =           @"New_Obs_Start_No_Photo";
+
+NSString *kAnalyticsEventNewObservationStart =                  @"New_Obs_Start";
+NSString *kAnalyticsEventNewObservationShutter =                @"New_Obs_Shutter";
+NSString *kAnalyticsEventNewObservationLibraryPicked =          @"New_Obs_Library_Picked";
+NSString *kAnalyticsEventNewObservationNoPhoto =                @"New_Obs_No_Photo";
+NSString *kAnalyticsEventNewObservationCancel =                 @"New_Obs_Cancel";
+NSString *kAnalyticsEventNewObservationConfirmPhotos =          @"New_Obs_Confirm_Photos";
+NSString *kAnalyticsEventNewObservationRetakePhotos =           @"New_Obs_Retake_Photos";
+NSString *kAnalyticsEventNewObservationCategorizeTaxon =        @"New_Obs_Categorize_Taxon";
+NSString *kAnalyticsEventNewObservationSkipCategorize =         @"New_Obs_Skip_Categorize";
+NSString *kAnalyticsEventNewObservationSaveObservation =        @"New_Obs_Save_New_Observation";
 
 // observation edits
-NSString *kAnalyticsEventObservationCaptiveChanged =            @"Obs - Captive Changed";
-NSString *kAnalyticsEventObservationTaxonChanged =              @"Obs - Taxon Changed";
-NSString *kAnalyticsEventObservationIDPleaseChanged =           @"Obs - ID Please Changed";
-NSString *kAnalyticsEventObservationProjectsChanged =           @"Obs - Projects Changed";
-NSString *kAnalyticsEventObservationGeoprivacyChanged =         @"Obs - Geoprivacy Changed";
-NSString *kAnalyticsEventObservationNotesChanged =              @"Obs - Notes Changed";
-NSString *kAnalyticsEventObservationDateChanged =               @"Obs - Date Changed";
-NSString *kAnalyticsEventObservationLocationChanged =           @"Obs - Location Changed";
-NSString *kAnalyticsEventObservationAddPhoto =                  @"Obs - Add Photo";
-NSString *kAnalyticsEventObservationDeletePhoto =               @"Obs - Delete Photo";
-NSString *kAnalyticsEventObservationNewDefaultPhoto =           @"Obs - New Default Photo";
-NSString *kAnalyticsEventObservationViewHiresPhoto =            @"Obs - View Hires Photo";
-NSString *kAnalyticsEventObservationDelete =                    @"Obs - Delete";
-NSString *kAnalyticsEventObservationAddIdentification =         @"Obs - Add Identification";
+NSString *kAnalyticsEventObservationCaptiveChanged =            @"Obs_Captive_Changed";
+NSString *kAnalyticsEventObservationTaxonChanged =              @"Obs_Taxon_Changed";
+NSString *kAnalyticsEventObservationProjectsChanged =           @"Obs_Projects_Changed";
+NSString *kAnalyticsEventObservationGeoprivacyChanged =         @"Obs_Geoprivacy_Changed";
+NSString *kAnalyticsEventObservationNotesChanged =              @"Obs_Notes_Changed";
+NSString *kAnalyticsEventObservationDateChanged =               @"Obs_Date_Changed";
+NSString *kAnalyticsEventObservationLocationChanged =           @"Obs_Location_Changed";
+NSString *kAnalyticsEventObservationAddPhoto =                  @"Obs_Add_Photo";
+NSString *kAnalyticsEventObservationDeletePhoto =               @"Obs_Delete_Photo";
+NSString *kAnalyticsEventObservationNewDefaultPhoto =           @"Obs_New_Default_Photo";
+NSString *kAnalyticsEventObservationViewHiresPhoto =            @"Obs_View_Hires_Photo";
+NSString *kAnalyticsEventObservationDelete =                    @"Obs_Delete";
+NSString *kAnalyticsEventObservationAddIdentification =         @"Obs_Add_Identification";
 
 // view obs activities
-NSString *kAnalyticsEventObservationShareStarted =              @"Obs - Share Started";
-NSString *kAnalyticsEventObservationShareCancelled =            @"Obs - Share Cancelled";
-NSString *kAnalyticsEventObservationShareFinished =             @"Obs - Share Finished";
-NSString *kAnalyticsEventObservationFave =                      @"Obs - Fave";
-NSString *kAnalyticsEventObservationUnfave =                    @"Obs - Unfave";
-NSString *kAnalyticsEventObservationPhotoFailedToLoad =         @"Obs - Photo Failed to Load";
+NSString *kAnalyticsEventObservationShareStarted =              @"Obs_Share_Started";
+NSString *kAnalyticsEventObservationShareCancelled =            @"Obs_Share_Cancelled";
+NSString *kAnalyticsEventObservationShareFinished =             @"Obs_Share_Finished";
+NSString *kAnalyticsEventObservationFave =                      @"Obs_Fave";
+NSString *kAnalyticsEventObservationUnfave =                    @"Obs_Unfave";
+NSString *kAnalyticsEventObservationPhotoFailedToLoad =         @"Obs_Photo_Failed_to_Load";
 
 // settings
-NSString *kAnalyticsEventSettingEnabled =                       @"Setting Enabled";
-NSString *kAnalyticsEventSettingDisabled =                      @"Setting Disabled";
-NSString *kAnalyticsEventSettingsNetworkChangeBegan =           @"Settings Network Change Began";
-NSString *kAnalyticsEventSettingsNetworkChangeCompleted =       @"Settings Network Change Completed";
-NSString *kAnalyticsEventProfilePhotoChanged = 					@"Profile Photo Changed";
-NSString *kAnalyticsEventProfilePhotoRemoved = 					@"Profile Photo Removed";
-NSString *kAnalyticsEventProfileLoginChanged =                  @"Profile Username Changed";
-NSString *kAnalyticsEventSettingsRateUs =                       @"Settings Rate Us";
-NSString *kAnalyticsEventSettingsDonate =                       @"Settings Donate";
-NSString *kAnalyticsEventSettingsOpenShop =                     @"Settings Open Shop";
-NSString *kAnalyticsEventTutorial =                             @"Settings Tutorial";
+NSString *kAnalyticsEventSettingEnabled =                       @"Setting_Enabled";
+NSString *kAnalyticsEventSettingDisabled =                      @"Setting_Disabled";
+NSString *kAnalyticsEventSettingsNetworkChangeBegan =           @"Settings_Network_Change_Began";
+NSString *kAnalyticsEventSettingsNetworkChangeCompleted =       @"Settings_Network_Change_Completed";
+NSString *kAnalyticsEventProfilePhotoChanged =                  @"Profile_Photo_Changed";
+NSString *kAnalyticsEventProfilePhotoRemoved =                  @"Profile_Photo_Removed";
+NSString *kAnalyticsEventProfileLoginChanged =                  @"Profile_Username_Changed";
+NSString *kAnalyticsEventSettingsRateUs =                       @"Settings_Rate_Us";
+NSString *kAnalyticsEventSettingsDonate =                       @"Settings_Donate";
+NSString *kAnalyticsEventSettingsOpenShop =                     @"Settings_Open_Shop";
+NSString *kAnalyticsEventTutorial =                             @"Settings_Tutorial";
 
 // news
-NSString *kAnalyticsEventNewsOpenArticle =                      @"News - Open Article";
-NSString *kAnalyticsEventNewsTapLink =                          @"News - Tap Link";
-NSString *kAnalyticsEventNewsShareStarted =                     @"News - Share Started";
-NSString *kAnalyticsEventNewsShareCancelled =                   @"News - Share Cancelled";
-NSString *kAnalyticsEventNewsShareFinished =                    @"News - Share Finished";
+NSString *kAnalyticsEventNewsOpenArticle =                      @"News_Open_Article";
+NSString *kAnalyticsEventNewsTapLink =                          @"News_Tap_Link";
+NSString *kAnalyticsEventNewsShareStarted =                     @"News_Share_Started";
+NSString *kAnalyticsEventNewsShareCancelled =                   @"News_Share_Cancelled";
+NSString *kAnalyticsEventNewsShareFinished =                    @"News_Share_Finished";
 
 // guides
-NSString *kAnalyticsEventDownloadGuideStarted =                 @"Guide Download - Start";
-NSString *kAnalyticsEventDownloadGuideCompleted =               @"Guide Download - Complete";
-NSString *kAnalyticsEventDeleteDownloadedGuide =                @"Guide Download - Delete";
+NSString *kAnalyticsEventDownloadGuideStarted =                 @"Guide_Download_Start";
+NSString *kAnalyticsEventDownloadGuideCompleted =               @"Guide_Download_Complete";
+NSString *kAnalyticsEventDeleteDownloadedGuide =                @"Guide_Download_Delete";
 
 // background fetch
-NSString *kAnalyticsEventBackgroundFetchFailed =                @"Background Fetch Failed";
+NSString *kAnalyticsEventBackgroundFetchFailed =                @"Background_Fetch_Failed";
 
 // onboarding
-NSString *kAnalyticsEventNavigateOnboardingScreenLogo =         @"Navigate - Onboarding - Logo";
-NSString *kAnalyticsEventNavigateOnboardingScreenObserve =      @"Navigate - Onboarding - Observe";
-NSString *kAnalyticsEventNavigateOnboardingScreenShare =        @"Navigate - Onboarding - Share";
-NSString *kAnalyticsEventNavigateOnboardingScreenLearn =        @"Navigate - Onboarding - Learn";
-NSString *kAnalyticsEventNavigateOnboardingScreenContribue =    @"Navigate - Onboarding - Contribute";
-NSString *kAnalyticsEventNavigateOnboardingScreenLogin =        @"Navigate - Onboarding - Login";
-NSString *kAnalyticsEventOnboardingLoginSkip =                  @"Onboarding Login Skip";
-NSString *kAnalyticsEventOnboardingLoginCancel =                @"Onboarding Login Cancel";
-NSString *kAnalyticsEventOnboardingLoginPressed =               @"Onboarding Login Action";
+NSString *kAnalyticsEventNavigateOnboardingScreenLogo =         @"Navigate_Onboarding_Logo";
+NSString *kAnalyticsEventNavigateOnboardingScreenObserve =      @"Navigate_Onboarding_Observe";
+NSString *kAnalyticsEventNavigateOnboardingScreenShare =        @"Navigate_Onboarding_Share";
+NSString *kAnalyticsEventNavigateOnboardingScreenLearn =        @"Navigate_Onboarding_Learn";
+NSString *kAnalyticsEventNavigateOnboardingScreenContribue =    @"Navigate_Onboarding_Contribute";
+NSString *kAnalyticsEventNavigateOnboardingScreenLogin =        @"Navigate_Onboarding_Login";
+NSString *kAnalyticsEventOnboardingLoginSkip =                  @"Onboarding_Login_Skip";
+NSString *kAnalyticsEventOnboardingLoginCancel =                @"Onboarding_Login_Cancel";
+NSString *kAnalyticsEventOnboardingLoginPressed =               @"Onboarding_Login_Action";
 
 // permissions
-NSString *kAnalyticsEventLocationPermissionsChanged =           @"Location Permissions Changed";
-NSString *kAnalyticsEventCameraPermissionsChanged =             @"Camera Permissions Changed";
-NSString *kAnalyticsEventPhotoLibraryPermissionsChanged =       @"Photo Library Permissions Changed";
+NSString *kAnalyticsEventLocationPermissionsChanged =           @"Location_Permissions_Changed";
+NSString *kAnalyticsEventCameraPermissionsChanged =             @"Camera_Permissions_Changed";
+NSString *kAnalyticsEventPhotoLibraryPermissionsChanged =       @"Photo_Library_Permissions_Changed";
 
 // suggestions
-NSString *kAnalyticsEventLoadTaxaSearch =                       @"Load Taxa Search";
-NSString *kAnalyticsEventSuggestionsLoaded =                    @"Suggestions Loaded";
-NSString *kAnalyticsEventSuggestionsFailed =                    @"Suggestions Failed to Load";
-NSString *kAnalyticsEventChoseTaxon =                           @"User Chose Taxon";
-NSString *kAnalyticsEventShowTaxonDetails =                     @"User Chose Taxon Details";
-NSString *kAnalyticsEventSuggestionsImageGauge =                @"Suggestions API Call Time - Image";
-NSString *kAnalyticsEventSuggestionsObservationGauge =          @"Suggestions API Call Time - Observation";
+NSString *kAnalyticsEventLoadTaxaSearch =                       @"Load_Taxa_Search";
+NSString *kAnalyticsEventSuggestionsLoaded =                    @"Suggestions_Loaded";
+NSString *kAnalyticsEventSuggestionsFailed =                    @"Suggestions_Failed_to_Load";
+NSString *kAnalyticsEventChoseTaxon =                           @"User_Chose_Taxon";
+NSString *kAnalyticsEventShowTaxonDetails =                     @"User_Chose_Taxon_Details";
+NSString *kAnalyticsEventSuggestionsImageGauge =                @"Suggestions_API_Call_Time_Image";
+NSString *kAnalyticsEventSuggestionsObservationGauge =          @"Suggestions_API_Call_Time_Observation";
 
