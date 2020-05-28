@@ -42,6 +42,11 @@
     CLSLog(@"Debug Log: %@", logMessage);
 }
 
+- (void)debugError:(NSError *)error {
+    [Crashlytics.sharedInstance recordError:error];
+}
+
+
 - (void)registerUserWithIdentifier:(NSString *)userIdentifier {
     [FIRAnalytics setUserID:userIdentifier];
 }

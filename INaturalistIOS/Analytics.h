@@ -17,6 +17,7 @@
 - (void)registerUserWithIdentifier:(NSString *)userIdentifier;
 
 - (void)debugLog:(NSString *)logMessage;
+- (void)debugError:(NSError *)error;
 
 - (void)logMetric:(NSString *)metricName value:(NSNumber *)metricValue;
 
