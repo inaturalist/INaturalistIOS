@@ -87,7 +87,7 @@
         self.pages = [NSMutableArray arrayWithCapacity:self.taxon.taxonPhotos.count];
         for (int i = 0; i < self.taxon.taxonPhotos.count; i++) {
             TaxonPhotoViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"taxonPhoto"];
-            vc.etpr = self.taxon.taxonPhotos[i];
+            vc.taxonPhoto = self.taxon.taxonPhotos[i];
             [self.pages addObject:vc];
         }
         
@@ -139,7 +139,7 @@
         self.pages = [NSMutableArray arrayWithCapacity:self.taxon.taxonPhotos.count];
         for (int i = 0; i < self.taxon.taxonPhotos.count; i++) {
             TaxonPhotoViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"taxonPhoto"];
-            vc.etpr = self.taxon.taxonPhotos[i];
+            vc.taxonPhoto = self.taxon.taxonPhotos[i];
             [self.pages addObject:vc];
         }
         
