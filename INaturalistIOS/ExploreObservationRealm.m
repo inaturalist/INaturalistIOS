@@ -108,6 +108,10 @@
     
     if ([cdModel valueForKey:@"uuid"]) {
         value[@"uuid"] = [cdModel valueForKey:@"uuid"];
+    } else {
+        // we can't do anything with a local observation without a uuid
+        // this will cause the migration to fail
+        return nil;
     }
     
     if ([cdModel valueForKey:@"speciesGuess"]) {
