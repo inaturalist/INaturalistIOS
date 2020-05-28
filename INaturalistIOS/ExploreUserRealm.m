@@ -45,20 +45,31 @@
     if ([cdModel valueForKey:@"recordID"]) {
         value[@"userId"] = [cdModel valueForKey:@"recordID"];
     } else {
-        value[@"userId"] = @(0);
+        return nil;
     }
     
     if ([cdModel valueForKey:@"siteId"]) {
         value[@"siteId"] = [cdModel valueForKey:@"siteId"];
     } else {
+        // default site is iNat
         value[@"siteId"] = @(1);
     }
 
-    value[@"login"] = [cdModel valueForKey:@"login"];;
+    if ([cdModel valueForKey:@"login"]) {
+        value[@"login"] = [cdModel valueForKey:@"login"];
+    } else {
+        return nil;
+    }
+    
+    if ([cdModel valueForKey:@"observationsCount"]) {
+        value[@"observationsCount"] = [cdModel valueForKey:@"observationsCount"];
+    } else {
+        value[@"observationsCount"] = @(0);
+    }
+    
+    // these can be nil
     value[@"name"] = [cdModel valueForKey:@"name"];
     value[@"userIconString"] = [cdModel valueForKey:@"userIconURL"];
-    value[@"email"] = [cdModel valueForKey:@"email"];
-    value[@"observationsCount"] = [cdModel valueForKey:@"observationsCount"];
     value[@"syncedAt"] = [cdModel valueForKey:@"syncedAt"];
         
     return [NSDictionary dictionaryWithDictionary:value];
