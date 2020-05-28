@@ -13,6 +13,6 @@
 @interface TaxonPhotoViewController : UIViewController
 @property IBOutlet UIImageView *imageView;
 @property IBOutlet UILabel *licenseLabel;
-@property IBOutlet ExploreTaxonPhotoRealm *etpr;
+@property IBOutlet ExploreTaxonPhotoRealm *taxonPhoto;
 @property UIImage *backupImage;
 @end

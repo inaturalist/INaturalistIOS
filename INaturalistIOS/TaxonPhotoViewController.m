@@ -21,9 +21,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    if (self.etpr) {
+    if (self.taxonPhoto) {
         __weak typeof(self)weakSelf = self;
-        [self.imageView setImageWithURLRequest:self.etpr.mediumPhotoUrl
+        NSURLRequest *request = [NSURLRequest requestWithURL:self.taxonPhoto.mediumPhotoUrl];
+        [self.imageView setImageWithURLRequest:request
                               placeholderImage:self.backupImage
                                        success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
                                            weakSelf.blurredImageView.image = image;
@@ -33,7 +34,7 @@
                                            weakSelf.imageView.image = nil;
                                        }];
 
-        self.licenseLabel.text = self.etpr.attribution;
+        self.licenseLabel.text = self.taxonPhoto.attribution;
         self.licenseScrim.hidden = NO;
     } else {
         [self.imageView setImage:self.backupImage];
