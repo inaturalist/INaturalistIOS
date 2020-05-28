@@ -1288,7 +1288,7 @@
     static NSString *FirstSignInKey = @"firstSignInSeen";
     static NSString *SeenV262Key = @"seenVersion262";
     static NSString *SeenV27Key = @"seenVersion27";
-    static NSString *RanMigrationToRealmKey = @"ranMigrationToRealmKey";
+    static NSString *RanMigrationToRealmKey = @"ranMigrationToRealmKey2";
     
     // re-using 'firstSignInSeen' BOOL, which used to be set during the initial launch
     // when the user saw the login prompt for the first time.
@@ -1346,28 +1346,30 @@
         [[self migrationAssistant] migrateObservationsToRealmProgress:^(CGFloat progress) {
             // callback comes in on main thread
             hud.progress = progress;
-        } finished:^(BOOL success, NSError *error) {
+        } finished:^(BOOL success, NSString *migrationReport, NSError *error) {
             // callback comes in on main thread
             // hide the hud regardless of success
             [MBProgressHUD hideAllHUDsForView:weakSelf.tabBarController.view animated:YES];
-            // not much we can do, but at least notify the user
             if (success) {
                 // mark the migration as a success
                 [[NSUserDefaults standardUserDefaults] setBool:YES
                                                         forKey:RanMigrationToRealmKey];
                 [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                NSString *migrationFailedTitle = NSLocalizedString(@"Migration Success", @"Title for alert when db migration succeeds.");
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:migrationFailedTitle
+                                                                               message:migrationReport
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil]];
+                [weakSelf presentViewController:alert animated:YES completion:nil];
+
+                
             } else {
                 NSString *migrationFailedTitle = NSLocalizedString(@"Migration Failed", @"Title for alert when db migration fails.");
-                NSString *migrationFailedMsg = NSLocalizedString(@"Unknown error", nil);
-                if (error) {
-                    if (error.localizedRecoverySuggestion) {
-                        migrationFailedMsg = error.localizedRecoverySuggestion;
-                    } else {
-                        migrationFailedMsg = error.localizedDescription;
-                    }
-                }
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:migrationFailedTitle
-                                                                               message:migrationFailedMsg
+                                                                               message:migrationReport
                                                                         preferredStyle:UIAlertControllerStyleAlert];
                 [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
                                                           style:UIAlertActionStyleDefault

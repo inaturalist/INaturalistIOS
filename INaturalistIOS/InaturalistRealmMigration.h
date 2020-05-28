@@ -10,7 +10,7 @@
 
 @interface InaturalistRealmMigration : NSObject
 
-typedef void(^INatRealmMigrationCompletionHandler)(BOOL success, NSError *error);
+typedef void(^INatRealmMigrationCompletionHandler)(BOOL success, NSString *migrationReport, NSError *error);
 typedef void(^INatRealmMigrationProgressHandler)(CGFloat progress);
 
 - (void)migrateObservationsToRealmProgress:(INatRealmMigrationProgressHandler)progress finished:(INatRealmMigrationCompletionHandler)done;

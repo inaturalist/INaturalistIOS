@@ -13,6 +13,7 @@
 #import "InaturalistRealmMigration.h"
 #import "ExploreTaxonRealm.h"
 #import "ExploreObservationRealm.h"
+#import "Analytics.h"
 
 @implementation InaturalistRealmMigration
 
@@ -54,19 +55,27 @@
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Observation"];
         NSError *error = nil;
         NSArray *results = [[self coreDataMOC] executeFetchRequest:request error:&error];
+        
+        [Analytics.sharedClient debugLog:@"Migration: Begin"];
+        
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                done(NO, error);
+                [Analytics.sharedClient debugLog:@"Migration: Failed - cannot get MOC"];
+                [Analytics.sharedClient debugError:error];
+                done(NO, @"", error);
             });
         } else {
             RLMRealm *realm = [RLMRealm defaultRealm];
             CGFloat totalObservations = (CGFloat)results.count;
             NSInteger processedObservations = 0;
+            [Analytics.sharedClient debugLog:[NSString stringWithFormat:@"Migration: %ld to migrate", (long)totalObservations]];
+
             for (id cdObservation in results) {
                 // update the progress UI
                 processedObservations += 1;
                 CGFloat progress = (CGFloat)processedObservations / totalObservations;
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    [Analytics.sharedClient debugLog:@"Migration: updating progress"];
                     progressBlock(progress);
                 });
                 
@@ -75,8 +84,14 @@
                     NSError *error = [[NSError alloc] initWithDomain:@"org.inaturalist"
                                                                 code:-1015
                                                             userInfo:@{ NSLocalizedDescriptionKey: @"nil value for cd observation" }];
+                    
+                    [Analytics.sharedClient debugLog:@"Migration: Failed - nil value for cd observation"];
+                    [Analytics.sharedClient debugError:error];
+
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        done(NO, error);
+                        NSString *report = [NSString stringWithFormat:@"processed %ld of %ld, then bailed, got nil value for cd observation",
+                                            (long)processedObservations, (long)totalObservations];
+                        done(NO, report, error);
                     });
                     return;
                 }
@@ -87,16 +102,37 @@
                     NSError *error = [[NSError alloc] initWithDomain:@"org.inaturalist"
                                                                 code:-1016
                                                             userInfo:@{ NSLocalizedDescriptionKey: @"value failed to insert to realm" }];
+                    
+                    [Analytics.sharedClient debugLog:@"Migration: Failed - value failed to insert to realm"];
+                    [Analytics.sharedClient debugError:error];
+
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        done(NO, error);
+                        NSString *report = [NSString stringWithFormat:@"processed %ld of %ld, then bailed, value failed to insert to realm",
+                                            (long)processedObservations, (long)totalObservations];
+                        done(NO, report, error);
                     });
                     return;
                 }
+                
+                
+                [Analytics.sharedClient debugLog:[NSString stringWithFormat:@"Migration: completed %ld of %ld",
+                                                  processedObservations, (long)totalObservations]];
+
                 [realm commitWriteTransaction];
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                done(YES, nil);
+                NSString *report;
+                if (totalObservations == 0 && processedObservations == 0) {
+                    [Analytics.sharedClient debugLog:@"Migration: Empty Migration"];
+                    report = @"Nothing to migrate.";
+                }  else {
+                    [Analytics.sharedClient debugLog:@"Migration: Finished"];
+                    report =  [NSString stringWithFormat:@"processed %ld of %ld, completed successfully",
+                               (long)processedObservations, (long)totalObservations];;
+                }
+                
+                done(YES, report, nil);
             });
         }
     });
