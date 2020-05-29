@@ -90,4 +90,11 @@
     return [NSURL URLWithString:mediumUrlString];
 }
 
+- (BOOL)hasJoinedProjectWithId:(NSInteger)projectId {
+    for (ExploreProjectRealm *project in self.joinedProjects) {
+        if (project.projectId == projectId) { return YES; }
+    }
+    return NO;
+}
+
 @end

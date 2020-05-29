@@ -24,6 +24,7 @@
 @property NSDate *syncedAt;
 
 @property RLMArray<ExploreProjectRealm *><ExploreProjectRealm> *joinedProjects;
+- (BOOL)hasJoinedProjectWithId:(NSInteger)projectId;
 
 @property (readonly) NSURL *userIcon;
 @property (readonly) NSURL *userIconMedium;
