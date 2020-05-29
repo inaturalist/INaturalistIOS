@@ -34,9 +34,9 @@ static const int ListControlIndexNearby = 2;
 @property UISearchController *searchController;
 @property BOOL projectsFilterHasChanged;
 
-@property RLMResults *joinedProjects;
 @property RLMNotificationToken *joinedToken;
 
+@property NSArray *cachedUserProjects;
 @property NSArray *featuredProjects;
 @property NSArray *nearbyProjects;
 @property NSArray *matchingProjects;
@@ -69,7 +69,7 @@ static const int ListControlIndexNearby = 2;
                 return [self nearbyProjects];
                 break;
             case ListControlIndexUser:
-                return [self userProjects];
+                return [self cachedUserProjects];
                 break;
             default:
                 return @[];
@@ -79,18 +79,6 @@ static const int ListControlIndexNearby = 2;
     
     return @[];
 }
-
-- (NSArray *)userProjects {
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
-    if (me) {
-        // convert RLMResults to array
-        return [self.joinedProjects valueForKey:@"self"];
-    } else {
-        return nil;
-    }
-}
-
 
 #pragma mark - sync* methods are fetching from inaturalist.org
 
@@ -324,12 +312,14 @@ static const int ListControlIndexNearby = 2;
     if (appDelegate.loginController.isLoggedIn) {
         ExploreUserRealm *me = appDelegate.loginController.meUserLocal;
         if (me) {
-            self.joinedProjects = me.joinedProjects;
-            
             __weak typeof(self)weakSelf = self;
-            self.joinedToken = [self.joinedProjects addNotificationBlock:^(RLMResults * _Nullable results, RLMCollectionChange * _Nullable change, NSError * _Nullable error) {
+            self.joinedToken = [me.joinedProjects addNotificationBlock:^(RLMArray<ExploreProjectRealm *> * _Nullable array, RLMCollectionChange * _Nullable changes, NSError * _Nullable error) {
+                // sort and convert to NSArray
+                weakSelf.cachedUserProjects = [[array sortedResultsUsingKeyPath:@"title" ascending:YES] valueForKey:@"self"];
                 [weakSelf.tableView reloadData];
             }];
+        } else {
+            self.cachedUserProjects = @[];
         }
     }
 }
