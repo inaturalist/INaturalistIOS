@@ -24,13 +24,10 @@ typedef NS_ENUM(NSInteger, ExploreProjectType) {
 - (CLLocationDegrees)longitude;
 - (NSURL *)iconUrl;
 - (ExploreProjectType)type;
-- (BOOL)joined;
 - (NSURL *)bannerImageUrl;
 - (UIColor *)bannerColor;
 - (NSString *)inatDescription;
 - (NSArray *)sortedProjectObservationFields;
-
-- (void)setJoined:(BOOL)newValue;
 
 @end
 
