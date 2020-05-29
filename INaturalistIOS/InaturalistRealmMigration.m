@@ -131,7 +131,7 @@
                 }  else {
                     [Analytics.sharedClient debugLog:@"Migration: Finished"];
                     report =  [NSString stringWithFormat:@"processed %ld of %ld, skipped %ld, completed successfully",
-                               (long)processedObservations, (long)skippedObservations, (long)totalObservations];;
+                               (long)processedObservations, (long)totalObservations, (long)skippedObservations];;
                 }
                 
                 done(YES, report, nil);
