@@ -16,7 +16,6 @@
 #import "ObsDetailV2ViewController.h"
 #import "TaxonDetailViewController.h"
 #import "INaturalistAppDelegate.h"
-#import "INaturalistAppDelegate.h"
 #import "Analytics.h"
 #import "ProjectAboutViewController.h"
 #import "SiteNewsViewController.h"
@@ -26,6 +25,8 @@
 #import "ProjectsAPI.h"
 #import "ExploreProject.h"
 #import "ExploreProjectRealm.h"
+#import "LoginController.h"
+#import "ExploreUserRealm.h"
 
 @interface ProjectDetailV2ViewController ()
 
@@ -213,7 +214,8 @@
         return;
     }
     
-    if (self.project.joined) {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if ([appDelegate.loginController.meUserLocal hasJoinedProjectWithId:self.project.projectId]) {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Are you sure you want to leave this project?", nil)
                                                                        message:NSLocalizedString(@"This will also remove your observations from this project.",nil)
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -244,7 +246,8 @@
 }
 
 - (void)configureJoinButton {
-    if (self.project.joined) {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if ([appDelegate.loginController.meUserLocal hasJoinedProjectWithId:self.project.projectId]) {
         [self.joinButton setTitle:[NSLocalizedString(@"Leave", @"Leave project button") uppercaseString]
                          forState:UIControlStateNormal];
     } else {
@@ -299,11 +302,17 @@
 
                 // set self.project pointer to the new realm project
                 weakSelf.project = epr;
+                
+                INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+                [realm beginWriteTransaction];
+                [appDelegate.loginController.meUserLocal.joinedProjects addObject:epr];
+                [realm commitWriteTransaction];
             } else if ([weakSelf.project isKindOfClass:[ExploreProjectRealm class]]) {
                 // update this project in realm
                 RLMRealm *realm = [RLMRealm defaultRealm];
+                INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
                 [realm beginWriteTransaction];
-                [self.project setJoined:YES];
+                [appDelegate.loginController.meUserLocal.joinedProjects addObject:(ExploreProjectRealm *)weakSelf.project];
                 [realm commitWriteTransaction];
             }
             
@@ -335,13 +344,15 @@
                                                     handler:nil]];
             [weakSelf presentViewController:alert animated:YES completion:nil];
         } else {
-            // this will almost certainly be happening on a realm project, so
-            // do it in a realm transaction
+            ExploreProjectRealm *projectToLeave = (ExploreProjectRealm *)self.project;
             RLMRealm *realm = [RLMRealm defaultRealm];
+            // update this project in realm
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            NSInteger indexOfProjectToLeave = [appDelegate.loginController.meUserLocal.joinedProjects indexOfObject:projectToLeave];
             [realm beginWriteTransaction];
-            [self.project setJoined:NO];
+            [appDelegate.loginController.meUserLocal.joinedProjects removeObjectAtIndex:indexOfProjectToLeave];
             [realm commitWriteTransaction];
-            
+
             [self configureJoinButton];
         }
     }];
