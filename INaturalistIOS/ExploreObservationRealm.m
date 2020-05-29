@@ -97,7 +97,7 @@
     return [NSDictionary dictionaryWithDictionary:value];
 }
 
-+ (NSDictionary *)valueForCoreDataModel:(id)cdModel {
++ (NSDictionary *)valueForCoreDataModel:(id)cdModel error:(NSError *__autoreleasing *)errorPtr {
     NSMutableDictionary *value = [NSMutableDictionary dictionary];
     
     if ([cdModel valueForKey:@"recordID"]) {
@@ -109,9 +109,21 @@
     if ([cdModel valueForKey:@"uuid"]) {
         value[@"uuid"] = [cdModel valueForKey:@"uuid"];
     } else {
-        // we can't do anything with a local observation without a uuid
-        // this will cause the migration to fail
-        return nil;
+        // uuid is the primary key, cannot be nil for realm obs
+        if ([cdModel valueForKey:@"syncedAt"]) {
+            NSDate *syncDate = [cdModel valueForKey:@"syncedAt"];
+            NSDate *updatedAt = [cdModel valueForKey:@"localUpdatedAt"];
+            if ([syncDate timeIntervalSinceDate:updatedAt] < 0) {
+                // needs sync, unsafe to skip, send an error
+                *errorPtr = [[NSError alloc] initWithDomain:@"org.inaturalist"
+                                                       code:-1017
+                                                   userInfo:@{ NSLocalizedDescriptionKey: @"observation needs sync but has no uuid, unsafe to migrate" }];
+                return nil;
+            } else {
+                // doesn't need sync, safe to skip this in the migration
+                return nil;
+            }
+        }
     }
     
     if ([cdModel valueForKey:@"speciesGuess"]) {

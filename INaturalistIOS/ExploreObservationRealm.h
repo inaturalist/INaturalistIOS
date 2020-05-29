@@ -76,7 +76,7 @@
 - (ExploreObsFieldValueRealm *)valueForObsField:(ExploreObsFieldRealm *)field;
 
 + (NSDictionary *)valueForMantleModel:(ExploreObservation *)model;
-+ (NSDictionary *)valueForCoreDataModel:(id)model;
++ (NSDictionary *)valueForCoreDataModel:(id)model error:(NSError **)errorPtr;
 
 - (void)setSyncedForSelfAndChildrenAt:(NSDate *)syncDate;
 

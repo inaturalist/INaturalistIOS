@@ -68,6 +68,7 @@
             RLMRealm *realm = [RLMRealm defaultRealm];
             CGFloat totalObservations = (CGFloat)results.count;
             NSInteger processedObservations = 0;
+            NSInteger skippedObservations = 0;
             [Analytics.sharedClient debugLog:[NSString stringWithFormat:@"Migration: %ld to migrate", (long)totalObservations]];
 
             for (id cdObservation in results) {
@@ -79,21 +80,23 @@
                     progressBlock(progress);
                 });
                 
-                NSDictionary *value = [ExploreObservationRealm valueForCoreDataModel:cdObservation];
+                NSError *error = nil;
+                NSDictionary *value = [ExploreObservationRealm valueForCoreDataModel:cdObservation error:&error];
                 if (!value) {
-                    NSError *error = [[NSError alloc] initWithDomain:@"org.inaturalist"
-                                                                code:-1015
-                                                            userInfo:@{ NSLocalizedDescriptionKey: @"nil value for cd observation" }];
-                    
-                    [Analytics.sharedClient debugLog:@"Migration: Failed - nil value for cd observation"];
-                    [Analytics.sharedClient debugError:error];
-
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        NSString *report = [NSString stringWithFormat:@"processed %ld of %ld, then bailed, got nil value for cd observation",
-                                            (long)processedObservations, (long)totalObservations];
-                        done(NO, report, error);
-                    });
-                    return;
+                    if (error) {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            NSString *report = [NSString stringWithFormat:@"processed %ld of %ld, then bailed, got nil value for cd observation: %@",
+                                                (long)processedObservations,
+                                                (long)totalObservations,
+                                                error.localizedDescription];
+                            done(NO, report, error);
+                        });
+                        return;
+                    } else {
+                        // should be safe to skip
+                        skippedObservations += 1;
+                        continue;
+                    }
                 }
                 [realm beginWriteTransaction];
                 ExploreObservationRealm *o = [ExploreObservationRealm createOrUpdateInRealm:realm
@@ -114,9 +117,8 @@
                     return;
                 }
                 
-                
                 [Analytics.sharedClient debugLog:[NSString stringWithFormat:@"Migration: completed %ld of %ld",
-                                                  processedObservations, (long)totalObservations]];
+                                                  (long)processedObservations, (long)totalObservations]];
 
                 [realm commitWriteTransaction];
             }
@@ -128,8 +130,8 @@
                     report = @"Nothing to migrate.";
                 }  else {
                     [Analytics.sharedClient debugLog:@"Migration: Finished"];
-                    report =  [NSString stringWithFormat:@"processed %ld of %ld, completed successfully",
-                               (long)processedObservations, (long)totalObservations];;
+                    report =  [NSString stringWithFormat:@"processed %ld of %ld, skipped %ld, completed successfully",
+                               (long)processedObservations, (long)skippedObservations, (long)totalObservations];;
                 }
                 
                 done(YES, report, nil);
