@@ -101,7 +101,9 @@
                 [realm beginWriteTransaction];
                 ExploreObservationRealm *o = [ExploreObservationRealm createOrUpdateInRealm:realm
                                                                                   withValue:value];
+                [realm commitWriteTransaction];
                 if (!o) {
+
                     NSError *error = [[NSError alloc] initWithDomain:@"org.inaturalist"
                                                                 code:-1016
                                                             userInfo:@{ NSLocalizedDescriptionKey: @"value failed to insert to realm" }];
@@ -119,8 +121,6 @@
                 
                 [Analytics.sharedClient debugLog:[NSString stringWithFormat:@"Migration: completed %ld of %ld",
                                                   (long)processedObservations, (long)totalObservations]];
-
-                [realm commitWriteTransaction];
             }
             
             dispatch_async(dispatch_get_main_queue(), ^{
