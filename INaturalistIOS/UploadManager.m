@@ -59,7 +59,15 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     self.recordsToDelete = [deletedRecords mutableCopy];
     self.observationUUIDsToUpload = [NSMutableArray array];
     for (ExploreObservationRealm *o in observations) {
-        [self.observationUUIDsToUpload addObject:[o uuid]];
+        if ([o uuid]) {
+            [self.observationUUIDsToUpload addObject:[o uuid]];
+        } else {
+            NSError *error = [[NSError alloc] initWithDomain:@"org.inaturalist"
+                                                        code:-1018
+                                                    userInfo:@{ NSLocalizedDescriptionKey: @"observation with nil uuid" }];
+            [self.delegate uploadSessionFailedFor:nil error:error];
+            return;
+        }
     }
 
     if (self.recordsToDelete.count > 0) {

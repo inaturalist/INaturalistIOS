@@ -1288,7 +1288,7 @@
     static NSString *FirstSignInKey = @"firstSignInSeen";
     static NSString *SeenV262Key = @"seenVersion262";
     static NSString *SeenV27Key = @"seenVersion27";
-    static NSString *RanMigrationToRealmKey = @"ranMigrationToRealmKey2";
+    static NSString *RanMigrationToRealmKey = @"ranMigrationToRealmKey3";
     
     // re-using 'firstSignInSeen' BOOL, which used to be set during the initial launch
     // when the user saw the login prompt for the first time.
@@ -1595,9 +1595,11 @@
 - (void)uploadSessionFailedFor:(NSString *)observationUUID error:(NSError *)error {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Fatal Error %@", error.localizedDescription]];
     
-    // clear progress for this upload
-    self.uploadProgress[observationUUID] = nil;
-
+    if (observationUUID) {
+        // clear progress for this upload
+        self.uploadProgress[observationUUID] = nil;
+    }
+    
     // dirty the me user to force re-fetching
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.loginController dirtyLocalMeUser];
