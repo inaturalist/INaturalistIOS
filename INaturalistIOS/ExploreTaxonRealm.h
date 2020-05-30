@@ -44,6 +44,7 @@
 - (instancetype)initWithMantleModel:(ExploreTaxon *)model;
 + (NSDictionary *)valueForMantleModel:(ExploreTaxon *)model;
 + (NSDictionary *)valueForCoreDataModel:(id)model;
++ (NSDictionary *)valueForRealmModel:(ExploreTaxonRealm *)model;
 
 - (NSAttributedString *)wikipediaSummaryAttrStringWithSystemFontSize:(CGFloat)fontSize;
 

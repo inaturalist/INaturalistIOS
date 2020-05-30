@@ -110,20 +110,7 @@
         value[@"uuid"] = [cdModel valueForKey:@"uuid"];
     } else {
         // uuid is the primary key, cannot be nil for realm obs
-        if ([cdModel valueForKey:@"syncedAt"]) {
-            NSDate *syncDate = [cdModel valueForKey:@"syncedAt"];
-            NSDate *updatedAt = [cdModel valueForKey:@"localUpdatedAt"];
-            if ([syncDate timeIntervalSinceDate:updatedAt] < 0) {
-                // needs sync, unsafe to skip, send an error
-                *errorPtr = [[NSError alloc] initWithDomain:@"org.inaturalist"
-                                                       code:-1017
-                                                   userInfo:@{ NSLocalizedDescriptionKey: @"observation needs sync but has no uuid, unsafe to migrate" }];
-                return nil;
-            } else {
-                // doesn't need sync, safe to skip this in the migration
-                return nil;
-            }
-        }
+        value[@"uuid"] = [[[NSUUID UUID] UUIDString] lowercaseString];
     }
     
     if ([cdModel valueForKey:@"speciesGuess"]) {
@@ -226,16 +213,46 @@
 
     // to-one relationships
     if ([cdModel valueForKey:@"taxon"]) {
-        value[@"taxon"] = [ExploreTaxonRealm valueForCoreDataModel:[cdModel valueForKey:@"taxon"]];
+        id taxonValue = [ExploreTaxonRealm valueForCoreDataModel:[cdModel valueForKey:@"taxon"]];
+        if (taxonValue) {
+            value[@"taxon"] = taxonValue;
+        }
     } else if ([cdModel valueForKey:@"taxonID"]) {
-        value[@"taxon"] = @{ @"taxonId": [cdModel valueForKey:@"taxonID"] };
+        NSInteger taxonId = [[cdModel valueForKey:@"taxonID"] integerValue];
+        ExploreTaxonRealm *taxon = [ExploreTaxonRealm objectForPrimaryKey:@(taxonId)];
+        if (taxon) {
+            NSMutableDictionary *mutableTaxonValue = [[ExploreTaxonRealm valueForRealmModel:taxon] mutableCopy];
+            // skip taxon photos during migration
+            mutableTaxonValue[@"taxonPhotos"] = nil;
+            id taxonValue = [NSDictionary dictionaryWithDictionary:mutableTaxonValue];
+            if (taxonValue) {
+                value[@"taxon"] = taxonValue;
+            } else {
+                // fallback
+                NSDictionary *taxonValue = @{
+                    @"taxonId": @(taxonId),
+                    @"rankLevel": @(0),             // required or realm will crash
+                };
+                value[@"taxon"] = taxonValue;
+            }
+        } else {
+            // fallback
+            NSDictionary *taxonValue = @{
+                @"taxonId": @(taxonId),
+                @"rankLevel": @(0),             // required or realm will crash
+            };
+            value[@"taxon"] = taxonValue;
+        }
     }
     
     // to-many relationships
     if ([cdModel valueForKey:@"observationPhotos"]) {
         NSMutableArray *photosValue = [NSMutableArray array];
         for (id cdPhoto in [cdModel valueForKey:@"observationPhotos"]) {
-            [photosValue addObject:[ExploreObservationPhotoRealm valueForCoreDataModel:cdPhoto]];
+            id photoValue = [ExploreObservationPhotoRealm valueForCoreDataModel:cdPhoto];
+            if (photoValue) {
+                [photosValue addObject:photoValue];
+            }
         }
         value[@"observationPhotos"] = [NSArray arrayWithArray:photosValue];
     }
@@ -243,7 +260,10 @@
     if ([cdModel valueForKey:@"identifications"]) {
         NSMutableArray *identificationsValue = [NSMutableArray array];
         for (id cdIdentification in [cdModel valueForKey:@"identifications"]) {
-            [identificationsValue addObject:[ExploreIdentificationRealm valueForCoreDataModel:cdIdentification]];
+            id idValue = [ExploreIdentificationRealm valueForCoreDataModel:cdIdentification];
+            if (idValue) {
+                [identificationsValue addObject:idValue];
+            }
         }
         value[@"identifications"] = [NSArray arrayWithArray:identificationsValue];
     }
@@ -251,7 +271,10 @@
     if ([cdModel valueForKey:@"comments"]) {
         NSMutableArray *commentsValue = [NSMutableArray array];
         for (id cdComment in [cdModel valueForKey:@"comments"]) {
-            [commentsValue addObject:[ExploreCommentRealm valueForCoreDataModel:cdComment]];
+            id commentValue = [ExploreCommentRealm valueForCoreDataModel:cdComment];
+            if (commentValue) {
+                [commentsValue addObject:commentValue];
+            }
         }
         value[@"comments"] = [NSArray arrayWithArray:commentsValue];
     }
@@ -259,7 +282,10 @@
     if ([cdModel valueForKey:@"observationFieldValues"]) {
         NSMutableArray *ofvsValue = [NSMutableArray array];
         for (id cdOfv in [cdModel valueForKey:@"observationFieldValues"]) {
-            [ofvsValue addObject:[ExploreObsFieldValueRealm valueForCoreDataModel:cdOfv]];
+            id ofvValue = [ExploreObsFieldValueRealm valueForCoreDataModel:cdOfv];
+            if (ofvValue) {
+                [ofvsValue addObject:ofvValue];
+            }
         }
         value[@"observationFieldValues"] = [NSArray arrayWithArray:ofvsValue];
     }
@@ -267,7 +293,10 @@
     if ([cdModel valueForKey:@"projectObservations"]) {
         NSMutableArray *posValue = [NSMutableArray array];
         for (id cdPo in [cdModel valueForKey:@"projectObservations"]) {
-            [posValue addObject:[ExploreProjectObservationRealm valueForCoreDataModel:cdPo]];
+            id poValue = [ExploreProjectObservationRealm valueForCoreDataModel:cdPo];
+            if (poValue) {
+                [posValue addObject:poValue];
+            }
         }
         value[@"projectObservations"] = [NSArray arrayWithArray:posValue];
     }

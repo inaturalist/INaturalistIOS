@@ -37,12 +37,29 @@
     } else {
         value[@"position"] = @(0);
     }
+    
+    if ([cdModel valueForKey:@"uuid"]) {
+        value[@"uuid"] = [cdModel valueForKey:@"uuid"];
+    } else {
+        if ([cdModel valueForKey:@"syncedAt"])  {
+            // photo has been synced, we can just skip it
+            // in the migration.
+            return nil;
+        } else {
+            // photo hasn't been synced, so we can't just skip
+            // it in the migration. and uuid is the primary key,
+            // so it can't be nil. make one up.
+            value[@"uuid"] = [[[NSUUID UUID] UUIDString] lowercaseString];
+        }
+    }
+    
 
     value[@"url"] = [cdModel valueForKey:@"squareURL"];
-    value[@"uuid"] = [cdModel valueForKey:@"uuid"];
+    value[@"photoKey"] = [cdModel valueForKey:@"photoKey"];
+
     value[@"timeSynced"] = [cdModel valueForKey:@"syncedAt"];
     value[@"timeCreated"] = [cdModel valueForKey:@"createdAt"];
-    value[@"photoKey"] = [cdModel valueForKey:@"photoKey"];
+    value[@"timeUpdatedLocally"] = [cdModel valueForKey:@"localUpdatedAt"];
 
     return value;
 }

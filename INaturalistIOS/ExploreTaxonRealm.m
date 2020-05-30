@@ -73,10 +73,31 @@
     return [NSDictionary dictionaryWithDictionary:value];
 }
 
++ (NSDictionary *)valueForRealmModel:(ExploreTaxonRealm *)model {
+    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+    RLMObjectSchema *schema = model.objectSchema;
+    for (RLMProperty *property in schema.properties) {
+       dict[property.name] = model[property.name];
+    }
+    return [NSDictionary dictionaryWithDictionary:dict];
+}
+
 + (NSDictionary *)valueForCoreDataModel:(id)cdModel {
     NSMutableDictionary *value = [NSMutableDictionary dictionary];
     
-    value[@"taxonId"] = [cdModel valueForKey:@"recordID"];
+    if ([cdModel valueForKey:@"recordID"]) {
+        value[@"taxonId"] = [cdModel valueForKey:@"recordID"];
+    } else {
+        return nil;
+    }
+    
+    if ([cdModel valueForKey:@"rankLevel"]) {
+        value[@"rankLevel"] = [cdModel valueForKey:@"rankLevel"];
+    } else {
+        value[@"rankLevel"] = @(0);
+    }
+
+
     value[@"commonName"] = [cdModel valueForKey:@"defaultName"];
     value[@"searchableCommonName"] = [[cdModel valueForKey:@"defaultName"] stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
                                                                                              locale:[NSLocale currentLocale]];
@@ -84,16 +105,21 @@
     value[@"searchableScientificName"] = [[cdModel valueForKey:@"name"] stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
                                                                                              locale:[NSLocale currentLocale]];
     value[@"rankName"] = [cdModel valueForKey:@"rankName"];
-    value[@"rankLevel"] = [cdModel valueForKey:@"rankLevel"];
+    
     value[@"webContent"] = [cdModel valueForKey:@"wikipediaSummary"];
     value[@"observationCount"] = [cdModel valueForKey:@"observationsCount"];
     
     if ([cdModel valueForKey:@"taxonPhotos"]) {
         NSMutableArray *photosValue = [NSMutableArray array];
         for (id cdPhoto in [cdModel valueForKey:@"taxonPhotos"]) {
-            [photosValue addObject:[ExploreTaxonPhotoRealm valueForCoreDataModel:cdPhoto]];
+            id photoValue = [ExploreTaxonPhotoRealm valueForCoreDataModel:cdPhoto];
+            if (photoValue) {
+                [photosValue addObject:photoValue];
+            }
         }
-        value[@"taxonPhotos"] = [NSArray arrayWithArray:photosValue];
+        if (photosValue.count > 0) {
+            value[@"taxonPhotos"] = [NSArray arrayWithArray:photosValue];
+        }
     }
     
     return [NSDictionary dictionaryWithDictionary:value];

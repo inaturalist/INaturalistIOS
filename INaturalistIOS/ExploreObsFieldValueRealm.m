@@ -26,10 +26,10 @@
         value[@"value"] = mtlModel.value;
     }
     
-    // uuid is the primary key, cannot be nil
     if (mtlModel.uuid) {
         value[@"uuid"] = mtlModel.uuid;
     } else {
+        // uuid is the primary key, cannot be nil
         value[@"uuid"] = [[[NSUUID UUID] UUIDString] lowercaseString];
     }
     
@@ -57,19 +57,30 @@
     // sorry!
     if ([cdModel valueForKey:@"value"]) {
         value[@"value"] = [cdModel valueForKey:@"value"];
-    }
-        
-    // uuid is the primary key, cannot be nil
-    // however, we don't have UUIDs for obsFieldValues in CoreData
-    // so just make one up for now. it will get reset next time the
-    // observation syncs
-    // this is only safe if the cdModel was not previously synced
-    if (![cdModel valueForKey:@"syncedAt"]) {
-        value[@"uuid"] = [[[NSUUID UUID] UUIDString] lowercaseString];
+    } else {
+        // we can't migrate an OFV without a value
+        return nil;
     }
     
+    if ([cdModel valueForKey:@"syncedAt"]) {
+        // skip this in the migration, since we won't have a UUID for it
+        // we'll just refetch from the server the next time the user looks
+        // for their observations
+        return nil;
+    } else {
+        // uuid is the primary key, cannot be nil
+        // however, we don't have UUIDs for obsFieldValues in CoreData
+        // so just make one up for now. it will get reset next time the
+        // observation syncs
+        // this is only safe if the cdModel was not previously synced
+        value[@"uuid"] = [[[NSUUID UUID] UUIDString] lowercaseString];
+    }
+
     if ([cdModel valueForKey:@"observationField"]) {
         value[@"obsField"] = [ExploreObsFieldRealm valueForCoreDataModel:[cdModel valueForKey:@"observationField"]];
+    } else {
+        // we can't migration an OFV without an obs field
+        return nil;
     }
     
     value[@"timeSynced"] = [cdModel valueForKey:@"syncedAt"];

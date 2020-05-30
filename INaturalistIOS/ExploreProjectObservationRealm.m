@@ -19,10 +19,10 @@
     NSMutableDictionary *value = [NSMutableDictionary dictionary];
     value[@"projectObsId"] = @(mtlModel.projectObsId);
         
-    // uuid is the primary key, cannot be nil
     if (mtlModel.uuid) {
         value[@"uuid"] = mtlModel.uuid;
     } else {
+        // uuid is the primary key, cannot be nil
         value[@"uuid"] = [[[NSUUID UUID] UUIDString] lowercaseString];
     }
     
@@ -46,16 +46,24 @@
         value[@"projectObsId"] = @(0);
     }
             
-    // uuid is the primary key, cannot be nil
-    // however, we don't have UUIDs for project observations in CoreData
-    // so just make one up for now. it will get reset next time the
-    // observation syncs
-    if (![cdModel valueForKey:@"syncedAt"]) {
+    if ([cdModel valueForKey:@"syncedAt"]) {
+        // skip this in the migration, since we won't have a UUID for it
+        // we'll just refetch from the server the next time the user looks
+        // for their observations
+        return nil;
+    } else {
+        // uuid is the primary key, cannot be nil
+        // however, we don't have UUIDs for project observations in CoreData
+        // so just make one up for now. it will get reset next time the
+        // observation syncs
         value[@"uuid"] = [[[NSUUID UUID] UUIDString] lowercaseString];
     }
     
     if ([cdModel valueForKey:@"project"]) {
         value[@"project"] = [ExploreProjectRealm valueForCoreDataModel:[cdModel valueForKey:@"project"]];
+    } else {
+        // we can't migrate a PO without a project
+        return nil;
     }
     
     value[@"timeSynced"] = [cdModel valueForKey:@"syncedAt"];
