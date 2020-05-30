@@ -131,7 +131,23 @@
                 }  else {
                     [Analytics.sharedClient debugLog:@"Migration: Finished"];
                     report =  [NSString stringWithFormat:@"processed %ld of %ld, skipped %ld, completed successfully",
-                               (long)processedObservations, (long)totalObservations, (long)skippedObservations];;
+                               (long)processedObservations,
+                               (long)totalObservations,
+                               (long)skippedObservations];;
+                }
+                
+                NSInteger obsCountWithNilUUID = 0;
+                for (ExploreObservationRealm *o in [ExploreObservationRealm allObjects]) {
+                    if (![o uuid]) {
+                        obsCountWithNilUUID += 1;
+                    }
+                }
+                if (obsCountWithNilUUID > 0) {
+                    report =  [NSString stringWithFormat:@"processed %ld of %ld, skipped %ld, completed. %ld observations with nil uuids, which will FAIL AT UPLOAD.",
+                               (long)processedObservations,
+                               (long)totalObservations,
+                               (long)skippedObservations,
+                               (long)obsCountWithNilUUID];
                 }
                 
                 done(YES, report, nil);
