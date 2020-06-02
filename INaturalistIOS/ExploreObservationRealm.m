@@ -554,7 +554,7 @@
                 if ([property.name isEqualToString:key]) {
                     found = YES;
                     if (property.type == RLMPropertyTypeBool) {
-                        mutableParams[mappedName] = @([[self valueForKey:key] boolValue]);
+                        mutableParams[mappedName] = [[self valueForKey:key] boolValue] ? @"true" : @"false";
                     } else {
                         mutableParams[mappedName] = [self valueForKey:key];
                     }
