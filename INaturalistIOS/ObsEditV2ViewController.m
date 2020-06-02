@@ -1114,7 +1114,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                     
                     __strong typeof(weakSelf) strongSelf = weakSelf;
                     
-                    strongSelf.standaloneObservation.captive = @(selectedIndex);
+                    strongSelf.standaloneObservation.captive = (selectedIndex == 1) ? true : false;
                     strongSelf.standaloneObservation.timeUpdatedLocally = [NSDate date];
                     
                     [strongSelf.tableView beginUpdates];
