@@ -78,7 +78,13 @@
         
         for (id cdObservation in results) {
             [migrationReport appendString:@"\n\n"];
+            
             [migrationReport appendFormat:@"Migration: working on %@\n", [cdObservation description]];
+
+            // debug, trigger fault to fire
+            [cdObservation willAccessValueForKey:nil];
+            [migrationReport appendFormat:@"Migration: post fault fire, working on %@\n", [cdObservation description]];
+            
             if ([cdObservation respondsToSelector:@selector(uploadableRepresentation)]) {
                 NSDictionary *uploadableRepresentation = [cdObservation performSelector:@selector(uploadableRepresentation)];
                 [migrationReport appendFormat:@"Migration: uploadable representation is %@\n", uploadableRepresentation];
