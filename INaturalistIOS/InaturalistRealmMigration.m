@@ -51,16 +51,23 @@
 - (void)migrateObservationsToRealmProgress:(INatRealmMigrationProgressHandler)progressBlock finished:(INatRealmMigrationCompletionHandler)done {
     // migrate old observations to realm
     // do this on a background thread so we can update the UI
+    
+    // migration report will be emailed to the user
+    NSMutableString *migrationReport = [NSMutableString string];
+    
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        
         NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Observation"];
         NSError *error = nil;
         NSArray *results = [[self coreDataMOC] executeFetchRequest:request error:&error];
         
         [Analytics.sharedClient debugLog:@"Migration: Begin"];
-        
+        [migrationReport appendString:@"Migration: Begin\n"];
+
         if (error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [Analytics.sharedClient debugLog:@"Migration: Failed - cannot get MOC"];
+                [migrationReport appendString:@"Migration: Failed - cannot get MOC\n"];
                 [Analytics.sharedClient debugError:error];
                 done(NO, @"", error);
             });
@@ -70,8 +77,46 @@
             NSInteger processedObservations = 0;
             NSInteger skippedObservations = 0;
             [Analytics.sharedClient debugLog:[NSString stringWithFormat:@"Migration: %ld to migrate", (long)totalObservations]];
+            [migrationReport appendFormat:@"Migration: %ld to migrate\n", (long)totalObservations];
 
             for (id cdObservation in results) {
+                [migrationReport appendString:@"\n\n"];
+                [migrationReport appendFormat:@"Migration: working on %@\n", [cdObservation description]];
+                if ([cdObservation respondsToSelector:@selector(uploadableRepresentation)]) {
+                    NSDictionary *uploadableRepresentation = [cdObservation performSelector:@selector(uploadableRepresentation)];
+                    [migrationReport appendFormat:@"Migration: uploadable representation is %@\n", uploadableRepresentation];
+                } else {
+                    [migrationReport appendString:@"Migration: no uploadable representation"];
+                }
+                
+                if ([cdObservation respondsToSelector:@selector(recordID)]) {
+                    NSNumber *recordId = [cdObservation performSelector:@selector(recordID)];
+                    [migrationReport appendFormat:@"Migration: record id is %@\n", recordId];
+                } else {
+                    [migrationReport appendString:@"Migration: no record id"];
+                }
+                
+                if ([cdObservation respondsToSelector:@selector(uuid)]) {
+                    NSString *uuid = [cdObservation performSelector:@selector(uuid)];
+                    [migrationReport appendFormat:@"Migration: uuid is %@\n", uuid];
+                } else {
+                    [migrationReport appendString:@"Migration: no uuid"];
+                }
+                
+                if ([cdObservation respondsToSelector:@selector(syncedAt)]) {
+                    NSDate *syncDate = [cdObservation performSelector:@selector(syncedAt)];
+                    [migrationReport appendFormat:@"Migration: sync date is %@\n", syncDate];
+                } else {
+                    [migrationReport appendString:@"Migration: no sync date"];
+                }
+                
+                if ([cdObservation respondsToSelector:@selector(updatedAt)]) {
+                    NSDate *updatedDate = [cdObservation performSelector:@selector(updatedAt)];
+                    [migrationReport appendFormat:@"Migration: updated date is %@\n", updatedDate];
+                } else {
+                    [migrationReport appendString:@"Migration: no updated date"];
+                }
+                
                 // update the progress UI
                 processedObservations += 1;
                 CGFloat progress = (CGFloat)processedObservations / totalObservations;
@@ -82,6 +127,8 @@
                 
                 NSError *error = nil;
                 NSDictionary *value = [ExploreObservationRealm valueForCoreDataModel:cdObservation error:&error];
+                [migrationReport appendFormat:@"Migration: migration value is %@\n", value];
+
                 if (!value) {
                     if (error) {
                         dispatch_async(dispatch_get_main_queue(), ^{
@@ -119,6 +166,9 @@
                     return;
                 }
                 
+                [migrationReport appendFormat:@"Migration: realm value is %@\n", o];
+                [migrationReport appendFormat:@"Migration: realm uploadable representation is %@\n", [o uploadableRepresentation]];
+                
                 [Analytics.sharedClient debugLog:[NSString stringWithFormat:@"Migration: completed %ld of %ld",
                                                   (long)processedObservations, (long)totalObservations]];
             }
@@ -150,7 +200,7 @@
                                (long)obsCountWithNilUUID];
                 }
                 
-                done(YES, report, nil);
+                done(YES, migrationReport, nil);
             });
         }
     });
