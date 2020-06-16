@@ -1295,7 +1295,7 @@
     static NSString *FirstSignInKey = @"firstSignInSeen";
     static NSString *SeenV262Key = @"seenVersion262";
     static NSString *SeenV27Key = @"seenVersion27";
-    static NSString *RanMigrationToRealmKey = @"ranMigrationToRealmKey5";
+    static NSString *RanMigrationToRealmKey = @"ranMigrationToRealmKey6";
     
     // re-using 'firstSignInSeen' BOOL, which used to be set during the initial launch
     // when the user saw the login prompt for the first time.
@@ -1362,6 +1362,10 @@
                 [[NSUserDefaults standardUserDefaults] setBool:YES
                                                         forKey:RanMigrationToRealmKey];
                 [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                if (![MFMailComposeViewController canSendMail]) {
+                    return;
+                }
                 
                 MFMailComposeViewController* composeVC = [[MFMailComposeViewController alloc] init];
                 composeVC.mailComposeDelegate = weakSelf;
