@@ -548,13 +548,16 @@
             NSString *mappedName = mapping[key];
             
             BOOL found = NO;
-            
-            NSLog(@"properties is %@", self.objectSchema.properties);
             for (RLMProperty *property in self.objectSchema.properties) {
                 if ([property.name isEqualToString:key]) {
                     found = YES;
                     if (property.type == RLMPropertyTypeBool) {
                         mutableParams[mappedName] = [[self valueForKey:key] boolValue] ? @"true" : @"false";
+                    } else if (property.type == RLMPropertyTypeString) {
+                        // only add string values if they exist
+                        if ([self valueForKey:key]) {
+                            mutableParams[mappedName] = [self valueForKey:key];
+                        }
                     } else {
                         mutableParams[mappedName] = [self valueForKey:key];
                     }
@@ -574,8 +577,6 @@
             mutableParams[badZero] = nil;
         }
     }
-    
-    
     
     // return an immutable copy
     // ignore_photos is required to avoid clobbering obs photos
