@@ -55,6 +55,9 @@
     // migration report will be emailed to the user
     NSMutableString *migrationReport = [NSMutableString string];
     
+    NSMutableArray *cdUUIDs = [NSMutableArray array];
+    NSMutableArray *realmUUIDs = [NSMutableArray array];
+    
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Observation"];
     
     NSError *error = nil;
@@ -69,6 +72,7 @@
         [Analytics.sharedClient debugError:error];
         done(NO, @"", error);
     } else {
+        
         RLMRealm *realm = [RLMRealm defaultRealm];
         CGFloat totalObservations = (CGFloat)results.count;
         NSInteger processedObservations = 0;
@@ -101,6 +105,7 @@
             
             if ([cdObservation respondsToSelector:@selector(uuid)]) {
                 NSString *uuid = [cdObservation performSelector:@selector(uuid)];
+                [cdUUIDs addObject:uuid];
                 [migrationReport appendFormat:@"Migration: uuid is %@\n", uuid];
             } else {
                 [migrationReport appendString:@"Migration: no uuid"];
@@ -163,6 +168,10 @@
                 return;
             }
             
+            if (o.uuid) {
+                [realmUUIDs addObject:o.uuid];
+            }
+            
             [migrationReport appendFormat:@"Migration: realm value is %@\n", o];
             [migrationReport appendFormat:@"Migration: realm uploadable representation is %@\n", [o uploadableRepresentation]];
             
@@ -170,16 +179,12 @@
                                               (long)processedObservations, (long)totalObservations]];
         }
         
-        NSString *report;
         if (totalObservations == 0 && processedObservations == 0) {
             [Analytics.sharedClient debugLog:@"Migration: Empty Migration"];
-            report = @"Nothing to migrate.";
+            [migrationReport appendString:@"Migration: Empty Migration"];
         }  else {
             [Analytics.sharedClient debugLog:@"Migration: Finished"];
-            report =  [NSString stringWithFormat:@"processed %ld of %ld, skipped %ld, completed successfully",
-                       (long)processedObservations,
-                       (long)totalObservations,
-                       (long)skippedObservations];;
+            [migrationReport appendString:@"Migration: Finished"];
         }
         
         NSInteger obsCountWithNilUUID = 0;
@@ -188,12 +193,19 @@
                 obsCountWithNilUUID += 1;
             }
         }
+        
         if (obsCountWithNilUUID > 0) {
-            report =  [NSString stringWithFormat:@"processed %ld of %ld, skipped %ld, completed. %ld observations with nil uuids, which will FAIL AT UPLOAD.",
-                       (long)processedObservations,
-                       (long)totalObservations,
-                       (long)skippedObservations,
-                       (long)obsCountWithNilUUID];
+            [migrationReport appendFormat:@"processed %ld of %ld, skipped %ld, completed. %ld observations with nil uuids, which will FAIL AT UPLOAD.",
+             (long)processedObservations,
+             (long)totalObservations,
+             (long)skippedObservations,
+             (long)obsCountWithNilUUID];
+        }
+        
+        if ([realmUUIDs isEqual:cdUUIDs]) {
+            [migrationReport appendString:@"Migration: Before and After UUIDs Match"];
+        } else {
+            [migrationReport appendString:@"Migration: Before and After UUIDs DO NOT MATCH"];
         }
         
         done(YES, migrationReport, nil);
