@@ -29,7 +29,7 @@
         }
         value[@"projectObsFields"] = [NSArray arrayWithArray:pofs];
     }
-
+    
     value[@"latitude"] = @(mtlModel.latitude);
     value[@"longitude"] = @(mtlModel.longitude);
     value[@"type"] = @(mtlModel.type);
@@ -48,12 +48,22 @@
     value[@"title"] = [cdModel valueForKey:@"title"];
     value[@"iconUrl"] = [cdModel valueForKey:@"iconURL"];
     value[@"inatDescription"] = [cdModel valueForKey:@"desc"];
-    value[@"latitude"] = [cdModel valueForKey:@"latitude"];
-    value[@"longitude"] = [cdModel valueForKey:@"longitude"];
+    
+    // supply defaults for nil values
+    if ([cdModel valueForKey:@"latitude"]) {
+        value[@"latitude"] = [cdModel valueForKey:@"latitude"];
+    } else {
+        value[@"latitude"] = @(kCLLocationCoordinate2DInvalid.latitude);
+    }
+    if ([cdModel valueForKey:@"longitude"]) {
+        value[@"longitude"] = [cdModel valueForKey:@"longitude"];
+    } else {
+        value[@"longitude"] = @(kCLLocationCoordinate2DInvalid.longitude);
+    }
     
     // no location id for cd projects
     value[@"locationId"] = @(0);
-        
+    
     // needs conversion
     if ([cdModel valueForKey:@"projectType"]) {
         if ([[cdModel valueForKey:@"projectType"] isEqualToString:@"collection"]) {
