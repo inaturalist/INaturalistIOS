@@ -226,7 +226,8 @@
                 for (ExploreObservation *eo in results) {
                     NSDictionary *value = [ExploreObservationRealm valueForMantleModel:eo];
                     [realm beginWriteTransaction];
-                    [ExploreObservationRealm createOrUpdateInRealm:realm withValue:value];
+                    ExploreObservationRealm *o = [ExploreObservationRealm createOrUpdateInRealm:realm withValue:value];
+                    [o setSyncedForSelfAndChildrenAt:[NSDate date]];
                     [realm commitWriteTransaction];
                 }
                 // reload this tableview
