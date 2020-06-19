@@ -29,9 +29,9 @@
     
     NSMutableArray *galleryData = [NSMutableArray arrayWithCapacity:self.taxon.taxonPhotos.count];
     NSDictionary *attributionAttrs = @{
-                                       NSForegroundColorAttributeName: [UIColor whiteColor],
-                                       NSFontAttributeName: [UIFont systemFontOfSize:11.0f],
-                                       };
+        NSForegroundColorAttributeName: [UIColor whiteColor],
+        NSFontAttributeName: [UIFont systemFontOfSize:11.0f],
+    };
     for (ExploreTaxonPhotoRealm *etpr in self.taxon.taxonPhotos) {
         MHGalleryItem *item = [MHGalleryItem itemWithURL:etpr.largePhotoUrl.absoluteString
                                              galleryType:MHGalleryTypeImage];
@@ -68,7 +68,7 @@
     };
     
     [self presentMHGalleryController:gallery animated:YES completion:nil];
-
+    
 }
 
 - (void)viewDidLoad {
@@ -98,17 +98,20 @@
         [self.pages addObject:vc];
     }
     
-    [self setViewControllers:@[ [self.pages firstObject] ]
-                   direction:UIPageViewControllerNavigationDirectionForward
-                    animated:NO
-                  completion:nil];
+    // always dispatch this to the main thread
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self setViewControllers:@[ [self.pages firstObject] ]
+                       direction:UIPageViewControllerNavigationDirectionForward
+                        animated:NO
+                      completion:nil];
+    });
     
     self.customPageControl = ({
         UIPageControl *pageControl = [[UIPageControl alloc] initWithFrame:CGRectZero];
         pageControl.translatesAutoresizingMaskIntoConstraints = NO;
         pageControl.numberOfPages = self.pages.count;
         pageControl.hidden = (self.pages.count < 2);
-
+        
         pageControl.currentPage = 0;
         
         pageControl;
@@ -150,11 +153,14 @@
         [self.pages addObject:vc];
     }
     
-    [self setViewControllers:@[ [self.pages firstObject] ]
-                   direction:UIPageViewControllerNavigationDirectionForward
-                    animated:NO
-                  completion:nil];
-
+    // always dispatch this to the main thread
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self setViewControllers:@[ [self.pages firstObject] ]
+                       direction:UIPageViewControllerNavigationDirectionForward
+                        animated:NO
+                      completion:nil];
+    });
+    
     self.customPageControl.numberOfPages = self.pages.count;
     self.customPageControl.hidden = (self.pages.count < 2);
 }

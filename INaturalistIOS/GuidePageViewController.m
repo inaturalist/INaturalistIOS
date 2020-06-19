@@ -24,10 +24,14 @@
         RXMLElement *rx = [self.guide atXPath:[NSString stringWithFormat:@"(%@)[%ld]", [self currentXPath], (long)self.currentPosition]];
         gtvc.guideTaxon = [[GuideTaxonXML alloc] initWithGuide:self.guide andXML:rx];
         gtvc.localPosition = self.currentPosition;
-        [self setViewControllers:[NSArray arrayWithObject:gtvc]
-                       direction:UIPageViewControllerNavigationDirectionForward
-                        animated:YES
-                      completion:nil];
+        
+        // always dispatch this to the main thread
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self setViewControllers:[NSArray arrayWithObject:gtvc]
+                           direction:UIPageViewControllerNavigationDirectionForward
+                            animated:YES
+                          completion:nil];
+        });
     }
     self.dataSource = self;
     self.delegate = self;
