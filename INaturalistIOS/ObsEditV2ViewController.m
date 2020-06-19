@@ -575,26 +575,37 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     [self.geoCoder cancelGeocode];       // cancel anything in flight
     
+    __weak typeof(self) weakSelf = self;
     [self.geoCoder reverseGeocodeLocation:loc
                         completionHandler:^(NSArray *placemarks, NSError *error) {
-                            CLPlacemark *placemark = [placemarks firstObject];
-                            if (placemark) {
-                                @try {
-                                    obs.placeGuess = [placemark inatPlaceGuess];
-                                    obs.timeUpdatedLocally = [NSDate date];
-                                    NSIndexPath *locRowIp = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
-                                    [self.tableView beginUpdates];
-                                    [self.tableView reloadRowsAtIndexPaths:@[ locRowIp ]
-                                                          withRowAnimation:UITableViewRowAnimationNone];
-                                    [self.tableView endUpdates];
-                                } @catch (NSException *exception) {
-                                    if ([exception.name isEqualToString:NSObjectInaccessibleException])
-                                        return;
-                                    else
-                                        @throw exception;
-                                }
-                            }
-                        }];
+        
+        if (!weakSelf) {
+            return;
+        }
+        
+        CLPlacemark *placemark = [placemarks firstObject];
+        if (placemark) {
+            @try {
+                // this can come in after we've added the observation
+                // to realm, so do it in a transaction
+                RLMRealm *realm = [RLMRealm defaultRealm];
+                [realm beginWriteTransaction];
+                obs.placeGuess = [placemark inatPlaceGuess];
+                obs.timeUpdatedLocally = [NSDate date];
+                [realm commitWriteTransaction];
+                NSIndexPath *locRowIp = [NSIndexPath indexPathForItem:2 inSection:ConfirmObsSectionNotes];
+                [weakSelf.tableView beginUpdates];
+                [weakSelf.tableView reloadRowsAtIndexPaths:@[ locRowIp ]
+                                          withRowAnimation:UITableViewRowAnimationNone];
+                [weakSelf.tableView endUpdates];
+            } @catch (NSException *exception) {
+                if ([exception.name isEqualToString:NSObjectInaccessibleException])
+                    return;
+                else
+                    @throw exception;
+            }
+        }
+    }];
 }
 
 #pragma mark - UIButton targets
