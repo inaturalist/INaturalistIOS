@@ -47,7 +47,7 @@
 
 - (void)boundingBoxForTaxon:(NSInteger)taxonId handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - bounding box for taxon"];
-    NSString *path = [NSString stringWithFormat:@"observations?taxon_id=%ld&per_page=1&return_bounds=true",
+    NSString *path = [NSString stringWithFormat:@"observations?taxon_id=%ld&per_page=1&return_bounds=true&verifiable=true",
                       (long)taxonId];
     
     path = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
