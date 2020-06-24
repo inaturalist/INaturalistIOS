@@ -45,17 +45,15 @@ class INatTabBarController: UITabBarController {
    
    func showCamera() {
       Analytics.sharedClient()?.event(kAnalyticsEventNewObservationCameraStart)
-
-      let gallery = GalleryController()
-      Gallery.Config.tabsToShow = [.cameraTab]
-      Gallery.Config.initialTab = .cameraTab
-      gallery.delegate = self
-      let galleryNav = UINavigationController(rootViewController: gallery)
-      galleryNav.navigationBar.isHidden = true
+      
+      let camera = UIImagePickerController()
+      camera.delegate = self
+      camera.mediaTypes = ["public.image"]
+      camera.sourceType = .camera
       
       // dismiss the media picker, present the camera
       self.dismiss(animated: true) {
-         self.present(galleryNav, animated: true, completion: nil)
+         self.present(camera, animated: true, completion: nil)
       }
    }
    
@@ -183,6 +181,70 @@ extension INatTabBarController: MediaPickerDelegate {
    }
 }
 
+extension INatTabBarController: UIImagePickerControllerDelegate {
+   func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+      picker.dismiss(animated: true, completion: nil)
+   }
+   
+   public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+      guard let image = info[.originalImage] as? UIImage else {
+         // no image, dismiss and give up
+         picker.dismiss(animated: true, completion: nil)
+         return
+      }
+      
+      guard let imageStore = ImageStore.shared() else {
+         picker.dismiss(animated: true, completion: nil)
+         return
+      }
+      
+      let photoKey = imageStore.createKey()
+      do {
+         try imageStore.store(image, forKey:photoKey)
+      } catch {
+         picker.dismiss(animated: true, completion: nil)
+         return
+      }
+      
+      // save to the photo library
+      UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+      
+      // with the standard image picker, no need to show confirmation screen
+      let o = ExploreObservationRealm()
+      o.uuid = UUID().uuidString.lowercased()
+      o.timeCreated = Date()
+      o.timeUpdatedLocally = Date()
 
+      // photo was taken now
+      o.timeObserved = Date()
+      
+      let op = ExploreObservationPhotoRealm()
+      op.uuid = UUID().uuidString.lowercased()
+      op.timeCreated = Date()
+      op.timeUpdatedLocally = Date()
+      op.position = 0
+      op.photoKey = photoKey
+      
+      o.observationPhotos.add(op)
+            
+      if let taxonId = self.observingTaxonId,
+         let taxon = ExploreTaxonRealm.object(forPrimaryKey: NSNumber(value: taxonId))
+      {
+         o.taxon = taxon
+      }
+
+      let editVC = ObsEditV2ViewController(nibName: nil, bundle: nil)
+      editVC.standaloneObservation = o
+      // photo was taken at the current location
+      editVC.shouldContinueUpdatingLocation = true
+      editVC.isMakingNewObservation = true
+      
+      picker.setNavigationBarHidden(false, animated: true)
+      picker.pushViewController(editVC, animated: true)
+   }
+}
+
+// required for UIImagePickerController delegate
+extension INatTabBarController: UINavigationControllerDelegate { }
 
 
