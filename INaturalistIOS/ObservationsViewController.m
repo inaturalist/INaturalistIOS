@@ -1171,6 +1171,7 @@
     __weak typeof(self)weakSelf = self;
     self.myObsNoteToken = [self.myObservations addNotificationBlock:^(RLMResults * _Nullable results, RLMCollectionChange * _Nullable change, NSError * _Nullable error) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf configureHeaderForLoggedInUser];
             [weakSelf.tableView reloadData];
         });
     }];
@@ -1477,10 +1478,7 @@
         [self refreshRequestedNotify:NO];
         [self checkForDeleted];
         [self checkNewActivity];
-    }
-    
-    // now is a good time to reconfigure the header
-    [self configureHeaderForLoggedInUser];
+    }    
 }
 
 - (void)viewWillDisappear:(BOOL)animated
