@@ -226,7 +226,7 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
       op.photoKey = photoKey
       
       o.observationPhotos.add(op)
-            
+      
       if let taxonId = self.observingTaxonId,
          let taxon = ExploreTaxonRealm.object(forPrimaryKey: NSNumber(value: taxonId))
       {
