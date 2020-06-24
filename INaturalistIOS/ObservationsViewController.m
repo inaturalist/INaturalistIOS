@@ -682,28 +682,6 @@
                                             handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
 }
-    
-#pragma mark - NSFetchedResultsControllerDelegate
-
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    // skip reload animation
-}
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    // skip reload animation
-    [self.tableView reloadData];
-    
-    // now is also a good time to reload the header
-    [self configureHeaderForLoggedInUser];
-}
-
-- (void)controller:(NSFetchedResultsController *)controller
-   didChangeObject:(id)anObject
-       atIndexPath:(NSIndexPath *)indexPath
-     forChangeType:(NSFetchedResultsChangeType)type
-      newIndexPath:(NSIndexPath *)newIndexPath {
-    // skip reload animation
-}
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // side effect in fetch sections - show or hide background/default view
