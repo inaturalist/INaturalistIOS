@@ -41,6 +41,18 @@
     NSString *escapedPath = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], escapedPath];
     NSURL *url = [NSURL URLWithString:urlString];
+    
+    // add locale to the request
+    NSURLComponents *components = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:YES];
+    NSString *localeIdentifier = [[NSLocale currentLocale] localeIdentifier];
+    NSURLQueryItem *localeQueryItem = [NSURLQueryItem queryItemWithName:@"locale" value:localeIdentifier];
+    if (components.queryItems) {
+        components.queryItems = [components.queryItems arrayByAddingObject:localeQueryItem];
+    } else {
+        components.queryItems = @[ localeQueryItem ];
+    }
+    url = [components URL];
+    
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.HTTPMethod = method;
     
