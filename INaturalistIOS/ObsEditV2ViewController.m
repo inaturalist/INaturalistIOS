@@ -524,7 +524,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             [self stopUpdatingLocation];
         }
         
-        if (self.standaloneObservation.placeGuess.length == 0 || [newLocation distanceFromLocation:oldLocation] > 100) {
+        if (self.standaloneObservation.placeGuess.length == 0 || !oldLocation || [newLocation distanceFromLocation:oldLocation] > 100) {
             [self reverseGeocodeCoordinatesForObservation:self.standaloneObservation];
         }
     } @catch (NSException *exception) {
