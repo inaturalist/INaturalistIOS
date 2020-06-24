@@ -207,6 +207,7 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
       }
       
       // save to the photo library
+      // silently continue if this fails
       UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
       
       // with the standard image picker, no need to show confirmation screen
@@ -241,7 +242,7 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
       
       picker.setNavigationBarHidden(false, animated: true)
       picker.pushViewController(editVC, animated: true)
-   }
+   }   
 }
 
 // required for UIImagePickerController delegate
