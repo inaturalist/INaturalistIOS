@@ -24,7 +24,6 @@
 #import "UIImage+INaturalist.h"
 #import "ObsDetailV2ViewController.h"
 #import "UIColor+INaturalist.h"
-#import "INatUITabBarController.h"
 #import "ExploreObservationRealm.h"
 
 @interface UpdatesViewController ()

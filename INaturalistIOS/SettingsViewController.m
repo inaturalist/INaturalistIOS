@@ -26,7 +26,6 @@
 #import "ProjectObservation.h"
 #import "Comment.h"
 #import "Identification.h"
-#import "INatUITabBarController.h"
 #import "NXOAuth2.h"
 #import "Analytics.h"
 #import "INaturalistAppDelegate.h"

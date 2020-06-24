@@ -34,7 +34,6 @@
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
 #import "LoginController.h"
-#import "INatUITabBarController.h"
 #import "NSURL+INaturalist.h"
 #import "Fave.h"
 #import "NewsItem.h"
@@ -50,6 +49,7 @@
 #import "Guide.h"
 #import "ExploreGuideRealm.h"
 #import "ExploreObservationRealm.h"
+#import "iNaturalist-Swift.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -310,7 +310,7 @@
 }
 
 - (void)showMainUI {
-    if (![self.window.rootViewController isKindOfClass:[INatUITabBarController class]]) {
+    if (![self.window.rootViewController isKindOfClass:[INatTabBarController class]]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             UIView *priorSnapshot = [[UIScreen mainScreen] snapshotViewAfterScreenUpdates:NO];
             

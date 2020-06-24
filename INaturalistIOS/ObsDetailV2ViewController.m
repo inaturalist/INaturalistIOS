@@ -35,7 +35,6 @@
 #import "INatPhoto.h"
 #import "ExploreObservation.h"
 #import "ObservationAPI.h"
-#import "INatUITabBarController.h"
 #import "ExploreObservationRealm.h"
 
 @interface ObsDetailV2ViewController () <ObsDetailViewModelDelegate>

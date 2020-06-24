@@ -17,7 +17,6 @@
 #import "GuideImageXML.h"
 #import "Analytics.h"
 #import "Taxon.h"
-#import "INatUITabBarController.h"
 #import "iNaturalist-Swift.h"
 #import "ExploreTaxonRealm.h"
 

@@ -22,7 +22,6 @@
 #import "ImageStore.h"
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
-#import "INatUITabBarController.h"
 #import "NSURL+INaturalist.h"
 #import "TaxonPhotoCell.h"
 #import "TaxonSummaryCell.h"

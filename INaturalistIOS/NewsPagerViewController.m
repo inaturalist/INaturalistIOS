@@ -15,7 +15,6 @@
 #import "UpdatesViewController.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
-#import "INatUITabBarController.h"
 
 @interface NewsPagerViewController () <ViewPagerDelegate, ViewPagerDataSource>
 @end
@@ -50,7 +49,7 @@
     
     NSInteger selectedTab = 0;
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    if (![[appDelegate loginController] isLoggedIn] || ![[NSUserDefaults standardUserDefaults] boolForKey:HasMadeAnObservationKey]) {
+    if (![[appDelegate loginController] isLoggedIn]) {
         selectedTab = 1;
     }
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

@@ -19,7 +19,6 @@
 #import "ObservationsViewController.h"
 #import "LoginController.h"
 #import "ImageStore.h"
-#import "INatUITabBarController.h"
 #import "INaturalistAppDelegate.h"
 #import "RefreshControl.h"
 #import "UIImageView+WebCache.h"
