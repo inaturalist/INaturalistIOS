@@ -141,7 +141,8 @@
                                         (long)processedObservations,
                                         (long)totalObservations,
                                         error.localizedDescription];
-                    done(NO, report, error);
+                    [migrationReport appendString:report];
+                    done(NO, migrationReport, error);
                     return;
                 } else {
                     // should be safe to skip
@@ -164,7 +165,8 @@
                 
                 NSString *report = [NSString stringWithFormat:@"processed %ld of %ld, then bailed, value failed to insert to realm",
                                     (long)processedObservations, (long)totalObservations];
-                done(NO, report, error);
+                [migrationReport appendString:report];
+                done(NO, migrationReport, error);
                 return;
             }
             
@@ -194,21 +196,29 @@
             }
         }
         
+        BOOL sendMigrationReport = NO;
+        
         if (obsCountWithNilUUID > 0) {
             [migrationReport appendFormat:@"processed %ld of %ld, skipped %ld, completed. %ld observations with nil uuids, which will FAIL AT UPLOAD.",
              (long)processedObservations,
              (long)totalObservations,
              (long)skippedObservations,
              (long)obsCountWithNilUUID];
+            sendMigrationReport = YES;
         }
         
         if ([realmUUIDs isEqual:cdUUIDs]) {
             [migrationReport appendString:@"Migration: Before and After UUIDs Match"];
         } else {
             [migrationReport appendString:@"Migration: Before and After UUIDs DO NOT MATCH"];
+            sendMigrationReport = YES;
         }
         
-        done(YES, migrationReport, nil);
+        if (sendMigrationReport) {
+            done(YES, migrationReport, nil);
+        } else {
+            done(YES, nil, nil);
+        }
     }
 }
 

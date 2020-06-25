@@ -1137,6 +1137,49 @@
    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)presentMigrationReportEmail:(NSString *)migrationReport {
+    if (![MFMailComposeViewController canSendMail]) {
+        return;
+    }
+    
+    if (!migrationReport) {
+        return;
+    }
+    
+    MFMailComposeViewController* composeVC = [[MFMailComposeViewController alloc] init];
+    composeVC.mailComposeDelegate = self;
+    
+    NSArray *toAddresses = @[ @"help@inaturalist.org" ];
+    
+    NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
+    NSString *versionText = [NSString stringWithFormat:NSLocalizedString(@"%@, build %@",nil),
+                             [info objectForKey:@"CFBundleShortVersionString"] ?: @"unknown version",
+                             [info objectForKey:@"CFBundleVersion"] ?: @"unknown version"];
+    
+    NSString *emailTitle = [NSString stringWithFormat:@"iNaturalist MigrationReport - version %@", versionText];
+    
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if ([appDelegate.loginController isLoggedIn]) {
+        ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+        emailTitle = [emailTitle stringByAppendingString:[NSString stringWithFormat:@" user id: %ld,", (long)me.userId]];
+        emailTitle = [emailTitle stringByAppendingString:[NSString stringWithFormat:@" username: %@", me.login]];
+    } else {
+        emailTitle = [emailTitle stringByAppendingString:@" user not logged in"];
+    }
+    
+    // Configure the fields of the interface.
+    [composeVC setToRecipients:toAddresses];
+    [composeVC setSubject:emailTitle];
+    
+    NSData *reportData = [migrationReport dataUsingEncoding:NSUTF8StringEncoding];
+    [composeVC addAttachmentData:reportData
+                        mimeType:@"text/plain"
+                        fileName:@"migrationReport.log"];
+    
+    // Present the view controller modally.
+    [self presentViewController:composeVC animated:YES completion:nil];
+}
+
 #pragma mark - View lifecycle
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
@@ -1327,13 +1370,9 @@
         hud.mode = MBProgressHUDModeAnnularDeterminate;
         
         __weak typeof(self) weakSelf = self;
-        // migration work happens on background
         [[self migrationAssistant] migrateObservationsToRealmProgress:^(CGFloat progress) {
-            // callback comes in on main thread
             hud.progress = progress;
         } finished:^(BOOL success, NSString *migrationReport, NSError *error) {
-            // callback comes in on main thread
-            // hide the hud regardless of success
             [MBProgressHUD hideAllHUDsForView:weakSelf.tabBarController.view animated:YES];
             if (success) {
                 // mark the migration as a success
@@ -1341,43 +1380,24 @@
                                                         forKey:RanMigrationToRealmKey];
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 
-                if (![MFMailComposeViewController canSendMail]) {
+                if (!migrationReport) {
                     return;
                 }
+                NSString *migrationProblemTitle = NSLocalizedString(@"Migration Problem", @"Title for alert when db migration had a problem.");
+                NSString *migrationEmailPromptMsg = NSLocalizedString(@"Would you like to share your migration report with help@inaturalist.org for debugging?", @"message for alert when db migration has a problem");
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:migrationProblemTitle
+                                                                               message:migrationEmailPromptMsg
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:@"Email help@inaturalist"
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:^(UIAlertAction * _Nonnull action) {
+                    [weakSelf presentMigrationReportEmail:migrationReport];
+                }]];
                 
-                MFMailComposeViewController* composeVC = [[MFMailComposeViewController alloc] init];
-                composeVC.mailComposeDelegate = weakSelf;
-                
-                NSArray *toAddresses = @[ @"alex@inaturalist.org" ];
-                
-                NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
-                NSString *versionText = [NSString stringWithFormat:NSLocalizedString(@"%@, build %@",nil),
-                                         [info objectForKey:@"CFBundleShortVersionString"] ?: @"unknown version",
-                                         [info objectForKey:@"CFBundleVersion"] ?: @"unknown version"];
-                
-                NSString *emailTitle = [NSString stringWithFormat:@"iNaturalist MigrationReport - version %@", versionText];
-                
-                INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-                if ([appDelegate.loginController isLoggedIn]) {
-                    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
-                    emailTitle = [emailTitle stringByAppendingString:[NSString stringWithFormat:@" user id: %ld,", (long)me.userId]];
-                    emailTitle = [emailTitle stringByAppendingString:[NSString stringWithFormat:@" username: %@", me.login]];
-                } else {
-                    emailTitle = [emailTitle stringByAppendingString:@" user not logged in"];
-                }
-                
-                // Configure the fields of the interface.
-                [composeVC setToRecipients:toAddresses];
-                [composeVC setSubject:emailTitle];
-                
-                NSData *reportData = [migrationReport dataUsingEncoding:NSUTF8StringEncoding];
-                [composeVC addAttachmentData:reportData
-                                    mimeType:@"text/plain"
-                                    fileName:@"migrationReport.log"];
-                
-                // Present the view controller modally.
-                [weakSelf presentViewController:composeVC animated:YES completion:nil];
-                
+                [alert addAction:[UIAlertAction actionWithTitle:@"Ignore"
+                                                          style:UIAlertActionStyleCancel
+                                                        handler:nil]];
+                [weakSelf presentViewController:alert animated:YES completion:nil];
             } else {
                 NSString *migrationFailedTitle = NSLocalizedString(@"Migration Failed", @"Title for alert when db migration fails.");
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:migrationFailedTitle
