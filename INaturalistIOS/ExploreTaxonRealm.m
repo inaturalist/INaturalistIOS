@@ -96,6 +96,12 @@
     } else {
         value[@"rankLevel"] = @(0);
     }
+    
+    if ([cdModel valueForKey:@"observationCount"]) {
+        value[@"observationCount"] = [cdModel valueForKey:@"observationsCount"];
+    } else {
+        value[@"observationCount"] = @(0);
+    }
 
 
     value[@"commonName"] = [cdModel valueForKey:@"defaultName"];
@@ -107,7 +113,7 @@
     value[@"rankName"] = [cdModel valueForKey:@"rankName"];
     
     value[@"webContent"] = [cdModel valueForKey:@"wikipediaSummary"];
-    value[@"observationCount"] = [cdModel valueForKey:@"observationsCount"];
+    
     
     if ([cdModel valueForKey:@"taxonPhotos"]) {
         NSMutableArray *photosValue = [NSMutableArray array];
