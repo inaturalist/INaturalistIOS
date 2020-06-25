@@ -37,9 +37,21 @@
 + (NSDictionary *)valueForCoreDataModel:(id)cdModel {
     NSMutableDictionary *value = [NSMutableDictionary dictionary];
     
-    value[@"obsFieldId"] = [cdModel valueForKey:@"recordID"];
-    value[@"name"] = [cdModel valueForKey:@"name"];
-    value[@"inatDescription"] = [cdModel valueForKey:@"desc"];
+    if ([cdModel valueForKey:@"recordID"]) {
+        value[@"obsFieldId"] = [cdModel valueForKey:@"recordID"];
+    } else {
+        // this is not an uploadable, return nil if we don't have a
+        // record id
+        return nil;
+    }
+    
+    if ([cdModel valueForKey:@"name"]) {
+        value[@"name"] = [cdModel valueForKey:@"name"];
+    }
+    
+    if ([cdModel valueForKey:@"desc"]) {
+        value[@"inatDescription"] = [cdModel valueForKey:@"desc"];
+    }
     
     // needs conversion from string to enum type
     NSDictionary *typeMappings = @{

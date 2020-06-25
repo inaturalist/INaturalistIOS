@@ -41,11 +41,18 @@
     if ([cdModel valueForKey:@"recordID"]) {
         value[@"commentId"] = [cdModel valueForKey:@"recordID"];
     } else {
-        value[@"commentId"] = @(0);
+        // this is not an uploadable, return nil if we don't have a
+        // record id
+        return nil;
     }
     
-    value[@"commentDate"] = [cdModel valueForKey:@"createdAt"];
-    value[@"commentText"] = [cdModel valueForKey:@"body"];
+    if ([cdModel valueForKey:@"createdAt"]) {
+        value[@"commentDate"] = [cdModel valueForKey:@"createdAt"];
+    }
+    
+    if ([cdModel valueForKey:@"body"]) {
+        value[@"commentText"] = [cdModel valueForKey:@"body"];
+    }
 
     if ([cdModel valueForKey:@"user"]) {
         value[@"user"] = [ExploreUserRealm valueForCoreDataModel:[cdModel valueForKey:@"user"]];

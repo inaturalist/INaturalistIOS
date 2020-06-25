@@ -29,14 +29,13 @@
     if ([cdModel valueForKey:@"recordID"]) {
         value[@"observationPhotoId"] = [cdModel valueForKey:@"recordID"];
     } else {
+        // this is an uploadable, un-uploaded photos can have a record
+        // id of nil/zero
         value[@"observationPhotoId"] = @(0);
     }
     
-    if ([cdModel valueForKey:@"position"]) {
-        value[@"position"] = [cdModel valueForKey:@"position"];
-    } else {
-        value[@"position"] = @(0);
-    }
+    // primitives can't be nil
+    value[@"position"] = [cdModel valueForKey:@"position"] ?: @(0);
     
     if ([cdModel valueForKey:@"uuid"]) {
         value[@"uuid"] = [cdModel valueForKey:@"uuid"];
@@ -53,13 +52,25 @@
         }
     }
     
-
-    value[@"url"] = [cdModel valueForKey:@"squareURL"];
-    value[@"photoKey"] = [cdModel valueForKey:@"photoKey"];
-
-    value[@"timeSynced"] = [cdModel valueForKey:@"syncedAt"];
-    value[@"timeCreated"] = [cdModel valueForKey:@"createdAt"];
-    value[@"timeUpdatedLocally"] = [cdModel valueForKey:@"localUpdatedAt"];
+    if ([cdModel valueForKey:@"squareURL"]) {
+        value[@"url"] = [cdModel valueForKey:@"squareURL"];
+    }
+    
+    if ([cdModel valueForKey:@"photoKey"]) {
+        value[@"photoKey"] = [cdModel valueForKey:@"photoKey"];
+    }
+    
+    if ([cdModel valueForKey:@"syncedAt"]) {
+        value[@"timeSynced"] = [cdModel valueForKey:@"syncedAt"];
+    }
+    
+    if ([cdModel valueForKey:@"createdAt"]) {
+        value[@"timeCreated"] = [cdModel valueForKey:@"createdAt"];
+    }
+    
+    if ([cdModel valueForKey:@"localUpdatedAt"]) {
+        value[@"timeUpdatedLocally"] = [cdModel valueForKey:@"localUpdatedAt"];
+    }
 
     return value;
 }

@@ -50,6 +50,8 @@
     if ([cdModel valueForKey:@"recordID"]) {
         value[@"obsFieldValueId"] = [cdModel valueForKey:@"recordID"];
     } else {
+        // this is an uploadable, un-uploaded OFVs can have a record
+        // id of nil/zero
         value[@"obsFieldValueId"] = @(0);
     }
     
@@ -83,8 +85,13 @@
         return nil;
     }
     
-    value[@"timeSynced"] = [cdModel valueForKey:@"syncedAt"];
-    value[@"timeUpdatedLocally"] = [cdModel valueForKey:@"localUpdatedAt"];
+    if ([cdModel valueForKey:@"syncedAt"]) {
+        value[@"timeSynced"] = [cdModel valueForKey:@"syncedAt"];
+    }
+    
+    if ([cdModel valueForKey:@"localUpdatedAt"]) {
+        value[@"timeUpdatedLocally"] = [cdModel valueForKey:@"localUpdatedAt"];
+    }
     
     return [NSDictionary dictionaryWithDictionary:value];
 }

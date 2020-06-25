@@ -45,6 +45,8 @@
     if ([cdModel valueForKey:@"recordID"]) {
         value[@"userId"] = [cdModel valueForKey:@"recordID"];
     } else {
+        // this is not an uploadable, return nil if we don't have a
+        // record id
         return nil;
     }
     
@@ -67,10 +69,17 @@
         value[@"observationsCount"] = @(0);
     }
     
-    // these can be nil
-    value[@"name"] = [cdModel valueForKey:@"name"];
-    value[@"userIconString"] = [cdModel valueForKey:@"userIconURL"];
-    value[@"syncedAt"] = [cdModel valueForKey:@"syncedAt"];
+    if ([cdModel valueForKey:@"name"]) {
+        value[@"name"] = [cdModel valueForKey:@"name"];
+    }
+    
+    if ([cdModel valueForKey:@"userIconURL"]) {
+        value[@"userIconString"] = [cdModel valueForKey:@"userIconURL"];
+    }
+    
+    if ([cdModel valueForKey:@"syncedAt"]) {
+        value[@"syncedAt"] = [cdModel valueForKey:@"syncedAt"];
+    }
         
     return [NSDictionary dictionaryWithDictionary:value];
 }

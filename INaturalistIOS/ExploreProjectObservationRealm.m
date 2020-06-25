@@ -43,6 +43,8 @@
     if ([cdModel valueForKey:@"recordID"]) {
         value[@"projectObsId"] = [cdModel valueForKey:@"recordID"];
     } else {
+        // this is an uploadable, un-uploaded project obs can have a record
+        // id of nil/zero
         value[@"projectObsId"] = @(0);
     }
             
@@ -60,14 +62,25 @@
     }
     
     if ([cdModel valueForKey:@"project"]) {
-        value[@"project"] = [ExploreProjectRealm valueForCoreDataModel:[cdModel valueForKey:@"project"]];
+        id projectValue = [ExploreProjectRealm valueForCoreDataModel:[cdModel valueForKey:@"project"]];
+        if (projectValue) {
+            value[@"project"] = projectValue;
+        } else {
+            // we can't migrate a PO without a project
+            return nil;
+        }
     } else {
         // we can't migrate a PO without a project
         return nil;
     }
     
-    value[@"timeSynced"] = [cdModel valueForKey:@"syncedAt"];
-    value[@"timeUpdatedLocally"] = [cdModel valueForKey:@"localUpdatedAt"];
+    if ([cdModel valueForKey:@"syncedAt"]) {
+        value[@"timeSynced"] = [cdModel valueForKey:@"syncedAt"];
+    }
+    
+    if ([cdModel valueForKey:@"localUpdatedAt"]) {
+        value[@"timeUpdatedLocally"] = [cdModel valueForKey:@"localUpdatedAt"];
+    }
     
     return [NSDictionary dictionaryWithDictionary:value];
 }

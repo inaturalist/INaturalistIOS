@@ -42,12 +42,25 @@
     NSMutableDictionary *value = [NSMutableDictionary dictionary];
     
     // already wrapped by core data
-    value[@"projectId"] = [cdModel valueForKey:@"recordID"];
+    if ([cdModel valueForKey:@"recordID"]) {
+        value[@"projectId"] = [cdModel valueForKey:@"recordID"];
+    } else {
+        // this is not an uploadable, return nil if we don't have a
+        // record id
+        return nil;
+    }
     
-    // nils are OK here
-    value[@"title"] = [cdModel valueForKey:@"title"];
-    value[@"iconUrl"] = [cdModel valueForKey:@"iconURL"];
-    value[@"inatDescription"] = [cdModel valueForKey:@"desc"];
+    if ([cdModel valueForKey:@"title"]) {
+        value[@"title"] = [cdModel valueForKey:@"title"];
+    }
+    
+    if ([cdModel valueForKey:@"iconURL"]) {
+        value[@"iconUrl"] = [cdModel valueForKey:@"iconURL"];
+    }
+    
+    if ([cdModel valueForKey:@"desc"]) {
+        value[@"inatDescription"] = [cdModel valueForKey:@"desc"];
+    }
     
     // supply defaults for nil values
     if ([cdModel valueForKey:@"latitude"]) {

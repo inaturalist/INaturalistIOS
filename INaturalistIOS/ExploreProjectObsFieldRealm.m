@@ -44,9 +44,26 @@
 + (NSDictionary *)valueForCoreDataModel:(id)cdModel {
     NSMutableDictionary *value = [NSMutableDictionary dictionary];
     
-    value[@"required"] = [cdModel valueForKey:@"required"];
-    value[@"position"] = [cdModel valueForKey:@"position"];
-    value[@"projectObsFieldId"] = [cdModel valueForKey:@"recordID"];
+    if ([cdModel valueForKey:@"recordID"]) {
+        value[@"projectObsFieldId"] = [cdModel valueForKey:@"recordID"];
+    } else {
+        // this is not an uploadable, return nil if we don't have a
+        // record id
+        return nil;
+    }
+    
+    if ([cdModel valueForKey:@"required"]) {
+        value[@"required"] = [cdModel valueForKey:@"required"];
+    } else {
+        value[@"required"] = @(NO);
+    }
+    
+    if ([cdModel valueForKey:@"position"]) {
+        value[@"position"] = [cdModel valueForKey:@"position"];
+    } else {
+        value[@"position"] = @(0);
+    }
+        
     if ([cdModel valueForKey:@"observationField"]) {
         value[@"obsField"] = [ExploreObsFieldRealm valueForCoreDataModel:[cdModel valueForKey:@"observationField"]];
     }

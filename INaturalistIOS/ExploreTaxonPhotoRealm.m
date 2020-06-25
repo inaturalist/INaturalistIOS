@@ -32,13 +32,28 @@
     return [NSDictionary dictionaryWithDictionary:value];
 }
 
-+ (NSDictionary *)valueForCoreDataModel:(id)model {
++ (NSDictionary *)valueForCoreDataModel:(id)cdModel {
     NSMutableDictionary *value = [NSMutableDictionary dictionary];
     
-    value[@"taxonPhotoId"] = [model valueForKey:@"recordID"];
-    value[@"attribution"] = [model valueForKey:@"attribution"];
-    value[@"urlString"] = [model valueForKey:@"squareURL"];
-    value[@"licenseCode"] = [model valueForKey:@"licenseCode"];
+    if ([cdModel valueForKey:@"recordID"]) {
+        value[@"taxonPhotoId"] = [cdModel valueForKey:@"recordID"];
+    } else {
+        // this is not an uploadable, return nil if we don't have a
+        // record id
+        return nil;
+    }
+    
+    if ([cdModel valueForKey:@"attribution"]) {
+        value[@"attribution"] = [cdModel valueForKey:@"attribution"];
+    }
+    
+    if ([cdModel valueForKey:@"squareURL"]) {
+        value[@"urlString"] = [cdModel valueForKey:@"squareURL"];
+    }
+    
+    if ([cdModel valueForKey:@"licenseCode"]) {
+        value[@"licenseCode"] = [cdModel valueForKey:@"licenseCode"];
+    }
     
     return [NSDictionary dictionaryWithDictionary:value];
 }

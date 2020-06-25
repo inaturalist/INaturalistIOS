@@ -54,12 +54,21 @@
     if ([cdModel valueForKey:@"recordID"]) {
         value[@"identificationId"] = [cdModel valueForKey:@"recordID"];
     } else {
-        value[@"identificationId"] = @(0);
+        // this is not an uploadable, return nil if we don't have a
+        // record id
+        return nil;
     }
     
-    value[@"identificationIsCurrent"] = [cdModel valueForKey:@"current"];
-    value[@"identifiedDate"] = [cdModel valueForKey:@"createdAt"];
-    value[@"identificationBody"] = [cdModel valueForKey:@"body"];
+    // primitives can't be nil
+    value[@"identificationIsCurrent"] = [cdModel valueForKey:@"current"] ?: @(YES);
+    
+    if ([cdModel valueForKey:@"createdAt"]) {
+        value[@"identifiedDate"] = [cdModel valueForKey:@"createdAt"];
+    }
+    
+    if ([cdModel valueForKey:@"body"]) {
+        value[@"identificationBody"] = [cdModel valueForKey:@"body"];
+    }
 
     if ([cdModel valueForKey:@"user"]) {
         value[@"user"] = [ExploreUserRealm valueForCoreDataModel:[cdModel valueForKey:@"user"]];

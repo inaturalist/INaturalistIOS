@@ -38,12 +38,30 @@
     }
     
     // these values can be nil in the model
-    value[@"title"] = model.title;
-    value[@"desc"] = model.desc;
-    value[@"createdAt"] = model.createdAt;
-    value[@"updatedAt"] = model.updatedAt;
-    value[@"iconUrlString"] = model.iconURL;
-    value[@"ngzDownloadedAt"] = model.ngzDownloadedAt ?: nil;
+    // but dicts can't have nil values
+    if (model.title) {
+        value[@"title"] = model.title;
+    }
+    
+    if (model.desc) {
+        value[@"desc"] = model.desc;
+    }
+    
+    if (model.createdAt) {
+        value[@"createdAt"] = model.createdAt;
+    }
+    
+    if (model.updatedAt) {
+        value[@"updatedAt"] = model.updatedAt;
+    }
+    
+    if (model.iconURL) {
+        value[@"iconUrlString"] = model.iconURL;
+    }
+    
+    if (model.ngzDownloadedAt) {
+        value[@"ngzDownloadedAt"] = model.ngzDownloadedAt;
+    }
     
     // primitive values can't be nil
     value[@"taxonId"] = model.taxonID ?: @(0);

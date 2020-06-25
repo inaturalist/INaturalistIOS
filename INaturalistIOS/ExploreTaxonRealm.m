@@ -88,6 +88,8 @@
     if ([cdModel valueForKey:@"recordID"]) {
         value[@"taxonId"] = [cdModel valueForKey:@"recordID"];
     } else {
+        // this is not an uploadable, return nil if we don't have a
+        // record id
         return nil;
     }
     
@@ -97,22 +99,32 @@
         value[@"rankLevel"] = @(0);
     }
     
-    if ([cdModel valueForKey:@"observationCount"]) {
+    if ([cdModel valueForKey:@"observationsCount"]) {
         value[@"observationCount"] = [cdModel valueForKey:@"observationsCount"];
     } else {
         value[@"observationCount"] = @(0);
     }
 
-
-    value[@"commonName"] = [cdModel valueForKey:@"defaultName"];
-    value[@"searchableCommonName"] = [[cdModel valueForKey:@"defaultName"] stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
-                                                                                             locale:[NSLocale currentLocale]];
-    value[@"scientificName"] = [cdModel valueForKey:@"name"];
-    value[@"searchableScientificName"] = [[cdModel valueForKey:@"name"] stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
-                                                                                             locale:[NSLocale currentLocale]];
-    value[@"rankName"] = [cdModel valueForKey:@"rankName"];
     
-    value[@"webContent"] = [cdModel valueForKey:@"wikipediaSummary"];
+    if ([cdModel valueForKey:@"defaultName"]) {
+        value[@"commonName"] = [cdModel valueForKey:@"defaultName"];
+        value[@"searchableCommonName"] = [[cdModel valueForKey:@"defaultName"] stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
+                                                                                                   locale:[NSLocale currentLocale]];
+    }
+    
+    if ([cdModel valueForKey:@"name"]) {
+        value[@"scientificName"] = [cdModel valueForKey:@"name"];
+        value[@"searchableScientificName"] = [[cdModel valueForKey:@"name"] stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
+                                                                                                locale:[NSLocale currentLocale]];
+    }
+    
+    if ([cdModel valueForKey:@"rankName"]) {
+        value[@"rankName"] = [cdModel valueForKey:@"rankName"];
+    }
+    
+    if ([cdModel valueForKey:@"wikipediaSummary"]) {
+        value[@"webContent"] = [cdModel valueForKey:@"wikipediaSummary"];
+    }
     
     
     if ([cdModel valueForKey:@"taxonPhotos"]) {

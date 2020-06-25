@@ -103,6 +103,8 @@
     if ([cdModel valueForKey:@"recordID"]) {
         value[@"observationId"] = [cdModel valueForKey:@"recordID"];
     } else {
+        // this is an uploadable, un-uploaded obs can have a record
+        // id of nil/zero
         value[@"observationId"] = @(0);
     }
     
@@ -113,6 +115,7 @@
         value[@"uuid"] = [[[NSUUID UUID] UUIDString] lowercaseString];
     }
     
+    // these values can be nil in the model
     if ([cdModel valueForKey:@"speciesGuess"]) {
         value[@"speciesGuess"] = [cdModel valueForKey:@"uuid"];
     }
@@ -209,7 +212,9 @@
         value[@"timeCreated"] = [cdModel valueForKey:@"localCreatedAt"];
     }
     
-    value[@"geoprivacy"] = [cdModel valueForKey:@"geoprivacy"];
+    if ([cdModel valueForKey:@"geoprivacy"]) {
+        value[@"geoprivacy"] = [cdModel valueForKey:@"geoprivacy"];
+    }
 
     // to-one relationships
     if ([cdModel valueForKey:@"taxon"]) {
