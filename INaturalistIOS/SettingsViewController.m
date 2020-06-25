@@ -79,7 +79,7 @@ static const int SettingsAccountRowCountLoggedIn = 3;
 static const int SettingsAccountRowCountLoggedOut = 1;
 static const int SettingsVersionRowCount = 1;
 
-static const NSString *LastChangedPartnerDateKey = @"org.inaturalist.lastChangedPartnerDateKey";
+static NSString * const LastChangedPartnerDateKey = @"org.inaturalist.lastChangedPartnerDateKey";
 static const int ChangePartnerMinimumInterval = 86400;
 
 @interface SettingsViewController () <MFMailComposeViewControllerDelegate> {
