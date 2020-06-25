@@ -56,10 +56,9 @@ typedef NS_ENUM(NSInteger, SettingsHelpCell) {
     SettingsHelpCellTutorial = 0,
     SettingsHelpCellContact,
     SettingsHelpCellReview,
-    SettingsHelpCellDonate,
     SettingsHelpCellStore
 };
-static const int SettingsHelpRowCount = 5;
+static const int SettingsHelpRowCount = 4;
 
 typedef NS_ENUM(NSInteger, SettingsAppCell) {
     SettingsAppCellChangeUsername = 0,
@@ -779,8 +778,6 @@ static const int ChangePartnerMinimumInterval = 86400;
             return [self tableView:tableView contactUsCellForIndexPath:indexPath];
         } else if (indexPath.item == SettingsHelpCellReview) {
             return [self tableView:tableView rateUsCellForIndexPath:indexPath];
-        } else if (indexPath.item == SettingsHelpCellDonate) {
-            return [self tableView:tableView donateCellForIndexPath:indexPath];
         } else {
             return [self tableView:tableView storeCellForIndexPath:indexPath];
         }
@@ -858,8 +855,6 @@ static const int ChangePartnerMinimumInterval = 86400;
             [self sendSupportEmail];
         } else if (indexPath.item == SettingsHelpCellReview) {
             [self launchRateUs];
-        } else if (indexPath.item == SettingsHelpCellDonate) {
-            [self launchDonate];
         } else if (indexPath.item == SettingsHelpCellStore) {
             [self launchStore];
         }
@@ -1018,13 +1013,6 @@ static const int ChangePartnerMinimumInterval = 86400;
     SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
                                                                    forIndexPath:indexPath];
     cell.leadingTextLabel.text = NSLocalizedString(@"Love iNat? Rate us", @"label for app store rating action in settings.");
-    return cell;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView donateCellForIndexPath:(NSIndexPath *)indexPath {
-    SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
-                                                                   forIndexPath:indexPath];
-    cell.leadingTextLabel.text = NSLocalizedString(@"Donate to iNaturalist", @"label for donate action in settings.");
     return cell;
 }
 
