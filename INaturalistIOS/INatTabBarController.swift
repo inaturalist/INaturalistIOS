@@ -168,7 +168,7 @@ extension INatTabBarController: GalleryControllerDelegate {
 }
 
 extension INatTabBarController: MediaPickerDelegate {
-   func choseItemAtIndex(_ idx: Int) {
+   func choseMediaPickerItemAtIndex(_ idx: Int) {
       dismiss(animated: true) {
          if idx == 0 {
             self.newObsNoPhoto()

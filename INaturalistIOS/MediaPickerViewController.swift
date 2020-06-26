@@ -9,13 +9,15 @@
 import UIKit
 import FontAwesomeKit
 
-protocol MediaPickerDelegate: NSObject {
-    func choseItemAtIndex(_ idx: Int)
+@objc protocol MediaPickerDelegate {
+    func choseMediaPickerItemAtIndex(_ idx: Int)
 }
 
 class MediaPickerViewController: UIViewController {
+    @objc var showsNoPhotoOption = true
+    @objc weak var mediaPickerDelegate: MediaPickerDelegate?
+
     var taxon: ExploreTaxonRealm?
-    weak var mediaPickerDelegate: MediaPickerDelegate?
     weak var collectionView: UICollectionView!
     
     override func viewDidLoad() {
@@ -47,57 +49,83 @@ extension MediaPickerViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        if showsNoPhotoOption {
+            return 3
+        } else {
+            return 2
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MediaPickerCell", for: indexPath) as! MediaPickerCell
-        
-        if indexPath.item == 0 {
-            cell.titleLabel.text = NSLocalizedString("No Photo", comment: "Title for No Photo button in media picker")
-            
-            if let composeIcon = FAKIonIcons.composeIcon(withSize: 50),
-                let circleOutline = FAKIonIcons.iosCircleOutlineIcon(withSize: 80)
-            {
-                composeIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.lightGray)
-                circleOutline.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.lightGray)
-                cell.iconImageView.image = UIImage(stackedIcons: [composeIcon, circleOutline], imageSize: CGSize(width: 100, height: 100))
+        if showsNoPhotoOption {
+            if indexPath.item == 0 {
+                return noPhotoCellForItemAt(indexPath: indexPath)
+            } else if indexPath.item == 1 {
+                return cameraCellForItemAt(indexPath: indexPath)
+            } else {
+                return photoLibraryCellForItemAt(indexPath: indexPath)
             }
-        } else if indexPath.item == 1 {
-            cell.titleLabel.text = NSLocalizedString("Camera", comment: "Title for Camera button in media picker")
-            
-            if let cameraIcon = FAKIonIcons.cameraIcon(withSize: 50),
-                let circleOutline = FAKIonIcons.iosCircleOutlineIcon(withSize: 80)
-            {
-                cameraIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
-                circleOutline.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
-                cell.iconImageView.image = UIImage(stackedIcons: [cameraIcon, circleOutline], imageSize: CGSize(width: 100, height: 100))
-            }
-        } else if indexPath.item == 2 {
-            cell.titleLabel.text = NSLocalizedString("Camera Roll", comment: "Title for Camera Roll button in media picker")
-            
-            if let imagesIcon = FAKIonIcons.imagesIcon(withSize: 50),
-                let circleOutline = FAKIonIcons.iosCircleOutlineIcon(withSize: 80)
-            {
-                imagesIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
-                circleOutline.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
-                cell.iconImageView.image = UIImage(stackedIcons: [imagesIcon, circleOutline], imageSize: CGSize(width: 100, height: 100))
+        } else {
+            if indexPath.item == 0 {
+                return cameraCellForItemAt(indexPath: indexPath)
+            } else {
+                return photoLibraryCellForItemAt(indexPath: indexPath)
             }
         }
+    }
+    
+    func noPhotoCellForItemAt(indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MediaPickerCell", for: indexPath) as! MediaPickerCell
+        cell.titleLabel.text = NSLocalizedString("No Photo", comment: "Title for No Photo button in media picker")
         
+        if let composeIcon = FAKIonIcons.composeIcon(withSize: 50),
+            let circleOutline = FAKIonIcons.iosCircleOutlineIcon(withSize: 80)
+        {
+            composeIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.lightGray)
+            circleOutline.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.lightGray)
+            cell.iconImageView.image = UIImage(stackedIcons: [composeIcon, circleOutline], imageSize: CGSize(width: 100, height: 100))
+        }
+        return cell
+    }
+    
+    func cameraCellForItemAt(indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MediaPickerCell", for: indexPath) as! MediaPickerCell
+        cell.titleLabel.text = NSLocalizedString("Camera", comment: "Title for Camera button in media picker")
+        
+        if let cameraIcon = FAKIonIcons.cameraIcon(withSize: 50),
+            let circleOutline = FAKIonIcons.iosCircleOutlineIcon(withSize: 80)
+        {
+            cameraIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
+            circleOutline.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
+            cell.iconImageView.image = UIImage(stackedIcons: [cameraIcon, circleOutline], imageSize: CGSize(width: 100, height: 100))
+        }
+        return cell
+    }
+    
+    func photoLibraryCellForItemAt(indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MediaPickerCell", for: indexPath) as! MediaPickerCell
+        cell.titleLabel.text = NSLocalizedString("Camera Roll", comment: "Title for Camera Roll button in media picker")
+        
+        if let imagesIcon = FAKIonIcons.imagesIcon(withSize: 50),
+            let circleOutline = FAKIonIcons.iosCircleOutlineIcon(withSize: 80)
+        {
+            imagesIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
+            circleOutline.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
+            cell.iconImageView.image = UIImage(stackedIcons: [imagesIcon, circleOutline], imageSize: CGSize(width: 100, height: 100))
+        }
         return cell
     }
 }
 
 extension MediaPickerViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        self.mediaPickerDelegate?.choseItemAtIndex(indexPath.item)
+        self.mediaPickerDelegate?.choseMediaPickerItemAtIndex(indexPath.item)
     }
 }
 
 extension MediaPickerViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 100, height: 100)
+        return CGSize(width: 100, height: 150)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -109,8 +137,8 @@ extension MediaPickerViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let totalCellWidth = 100 * 3
-        let totalSpacingWidth = 1 * (3 - 1)
+        let totalCellWidth = 100 * (showsNoPhotoOption ? 3 : 2)
+        let totalSpacingWidth = 1 * ((showsNoPhotoOption ? 3 : 2) - 1)
 
         let leftInset = (collectionView.frame.size.width - CGFloat(totalCellWidth + totalSpacingWidth)) / 2
         let rightInset = leftInset
@@ -129,12 +157,14 @@ class MediaPickerCell: UICollectionViewCell {
         let iconImageView = UIImageView(frame: .zero)
         iconImageView.contentMode = .center
         let titleLabel = UILabel(frame: .zero)
+        titleLabel.numberOfLines = 2
         
         let stack = UIStackView(arrangedSubviews: [iconImageView, titleLabel])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.alignment = .center
-        stack.distribution = .fillProportionally
+        stack.distribution = .equalCentering
         stack.axis = .vertical
+        stack.spacing = 0
         
         self.contentView.addSubview(stack)
         NSLayoutConstraint.activate([
