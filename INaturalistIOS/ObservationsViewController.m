@@ -700,8 +700,8 @@
     @try {
         o = [self.myObservations objectAtIndex:indexPath.item];
     } @catch (NSException *exception) {
-        // happens when running unit tests and the UI gets behind
-        return nil;
+        // return a cell but don't configure it
+        return [tableView dequeueReusableCellWithIdentifier:@"ObservationNormalCell"];
     }
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
