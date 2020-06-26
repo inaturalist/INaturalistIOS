@@ -769,7 +769,7 @@
     ExploreObservationRealm *o = [self.myObservations objectAtIndex:indexPath.item];
     
     if (o.observationPhotos.count > 0) {
-        ExploreObservationPhotoRealm *op = [o.observationPhotos firstObject];
+        ExploreObservationPhotoRealm *op = [o.sortedObservationPhotos firstObject];
         cell.observationImage.image = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSquareSize];
         if (cell.observationImage.image == nil) {
             [cell.observationImage sd_setImageWithURL:[op squarePhotoUrl]];
