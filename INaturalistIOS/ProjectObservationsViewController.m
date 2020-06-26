@@ -412,10 +412,10 @@ static NSString *LongTextFieldIdentifier = @"longtext";
    
     UIFont *fieldFont = pof.required ? [UIFont boldSystemFontOfSize:17] : [UIFont systemFontOfSize:17];
     
-    if ([[pof obsField] canBeTreatedAsText] && [[[pof obsField] allowedValues] count] == 1) {
-        return [self heightForLongTextProjectField:pof inTableView:tableView font:fieldFont];
-    } else {
+    if ([[pof obsField] canBeTreatedAsText] && [[[pof obsField] allowedValues] count] > 1) {
         return [self heightForSimpleProjectField:pof inTableView:tableView font:fieldFont];
+    } else {
+        return [self heightForLongTextProjectField:pof inTableView:tableView font:fieldFont];
     }
 }
 
