@@ -167,11 +167,13 @@
 }
 
 + (void)deleteWithoutSync:(ExploreObsFieldValueRealm *)model {
-    RLMRealm *realm = [RLMRealm defaultRealm];
-    [realm beginWriteTransaction];
-    // delete the model object
-    [realm deleteObject:model];
-    [realm commitWriteTransaction];
+    if (model.realm) {
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        // delete the model object
+        [realm deleteObject:model];
+        [realm commitWriteTransaction];
+    }
 }
 
 - (ExploreDeletedRecord *)deletedRecordForModel {

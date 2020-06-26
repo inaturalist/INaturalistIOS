@@ -659,19 +659,46 @@
 }
 
 + (void)deleteWithoutSync:(ExploreObservationRealm *)observation {
-    RLMRealm *realm = [RLMRealm defaultRealm];
-    [realm beginWriteTransaction];
-    
-    // cascade
-    [realm deleteObjects:observation.observationPhotos];
-    [realm deleteObjects:observation.projectObservations];
-    [realm deleteObjects:observation.observationFieldValues];
-    [realm deleteObjects:observation.comments];
-    [realm deleteObjects:observation.identifications];
-    
-    // delete the model object
-    [realm deleteObject:observation];
-    [realm commitWriteTransaction];
+    if (observation.realm) {
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        
+        // cascade, but safely
+        // only delete stuff from realm that's actually in realm
+        for (ExploreObservationPhotoRealm *op in observation.observationPhotos) {
+            if (op.realm) {
+                [realm deleteObject:op];
+            }
+        }
+        
+        for (ExploreProjectObservationRealm *po in observation.projectObservations) {
+            if (po.realm) {
+                [realm deleteObject:po];
+            }
+        }
+        
+        for (ExploreObsFieldValueRealm *ofv in observation.observationFieldValues) {
+            if (ofv.realm) {
+                [realm deleteObject:ofv];
+            }
+        }
+        
+        for (ExploreCommentRealm *comment in observation.comments) {
+            if (comment.realm) {
+                [realm deleteObject:comment];
+            }
+        }
+        
+        for (ExploreIdentificationRealm *identification in observation.identifications) {
+            if (identification.realm) {
+                [realm deleteObject:identification];
+            }
+        }
+                
+        // delete the model object
+        [realm deleteObject:observation];
+        [realm commitWriteTransaction];
+    }
 }
 
 - (ExploreDeletedRecord *)deletedRecordForModel {

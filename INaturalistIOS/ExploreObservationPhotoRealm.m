@@ -195,11 +195,13 @@
     // delete the associated photo in the imagestore
     [model deleteFileSystemAssociations];
     
-    RLMRealm *realm = [RLMRealm defaultRealm];
-    [realm beginWriteTransaction];
-    // delete the model object
-    [realm deleteObject:model];
-    [realm commitWriteTransaction];
+    if (model.realm) {
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        // delete the model object
+        [realm deleteObject:model];
+        [realm commitWriteTransaction];
+    }
 }
 
 - (ExploreDeletedRecord *)deletedRecordForModel {
