@@ -30,12 +30,9 @@
 
     value[@"dataQuality"] = @(mtlModel.dataQuality);
     
-    value[@"privateLatitude"] = @(mtlModel.privateLocation.latitude);
-    value[@"privateLongitude"] = @(mtlModel.privateLocation.longitude);
+    value[@"latitude"] = @(mtlModel.latitude);
+    value[@"longitude"] = @(mtlModel.longitude);
     value[@"privatePositionalAccuracy"] = @(mtlModel.privatePositionalAccuracy);
-    
-    value[@"publicLatitude"] = @(mtlModel.publicLocation.latitude);
-    value[@"publicLongitude"] = @(mtlModel.publicLocation.longitude);
     value[@"publicPositionalAccuracy"] = @(mtlModel.publicPositionalAccuracy);
     
     if (mtlModel.placeGuess) { value[@"placeGuess"] = mtlModel.placeGuess; }
@@ -135,39 +132,27 @@
     }
     
     if ([cdModel valueForKey:@"latitude"]) {
-        value[@"publicLatitude"] = [cdModel valueForKey:@"latitude"];
+        value[@"latitude"] = [cdModel valueForKey:@"latitude"];
     } else {
-        value[@"publicLatitude"] = @(kCLLocationCoordinate2DInvalid.latitude);
+        value[@"latitude"] = @(kCLLocationCoordinate2DInvalid.latitude);
     }
     
     if ([cdModel valueForKey:@"longitude"]) {
-        value[@"publicLongitude"] = [cdModel valueForKey:@"longitude"];
+        value[@"longitude"] = [cdModel valueForKey:@"longitude"];
     } else {
-        value[@"publicLongitude"] = @(kCLLocationCoordinate2DInvalid.longitude);
+        value[@"longitude"] = @(kCLLocationCoordinate2DInvalid.longitude);
     }
 
     if ([cdModel valueForKey:@"positionalAccuracy"]) {
         value[@"publicPositionalAccuracy"] = [cdModel valueForKey:@"positionalAccuracy"];
     } else {
-        value[@"publicPositionalAccuracy"] = @(0);
+        value[@"publicPositionalAccuracy"] = @(-1);
     }
     
-    if ([cdModel valueForKey:@"privateLatitude"]) {
-        value[@"privateLatitude"] = [cdModel valueForKey:@"privateLatitude"];
-    } else {
-        value[@"privateLatitude"] = @(kCLLocationCoordinate2DInvalid.latitude);
-    }
-    
-    if ([cdModel valueForKey:@"privateLongitude"]) {
-        value[@"privateLongitude"] = [cdModel valueForKey:@"privateLongitude"];
-    } else {
-        value[@"privateLongitude"] = @(kCLLocationCoordinate2DInvalid.longitude);
-    }
-
     if ([cdModel valueForKey:@"privatePositionalAccuracy"]) {
         value[@"privatePositionalAccuracy"] = [cdModel valueForKey:@"privatePositionalAccuracy"];
     } else {
-        value[@"privatePositionalAccuracy"] = @(0);
+        value[@"privatePositionalAccuracy"] = @(-1);
     }
     
     if ([cdModel valueForKey:@"captive"]) {
@@ -320,36 +305,17 @@
 }
 
 - (CLLocationCoordinate2D)location {
-    if (CLLocationCoordinate2DIsValid([self privateLocation])) {
-        return [self privateLocation];
-    } else {
-        return [self publicLocation];
-    }
+    return CLLocationCoordinate2DMake(self.latitude, self.longitude);
 }
 
 - (CLLocationAccuracy)positionalAccuracy {
-    if (self.privatePositionalAccuracy != 0) {
+    if (self.privatePositionalAccuracy != -1) {
         return self.privatePositionalAccuracy;
-    } else {
+    } else if (self.publicPositionalAccuracy != -1) {
         return self.publicPositionalAccuracy;
+    } else {
+        return 0;
     }
-}
-
-- (CLLocationDegrees)latitude {
-    return [self location].latitude;
-}
-
-- (CLLocationDegrees)longitude {
-    return [self location].longitude;
-}
-
-
-- (CLLocationCoordinate2D)privateLocation {
-    return CLLocationCoordinate2DMake(self.privateLatitude, self.privateLongitude);
-}
-
-- (CLLocationCoordinate2D)publicLocation {
-    return CLLocationCoordinate2DMake(self.publicLatitude, self.publicLongitude);
 }
 
 - (NSArray *)sortedActivity {

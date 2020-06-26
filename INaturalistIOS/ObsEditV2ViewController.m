@@ -611,8 +611,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     if (!self.standaloneObservation) return;
     
     @try {
-        self.standaloneObservation.privateLatitude = newLocation.coordinate.latitude;
-        self.standaloneObservation.privateLongitude = newLocation.coordinate.longitude;
+        self.standaloneObservation.latitude = newLocation.coordinate.latitude;
+        self.standaloneObservation.longitude = newLocation.coordinate.longitude;
         self.standaloneObservation.privatePositionalAccuracy = newLocation.horizontalAccuracy;
         // TODO: do we need this?
         //self.observation.positioningMethod = @"gps";
@@ -670,18 +670,17 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     if (![[INatReachability sharedClient] isNetworkReachable]) {
         return;
     }
-    
-    CLLocation *loc = [[CLLocation alloc] initWithLatitude:obs.privateLatitude
-                                                 longitude:obs.privateLongitude];
-    
+        
     if (!self.geoCoder) {
         self.geoCoder = [[CLGeocoder alloc] init];
     }
     
     [self.geoCoder cancelGeocode];       // cancel anything in flight
     
+    CLLocation *location = [[CLLocation alloc] initWithLatitude:obs.latitude longitude:obs.longitude];
+    
     __weak typeof(self) weakSelf = self;
-    [self.geoCoder reverseGeocodeLocation:loc
+    [self.geoCoder reverseGeocodeLocation:location
                         completionHandler:^(NSArray *placemarks, NSError *error) {
         
         if (!weakSelf) {
@@ -896,21 +895,16 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     if (location.latitude.integerValue == 0 && location.longitude.integerValue == 0) {
         // nothing happens on null island
-        self.standaloneObservation.privateLatitude = kCLLocationCoordinate2DInvalid.latitude;
-        self.standaloneObservation.privateLongitude = kCLLocationCoordinate2DInvalid.longitude;
-        self.standaloneObservation.privatePositionalAccuracy = 0;
-        // TODO: support this?
-        // self.observation.positioningMethod = nil;
+        self.standaloneObservation.latitude = kCLLocationCoordinate2DInvalid.latitude;
+        self.standaloneObservation.longitude = kCLLocationCoordinate2DInvalid.longitude;
+        self.standaloneObservation.privatePositionalAccuracy = -1;
         self.standaloneObservation.placeGuess = nil;
-        
         return;
     }
     
-    self.standaloneObservation.privateLatitude = location.latitude.doubleValue;
-    self.standaloneObservation.privateLongitude = location.longitude.doubleValue;
+    self.standaloneObservation.latitude = location.latitude.doubleValue;
+    self.standaloneObservation.longitude = location.longitude.doubleValue;
     self.standaloneObservation.privatePositionalAccuracy = location.accuracy.doubleValue;
-    // support this?
-    // self.observation.positioningMethod = location.positioningMethod;
     self.standaloneObservation.placeGuess = nil;
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationLocationChanged

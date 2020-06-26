@@ -42,9 +42,7 @@
 @property (nonatomic, copy) NSString *geoprivacy;
 @property (nonatomic, assign) BOOL ownersIdentificationFromVision;
 
-@property (nonatomic, assign) CLLocationCoordinate2D publicLocation;
-@property (nonatomic, assign) CLLocationCoordinate2D privateLocation;
-@property (readonly) CLLocationCoordinate2D location;
+@property (nonatomic, assign) CLLocationCoordinate2D location;
 
 @property (nonatomic, assign) CLLocationAccuracy publicPositionalAccuracy;
 @property (nonatomic, assign) CLLocationAccuracy privatePositionalAccuracy;

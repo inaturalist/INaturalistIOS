@@ -22,8 +22,7 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dictionaryValue error:(NSError *__autoreleasing *)error {
     // set defaults for these
     NSDictionary *defaults = @{
-        @"publicLocation": [NSValue valueWithMKCoordinate:kCLLocationCoordinate2DInvalid],
-        @"privateLocation": [NSValue valueWithMKCoordinate:kCLLocationCoordinate2DInvalid],
+        @"location": [NSValue valueWithMKCoordinate:kCLLocationCoordinate2DInvalid],
     };
     dictionaryValue = [defaults mtl_dictionaryByAddingEntriesFromDictionary:dictionaryValue];
     return [super initWithDictionary:dictionaryValue error:error];
@@ -33,8 +32,7 @@
 + (NSDictionary *)JSONKeyPathsByPropertyKey{
     return @{
              @"observationId": @"id",
-             @"publicLocation": @"location",
-             @"privateLocation": @"private_location",
+             @"location": @"location",
              @"inatDescription": @"description",
              @"speciesGuess": @"species_guess",
              @"timeObserved": @"time_observed_at",
@@ -44,7 +42,7 @@
              @"commentsCount": @"comments_count",
              @"mappable": @"mappable",
              @"publicPositionalAccuracy": @"public_positional_accuracy",
-             @"privatePositionalAccuracy": @"private_positional_accuracy",
+             @"privatePositionalAccuracy": @"positional_accuracy",
              @"coordinatesObscuredToUser": @"obscured",
              @"placeGuess": @"place_guess",
              @"user": @"user",
@@ -148,7 +146,7 @@
 	return [NSValueTransformer mtl_JSONDictionaryTransformerWithModelClass:ExploreUser.class];
 }
 
-+ (NSValueTransformer *)publicLocationJSONTransformer {
++ (NSValueTransformer *)locationJSONTransformer {
     return [MTLValueTransformer transformerWithBlock:^id(NSString *locationCoordinateString) {
         NSArray *c = [locationCoordinateString componentsSeparatedByString:@","];
         if (c.count == 2) {
@@ -159,20 +157,6 @@
         } else {
             NSValue *val = [NSValue valueWithMKCoordinate:kCLLocationCoordinate2DInvalid];
             return val;
-        }
-    }];
-}
-
-+ (NSValueTransformer *)privateLocationJSONTransformer {
-    return [MTLValueTransformer transformerWithBlock:^id(NSString *locationCoordinateString) {
-        NSArray *c = [locationCoordinateString componentsSeparatedByString:@","];
-        if (c.count == 2) {
-            CLLocationDegrees latitude = [((NSString *)c[0]) doubleValue];
-            CLLocationDegrees longitude = [((NSString *)c[1]) doubleValue];
-            CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(latitude, longitude);
-            return [NSValue valueWithMKCoordinate:coords];
-        } else {
-            return [NSValue valueWithMKCoordinate:kCLLocationCoordinate2DInvalid];
         }
     }];
 }
@@ -190,24 +174,14 @@
         self.publicPositionalAccuracy = 0;
     } else if ([key isEqualToString:@"privatePositionalAccuracy"]) {
         self.privatePositionalAccuracy = 0;
-    } else if ([key isEqualToString:@"publicLocation"]) {
-        self.publicLocation = kCLLocationCoordinate2DInvalid;
-    } else if ([key isEqualToString:@"privateLocation"]) {
-        self.privateLocation = kCLLocationCoordinate2DInvalid;
+    } else if ([key isEqualToString:@"location"]) {
+        self.location = kCLLocationCoordinate2DInvalid;
     } else if ([key isEqualToString:@"captive"]) {
         self.captive = NO;
     } else if ([key isEqualToString:@"ownersIdentificationFromVision"]) {
         self.ownersIdentificationFromVision = NO;
     } else {
         [super setNilValueForKey:key];
-    }
-}
-
-- (CLLocationCoordinate2D)location {
-    if (CLLocationCoordinate2DIsValid(self.privateLocation)) {
-        return self.privateLocation;
-    } else {
-        return self.publicLocation;
     }
 }
 
@@ -326,15 +300,7 @@
 	return self.taxon.taxonId;
 }
 
-- (BOOL)captive {
-    return NO;
-}
-
 - (NSString *)validationErrorMsg {
-    return @"";
-}
-
-- (NSString *)geoprivacy {
     return @"";
 }
 
@@ -343,23 +309,11 @@
 }
 
 - (CLLocationDegrees)latitude {
-	if (CLLocationCoordinate2DIsValid(self.location)) {
-		return self.location.latitude;
-	} else {
-        return 0.0;
-	}
+    return self.location.latitude;
 }
 
 - (CLLocationDegrees)longitude {
-	if (CLLocationCoordinate2DIsValid(self.location)) {
-		return self.location.longitude;
-	} else {
-        return 0.0;
-	}
-}
-
-- (NSString *)title {
-    return nil;
+    return self.location.longitude;
 }
 
 // we're putting observations in a set, and want to make sure they don't get added more than once.
@@ -386,11 +340,7 @@
 }
 
 - (CLLocationCoordinate2D)visibleLocation {
-    if (CLLocationCoordinate2DIsValid(self.privateLocation)) {
-        return self.privateLocation;
-    } else {
-        return self.publicLocation;
-    }
+    return self.location;
 }
 
 - (CLLocationDistance)visiblePositionalAccuracy {
@@ -408,11 +358,7 @@
 #pragma mark - MKAnnotation coordinate
 
 - (CLLocationCoordinate2D)coordinate {
-    if (CLLocationCoordinate2DIsValid(self.privateLocation)) {
-        return self.privateLocation;
-    } else {
-        return self.publicLocation;
-    }
+    return self.location;
 }
 
 @end

@@ -64,8 +64,8 @@
             o.timeUpdatedLocally = [NSDate date];
             
             if (strongSelf.obsLocation) {
-                o.privateLatitude = strongSelf.obsLocation.coordinate.latitude;
-                o.privateLongitude = strongSelf.obsLocation.coordinate.longitude;
+                o.latitude = strongSelf.obsLocation.coordinate.latitude;
+                o.longitude = strongSelf.obsLocation.coordinate.longitude;
                 o.privatePositionalAccuracy = strongSelf.obsLocation.horizontalAccuracy;
             }
             

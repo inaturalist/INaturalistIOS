@@ -36,19 +36,15 @@
 
 @property ObsDataQuality dataQuality;
 
-@property CLLocationDegrees publicLatitude;
-@property CLLocationDegrees publicLongitude;
+@property CLLocationDegrees latitude;
+@property CLLocationDegrees longitude;
 @property CLLocationAccuracy publicPositionalAccuracy;
 
-@property CLLocationDegrees privateLatitude;
-@property CLLocationDegrees privateLongitude;
 @property CLLocationAccuracy privatePositionalAccuracy;
 
 @property BOOL coordinatesObscuredToUser;
 @property NSString *placeGuess;
 
-@property (readonly) CLLocationDegrees latitude;
-@property (readonly) CLLocationDegrees longitude;
 @property (readonly) CLLocationAccuracy positionalAccuracy;
 @property (readonly) CLLocationCoordinate2D location;
 
