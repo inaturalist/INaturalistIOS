@@ -52,7 +52,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionDelete,
 };
 
-@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, TaxaSearchViewControllerDelegate, CLLocationManagerDelegate, GalleryWrapperDelegate> {
+@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, TaxaSearchViewControllerDelegate, CLLocationManagerDelegate, GalleryWrapperDelegate, MediaPickerDelegate> {
     
     CLLocationManager *_locationManager;
 }
@@ -63,10 +63,43 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 @property CLGeocoder *geoCoder;
 @property NSMutableArray *recordsToDelete;
 @property GalleryWrapper *galleryWrapper;
+@property (nonatomic, strong) SlideInPresentationManager *slideInPresentationManager;
 
 @end
 
 @implementation ObsEditV2ViewController
+
+#pragma mark MediaPickerDelegate
+
+- (void)choseMediaPickerItemAtIndex:(NSInteger)idx {
+    if (idx == 0) {
+        [self dismissViewControllerAnimated:YES completion:^{
+            UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+            picker.delegate = self;
+            picker.mediaTypes = @[ @"public.image" ];
+            picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+            [self presentViewController:picker animated:YES completion:nil];
+        }];
+    } else {
+        // dismiss the media picker, present the gallery
+        [self dismissViewControllerAnimated:YES completion:^{
+            UIViewController *gallery = self.galleryWrapper.gallery;
+            [self presentViewController:gallery animated:YES completion:nil];
+        }];
+    }
+}
+
+// lazy variable
+- (SlideInPresentationManager *)slideInPresentationManager {
+    if (_slideInPresentationManager == nil) {
+        _slideInPresentationManager = [[SlideInPresentationManager alloc] init];
+    }
+    return _slideInPresentationManager;
+}
+
+- (void)pushLibrary {
+    NSLog(@"push library");
+}
 
 #pragma mark - uiviewcontroller lifecycle
 
@@ -398,8 +431,75 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)photoScrollViewAddPressed:(PhotoScrollViewCell *)psv {
-    UIViewController *gallery = self.galleryWrapper.gallery;
-    [self presentViewController:gallery animated:YES completion:nil];
+    MediaPickerViewController *mediaPicker = [[MediaPickerViewController alloc] init];
+    mediaPicker.mediaPickerDelegate = self;
+    mediaPicker.showsNoPhotoOption = NO;
+    mediaPicker.modalPresentationStyle = UIModalPresentationCustom;
+    mediaPicker.transitioningDelegate = self.slideInPresentationManager;
+    [self presentViewController:mediaPicker animated:YES completion:nil];
+}
+
+#pragma mark - UIImagePickerControllerDelegate
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey,id> *)info {
+    UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    if (!image) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+        return;
+    }
+    
+    NSInteger idx = 0;
+    ExploreObservationPhotoRealm *lastOp = [[self.standaloneObservation sortedObservationPhotos] lastObject];
+    if (lastOp) {
+        idx = lastOp.position + 1;
+    }
+    
+    ExploreObservationPhotoRealm *op = [ExploreObservationPhotoRealm new];
+    op.position = idx;
+    op.uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
+    [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
+    
+    NSError *saveError = nil;
+    BOOL saved = [[ImageStore sharedImageStore] storeImage:image
+                                                    forKey:op.photoKey
+                                                     error:&saveError];
+    
+    NSString *saveErrorTitle = NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg");
+    if (saveError) {
+        [self dismissViewControllerAnimated:YES completion:^{
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
+                                                                           message:saveError.localizedDescription
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];
+        }];
+        return;
+    } else if (!saved) {
+        [self dismissViewControllerAnimated:YES completion:^{
+            NSString *unknownErrMsg = NSLocalizedString(@"Unknown error", @"Message body when we don't know the error");
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
+                                                                           message:unknownErrMsg
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];
+        }];
+        return;
+    }
+    
+    op.timeCreated = [NSDate date];
+    op.timeUpdatedLocally = [NSDate date];
+
+    [self.standaloneObservation.observationPhotos addObject:op];
+    [self.tableView reloadData];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - GalleryWrapperDelegate methods
