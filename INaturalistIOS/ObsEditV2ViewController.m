@@ -451,6 +451,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         [self dismissViewControllerAnimated:YES completion:nil];
         return;
     }
+    UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
     
     NSInteger idx = 0;
     ExploreObservationPhotoRealm *lastOp = [[self.standaloneObservation sortedObservationPhotos] lastObject];
