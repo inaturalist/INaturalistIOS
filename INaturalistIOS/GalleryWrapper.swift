@@ -20,7 +20,7 @@ import Gallery
     @objc public func gallery() -> UIViewController {
         let gallery = GalleryController()
         gallery.delegate = self
-        Gallery.Config.tabsToShow = [.imageTab, .cameraTab]
+        Gallery.Config.tabsToShow = [.imageTab]
         Gallery.Config.initialTab = .imageTab
         return gallery
     }
