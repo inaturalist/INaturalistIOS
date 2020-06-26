@@ -45,7 +45,9 @@
     // add locale to the request
     NSURLComponents *components = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:YES];
     NSString *localeIdentifier = [[NSLocale currentLocale] localeIdentifier];
-    NSURLQueryItem *localeQueryItem = [NSURLQueryItem queryItemWithName:@"locale" value:localeIdentifier];
+    // node expects locales like fr-FR not fr_FR
+    NSString *serverLocaleIdentifier = [localeIdentifier stringByReplacingOccurrencesOfString:@"_" withString:@"-"];
+    NSURLQueryItem *localeQueryItem = [NSURLQueryItem queryItemWithName:@"locale" value:serverLocaleIdentifier];
     if (components.queryItems) {
         components.queryItems = [components.queryItems arrayByAddingObject:localeQueryItem];
     } else {
