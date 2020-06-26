@@ -343,14 +343,18 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 #pragma mark - PhotoScrollViewDelegate
 
 - (void)photoScrollView:(PhotoScrollViewCell *)psv setDefaultIndex:(NSInteger)idx {
-    ExploreObservationPhotoRealm *newDefault = self.standaloneObservation.sortedObservationPhotos[idx];
+    // create a copy of sorted photos so we can re-order stuff safely
+    NSMutableArray *photosCopy = [self.standaloneObservation.sortedObservationPhotos mutableCopy];
+    // move the new default to the beginning of the copied array
+    ExploreObservationPhotoRealm *newDefault = [photosCopy objectAtIndex:idx];
+    [photosCopy removeObject:newDefault];
+    [photosCopy insertObject:newDefault atIndex:0];
     
-    newDefault.position = 0;
-    newDefault.timeUpdatedLocally = [NSDate date];
-    
-    // update sortable
-    for (int i = 1; i < self.standaloneObservation.sortedObservationPhotos.count; i++) {
-        ExploreObservationPhotoRealm *op = self.standaloneObservation.sortedObservationPhotos[i];
+    // set the index of the item in the copied array to the position on the obsPhoto
+    // object. this will direct sortedObservationPhotos on the app and on the web.
+    for (int i = 0; i < photosCopy.count; i++) {
+        ExploreObservationPhotoRealm *op = photosCopy[i];
+        if (op.position == i) { continue; }
         op.position = i;
         op.timeUpdatedLocally = [NSDate date];
     }
