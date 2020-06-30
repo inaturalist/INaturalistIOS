@@ -305,7 +305,16 @@
 }
 
 - (CLLocationCoordinate2D)location {
-    return CLLocationCoordinate2DMake(self.latitude, self.longitude);
+    if (self.latitude == 0.0 || self.longitude == 0.0) {
+        return kCLLocationCoordinate2DInvalid;
+    } else {
+        CLLocationCoordinate2D loc = CLLocationCoordinate2DMake(self.latitude, self.longitude);
+        if (CLLocationCoordinate2DIsValid(loc)) {
+            return loc;
+        } else {
+            return kCLLocationCoordinate2DInvalid;
+        }
+    }
 }
 
 - (CLLocationAccuracy)positionalAccuracy {
