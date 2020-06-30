@@ -558,6 +558,14 @@
         }
     }
     
+    NSArray *coordinateKeys = @[ @"latitude", @"longitude" ];
+    for (NSString *coordinateKey in coordinateKeys) {
+        // trim out invalid coordinate values
+        if ([mutableParams[coordinateKey] isEqual:@(kCLLocationCoordinate2DInvalid.latitude)]) {
+            mutableParams[coordinateKey] = nil;
+        }
+    }
+    
     // return an immutable copy
     // ignore_photos is required to avoid clobbering obs photos
     // when updating an observation via the node endpoint
