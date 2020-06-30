@@ -858,8 +858,8 @@
     
     if (o.placeGuess && o.placeGuess.length > 0) {
         cell.subtitleLabel.text = o.placeGuess;
-    } else if (o.latitude) {
-        cell.subtitleLabel.text = [NSString stringWithFormat:@"%ld, %ld", (long)o.latitude, (long)o.longitude];
+    } else if (CLLocationCoordinate2DIsValid(o.location)) {
+        cell.subtitleLabel.text = [NSString stringWithFormat:@"%ld, %ld", (long)o.location.latitude, (long)o.location.longitude];
     } else {
         cell.subtitleLabel.text = NSLocalizedString(@"Somewhere...",nil);
     }
