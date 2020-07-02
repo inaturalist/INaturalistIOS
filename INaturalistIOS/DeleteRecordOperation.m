@@ -69,7 +69,11 @@
                                 BOOL actualSuccess = NO;
                                 NSHTTPURLResponse *r = [error.userInfo valueForKey:AFNetworkingOperationFailingURLResponseErrorKey];
                                 if (r) {
-                                    if (r.statusCode == 404) {
+                                    if (r.statusCode == 404 || r.statusCode == 403) {
+                                        // treat 404s and 403s as successful deletions
+                                        // 404 means it was already deleted
+                                        // 403 means you don't own the resource and can't delete it
+                                        // in either case don't block the user from doing other stuff
                                         ExploreDeletedRecord *dr = [ExploreDeletedRecord deletedRecordId:self.recordId withModelName:self.modelName];
                                         RLMRealm *realm = [RLMRealm defaultRealm];
                                         [realm beginWriteTransaction];
