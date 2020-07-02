@@ -114,7 +114,7 @@
     
     // these values can be nil in the model
     if ([cdModel valueForKey:@"speciesGuess"]) {
-        value[@"speciesGuess"] = [cdModel valueForKey:@"uuid"];
+        value[@"speciesGuess"] = [cdModel valueForKey:@"speciesGuess"];
     }
 
     if ([cdModel valueForKey:@"inatDescription"]) {
