@@ -1235,7 +1235,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             } else if (indexPath.item == 4) {
                 // captive/cultivated
                 
-                NSArray *captiveOptions = @[@"No", @"Yes"];
+                NSArray *captiveOptions = @[
+                    NSLocalizedString(@"No", @"negative response to binary choice, yes or no"),
+                    NSLocalizedString(@"Yes", @"positive response to binary choice, yes or no"),
+                ];
                 NSInteger selectedIndex = self.standaloneObservation.isCaptive ? 1 : 0;
                 
                 __weak typeof(self) weakSelf = self;
