@@ -129,7 +129,23 @@
     path = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], path];
     NSURL *url = [NSURL URLWithString:urlString];
+    
+    // add locale to the request
+    NSURLComponents *components = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:YES];
+    NSString *localeIdentifier = [[NSLocale currentLocale] localeIdentifier];
+    // node expects locales like fr-FR not fr_FR
+    NSString *serverLocaleIdentifier = [localeIdentifier stringByReplacingOccurrencesOfString:@"_" withString:@"-"];
+    NSURLQueryItem *localeQueryItem = [NSURLQueryItem queryItemWithName:@"locale" value:serverLocaleIdentifier];
+    if (components.queryItems) {
+        components.queryItems = [components.queryItems arrayByAddingObject:localeQueryItem];
+    } else {
+        components.queryItems = @[ localeQueryItem ];
+    }
+    url = [components URL];
+    
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    
+    
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = appDelegate.loginController;
@@ -194,7 +210,13 @@
     UIImage *thumb = [[ImageStore class] imageWithImage:image
                                      squashedToFillSize:CGSizeMake(299, 299)];
     NSData *imageData = UIImageJPEGRepresentation(thumb, 0.9);
-
+    
+    // add locale to the request
+    NSString *localeIdentifier = [[NSLocale currentLocale] localeIdentifier];
+    // node expects locales like fr-FR not fr_FR
+    NSString *serverLocaleIdentifier = [localeIdentifier stringByReplacingOccurrencesOfString:@"_" withString:@"-"];
+    params[@"locale"] = serverLocaleIdentifier;
+    
     // use afnetworking to deal with icky multi-part forms
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:self.apiBaseUrl]];
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
