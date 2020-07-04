@@ -98,14 +98,5 @@
     [self fetch:path classMapping:[IdentifierCount class] handler:done];
 }
 
-- (void)fetch:(NSString *)path classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
-    NSString *localeString = [NSLocale inat_serverFormattedLocale];
-    if (localeString && ![localeString isEqualToString:@""]) {
-        path = [path stringByAppendingString:[NSString stringWithFormat:@"&locale=%@", localeString]];
-    }
-    
-    [super fetch:path classMapping:classForMapping handler:done];
-}
-
 
 @end

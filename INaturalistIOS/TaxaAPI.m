@@ -23,24 +23,12 @@
 - (void)taxaMatching:(NSString *)name handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch autocomplete taxa"];
     NSString *path = [NSString stringWithFormat:@"taxa/autocomplete?q=%@", name];
-    
-    NSString *localeString = [NSLocale inat_serverFormattedLocale];
-	if (localeString && ![localeString isEqualToString:@""]) {
-		path = [path stringByAppendingString:[NSString stringWithFormat:@"&locale=%@", localeString]];
-	}
-	
     [self fetch:path classMapping:[ExploreTaxon class] handler:done];
 }
 
 - (void)taxonWithId:(NSInteger)taxonId handler:(INatAPIFetchCompletionCountHandler)done {
 	[[Analytics sharedClient] debugLog:@"Network - fetch taxon by id"];
     NSString *path = [NSString stringWithFormat:@"taxa/%ld", (long)taxonId];
-    
-    NSString *localeString = [NSLocale inat_serverFormattedLocale];
-	if (localeString && ![localeString isEqualToString:@""]) {
-		path = [path stringByAppendingString:[NSString stringWithFormat:@"?locale=%@", localeString]];
-	}
-	
     [self fetch:path classMapping:[ExploreTaxon class] handler:done];
 
 }
@@ -137,12 +125,7 @@
     
     [[Analytics sharedClient] debugLog:@"Network - fetch suggestions by id"];
     NSString *path = [NSString stringWithFormat:@"computervision/score_observation/%ld", (long)observationId];
-    
-    NSString *localeString = [NSLocale inat_serverFormattedLocale];
-    if (localeString && ![localeString isEqualToString:@""]) {
-        path = [path stringByAppendingString:[NSString stringWithFormat:@"?locale=%@", localeString]];
-    }
-    
+        
     path = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], path];
     NSURL *url = [NSURL URLWithString:urlString];
@@ -206,11 +189,6 @@
     }
     if (observedOn) {
         params[@"observed_on"] = @([observedOn timeIntervalSince1970]);
-    }
-        
-    NSString *localeString = [NSLocale inat_serverFormattedLocale];
-    if (localeString && ![localeString isEqualToString:@""]) {
-        path = [path stringByAppendingString:[NSString stringWithFormat:@"?locale=%@", localeString]];
     }
     
     UIImage *thumb = [[ImageStore class] imageWithImage:image

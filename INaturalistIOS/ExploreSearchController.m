@@ -23,34 +23,29 @@
 @implementation ExploreSearchController
 
 - (INatAPI *)api {
-	static INatAPI *_api;
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-		_api = [[INatAPI alloc] init];
-	});
-	return _api;
+    static INatAPI *_api;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[INatAPI alloc] init];
+    });
+    return _api;
 }
 
 - (NSString *)searchPathForQuery:(NSString *)userQuery inCategory:(NSString *)category {
-	NSString *pathPattern = [NSString stringWithFormat:@"%@/autocomplete", category];
+    NSString *pathPattern = [NSString stringWithFormat:@"%@/autocomplete", category];
     NSString *queryBase = @"?per_page=25&q=%@";
     NSString *query = [NSString stringWithFormat:queryBase, userQuery];
     
-    NSString *localeString = [NSLocale inat_serverFormattedLocale];
-	if (localeString && ![localeString isEqualToString:@""]) {
-		query = [query stringByAppendingString:[NSString stringWithFormat:@"&locale=%@", localeString]];
-	}
-    
     NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-	return path;
+    return path;
 }
 
 - (void)performSearchForPath:(NSString *)path classMapping:(Class)klass handler:(SearchCompletionHandler)handler {
-	[self.api fetch:path classMapping:klass handler:^(NSArray *results, NSInteger count, NSError *error) {
-		dispatch_async(dispatch_get_main_queue(), ^{
-			handler(results, error);
-		});
-	}];
+    [self.api fetch:path classMapping:klass handler:^(NSArray *results, NSInteger count, NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            handler(results, error);
+        });
+    }];
 }
 
 - (void)searchForTaxon:(NSString *)taxon completionHandler:(SearchCompletionHandler)handler {
@@ -59,22 +54,22 @@
 }
 
 - (void)searchForPerson:(NSString *)name completionHandler:(SearchCompletionHandler)handler {
-	NSString *path = [self searchPathForQuery:name inCategory:@"users"];
-	[self performSearchForPath:path classMapping:ExploreUser.class handler:handler];
+    NSString *path = [self searchPathForQuery:name inCategory:@"users"];
+    [self performSearchForPath:path classMapping:ExploreUser.class handler:handler];
 }
 
 - (void)searchForLocation:(NSString *)location completionHandler:(SearchCompletionHandler)handler {
-	NSString *path = [self searchPathForQuery:location inCategory:@"places"];
-	[self performSearchForPath:path classMapping:ExploreLocation.class handler:handler];
+    NSString *path = [self searchPathForQuery:location inCategory:@"places"];
+    [self performSearchForPath:path classMapping:ExploreLocation.class handler:handler];
 }
 
 - (void)searchForProject:(NSString *)project completionHandler:(SearchCompletionHandler)handler {
-	NSString *path = [self searchPathForQuery:project inCategory:@"projects"];
-	[self performSearchForPath:path classMapping:ExploreProject.class handler:handler];
+    NSString *path = [self searchPathForQuery:project inCategory:@"projects"];
+    [self performSearchForPath:path classMapping:ExploreProject.class handler:handler];
 }
 
 - (void)searchForLogin:(NSString *)loginName completionHandler:(SearchCompletionHandler)handler {
-	[self searchForPerson:loginName completionHandler:handler];
+    [self searchForPerson:loginName completionHandler:handler];
 }
 
 @end
