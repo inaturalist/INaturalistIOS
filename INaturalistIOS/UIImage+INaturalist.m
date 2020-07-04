@@ -53,10 +53,10 @@
 }
 
 
-- (NSData *)inat_JPEGDataRepresentationWithMetadata:(NSDictionary *)metadata {
+- (NSData *)inat_JPEGDataRepresentationWithMetadata:(NSDictionary *)metadata quality:(CGFloat)quality {
     NSData *destData = nil;
 
-    NSData *jpegData = UIImageJPEGRepresentation(self, 1.0f);
+    NSData *jpegData = UIImageJPEGRepresentation(self, quality);
     CGImageSourceRef source = CGImageSourceCreateWithData((CFDataRef)jpegData,
                                                           NULL);
     

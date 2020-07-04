@@ -14,5 +14,5 @@
 + (instancetype)inat_defaultGuideImage;
 + (instancetype)inat_defaultUserImage;
 
-- (NSData *)inat_JPEGDataRepresentationWithMetadata:(NSDictionary *)metadata;
+- (NSData *)inat_JPEGDataRepresentationWithMetadata:(NSDictionary *)metadata quality:(CGFloat)quality;
 @end

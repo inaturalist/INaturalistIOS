@@ -9,6 +9,7 @@
 import UIKit
 import Gallery
 import FontAwesomeKit
+import Photos
 
 class INatTabBarController: UITabBarController {
    
@@ -206,10 +207,39 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
          return
       }
       
-      // save to the photo library
-      // silently continue if this fails
-      UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil)
+      let imageData: Data?
+      if var metadata = info[.mediaMetadata] as? [String: Any] {
+         // check if we have a recent location that can be embbed
+         // into the metadata.
+         if let location = CLLocationManager().location,
+            let gpsDict = location.inat_GPSDictionary(),
+            location.timestamp.timeIntervalSinceNow > -300
+         {
+            metadata[kCGImagePropertyGPSDictionary as String] = gpsDict
+         }
+         
+         imageData = image.inat_JPEGDataRepresentation(withMetadata: metadata, quality: 0.9)
+      } else {
+         imageData = image.jpegData(compressionQuality: 0.9)
+      }
       
+      if let imageData = imageData {
+         do {
+            try PHPhotoLibrary.shared().performChangesAndWait {
+               let request = PHAssetCreationRequest.forAsset()
+               request.addResource(with: .photo, data: imageData, options: nil)
+               request.creationDate = Date()
+
+               // this updates the ios photos database but not exif
+               if let location = CLLocationManager().location,
+                  location.timestamp.timeIntervalSinceNow > -300
+               {
+                  request.location = location
+               }
+            }
+         } catch { } // silently continue if this save operation fails
+      }
+            
       // with the standard image picker, no need to show confirmation screen
       let o = ExploreObservationRealm()
       o.uuid = UUID().uuidString.lowercased()

@@ -44,6 +44,8 @@
 #import "ExploreObservationRealm.h"
 #import "ExploreDeletedRecord.h"
 #import "iNaturalist-Swift.h"
+#import "CLLocation+EXIFGPSDictionary.h"
+#import "UIImage+INaturalist.h"
 
 typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionPhotos = 0,
@@ -455,7 +457,33 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         [self dismissViewControllerAnimated:YES completion:nil];
         return;
     }
-    UIImageWriteToSavedPhotosAlbum(image, nil, nil, nil);
+    
+    NSMutableDictionary *mutableMetadata = [[info objectForKey:UIImagePickerControllerMediaMetadata] mutableCopy];
+    NSData *imageData = nil;
+    if (mutableMetadata) {
+        CLLocation *location = [self.locationManager location];
+        if (location.timestamp.timeIntervalSinceNow > -300) {
+            NSDictionary *gpsDict = [location inat_GPSDictionary];
+            mutableMetadata[(NSString *)kCGImagePropertyGPSDictionary] = gpsDict;
+        }
+        NSDictionary *metadata = [NSDictionary dictionaryWithDictionary:mutableMetadata];
+        imageData = [image inat_JPEGDataRepresentationWithMetadata:metadata quality:0.9];
+    } else {
+        imageData = UIImageJPEGRepresentation(image, 0.9);
+    }
+    
+    if (imageData != nil) {
+        [[PHPhotoLibrary sharedPhotoLibrary] performChangesAndWait:^{
+            PHAssetCreationRequest *request = [PHAssetCreationRequest creationRequestForAsset];
+            [request addResourceWithType:PHAssetResourceTypePhoto data:imageData options:nil];
+            [request setCreationDate:[NSDate date]];
+            
+            CLLocation *location = self.locationManager.location;
+            if (location && location.timestamp.timeIntervalSinceNow > -300) {
+                [request setLocation:location];
+            }
+        } error:nil];               // silently continue if this save operation fails
+    }
     
     NSInteger idx = 0;
     ExploreObservationPhotoRealm *lastOp = [[self.standaloneObservation sortedObservationPhotos] lastObject];

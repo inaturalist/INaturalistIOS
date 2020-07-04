@@ -9,3 +9,5 @@
 #import "UIColor+INaturalist.h"
 #import "Analytics.h"
 #import "ImageStore.h"
+#import "CLLocation+EXIFGPSDictionary.h"
+#import "UIImage+INaturalist.h"
