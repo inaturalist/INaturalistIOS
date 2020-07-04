@@ -91,16 +91,6 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
     
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-
-    // presenting from this collection view is screwing up the content inset
-    // reset it here
-    observationsCollectionView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
-    
-  	[self configureFlowLayout:flowLayout inCollectionView:observationsCollectionView forTraits:self.traitCollection];
-}
-
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator
 {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
