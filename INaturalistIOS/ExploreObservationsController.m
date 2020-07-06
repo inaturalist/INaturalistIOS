@@ -21,6 +21,9 @@
 #import "ObserverCount.h"
 #import "INatReachability.h"
 
+NSInteger const ObsFetchErrorCode = -1008;
+NSInteger const ObsFetchEmptyCode = -100;
+
 @interface ExploreObservationsController () {
     NSInteger lastPagedFetched;
     ExploreRegion *_limitingRegion;
@@ -56,7 +59,7 @@
         [self fetchObservationsShouldNotify:YES];
     } else {
         NSError *error = [NSError errorWithDomain:@"org.inaturalist"
-                                             code:-1008
+                                             code:ObsFetchErrorCode
                                          userInfo:@{
                                              NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
                                          }];
@@ -83,7 +86,7 @@
         [self fetchObservationsShouldNotify:NO];
     } else {
         NSError *error = [NSError errorWithDomain:@"org.inaturalist"
-                                             code:-1008
+                                             code:ObsFetchErrorCode
                                          userInfo:@{
                                              NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
                                          }];
@@ -116,7 +119,7 @@
         [self fetchObservationsShouldNotify:YES];
     } else {
         NSError *error = [NSError errorWithDomain:@"org.inaturalist"
-                                             code:-1008
+                                             code:ObsFetchErrorCode
                                          userInfo:@{
                                              NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
                                          }];
@@ -142,7 +145,7 @@
         [self fetchObservationsShouldNotify:YES];
     } else {
         NSError *error = [NSError errorWithDomain:@"org.inaturalist"
-                                             code:-1008
+                                             code:ObsFetchErrorCode
                                          userInfo:@{
                                              NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
                                          }];
@@ -169,7 +172,7 @@
             [self fetchObservationsShouldNotify:YES];
         } else {
             NSError *error = [NSError errorWithDomain:@"org.inaturalist"
-                                                 code:-1008
+                                                 code:ObsFetchErrorCode
                                              userInfo:@{
                                                  NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
                                              }];
@@ -185,7 +188,7 @@
         [self fetchObservationsPage:++lastPagedFetched];
     } else {
         NSError *error = [NSError errorWithDomain:@"org.inaturalist"
-                                             code:-1008
+                                             code:ObsFetchErrorCode
                                          userInfo:@{
                                              NSLocalizedDescriptionKey: @"Network unavailable, cannot search iNaturalist.org"
                                          }];
@@ -307,7 +310,7 @@
                     }
                     
                     NSError *error = [[NSError alloc] initWithDomain:@"org.inaturalist"
-                                                                code:-1014
+                                                                code:ObsFetchEmptyCode
                                                             userInfo:@{ NSLocalizedDescriptionKey: description }];
                     [self.notificationDelegate failedObservationFetch:error];
                 });

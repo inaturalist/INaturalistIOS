@@ -882,7 +882,14 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
     });
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Error Fetching Observations", nil)
+    
+    NSString *title = NSLocalizedString(@"Error Fetching Observations", nil);
+    if (error.code == ObsFetchEmptyCode) {
+        // not technically an error, so just show the message
+        title = nil;
+    }
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
                                                                    message:error.localizedDescription
                                                             preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)

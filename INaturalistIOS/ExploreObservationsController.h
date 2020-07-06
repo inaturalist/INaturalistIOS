@@ -10,5 +10,8 @@
 
 #import "ExploreObservationsDataSource.h"
 
+extern NSInteger const ObsFetchErrorCode;
+extern NSInteger const ObsFetchEmptyCode;
+
 @interface ExploreObservationsController : NSObject <ExploreObservationsDataSource>
 @end
