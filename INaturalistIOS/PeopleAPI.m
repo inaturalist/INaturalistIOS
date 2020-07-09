@@ -33,15 +33,18 @@
 - (void)createUserEmail:(NSString *)email login:(NSString *)login password:(NSString *)password siteId:(NSInteger)siteId license:(NSString *)license localeStr:(NSString *)localeStr handler:(INatAPIFetchCompletionCountHandler) done {
     
     NSDictionary *newUserDict = @{
-        @"user[email]": email,
-        @"user[login]": login,
-        @"user[password]": password,
-        @"user[password_confirmation]": password,
-        @"user[site_id]": @(siteId),
-        @"user[preferred_observation_license]": license,
-        @"user[preferred_photo_license]": license,
-        @"user[preferred_sound_license]": license,
-        @"user[locale]": localeStr,
+        @"user": @{
+                @"email": email,
+                @"login": login,
+                @"password": password,
+                @"password_confirmation": password,
+                @"site_id": @(siteId),
+                @"preferred_observation_license": license,
+                @"preferred_photo_license": license,
+                @"preferred_sound_license": license,
+                @"locale": localeStr,
+
+        },
     };
     
     NSURL *url = [NSURL URLWithString:@"/users.json" relativeToURL:[NSURL inat_baseURL]];
