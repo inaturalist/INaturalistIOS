@@ -15,6 +15,7 @@
 @import IFTTTLaunchImage;
 @import UIColor_HTMLColors;
 @import JDStatusBarNotification;
+@import FBSDKCoreKit;
 
 #import "INaturalistAppDelegate.h"
 #import "Observation.h"
@@ -90,7 +91,10 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [self setupAnalytics];
-        
+    
+    [FBSDKSettings setCodelessDebugLogEnabled:@(NO)];
+    [FBSDKSettings setAutoLogAppEventsEnabled:@(NO)];
+
     [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
     
     [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
