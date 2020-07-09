@@ -88,6 +88,7 @@ static const int ListControlIndexNearby = 2;
     [[self projectsApi] featuredProjectsHandler:^(NSArray *results, NSInteger count, NSError *error) {
         weakSelf.featuredProjects = results;
         [weakSelf.tableView reloadData];
+        [weakSelf syncFinished];
     }];
 }
 
@@ -129,10 +130,9 @@ static const int ListControlIndexNearby = 2;
         ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
         [self syncUserProjectsUserId:me.userId page:1];
     } else {
-        [self syncFinished];
-
         [self showSignupPrompt:NSLocalizedString(@"You must be logged in to sync user projects.", @"Signup prompt reason when user tries to sync user projects.")];
     }
+    [self syncFinished];
 }
 
 - (void)syncUserProjectsUserId:(NSInteger)userId page:(NSInteger)page {
