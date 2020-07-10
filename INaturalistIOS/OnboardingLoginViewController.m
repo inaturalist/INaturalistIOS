@@ -39,9 +39,12 @@
 @property IBOutlet UIStackView *iNatAuthStackView;
 
 @property IBOutlet UIStackView *textfieldStackView;
-@property IBOutlet UITextField *usernameField;
-@property IBOutlet UITextField *passwordField;
-@property IBOutlet UITextField *emailField;
+@property IBOutlet UITextField *signupUsernameField;
+@property IBOutlet UITextField *signupPasswordField;
+@property IBOutlet UITextField *signupEmailField;
+@property IBOutlet UITextField *loginUsernameField;
+@property IBOutlet UITextField *loginPasswordField;
+
 @property IBOutlet UIButton *forgotButton;
 
 @property IBOutlet UIStackView *licenseStackView;
@@ -88,6 +91,12 @@
                                email;
                            }),
                            ({
+                               FAKIcon *person = [FAKIonIcons iosPersonOutlineIconWithSize:30];
+                               [person addAttribute:NSForegroundColorAttributeName
+                                              value:[UIColor colorWithHexString:@"#4a4a4a"]];
+                               person;
+                           }),
+                           ({
                                FAKIcon *lock = [FAKIonIcons iosLockedOutlineIconWithSize:30];
                                [lock addAttribute:NSForegroundColorAttributeName
                                             value:[UIColor colorWithHexString:@"#4a4a4a"]];
@@ -99,9 +108,15 @@
                                               value:[UIColor colorWithHexString:@"#4a4a4a"]];
                                person;
                            }),
+                           ({
+                               FAKIcon *lock = [FAKIonIcons iosLockedOutlineIconWithSize:30];
+                               [lock addAttribute:NSForegroundColorAttributeName
+                                            value:[UIColor colorWithHexString:@"#4a4a4a"]];
+                               lock;
+                           }),
                            ];
     
-    NSArray *fields = @[ self.emailField, self.passwordField, self.usernameField ];
+    NSArray *fields = @[ self.signupEmailField, self.signupUsernameField, self.signupPasswordField, self.loginUsernameField, self.loginPasswordField ];
     [fields enumerateObjectsUsingBlock:^(UITextField *field, NSUInteger idx, BOOL * _Nonnull stop) {
         field.tag = idx;
         field.leftView = ({
@@ -237,11 +252,19 @@
         [[GIDSignIn sharedInstance] signOut];
     }
     
-    // start in signup context
-    [self.switchContextButton setContext:LoginContextSignup];
+    self.signupUsernameField.placeholder = NSLocalizedString(@"Username", @"The desired username during signup.");
+    self.loginUsernameField.placeholder = NSLocalizedString(@"Username or email", @"users can login with their username or their email address.");
+    self.loginPasswordField.rightViewMode = UITextFieldViewModeUnlessEditing;
+    self.signupPasswordField.rightViewMode = UITextFieldViewModeNever;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     
-    if (self.startsInLoginMode && self.textfieldStackView.arrangedSubviews.count == 3) {
-        [self switchAuthContext:nil];
+    if (self.startsInLoginMode) {
+        [self setLoginContext];
+    } else {
+        [self setSignupContext];
     }
 }
 
@@ -283,11 +306,13 @@
 #pragma mark - UITextFieldDelegate
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    if (textField == self.emailField) {
-        [self.usernameField becomeFirstResponder];
-    } else if (textField == self.usernameField) {
-        [self.passwordField becomeFirstResponder];
-    } else if (textField == self.passwordField) {
+    if (textField == self.signupEmailField) {
+        [self.signupUsernameField becomeFirstResponder];
+    } else if (textField == self.signupUsernameField) {
+        [self.signupPasswordField becomeFirstResponder];
+    } else if (textField == self.loginUsernameField) {
+        [self.loginPasswordField becomeFirstResponder];
+    } else if (textField == self.signupPasswordField || self.loginPasswordField) {
         [self actionPressed:textField];
     }
     return YES;
@@ -343,39 +368,76 @@
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-- (IBAction)switchAuthContext:(id)sender {
-    if (self.textfieldStackView.arrangedSubviews.count == 3) {
-        [self.textfieldStackView removeArrangedSubview:self.emailField];
-        self.emailField.hidden = YES;
-        self.usernameField.placeholder = NSLocalizedString(@"Username or email", @"users can login with their username or their email address.");
-        
-        [self.iNatAuthStackView insertArrangedSubview:self.forgotButton
-                                              atIndex:2];
-        self.forgotButton.hidden = NO;
-        
-        self.titleLabel.text = NSLocalizedString(@"Log In", nil);
-        [self.actionButton setTitle:NSLocalizedString(@"Log In", nil)
-                           forState:UIControlStateNormal];
-        
-        
-        self.licenseStackView.hidden = YES;
-        self.passwordField.rightViewMode = UITextFieldViewModeUnlessEditing;
-        [self.switchContextButton setContext:LoginContextLogin];
-    } else {
-        [self.textfieldStackView insertArrangedSubview:self.emailField
-                                               atIndex:0];
-        self.emailField.hidden = NO;
-        self.usernameField.placeholder = NSLocalizedString(@"Username", @"The desired username during signup.");
+- (void)setLoginContext {
+    for (UITextField *field in @[ self.signupEmailField, self.signupUsernameField, self.signupPasswordField ]) {
+        [self.textfieldStackView removeArrangedSubview:field];
+        field.hidden = YES;
+    }
+    
+    for (UITextField *field in @[ self.loginUsernameField, self.loginPasswordField ]) {
+        [self.textfieldStackView addArrangedSubview:field];
+        field.hidden = NO;
+    }
+    
+    [self.iNatAuthStackView insertArrangedSubview:self.forgotButton
+                                          atIndex:2];
+    self.forgotButton.hidden = NO;
+    
+    self.titleLabel.text = NSLocalizedString(@"Log In", nil);
+    [self.actionButton setTitle:NSLocalizedString(@"Log In", nil)
+                       forState:UIControlStateNormal];
+    
+    self.licenseStackView.hidden = YES;
+    [self.switchContextButton setContext:LoginContextLogin];
+}
 
-        [self.iNatAuthStackView removeArrangedSubview:self.forgotButton];
-        self.forgotButton.hidden = YES;
-        
-        self.titleLabel.text = NSLocalizedString(@"Sign Up", nil);
-        [self.actionButton setTitle:NSLocalizedString(@"Sign Up", nil)
-                           forState:UIControlStateNormal];
-        self.licenseStackView.hidden = NO;
-        self.passwordField.rightViewMode = UITextFieldViewModeNever;
-        [self.switchContextButton setContext:LoginContextSignup];
+- (void)setSignupContext {
+    for (UITextField *field in @[ self.loginUsernameField, self.loginPasswordField ]) {
+        [self.textfieldStackView removeArrangedSubview:field];
+        field.hidden = YES;
+    }
+    
+    for (UITextField *field in @[ self.signupEmailField, self.signupUsernameField, self.signupPasswordField ]) {
+        [self.textfieldStackView addArrangedSubview:field];
+        field.hidden = NO;
+    }
+
+
+    [self.iNatAuthStackView removeArrangedSubview:self.forgotButton];
+    self.forgotButton.hidden = YES;
+    
+    self.titleLabel.text = NSLocalizedString(@"Sign Up", nil);
+    [self.actionButton setTitle:NSLocalizedString(@"Sign Up", nil)
+                       forState:UIControlStateNormal];
+    self.licenseStackView.hidden = NO;
+    [self.switchContextButton setContext:LoginContextSignup];
+}
+
+- (IBAction)switchAuthContext:(id)sender {
+    // clear text fields and resign keyboard
+    // when switching context
+    NSArray *allFields = @[
+        self.loginUsernameField,
+        self.loginPasswordField,
+        self.signupEmailField,
+        self.signupUsernameField,
+        self.signupPasswordField,
+    ];
+    
+    for (UITextField *field in allFields) {
+        if (field != self.signupPasswordField) {
+            // don't clear the signup password field
+            // since this can be a suggested "strong
+            // password" from apple
+            field.text = @"";
+        }
+        [field resignFirstResponder];
+    }
+    
+    if (self.textfieldStackView.arrangedSubviews.count == 3) {
+        [self setLoginContext];
+    } else {
+        [self setSignupContext];
     }
 }
 
@@ -427,14 +489,14 @@
     // validators
     BOOL isValid = YES;
     NSString *alertMsg;
-    if (!self.emailField.text || [self.emailField.text rangeOfString:@"@"].location == NSNotFound) {
+    if (!self.signupEmailField.text || [self.signupEmailField.text rangeOfString:@"@"].location == NSNotFound) {
         isValid = NO;
         alertMsg = NSLocalizedString(@"Invalid Email Address", "Error for bad email when making account.");
-    }  else if (!self.passwordField.text || self.passwordField.text.length < INatMinPasswordLength) {
+    }  else if (!self.signupPasswordField.text || self.signupPasswordField.text.length < INatMinPasswordLength) {
         isValid = NO;
         alertMsg = NSLocalizedString(@"Passwords must be at least six characters in length.",
                                      @"Error for bad password when making account");
-    } else if (!self.usernameField.text) {
+    } else if (!self.signupUsernameField.text) {
         isValid = NO;
         alertMsg = NSLocalizedString(@"Invalid Username", @"Error for bad username hwne making account.");
     }
@@ -467,9 +529,9 @@
     hud.dimBackground = YES;
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-    [appDelegate.loginController createAccountWithEmail:self.emailField.text
-                                               password:self.passwordField.text
-                                               username:self.usernameField.text
+    [appDelegate.loginController createAccountWithEmail:self.signupEmailField.text
+                                               password:self.signupPasswordField.text
+                                               username:self.signupUsernameField.text
                                                    site:selectedPartnerId
                                                 license:license];
 }
@@ -490,12 +552,12 @@
     // validators
     BOOL isValid = YES;
     NSString *alertMsg;
-    if (!self.usernameField.text) {
+    if (!self.loginUsernameField.text) {
         isValid = NO;
         alertMsg = NSLocalizedString(@"Invalid Username",
                                      @"Error for bad username when making account.");
     }
-    if (!self.passwordField.text || self.passwordField.text.length < INatMinPasswordLength) {
+    if (!self.loginPasswordField.text || self.loginPasswordField.text.length < INatMinPasswordLength) {
         isValid = NO;
         alertMsg = NSLocalizedString(@"Passwords must be at least six characters in length.",
                                      @"Error for bad password when making account");
@@ -524,8 +586,8 @@
     hud.dimBackground = YES;
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-    [appDelegate.loginController loginWithUsername:self.usernameField.text
-                                          password:self.passwordField.text];
+    [appDelegate.loginController loginWithUsername:self.loginUsernameField.text
+                                          password:self.loginPasswordField.text];
 }
 
 #pragma mark - Partner alert helper
@@ -654,7 +716,8 @@
                                               style:UIAlertActionStyleCancel
                                             handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
-    [self.passwordField setText:@""];
+    [self.loginPasswordField setText:@""];
+    [self.signupPasswordField setText:@""];
 }
 
 - (void)loginSuccess {
@@ -673,8 +736,6 @@
             [self dismissViewControllerAnimated:YES completion:nil];
         }
     });
-    
-    NSLog(@"login success");
 }
 
 @end
