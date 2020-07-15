@@ -19,7 +19,7 @@
 }
 
 - (NSURL *)searchResult_ThumbnailUrl {
-    return [NSURL URLWithString:self.iconUrl];
+    return self.iconUrl;
 }
 
 - (UIImage *)searchResult_PlaceholderImage {
