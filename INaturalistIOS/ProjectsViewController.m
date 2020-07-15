@@ -43,6 +43,9 @@ static const int ListControlIndexNearby = 2;
 @end
 
 @implementation ProjectsViewController
+{
+    int activityCount;
+}
 
 - (ProjectsAPI *)projectsApi {
     static ProjectsAPI *_api = nil;
@@ -84,6 +87,7 @@ static const int ListControlIndexNearby = 2;
 
 - (void)syncFeaturedProjects {
     __weak typeof(self)weakSelf = self;
+    self->activityCount += 1;
     // TODO: handle per-site-id featuring
     [[self projectsApi] featuredProjectsHandler:^(NSArray *results, NSInteger count, NSError *error) {
         weakSelf.featuredProjects = results;
@@ -111,11 +115,13 @@ static const int ListControlIndexNearby = 2;
         
         weakSelf.nearbyProjects = results;
         [weakSelf.tableView reloadData];
+        [self syncFinished];
     }];
 }
 
 - (void)syncUserProjects {
     // start by deleting all projects stored in realm
+    self->activityCount += 1;
     RLMRealm *realm = [RLMRealm defaultRealm];
     [realm beginWriteTransaction];
     [realm deleteObjects:[ExploreProjectRealm allObjects]];
@@ -137,6 +143,7 @@ static const int ListControlIndexNearby = 2;
 
 - (void)syncUserProjectsUserId:(NSInteger)userId page:(NSInteger)page {
     __weak typeof(self)weakSelf = self;
+    self->activityCount += 1;
     [[self projectsApi] projectsForUser:userId page:page handler:^(NSArray *results, NSInteger totalCount, NSError *error) {
         ExploreUserRealm *me = [ExploreUserRealm objectForPrimaryKey:@(userId)];
         if (!me) { return; }        // can't sync user projects if we have no user
@@ -158,6 +165,7 @@ static const int ListControlIndexNearby = 2;
             // recursively fetch another page of joined projects
             [weakSelf syncUserProjectsUserId:userId page:page+1];
         }
+        [self syncFinished];
     }];
 }
 
@@ -182,7 +190,10 @@ static const int ListControlIndexNearby = 2;
 
 
 - (void)syncFinished {
-    self.navigationItem.rightBarButtonItem = self.searchButton;
+    self->activityCount -= 1;
+    if (self->activityCount == 0) {
+         self.navigationItem.rightBarButtonItem = self.searchButton;
+    }
 }
 
 - (UISegmentedControl *)listControl {
@@ -267,6 +278,7 @@ static const int ListControlIndexNearby = 2;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self->activityCount = 0;
         
     self.tableView.estimatedRowHeight = 60.0;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
