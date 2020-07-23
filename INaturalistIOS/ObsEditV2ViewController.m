@@ -99,10 +99,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     return _slideInPresentationManager;
 }
 
-- (void)pushLibrary {
-    NSLog(@"push library");
-}
-
 #pragma mark - uiviewcontroller lifecycle
 
 - (void)viewDidLoad {
