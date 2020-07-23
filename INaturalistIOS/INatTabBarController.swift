@@ -52,10 +52,7 @@ class INatTabBarController: UITabBarController {
       camera.mediaTypes = ["public.image"]
       camera.sourceType = .camera
       
-      // dismiss the media picker, present the camera
-      self.dismiss(animated: true) {
-         self.present(camera, animated: true, completion: nil)
-      }
+      self.present(camera, animated: true, completion: nil)
    }
    
    func showCameraRoll() {
@@ -68,10 +65,7 @@ class INatTabBarController: UITabBarController {
       let galleryNav = UINavigationController(rootViewController: gallery)
       galleryNav.navigationBar.isHidden = true
       
-      // dismiss the media picker, present the photo library
-      self.dismiss(animated: true) {
-         self.present(galleryNav, animated: true, completion: nil)
-      }
+      self.present(galleryNav, animated: true, completion: nil)
    }
    
    func newObsNoPhoto() {
@@ -97,11 +91,7 @@ class INatTabBarController: UITabBarController {
       
       
       let nav = UINavigationController(rootViewController: confirmVC)
-
-      // dismiss the media picker, present the edit obs VC
-      self.dismiss(animated: true) {
-         self.present(nav, animated: true, completion: nil)
-      }
+      self.present(nav, animated: true, completion: nil)
    }
    
 
