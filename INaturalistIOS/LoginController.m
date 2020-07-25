@@ -455,11 +455,11 @@ didSignInForUser:(GIDGoogleUser *)user
     
     // jwtexpiration timeIntervalSinceNow starts at 86400 and decrements down to zero
     // eventually becoming negative. refetch if it's less than 30 seconds from now.
-    if (self.jwtToken && [self.jwtTokenExpiration timeIntervalSinceNow] < 30) {
+    if (self.jwtToken && [self.jwtTokenExpiration timeIntervalSinceNow] > 30) {
         if (success) {
             success(@{ tokenKey: self.jwtToken });
-            return;
         }
+        return;
     }
     
     NSURL *url = [NSURL URLWithString:@"https://www.inaturalist.org/users/api_token.json"];
