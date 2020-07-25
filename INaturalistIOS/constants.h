@@ -12,6 +12,7 @@
 #define INatUsernamePrefKey @"INatUsernamePrefKey"
 #define INatPasswordPrefKey @"INatPasswordPrefKey"
 #define INatTokenPrefKey    @"INatTokenPrefKey"
+#define INatJWTPrefKey      @"INatJWTPrefKey"
 #define INatLastDeletedSync @"INatLastDeletedSync"
 #define kINatAuthServiceExtToken @"INatAuthServiceExtToken"
 #define kINatAuthService @"INatAuthService"

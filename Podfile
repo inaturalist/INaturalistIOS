@@ -52,6 +52,7 @@ target :iNaturalist do
   pod 'FileMD5Hash', :git => 'https://github.com/FutureWorkshops/FileMD5Hash.git', :commit => '6864c180c010ab4b0514ba5c025091e12ab01199'
   pod 'YLMoment', :git => 'https://github.com/inaturalist/YLMoment.git', :commit => '35521e9f80c23de6f885771f97a6c1febe245c00'
   pod 'Down', :git => 'https://github.com/ocshing/Down-gfm'
+  pod 'SimpleKeychain'
 
   target :iNaturalistTests do
     inherit! :search_paths
