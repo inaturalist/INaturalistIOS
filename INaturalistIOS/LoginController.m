@@ -30,11 +30,12 @@
 static const NSTimeInterval LocalMeUserValidTimeInterval = 600;
 
 @interface LoginController () <GIDSignInDelegate> {
-    NSString    *externalAccessToken;
-    NSString    *iNatAccessToken;
-    NSString    *accountType;
-    BOOL        isLoginCompleted;
-    NSInteger   lastAssertionType;
+    NSString         *externalAccessToken;
+    NSString         *iNatAccessToken;
+    NSString         *accountType;
+    BOOL             isLoginCompleted;
+    NSInteger        lastAssertionType;
+    dispatch_group_t jwtTokenRequestGroup;
 }
 @end
 
@@ -469,6 +470,18 @@ didSignInForUser:(GIDGoogleUser *)user
         return;
     }
     
+    if (jwtTokenRequestGroup) {
+        dispatch_group_notify(jwtTokenRequestGroup, dispatch_get_main_queue(), ^{
+            if (self.jwtToken && success) {
+                success(@{ tokenKey: self.jwtToken});
+            }
+        });
+        return;
+    }
+    
+    jwtTokenRequestGroup = dispatch_group_create();
+    dispatch_group_enter(jwtTokenRequestGroup);
+    
     NSURL *url = [NSURL URLWithString:@"https://www.inaturalist.org/users/api_token.json"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.HTTPMethod = @"GET";
@@ -489,8 +502,12 @@ didSignInForUser:(GIDGoogleUser *)user
                 });
             }
             strongSelf.jwtToken = nil;
+            dispatch_group_leave(jwtTokenRequestGroup);
+            jwtTokenRequestGroup = NULL;
         } else if ([httpResponse statusCode] != 200) {
             strongSelf.jwtToken = nil;
+            dispatch_group_leave(jwtTokenRequestGroup);
+            jwtTokenRequestGroup = NULL;
             if (failure) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *errorDesc = nil;
@@ -517,6 +534,8 @@ didSignInForUser:(GIDGoogleUser *)user
             NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&jsonError];
             if (jsonError) {
                 strongSelf.jwtToken = nil;
+                dispatch_group_leave(jwtTokenRequestGroup);
+                jwtTokenRequestGroup = NULL;
                 if (failure) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         failure(jsonError);
@@ -527,6 +546,8 @@ didSignInForUser:(GIDGoogleUser *)user
                     NSString *jwt = [json valueForKey:@"api_token"];
                     strongSelf.jwtToken = jwt;
                     [[A0SimpleKeychain keychain] setString:jwt forKey:INatJWTPrefKey];
+                    dispatch_group_leave(jwtTokenRequestGroup);
+                    jwtTokenRequestGroup = NULL;
                     if (success) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             success(@{ tokenKey: strongSelf.jwtToken });
@@ -534,6 +555,8 @@ didSignInForUser:(GIDGoogleUser *)user
                     }
                 } else {
                     strongSelf.jwtToken = nil;
+                    dispatch_group_leave(jwtTokenRequestGroup);
+                    jwtTokenRequestGroup = NULL;
                     if (failure) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             failure(nil);
