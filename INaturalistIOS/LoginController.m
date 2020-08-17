@@ -12,6 +12,7 @@
 #import <GoogleSignIn/GoogleSignIn.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
 #import <JWT/JWT.h>
+#import <SimpleKeychain/SimpleKeychain.h>
 
 #import "LoginController.h"
 #import "Analytics.h"
@@ -29,11 +30,12 @@
 static const NSTimeInterval LocalMeUserValidTimeInterval = 600;
 
 @interface LoginController () <GIDSignInDelegate> {
-    NSString    *externalAccessToken;
-    NSString    *iNatAccessToken;
-    NSString    *accountType;
-    BOOL        isLoginCompleted;
-    NSInteger   lastAssertionType;
+    NSString         *externalAccessToken;
+    NSString         *iNatAccessToken;
+    NSString         *accountType;
+    BOOL             isLoginCompleted;
+    NSInteger        lastAssertionType;
+    dispatch_group_t jwtTokenRequestGroup;
 }
 @end
 
@@ -67,6 +69,7 @@ NSInteger INatMinPasswordLength = 6;
 
 - (void)logout {
     self.jwtToken = nil;
+    [[A0SimpleKeychain keychain] deleteEntryForKey:INatJWTPrefKey];
 }
 
 #pragma mark - Facebook
@@ -449,18 +452,35 @@ didSignInForUser:(GIDGoogleUser *)user
 - (void)getJWTTokenSuccess:(LoginSuccessBlock)success failure:(LoginErrorBlock)failure {
     static NSString *tokenKey = @"token";
     
+    // If we don't have a JWT currently, check the user's keychain for one before proceeding to fetch a new one
+    if (!self.jwtToken) {
+        self.jwtToken = [[A0SimpleKeychain keychain] stringForKey:INatJWTPrefKey];
+    }
+    
     // if the JWT will expire within the next 30 seconds, re-fetch it first
     // note: if self.jwtTokenExpiration fails to extract for any reason, it will be nil,
     // so this check will fail and the JWT will be re-fetched
     
     // jwtexpiration timeIntervalSinceNow starts at 86400 and decrements down to zero
     // eventually becoming negative. refetch if it's less than 30 seconds from now.
-    if (self.jwtToken && [self.jwtTokenExpiration timeIntervalSinceNow] < 30) {
+    if (self.jwtToken && [self.jwtTokenExpiration timeIntervalSinceNow] > 30) {
         if (success) {
             success(@{ tokenKey: self.jwtToken });
-            return;
         }
+        return;
     }
+    
+    if (jwtTokenRequestGroup) {
+        dispatch_group_notify(jwtTokenRequestGroup, dispatch_get_main_queue(), ^{
+            if (self.jwtToken && success) {
+                success(@{ tokenKey: self.jwtToken});
+            }
+        });
+        return;
+    }
+    
+    jwtTokenRequestGroup = dispatch_group_create();
+    dispatch_group_enter(jwtTokenRequestGroup);
     
     NSURL *url = [NSURL URLWithString:@"https://www.inaturalist.org/users/api_token.json"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -482,8 +502,12 @@ didSignInForUser:(GIDGoogleUser *)user
                 });
             }
             strongSelf.jwtToken = nil;
+            dispatch_group_leave(jwtTokenRequestGroup);
+            jwtTokenRequestGroup = NULL;
         } else if ([httpResponse statusCode] != 200) {
             strongSelf.jwtToken = nil;
+            dispatch_group_leave(jwtTokenRequestGroup);
+            jwtTokenRequestGroup = NULL;
             if (failure) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *errorDesc = nil;
@@ -510,6 +534,8 @@ didSignInForUser:(GIDGoogleUser *)user
             NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&jsonError];
             if (jsonError) {
                 strongSelf.jwtToken = nil;
+                dispatch_group_leave(jwtTokenRequestGroup);
+                jwtTokenRequestGroup = NULL;
                 if (failure) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         failure(jsonError);
@@ -517,7 +543,11 @@ didSignInForUser:(GIDGoogleUser *)user
                 }
             } else {
                 if ([json valueForKey:@"api_token"]) {
-                    strongSelf.jwtToken = [json valueForKey:@"api_token"];
+                    NSString *jwt = [json valueForKey:@"api_token"];
+                    strongSelf.jwtToken = jwt;
+                    [[A0SimpleKeychain keychain] setString:jwt forKey:INatJWTPrefKey];
+                    dispatch_group_leave(jwtTokenRequestGroup);
+                    jwtTokenRequestGroup = NULL;
                     if (success) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             success(@{ tokenKey: strongSelf.jwtToken });
@@ -525,6 +555,8 @@ didSignInForUser:(GIDGoogleUser *)user
                     }
                 } else {
                     strongSelf.jwtToken = nil;
+                    dispatch_group_leave(jwtTokenRequestGroup);
+                    jwtTokenRequestGroup = NULL;
                     if (failure) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             failure(nil);
