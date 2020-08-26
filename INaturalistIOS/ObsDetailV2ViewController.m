@@ -36,6 +36,7 @@
 #import "ExploreObservation.h"
 #import "ObservationAPI.h"
 #import "ExploreObservationRealm.h"
+#import "ImageStore.h"
 
 @interface ObsDetailV2ViewController () <ObsDetailViewModelDelegate>
 
@@ -324,8 +325,13 @@
         // can't do this in storyboards
         
         NSArray *galleryData = [self.observation.sortedObservationPhotos bk_map:^id(id <INatPhoto> op) {
-            return [MHGalleryItem itemWithURL:op.largePhotoUrl.absoluteString
-                                  galleryType:MHGalleryTypeImage];
+            UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
+            if (img) {
+                return [MHGalleryItem itemWithImage:img];
+            } else {
+                return [MHGalleryItem itemWithURL:op.largePhotoUrl.absoluteString
+                                      galleryType:MHGalleryTypeImage];
+            }
         }];
         
         MHUICustomization *customization = [[MHUICustomization alloc] init];
