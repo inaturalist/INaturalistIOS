@@ -45,10 +45,14 @@
     customization.hideShare = YES;
     customization.useCustomBackButtonImageOnImageViewer = NO;
     
+    MHTransitionCustomization *transitionCustomization = [[MHTransitionCustomization alloc] init];
+    transitionCustomization.dismissWithScrollGestureOnFirstAndLastImage = NO;
+    
     MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
     gallery.galleryItems = galleryData;
     gallery.presentationIndex = self.currentIndex;
     gallery.UICustomization = customization;
+    gallery.transitionCustomization = transitionCustomization;
     
     __weak MHGalleryController *blockGallery = gallery;
     __weak typeof(self) weakSelf = self;
