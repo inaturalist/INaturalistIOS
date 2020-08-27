@@ -53,6 +53,7 @@
 #pragma mark - Action Targets
 
 - (void)shareTapped:(UIBarButtonItem *)selector {
+    if (!self.fullTaxon) { return; }
     NSURL *url = [self moreDetailsURL];
     if (!url) {
         return;
@@ -63,7 +64,7 @@
     
     ARSafariActivity *openInSafari = [[ARSafariActivity alloc] init];
     INatCopyNameActivity *copyName = [[INatCopyNameActivity alloc] init];
-    UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[url, self.taxon.scientificName]
+    UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[url, self.fullTaxon.scientificName]
                                                                            applicationActivities:@[openInSafari, copyName]];
     
     activity.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
@@ -86,14 +87,14 @@
 }
 
 - (void)actionTapped:(id)sender {
-    [self.delegate taxonDetailViewControllerClickedActionForTaxonId:[self.taxon taxonId]];
+    if (!self.fullTaxon) { return; }
+    [self.delegate taxonDetailViewControllerClickedActionForTaxonId:self.taxonId];
 }
 
 
 - (void)infoTapped:(id)sender {
-    if (self.taxon) {
-        [[UIApplication sharedApplication] openURL:[self moreDetailsURL]];
-    }
+    if (!self.fullTaxon) { return; }
+    [[UIApplication sharedApplication] openURL:[self moreDetailsURL]];
 }
 
 - (void)toggleTooltipInView:(UIView *)view parentView:(UIView *)parentView {
@@ -131,12 +132,12 @@
 }
 
 - (void)copiedName {
-    [[UIPasteboard generalPasteboard] setString:self.taxon.scientificName];
+    [[UIPasteboard generalPasteboard] setString:self.fullTaxon.scientificName];
 }
 
 - (NSURL *)moreDetailsURL {
-    if (self.taxon) {
-        NSString *taxonPath = [NSString stringWithFormat:@"/taxa/%ld", (long)[self.taxon taxonId]];
+    if (self.fullTaxon) {
+        NSString *taxonPath = [NSString stringWithFormat:@"/taxa/%ld", (long)self.taxonId];
         NSURL *taxonUrl = [[NSURL inat_baseURL] URLByAppendingPathComponent:taxonPath];
         NSURLComponents *urlComponents = [[NSURLComponents alloc] initWithURL:taxonUrl resolvingAgainstBaseURL:NO];
         
@@ -184,14 +185,17 @@
                                                           420);
     }
     
-    self.title = self.taxon.commonName ?: self.taxon.scientificName;
+
+    self.fullTaxon = [ExploreTaxonRealm objectForPrimaryKey:@(self.taxonId)];
     
-    NSInteger taxonId = [self.taxon taxonId];
-    self.fullTaxon = [ExploreTaxonRealm objectForPrimaryKey:@(taxonId)];
-    
+    if (self.fullTaxon) {
+        self.title = self.fullTaxon.commonName ?: self.fullTaxon.scientificName;
+    }
+
     self.mapRect = MKMapRectNull;
-    [[self taxaApi] boundingBoxForTaxon:taxonId handler:^(NSArray *results, NSInteger count, NSError *error) {
-        self.numberOfObservations = count;
+    __weak typeof(self) weakSelf = self;
+    [[self taxaApi] boundingBoxForTaxon:self.taxonId handler:^(NSArray *results, NSInteger count, NSError *error) {
+        weakSelf.numberOfObservations = count;
         NSDictionary *coords = [results firstObject];
         CLLocationCoordinate2D sw = CLLocationCoordinate2DMake([[coords valueForKey:@"swlat"] floatValue],
                                                                [[coords valueForKey:@"swlng"] floatValue]);
@@ -201,16 +205,16 @@
         MKMapPoint p1 = MKMapPointForCoordinate(sw);
         MKMapPoint p2 = MKMapPointForCoordinate(ne);
         
-        self.mapRect = MKMapRectMake(fmin(p1.x,p2.x),
-                                     fmin(p1.y,p2.y),
-                                     fabs(p1.x-p2.x),
-                                     fabs(p1.y-p2.y));
+        weakSelf.mapRect = MKMapRectMake(fmin(p1.x,p2.x),
+                                         fmin(p1.y,p2.y),
+                                         fabs(p1.x-p2.x),
+                                         fabs(p1.y-p2.y));
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
+            [weakSelf.tableView reloadData];
         });
     }];
     
-    [[self taxaApi] taxonWithId:taxonId handler:^(NSArray *results, NSInteger count, NSError *error) {
+    [[self taxaApi] taxonWithId:self.taxonId handler:^(NSArray *results, NSInteger count, NSError *error) {
         RLMRealm *realm = [RLMRealm defaultRealm];
         [realm beginWriteTransaction];
         for (ExploreTaxon *et in results) {
@@ -221,11 +225,11 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             // reload the full taxon on the main thread
-            self.fullTaxon = [ExploreTaxonRealm objectForPrimaryKey:@(taxonId)];
-            self.title = self.fullTaxon.commonName ?: self.fullTaxon.scientificName;
-            self.photoPageVC.taxon = self.fullTaxon;
-            [self.photoPageVC reloadPages];
-            [self.tableView reloadData];
+            weakSelf.fullTaxon = [ExploreTaxonRealm objectForPrimaryKey:@(weakSelf.taxonId)];
+            weakSelf.title = self.fullTaxon.commonName ?: self.fullTaxon.scientificName;
+            weakSelf.photoPageVC.taxon = self.fullTaxon;
+            [weakSelf.photoPageVC reloadPages];
+            [weakSelf.tableView reloadData];
         });
     }];
         
@@ -233,6 +237,8 @@
     self.infoButton.layer.cornerRadius = 22.0f;
     self.infoButton.layer.borderColor = [UIColor colorWithHexString:@"#cccccc"].CGColor;
     self.infoButton.layer.borderWidth = 2.0f;
+    
+
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -302,12 +308,6 @@
                 } else {
                     selectTitle = [NSString stringWithFormat:selectBase, self.fullTaxon.scientificName];
                 }
-            } else if (self.taxon) {
-                if (self.taxon.commonName && self.taxon.commonName.length != 0) {
-                    selectTitle = [NSString stringWithFormat:selectBase, self.taxon.commonName];
-                } else {
-                    selectTitle = [NSString stringWithFormat:selectBase, self.taxon.scientificName];
-                }
             }
             [cell.button setTitle:selectTitle forState:UIControlStateNormal];
             
@@ -322,21 +322,17 @@
                 cell.commonNameLabel.text = self.fullTaxon.commonName;
                 cell.scientificNameLabel.text = self.fullTaxon.scientificName;
                 cell.summaryTextView.text = nil;
-            } else {
-                cell.commonNameLabel.text = self.taxon.commonName;
-                cell.scientificNameLabel.text = self.taxon.scientificName;
-                cell.summaryTextView.text = nil;
             }
             
             CGFloat scientificNameSize = cell.scientificNameLabel.font.pointSize;
-            if (self.taxon.isGenusOrLower) {
+            if (self.fullTaxon.isGenusOrLower) {
                 cell.scientificNameLabel.font = [UIFont italicSystemFontOfSize:scientificNameSize];
-                cell.scientificNameLabel.text = self.taxon.scientificName;
+                cell.scientificNameLabel.text = self.fullTaxon.scientificName;
             } else {
                 cell.scientificNameLabel.font = [UIFont systemFontOfSize:scientificNameSize];
                 cell.scientificNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                                 [self.taxon.rankName capitalizedString],
-                                                 self.taxon.scientificName];
+                                                 [self.fullTaxon.rankName capitalizedString],
+                                                 self.fullTaxon.scientificName];
             }
             
             if (self.fullTaxon) {
@@ -363,7 +359,7 @@
             cell.noNetworkLabel.hidden = YES;
             cell.noNetworkAlertIcon.hidden = YES;
             
-            if ([self.taxon taxonId]) {
+            if (self.fullTaxon) {
                 if (self.numberOfObservations == 0) {
                     cell.mapView.hidden = YES;
                     cell.noObservationsLabel.hidden = NO;
@@ -371,7 +367,7 @@
                     cell.mapView.hidden = NO;
                     cell.noObservationsLabel.hidden = YES;
                     NSString *template = [NSString stringWithFormat:@"https://tiles.inaturalist.org/v1/colored_heatmap/{z}/{x}/{y}.png?taxon_id=%ld&verifiable=true",
-                                          (long)[self.taxon taxonId]];
+                                          (long)self.taxonId];
                     MKTileOverlay *overlay = [[MKTileOverlay alloc] initWithURLTemplate:template];
                     overlay.tileSize = CGSizeMake(512, 512);
                     overlay.canReplaceMapContent = NO;
@@ -450,9 +446,9 @@
     
     // style for iconic taxon of the observation
     FAKIcon *mapMarker = [FAKIonIcons iosLocationIconWithSize:25.0f];
-    [mapMarker addAttribute:NSForegroundColorAttributeName value:[UIColor colorForIconicTaxon:self.taxon.iconicTaxonName]];
+    [mapMarker addAttribute:NSForegroundColorAttributeName value:[UIColor colorForIconicTaxon:self.fullTaxon.iconicTaxonName]];
     FAKIcon *mapOutline = [FAKIonIcons iosLocationOutlineIconWithSize:25.0f];
-    [mapOutline addAttribute:NSForegroundColorAttributeName value:[[UIColor colorForIconicTaxon:self.taxon.iconicTaxonName] darkerColor]];
+    [mapOutline addAttribute:NSForegroundColorAttributeName value:[[UIColor colorForIconicTaxon:self.fullTaxon.iconicTaxonName] darkerColor]];
     
     // offset the marker so that the point of the pin (rather than the center of the glyph) is at the location of the observation
     [mapMarker addAttribute:NSBaselineOffsetAttributeName value:@(25.0f)];

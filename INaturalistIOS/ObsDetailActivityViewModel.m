@@ -258,20 +258,7 @@
         id <ActivityVisualization> activity = [self activityForSection:indexPath.section];
         if ([activity conformsToProtocol:@protocol(IdentificationVisualization)]) {
             id <IdentificationVisualization> identification = (id <IdentificationVisualization>)activity;
-            RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", identification.taxonId];
-            if (results.count == 1) {
-                [self.delegate inat_performSegueWithIdentifier:@"taxon" sender:[results firstObject]];
-            } else {
-                __weak typeof(self) weakSelf = self;
-                [self.taxaApi taxonWithId:identification.taxonId handler:^(NSArray *results, NSInteger count, NSError *error) {
-                    if (results.count == 1) {
-                        dispatch_async(dispatch_get_main_queue(), ^{
-                            [weakSelf.delegate inat_performSegueWithIdentifier:@"taxon" sender:[results firstObject]];
-                            
-                        });
-                    }
-                }];
-            }
+            [self.delegate inat_performSegueWithIdentifier:@"taxon" sender:@(identification.taxonId)];
         }
     }
 }

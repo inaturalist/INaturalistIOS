@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "TaxonVisualization.h"
+
 @import CoreLocation;
 
 @class ExploreTaxonRealm;
@@ -63,8 +65,8 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
 
 - (BOOL)hasUnviewedActivityBool;
 
-- (Taxon *)taxon;
-- (void)setTaxon:(Taxon *)newValue;
+- (id <TaxonVisualization>)taxon;
+- (void)setTaxon:(id <TaxonVisualization>)newValue;
 
 - (ExploreTaxonRealm *)exploreTaxonRealm;
 

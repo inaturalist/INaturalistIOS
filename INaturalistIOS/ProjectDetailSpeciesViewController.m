@@ -111,8 +111,9 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    SpeciesCount *count = self.speciesCounts[indexPath.item];    
-    [self.projectDetailDelegate inat_performSegueWithIdentifier:@"taxon" object:count.taxon];
+    SpeciesCount *count = self.speciesCounts[indexPath.item];
+    NSLog(@"taxon id is %ld", count.taxon.taxonId);
+    [self.projectDetailDelegate inat_performSegueWithIdentifier:@"taxon" object:@(count.taxon.taxonId)];
 }
 
 @end

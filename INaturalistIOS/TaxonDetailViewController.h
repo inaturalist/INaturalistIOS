@@ -19,7 +19,7 @@
 @end
 
 @interface TaxonDetailViewController : UITableViewController
-@property (nonatomic) id <TaxonVisualization> taxon;
+@property (nonatomic) NSInteger taxonId;
 @property (nonatomic, weak) id <TaxonDetailViewControllerDelegate> delegate;
 @property (nonatomic, weak) TaxonPhotoPageViewController *photoPageVC;
 - (IBAction)actionTapped:(id)sender;

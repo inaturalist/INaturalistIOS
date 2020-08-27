@@ -143,7 +143,7 @@
                          withProperties:@{ @"via": @"Project Details" }];
     } else if ([segue.identifier isEqualToString:@"taxon"]) {
         TaxonDetailViewController *vc = [segue destinationViewController];
-        vc.taxon = sender;
+        vc.taxonId = [sender integerValue];
     } else if ([segue.identifier isEqualToString:@"projectAboutSegue"]) {
         ProjectAboutViewController *vc = [segue destinationViewController];
         vc.project = self.project;

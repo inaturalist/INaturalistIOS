@@ -705,7 +705,7 @@
     ExploreTaxonRealm *etr = [ExploreTaxonRealm objectForPrimaryKey:@(taxonId)];
     if (etr) {
         TaxonDetailViewController *tdvc = [[UIStoryboard storyboardWithName:@"MainStoryboard" bundle: nil] instantiateViewControllerWithIdentifier:@"TaxonDetailViewController"];
-        tdvc.taxon = etr;
+        tdvc.taxonId = taxonId;
         tdvc.delegate = self;
         tdvc.showsActionButton = YES;
         if (CLLocationCoordinate2DIsValid(self.coordinate)) {
