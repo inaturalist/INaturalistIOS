@@ -193,9 +193,12 @@ static UIImage *briefcase;
     
     __weak typeof(self)weakSelf = self;
     INatAPIFetchCompletionCountHandler finished = ^void(NSArray *results, NSInteger count, NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [weakSelf.tableView.refreshControl endRefreshing];
-        });
+        if (@available(iOS 10, *)) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf.tableView.refreshControl endRefreshing];
+            });
+        }
+
 
         // extract excerpt and post image url
         for (ExplorePost *post in results) {
