@@ -634,6 +634,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     // self.observation can be momentarily nil when it's being deleted
     if (!self.standaloneObservation) return;
     
+    // if observation has been saved & added to realm, bail here
+    // don't update data model when they're not shown on screen for
+    // the user.
+    if (self.standaloneObservation.realm) return;
+    
     @try {
         self.standaloneObservation.latitude = newLocation.coordinate.latitude;
         self.standaloneObservation.longitude = newLocation.coordinate.longitude;
