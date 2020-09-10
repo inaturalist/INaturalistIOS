@@ -220,6 +220,8 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 
     for (NSIndexPath *indexPath in self.tableView.indexPathsForVisibleRows) {
         ExploreProjectRealm *project = [self projectForSection:indexPath.section];
+        if (!project) return;
+        
         ExploreProjectObsFieldRealm *pof = [[project sortedProjectObservationFields] objectAtIndex:indexPath.item];
         
         
@@ -301,6 +303,8 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     
     
     ExploreProjectRealm *project = [self projectForSection:self.taxaSearchIndexPath.section];
+    if (!project) return;
+    
     ExploreProjectObsFieldRealm *pof = [project.sortedProjectObservationFields objectAtIndex:self.taxaSearchIndexPath.item];
     
     ExploreObsFieldValueRealm *ofv = [self.observation valueForObsField:pof.obsField];
@@ -674,12 +678,17 @@ static NSString *LongTextFieldIdentifier = @"longtext";
 }
 
 - (ExploreProjectRealm *)projectForSection:(NSInteger)section {
-    return [self.joinedProjects objectAtIndex:section];
+    if (self.joinedProjects.count > 0) {
+        return [self.joinedProjects objectAtIndex:section];
+    } else {
+        return nil;
+    }
 }
 
 - (void)selectedChanged:(UISwitch *)switcher {
     NSInteger section = switcher.tag;
     ExploreProjectRealm *project = [self projectForSection:section];
+    if (!project) return;
     
     NSIndexPath *sectionIp = [NSIndexPath indexPathForRow:NSNotFound inSection:section];
     
