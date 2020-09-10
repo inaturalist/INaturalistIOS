@@ -99,12 +99,10 @@
         value[@"rankLevel"] = @(0);
     }
     
-    if ([cdModel valueForKey:@"observationsCount"]) {
-        value[@"observationCount"] = [cdModel valueForKey:@"observationsCount"];
-    } else {
-        value[@"observationCount"] = @(0);
-    }
-
+    // migrate with observation count of zero, since it's only used
+    // for sorting and will be refreshed from the server anyways.
+    // for some reason, it wasn't migrating correctly sometimes.
+    value[@"observationCount"] = @(0);
     
     if ([cdModel valueForKey:@"defaultName"]) {
         value[@"commonName"] = [cdModel valueForKey:@"defaultName"];
