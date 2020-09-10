@@ -445,10 +445,6 @@
     return self.positionalAccuracy;
 }
 
-- (NSDate *)observedOn {
-    return self.timeObserved;
-}
-
 - (NSString *)observedOnStringForUploading {
     static NSDateFormatter *formatter = nil;
     if (!formatter) {
