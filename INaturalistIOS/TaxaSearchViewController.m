@@ -38,6 +38,7 @@
 @interface TaxaSearchViewController () <UISearchResultsUpdating, UISearchControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 @property UISearchController *searchController;
 @property RLMResults <ExploreTaxonRealm *> *searchResults;
+@property RLMNotificationToken *searchResultsToken;
 @property NSArray <ExploreTaxonScore *> *scores;
 @property NSArray <NSString *> *creditNames;
 @property ExploreTaxonRealm *commonAncestor;
@@ -176,6 +177,19 @@
                        ];
     
     self.searchResults = [results sortedResultsUsingDescriptors:sorts];
+    
+    // invalidate & re-create the update token for the new search results
+    if (self.searchResultsToken) {
+        [self.searchResultsToken invalidate];
+    }
+    
+    __weak typeof(self)weakSelf = self;
+    self.searchResultsToken = [self.searchResults addNotificationBlock:^(RLMResults * _Nullable results, RLMCollectionChange * _Nullable change, NSError * _Nullable error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.tableView reloadData];
+        });
+    }];
+
     [self.tableView reloadData];
 }
 
@@ -190,6 +204,10 @@
         self.coordinate = kCLLocationCoordinate2DInvalid;
     }
     return self;
+}
+
+- (void)dealloc {
+    [self.searchResultsToken invalidate];
 }
 
 - (void)viewDidLoad {
