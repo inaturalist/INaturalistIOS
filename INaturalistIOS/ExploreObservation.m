@@ -266,6 +266,10 @@
     }
 }
 
+- (NSDate *)observedOn {
+    return self.dateObserved;
+}
+
 - (NSString *)observedOnShortString {
     static NSDateFormatter *formatter = nil;
     if (!formatter) {

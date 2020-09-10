@@ -396,6 +396,10 @@
     return self.user.userIcon;
 }
 
+- (NSDate *)observedOn {
+    return self.timeObserved;
+}
+
 - (NSString *)observedOnShortString {
     static NSDateFormatter *formatter = nil;
     if (!formatter) {
