@@ -1221,7 +1221,9 @@
     
     self.myUpdates = [ExploreUpdateRealm allObjects];
     self.myUpdatesNoteToken = [self.myUpdates addNotificationBlock:^(RLMResults * _Nullable results, RLMCollectionChange * _Nullable change, NSError * _Nullable error) {
-        [weakSelf.tableView reloadData];;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.tableView reloadData];
+        });
     }];
     
     self.meHeader = [[[NSBundle mainBundle] loadNibNamed:@"MeHeaderView"
