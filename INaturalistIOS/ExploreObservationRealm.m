@@ -616,29 +616,31 @@
 }
 
 + (void)syncedDelete:(ExploreObservationRealm *)observation {
-    RLMRealm *realm = [RLMRealm defaultRealm];
-    [realm beginWriteTransaction];
-    
-    // cached filesystem images
-    for (ExploreObservationPhotoRealm *photo in observation.observationPhotos) {
-        [photo deleteFileSystemAssociations];
+    RLMRealm *realm = [observation realm];
+    if (realm) {
+        [realm beginWriteTransaction];
+        
+        // cached filesystem images
+        for (ExploreObservationPhotoRealm *photo in observation.observationPhotos) {
+            [photo deleteFileSystemAssociations];
+        }
+        
+        // the server will cascade delete these for us
+        // so just cascade the local stuff
+        [realm deleteObjects:observation.observationPhotos];
+        [realm deleteObjects:observation.projectObservations];
+        [realm deleteObjects:observation.observationFieldValues];
+        [realm deleteObjects:observation.comments];
+        [realm deleteObjects:observation.identifications];
+        
+        // create a deleted record for the observation
+        ExploreDeletedRecord *dr = [observation deletedRecordForModel];
+        [realm addOrUpdateObject:dr];
+        
+        // delete the observation
+        [realm deleteObject:observation];
+        [realm commitWriteTransaction];
     }
-    
-    // the server will cascade delete these for us
-    // so just cascade the local stuff
-    [realm deleteObjects:observation.observationPhotos];
-    [realm deleteObjects:observation.projectObservations];
-    [realm deleteObjects:observation.observationFieldValues];
-    [realm deleteObjects:observation.comments];
-    [realm deleteObjects:observation.identifications];
-    
-    // create a deleted record for the observation
-    ExploreDeletedRecord *dr = [observation deletedRecordForModel];
-    [realm addOrUpdateObject:dr];
-    
-    // delete the observation
-    [realm deleteObject:observation];
-    [realm commitWriteTransaction];
 }
 
 + (void)deleteWithoutSync:(ExploreObservationRealm *)observation {

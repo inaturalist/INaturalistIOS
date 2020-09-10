@@ -141,16 +141,19 @@
 }
 
 + (void)syncedDelete:(ExploreProjectObservationRealm *)model {
-    // create a deleted record for the observation
-    ExploreDeletedRecord *dr = [model deletedRecordForModel];
-    
-    RLMRealm *realm = [RLMRealm defaultRealm];
-    [realm beginWriteTransaction];
-    // insert the deleted obs
-    [realm addOrUpdateObject:dr];
-    // delete the model object
-    [realm deleteObject:model];
-    [realm commitWriteTransaction];
+    RLMRealm *realm = [model realm];
+    if (realm) {
+        // create a deleted record for the observation
+        ExploreDeletedRecord *dr = [model deletedRecordForModel];
+        
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        // insert the deleted obs
+        [realm addOrUpdateObject:dr];
+        // delete the model object
+        [realm deleteObject:model];
+        [realm commitWriteTransaction];
+    }
 }
 
 + (void)deleteWithoutSync:(ExploreProjectObservationRealm *)model {
