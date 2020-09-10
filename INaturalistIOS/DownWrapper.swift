@@ -18,10 +18,7 @@ extension String {
             NSAttributedString.DocumentReadingOptionKey.documentType : NSAttributedString.DocumentType.html
         ]
         let htmlString = try? NSMutableAttributedString(data: data, options: options, documentAttributes: nil)
-        
-        // Removing this line makes the bug reappear
-        htmlString?.addAttribute(NSAttributedString.Key.backgroundColor, value: UIColor.clear, range: NSMakeRange(0, 1))
-        
+                
         return htmlString
     }
 }
