@@ -61,7 +61,7 @@ typedef void (^LoginErrorBlock)(NSError *error);
 @property UploadManager *uploadManager;
 
 - (void)getJWTTokenSuccess:(LoginSuccessBlock)success failure:(LoginErrorBlock)failure;
-@property NSString *jwtToken;
+@property (copy) NSString *jwtToken;
 @property (readonly) NSDate *jwtTokenExpiration;
 @property (readonly) NSString *anonymousJWT;
 
