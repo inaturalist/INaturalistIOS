@@ -532,6 +532,7 @@
         [[self observationApi] seenUpdatesForObservationId:self.observation.inatRecordId
                                                    handler:^(NSArray *results, NSInteger count, NSError *error) {
             
+            __strong typeof(weakSelf) strongSelf = weakSelf;
             RLMResults *updates = [ExploreUpdateRealm updatesForObservationId:self.observation.inatRecordId];
 
             RLMRealm *realm = [RLMRealm defaultRealm];
@@ -540,7 +541,7 @@
             [updates setValue:@(YES) forKey:@"viewedLocally"];
             [realm commitWriteTransaction];
             
-            [weakSelf.delegate reloadTableView];
+            [strongSelf.delegate reloadTableView];
         }];
     }
 }
