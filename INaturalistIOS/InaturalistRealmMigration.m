@@ -105,8 +105,12 @@
             
             if ([cdObservation respondsToSelector:@selector(uuid)]) {
                 NSString *uuid = [cdObservation performSelector:@selector(uuid)];
-                [cdUUIDs addObject:uuid];
-                [migrationReport appendFormat:@"Migration: uuid is %@\n", uuid];
+                if (uuid) {
+                    [cdUUIDs addObject:uuid];
+                    [migrationReport appendFormat:@"Migration: uuid is %@\n", uuid];
+                } else {
+                    [migrationReport appendString:@"Migration: no uuid"];
+                }
             } else {
                 [migrationReport appendString:@"Migration: no uuid"];
             }
