@@ -36,7 +36,6 @@ static const int ListControlIndexNearby = 2;
 
 @property RLMNotificationToken *joinedToken;
 
-@property NSArray *cachedUserProjects;
 @property NSArray *featuredProjects;
 @property NSArray *nearbyProjects;
 @property NSArray *matchingProjects;
@@ -71,9 +70,17 @@ static const int ListControlIndexNearby = 2;
             case ListControlIndexNearby:
                 return [self nearbyProjects];
                 break;
-            case ListControlIndexUser:
-                return [self cachedUserProjects];
+            case ListControlIndexUser: {
+                INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+                ExploreUserRealm *me = appDelegate.loginController.meUserLocal;
+                if (me) {
+                    return [[me.joinedProjects sortedResultsUsingKeyPath:@"title" ascending:YES] valueForKey:@"self"];
+                } else {
+                    return nil;
+                }
+                
                 break;
+            }
             default:
                 return @[];
                 break;
@@ -324,14 +331,11 @@ static const int ListControlIndexNearby = 2;
     if (appDelegate.loginController.isLoggedIn) {
         ExploreUserRealm *me = appDelegate.loginController.meUserLocal;
         if (me) {
-            __weak typeof(self)weakSelf = self;
+            __weak typeof(self) weakSelf = self;
             self.joinedToken = [me.joinedProjects addNotificationBlock:^(RLMArray<ExploreProjectRealm *> * _Nullable array, RLMCollectionChange * _Nullable changes, NSError * _Nullable error) {
                 // sort and convert to NSArray
-                weakSelf.cachedUserProjects = [[array sortedResultsUsingKeyPath:@"title" ascending:YES] valueForKey:@"self"];
                 [weakSelf.tableView reloadData];
             }];
-        } else {
-            self.cachedUserProjects = @[];
         }
     }
 }

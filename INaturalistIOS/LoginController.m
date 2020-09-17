@@ -550,7 +550,7 @@ didSignInForUser:(GIDGoogleUser *)user
                     jwtTokenRequestGroup = NULL;
                     if (success) {
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            success(@{ tokenKey: strongSelf.jwtToken });
+                            success(@{ tokenKey: jwt });
                         });
                     }
                 } else {

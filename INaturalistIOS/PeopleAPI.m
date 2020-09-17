@@ -158,6 +158,12 @@
         NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
         [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+            
+            // no response data, assume we couldn't change username
+            if (!data) {
+                done(@[], 0, nil);
+            }
+            
             if ([httpResponse statusCode] != 200) {
                 NSError *jsonError;
                 NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data

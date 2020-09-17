@@ -119,19 +119,27 @@
 
 - (void)showLoadingScreen {
     UIViewController *loadingVC = [[UIViewController alloc] initWithNibName:nil bundle:nil];
+    loadingVC.view.backgroundColor = [UIColor inatTint];
     
     UIImageView *launchImageView = ({
         UIImageView *iv = [[UIImageView alloc] initWithFrame:loadingVC.view.bounds];
-        iv.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-        iv.contentMode = UIViewContentModeScaleAspectFill;
-        iv.image = [UIImage imageNamed:@"Launch_Screen_4s_launch_screen_6plus.png"];
+        iv.image = [UIImage imageNamed:@"inat-white-logo"];
+        iv.contentMode = UIViewContentModeScaleAspectFit;
         
         iv;
     });
-    [loadingVC.view addSubview:launchImageView];
+ 
+    UILabel *updatingDatabaseLabel = ({
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
+        label.text = NSLocalizedString(@"Updating database...", @"Title for progress view when migrating db");
+        label.textColor = [UIColor whiteColor];
+        label.numberOfLines = 0;
+
+        label;
+    });
     
     UIActivityIndicatorView *spinner = ({
-        UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         
         view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
         view.center = CGPointMake(loadingVC.view.center.x, loadingVC.view.frame.size.height * .75);
@@ -139,7 +147,19 @@
         
         view;
     });
-    [loadingVC.view addSubview:spinner];
+    
+    UIStackView *stack = [[UIStackView alloc] initWithArrangedSubviews:@[ launchImageView, updatingDatabaseLabel, spinner ]];
+    stack.translatesAutoresizingMaskIntoConstraints = NO;
+    stack.axis = UILayoutConstraintAxisVertical;
+    stack.spacing = 50.0f;
+    stack.alignment = UIStackViewAlignmentCenter;
+    
+    [loadingVC.view addSubview:stack];
+
+    [stack.centerYAnchor constraintEqualToAnchor:loadingVC.view.centerYAnchor].active = YES;
+    [stack.centerXAnchor constraintEqualToAnchor:loadingVC.view.centerXAnchor].active = YES;
+    [launchImageView.widthAnchor constraintEqualToConstant:200.0f].active = YES;
+    [launchImageView.heightAnchor constraintEqualToConstant:200.0f].active = YES;
     
     [self.window setRootViewController:loadingVC];
 }

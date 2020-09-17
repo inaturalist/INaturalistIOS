@@ -39,7 +39,7 @@
 }
 @property NSMutableArray *downloadedImages;
 @property (copy) CLLocation *obsLocation;
-@property (copy) NSDate *obsDate;
+@property (atomic, copy) NSDate *obsDate;
 @end
 
 @implementation ConfirmPhotoViewController
@@ -278,9 +278,6 @@
 - (void)moveOnToSaveNewObservation {
     // prefer to set the date/location to that of the first photo chosen
     for (PHAsset *asset in self.assets.reverseObjectEnumerator) {
-        if (asset.creationDate) {
-            self.obsDate = asset.creationDate;
-        }
         if (asset.location) {
             self.obsLocation = asset.location;
         }
@@ -358,9 +355,37 @@
                     });
                 }
             }];
+            
+            // also request the original exif date
+            PHContentEditingInputRequestOptions *editOptions = [[PHContentEditingInputRequestOptions alloc] init];
+            editOptions.networkAccessAllowed = YES;
+
+            [asset requestContentEditingInputWithOptions:editOptions
+                                      completionHandler:^(PHContentEditingInput *contentEditingInput, NSDictionary *info) {
+                CIImage *image = [CIImage imageWithContentsOfURL:contentEditingInput.fullSizeImageURL];
+                NSDictionary *exif = [image.properties valueForKey:@"{Exif}"];
+                if (exif) {
+                    NSString *exifOriginalDateTimeString = [exif valueForKey:@"DateTimeOriginal"];
+                    NSDate *exifOriginalDateTime = [[self exifDateFormatter] dateFromString:exifOriginalDateTimeString];
+                    if (!self.obsDate && exifOriginalDateTime) {
+                        self.obsDate = exifOriginalDateTime;
+                    }
+                }
+            }];
+
         }];
         
     }
+}
+
+- (NSDateFormatter *)exifDateFormatter {
+    static NSDateFormatter *_df = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _df = [[NSDateFormatter alloc] init];
+        [_df setDateFormat:@"yyyy:MM:dd HH:mm:ss"];
+    });
+    return _df;
 }
 
 - (void)viewWillAppear:(BOOL)animated {

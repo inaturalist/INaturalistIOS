@@ -1365,17 +1365,10 @@
     }
     
     if (![[NSUserDefaults standardUserDefaults] boolForKey:RanMigrationToRealmKey]) {
-        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tabBarController.view animated:YES];
-        hud.removeFromSuperViewOnHide = YES;
-        hud.dimBackground = YES;
-        hud.labelText = NSLocalizedString(@"Updating database...", @"Title for progress view when migrating db");
-        hud.mode = MBProgressHUDModeAnnularDeterminate;
-        
         __weak typeof(self) weakSelf = self;
         [[self migrationAssistant] migrateObservationsToRealmProgress:^(CGFloat progress) {
-            hud.progress = progress;
+            // do nothing for now, no hud
         } finished:^(BOOL success, NSString *migrationReport, NSError *error) {
-            [MBProgressHUD hideAllHUDsForView:weakSelf.tabBarController.view animated:YES];
             if (success) {
                 // mark the migration as a success
                 [[NSUserDefaults standardUserDefaults] setBool:YES
