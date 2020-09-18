@@ -340,6 +340,7 @@
                             resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
                 
                 if ([info valueForKey:PHImageErrorKey] != nil) {
+                    NSError *error = [info valueForKey:PHImageErrorKey];
                     dispatch_async(dispatch_get_main_queue(), ^{
                         alertView.hidden = NO;
                         progressView.hidden = YES;

@@ -10,6 +10,8 @@ import UIKit
 import Gallery
 import FontAwesomeKit
 import Photos
+import PhotosUI
+import CoreImage
 
 class INatTabBarController: UITabBarController {
    
@@ -57,15 +59,32 @@ class INatTabBarController: UITabBarController {
    
    func showCameraRoll() {
       Analytics.sharedClient()?.event(kAnalyticsEventNewObservationLibraryStart)
-
-      let gallery = GalleryController()
-      Gallery.Config.tabsToShow = [.imageTab]
-      Gallery.Config.initialTab = .imageTab
-      gallery.delegate = self
-      let galleryNav = UINavigationController(rootViewController: gallery)
-      galleryNav.navigationBar.isHidden = true
       
-      self.present(galleryNav, animated: true, completion: nil)
+      if #available(iOS 14, *) {
+         let photoLibrary = PHPhotoLibrary.shared()
+         let authStatus = PHPhotoLibrary.authorizationStatus(for: PHAccessLevel.readWrite)
+         print(authStatus)
+         
+         
+         PHPhotoLibrary.requestAuthorization(for: .readWrite) { (status) in
+            print("new status is \(status)")
+         }
+         
+         var config = PHPickerConfiguration(photoLibrary: photoLibrary)
+         config.filter = .images
+         let picker = PHPickerViewController(configuration: config)
+         picker.delegate = self
+         present(picker, animated: true, completion: nil)
+      } else {
+         let gallery = GalleryController()
+         Gallery.Config.tabsToShow = [.imageTab]
+         Gallery.Config.initialTab = .imageTab
+         gallery.delegate = self
+         let galleryNav = UINavigationController(rootViewController: gallery)
+         galleryNav.navigationBar.isHidden = true
+         
+         self.present(galleryNav, animated: true, completion: nil)
+      }
    }
    
    func newObsNoPhoto() {
@@ -268,4 +287,27 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
 // required for UIImagePickerController delegate
 extension INatTabBarController: UINavigationControllerDelegate { }
 
-
+extension INatTabBarController: PHPickerViewControllerDelegate {
+   @available(iOS 14, *)
+   func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+      picker.dismiss(animated: true, completion: nil)
+      
+      guard let result = results.first else { return }
+      print(result)
+      
+      guard let assetId = result.assetIdentifier else { return }
+      let fetchResult = PHAsset.fetchAssets(withLocalIdentifiers: [ assetId ], options: nil)
+      guard let asset = fetchResult.firstObject else { return }
+      
+      let confirm = ConfirmPhotoViewController()
+      confirm.assets = [ asset ]
+      if let taxonId = self.observingTaxonId,
+         let taxon = ExploreTaxonRealm.object(forPrimaryKey: NSNumber(value: taxonId))
+      {
+         confirm.taxon = taxon
+      }
+      
+      let nav = UINavigationController(rootViewController: confirm)
+      self.present(nav, animated: true, completion: nil)
+   }
+}
