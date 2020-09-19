@@ -13,5 +13,5 @@
 - (NSString *)underscore;
 - (NSString *)pluralize;
 - (NSString *)humanize;
--(NSString *) stringByStrippingHTML;
+- (NSString *)stringByStrippingHTML;
 @end
