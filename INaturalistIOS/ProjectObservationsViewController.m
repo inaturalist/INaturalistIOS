@@ -235,6 +235,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
             }
         } else {
             ofv = [ExploreObsFieldValueRealm new];
+            ofv.uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
             ofv.obsField = pof.obsField;
             ofv.value = [self currentValueForIndexPath:indexPath];
             ofv.timeUpdatedLocally = [NSDate date];
