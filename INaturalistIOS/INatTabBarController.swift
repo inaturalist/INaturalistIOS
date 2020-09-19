@@ -303,14 +303,18 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
             
             if let error = error {
                print(error)
-               MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
+               DispatchQueue.main.async {
+                  MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
+               }
                return
             } else if let url = url, let image = UIImage(contentsOfFile: url.path) {
                print(url)
                
                // copy the file into my ImageStore
                guard let imageStore = ImageStore.shared() else {
-                  MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
+                  DispatchQueue.main.async {
+                     MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
+                  }
                   return
                }
                
@@ -319,7 +323,9 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                   try imageStore.store(image, forKey:photoKey)
                   photoKeys.append(photoKey!)
                } catch {
-                  MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
+                  DispatchQueue.main.async {
+                     MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
+                  }
                   return
                }
                            
