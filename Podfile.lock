@@ -147,7 +147,6 @@ PODS:
   - GTMSessionFetcher/Core (1.2.1)
   - HexColors (2.3.0)
   - ICViewPager (1.5.1)
-  - IFTTTLaunchImage (0.4.4)
   - JDFTooltips (1.0)
   - JDStatusBarNotification (1.5.2)
   - JSONKit (1.5pre)
@@ -184,13 +183,8 @@ PODS:
   - SimpleKeychain (0.11.1)
   - SSZipArchive (0.3.2)
   - SVPullToRefresh (0.4.1)
-  - SWRevealViewController (2.3.0)
-  - TapkuLibrary (0.3.8)
-  - Toast (3.0)
-  - TOCropViewController (2.3.5)
   - TTTAttributedLabel (1.13.3)
   - UIColor-HTMLColors (1.0.0)
-  - VICMAImageView (1.0)
   - VTAcknowledgementsViewController (0.15)
   - YLMoment (0.6.0)
   - YLProgressBar (3.9.0)
@@ -216,7 +210,6 @@ DEPENDENCIES:
   - GoogleSignIn (= 4.4.0)
   - HexColors (= 2.3.0)
   - ICViewPager (from `https://github.com/alexshepard/ICViewPager.git`, commit `4c45423b6a36fb38753af86a1050b6a3a1d548b8`)
-  - IFTTTLaunchImage (= 0.4.4)
   - JDFTooltips (= 1.0)
   - JDStatusBarNotification (= 1.5.2)
   - JSONKit (from `https://github.com/alexshepard/JSONKit.git`, commit `46343e0e46fa8390fed0e8fff6367adb745d7fdd`)
@@ -235,12 +228,7 @@ DEPENDENCIES:
   - SimpleKeychain
   - SSZipArchive (= 0.3.2)
   - SVPullToRefresh (= 0.4.1)
-  - SWRevealViewController (= 2.3.0)
-  - TapkuLibrary (= 0.3.8)
-  - Toast (= 3.0)
-  - TOCropViewController (~> 2.3.5)
   - UIColor-HTMLColors (= 1.0.0)
-  - VICMAImageView (~> 1.0)
   - VTAcknowledgementsViewController (= 0.15)
   - YLMoment (from `https://github.com/inaturalist/YLMoment.git`, commit `35521e9f80c23de6f885771f97a6c1febe245c00`)
   - YLProgressBar (= 3.9.0)
@@ -276,7 +264,6 @@ SPEC REPOS:
     - GoogleUtilities
     - GTMSessionFetcher
     - HexColors
-    - IFTTTLaunchImage
     - JDFTooltips
     - JDStatusBarNotification
     - JWT
@@ -295,13 +282,8 @@ SPEC REPOS:
     - SimpleKeychain
     - SSZipArchive
     - SVPullToRefresh
-    - SWRevealViewController
-    - TapkuLibrary
-    - Toast
-    - TOCropViewController
     - TTTAttributedLabel
     - UIColor-HTMLColors
-    - VICMAImageView
     - VTAcknowledgementsViewController
     - YLProgressBar
 
@@ -377,7 +359,6 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
   HexColors: 6ad3947c3447a055a3aa8efa859def096351fe5f
   ICViewPager: 74e83c8bebd572b3baebac5959875d0fb5e70000
-  IFTTTLaunchImage: ab84d453e2c51b3c2aa83daad99cf45f27688c96
   JDFTooltips: 439e3f1010b5e689e8438f66fce8448726e59897
   JDStatusBarNotification: a36d09ccbb047217572b074a61e7ca10dddc5f0a
   JSONKit: d64c81f94cf4fa7a11ee1e0e996237ab672e1e0d
@@ -398,17 +379,12 @@ SPEC CHECKSUMS:
   SimpleKeychain: 0c657949c7afff92337d2ff64052d5eb5c53823e
   SSZipArchive: 11801759495fa4efb7512ef652eb0042d68305d7
   SVPullToRefresh: ba2e718695a43253d8bea6852d2960097dc15d8c
-  SWRevealViewController: 6d3fd97f70112fd7cef9de14df4260eacce4c63a
-  TapkuLibrary: 7a406dac46eff8595e191557eba88959f97f69b7
-  Toast: 32c59229abfcf41850162b83bb9259dc84372473
-  TOCropViewController: a21b39c910d161600a26b6e3f89a58707afaa4f8
   TTTAttributedLabel: 6f3174aef8e738f44dff97c2eb7d8184f6ab6277
   UIColor-HTMLColors: ce7466daa46e5c8a68a4fb137909b37b30f034f1
-  VICMAImageView: 9f1811d4482ebe37b7eb09f640018554a81a21b2
   VTAcknowledgementsViewController: 575f5841fb47b7d9c852ccb406104ea68de07b21
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 48a60c297d3f1b2c15c028a529c04b310bb09c1b
+PODFILE CHECKSUM: 0ea60c9adf4e4943b84c42c3cbcca86badbc3e43
 
 COCOAPODS: 1.9.3

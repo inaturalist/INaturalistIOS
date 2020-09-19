@@ -8,7 +8,6 @@
 
 #import <BlocksKit/BlocksKit.h>
 #import <MHVideoPhotoGallery/MHGalleryController.h>
-#import <Toast/UIView+Toast.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <ARSafariActivity/ARSafariActivity.h>
 #import <Realm/Realm.h>

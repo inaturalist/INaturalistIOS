@@ -12,7 +12,6 @@
 @import Realm;
 @import FBSDKCoreKit;
 @import GoogleSignIn;
-@import IFTTTLaunchImage;
 @import UIColor_HTMLColors;
 @import JDStatusBarNotification;
 @import FBSDKCoreKit;

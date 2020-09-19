@@ -9,7 +9,7 @@
 #import "Taxon.h"
 #import "TaxonPhoto.h"
 #import "NSString+Helpers.h"
-#import <TapkuLibrary/NSString+TKCategory.h>
+#import "NSString+NXOAuth2.h"
 
 @implementation Taxon
 
@@ -120,7 +120,7 @@
 - (NSURL *)wikipediaUrl {
     NSString *langLocale = [[NSLocale preferredLanguages] firstObject];
     NSString *lang = [[langLocale componentsSeparatedByString:@"-"] firstObject];
-    NSString *urlEncodedTaxon = [self.name URLEncode];
+    NSString *urlEncodedTaxon = [self.name nxoauth2_URLEncodedString];
     NSString *articleTitle;
     
     // the server sometimes sends "" and sometimes null for empty wikipedia_title
