@@ -290,6 +290,7 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
       var takenDateForObs: Date? = nil
       var takenLatitudeForObs: Double? = nil
       var takenLongitudeForObs: Double? = nil
+      var takenGeoAccuracyForObs: Double? = nil
       
       if let hud = MBProgressHUD.showAdded(to: self.view, animated: true) {
          hud.removeFromSuperViewOnHide = true
@@ -358,6 +359,9 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                                  takenLongitudeForObs = longitude.doubleValue
                               }
                            }
+                           if let hpositioningError = gps["HPositioningError"] as? NSNumber {
+                              takenGeoAccuracyForObs = hpositioningError.doubleValue
+                           }
                         }
                      }
                   }
@@ -379,6 +383,9 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                      }
                      if let longitude = takenLongitudeForObs {
                         o.longitude = longitude
+                     }
+                     if let accuracy = takenGeoAccuracyForObs {
+                        o.privatePositionalAccuracy = accuracy
                      }
                      if let date = takenDateForObs {
                         o.timeObserved = date
