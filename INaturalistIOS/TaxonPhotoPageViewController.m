@@ -171,20 +171,22 @@
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
     NSInteger currentIndex = [self.pages indexOfObject:viewController];
-    NSInteger previousIndex = currentIndex - 1;
-    if (previousIndex < 0) {
+    if (currentIndex == 0) {
+        // we're at the first page, no previous page
         return nil;
     } else {
+        NSInteger previousIndex = currentIndex - 1;
         return self.pages[previousIndex];
     }
 }
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController {
     NSInteger currentIndex = [self.pages indexOfObject:viewController];
-    NSInteger nextIndex = currentIndex + 1;
-    if (nextIndex >= self.pages.count) {
+    if (currentIndex == (self.pages.count - 1)) {
+        // we're at the last page, no next page
         return nil;
     } else {
+        NSInteger nextIndex = currentIndex + 1;
         return self.pages[nextIndex];
     }
 }
