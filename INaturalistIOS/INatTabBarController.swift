@@ -12,12 +12,13 @@ import FontAwesomeKit
 import Photos
 import PhotosUI
 import CoreImage
+import MBProgressHUD
 
 class INatTabBarController: UITabBarController {
    
    var observingTaxonId: Int?
    lazy var slideInTransitioningDelegate = SlideInPresentationManager()
-
+   
    override func viewDidLoad() {
       self.customizableViewControllers = nil
       
@@ -61,8 +62,10 @@ class INatTabBarController: UITabBarController {
       Analytics.sharedClient()?.event(kAnalyticsEventNewObservationLibraryStart)
       
       if #available(iOS 14, *) {
-         let photoLibrary = PHPhotoLibrary.shared()
          let authStatus = PHPhotoLibrary.authorizationStatus(for: PHAccessLevel.readWrite)
+         if authStatus == .limited {
+            //photoLibrary.presentLimitedLibraryPicker(from: self)
+         }
          print(authStatus)
          
          
@@ -70,8 +73,9 @@ class INatTabBarController: UITabBarController {
             print("new status is \(status)")
          }
          
-         var config = PHPickerConfiguration(photoLibrary: photoLibrary)
+         var config = PHPickerConfiguration()
          config.filter = .images
+         config.selectionLimit = 4
          let picker = PHPickerViewController(configuration: config)
          picker.delegate = self
          present(picker, animated: true, completion: nil)
@@ -102,7 +106,7 @@ class INatTabBarController: UITabBarController {
       {
          o.taxon = taxon
       }
-
+      
       let confirmVC = ObsEditV2ViewController(nibName: nil, bundle: nil)
       confirmVC.standaloneObservation = o
       confirmVC.shouldContinueUpdatingLocation = true
@@ -113,7 +117,7 @@ class INatTabBarController: UITabBarController {
       self.present(nav, animated: true, completion: nil)
    }
    
-
+   
    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
       if segue.identifier == "MediaPickerSegue" {
          if let mediaPicker = segue.destination as? MediaPickerViewController {
@@ -238,7 +242,7 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
                let request = PHAssetCreationRequest.forAsset()
                request.addResource(with: .photo, data: imageData, options: nil)
                request.creationDate = Date()
-
+               
                // this updates the ios photos database but not exif
                if let location = CLLocationManager().location,
                   location.timestamp.timeIntervalSinceNow > -300
@@ -248,13 +252,13 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
             }
          } catch { } // silently continue if this save operation fails
       }
-            
+      
       // with the standard image picker, no need to show confirmation screen
       let o = ExploreObservationRealm()
       o.uuid = UUID().uuidString.lowercased()
       o.timeCreated = Date()
       o.timeUpdatedLocally = Date()
-
+      
       // photo was taken now
       o.timeObserved = Date()
       
@@ -272,7 +276,7 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
       {
          o.taxon = taxon
       }
-
+      
       let editVC = ObsEditV2ViewController(nibName: nil, bundle: nil)
       editVC.standaloneObservation = o
       // photo was taken at the current location
@@ -291,23 +295,156 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
    @available(iOS 14, *)
    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
       picker.dismiss(animated: true, completion: nil)
+
+      var photoKeys = [String]()
       
-      guard let result = results.first else { return }
-      print(result)
+      var takenDateForObs: Date? = nil
+      var takenLatitudeForObs: Double? = nil
+      var takenLongitudeForObs: Double? = nil
       
-      guard let assetId = result.assetIdentifier else { return }
-      let fetchResult = PHAsset.fetchAssets(withLocalIdentifiers: [ assetId ], options: nil)
-      guard let asset = fetchResult.firstObject else { return }
-      
-      let confirm = ConfirmPhotoViewController()
-      confirm.assets = [ asset ]
-      if let taxonId = self.observingTaxonId,
-         let taxon = ExploreTaxonRealm.object(forPrimaryKey: NSNumber(value: taxonId))
-      {
-         confirm.taxon = taxon
+      if let hud = MBProgressHUD.showAdded(to: self.view, animated: true) {
+         hud.removeFromSuperViewOnHide = true
+         hud.dimBackground = true
+         hud.labelText = NSLocalizedString("Creating Observation...", comment:"HUD text when creating a new observation from multiple photos")
       }
       
-      let nav = UINavigationController(rootViewController: confirm)
-      self.present(nav, animated: true, completion: nil)
+      for result in results {
+         result.itemProvider.loadFileRepresentation(forTypeIdentifier: "public.item") { (url, error) in
+            
+            if let error = error {
+               print(error)
+               MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
+               return
+            } else if let url = url, let image = UIImage(contentsOfFile: url.path) {
+               print(url)
+               
+               // copy the file into my ImageStore
+               guard let imageStore = ImageStore.shared() else {
+                  MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
+                  return
+               }
+               
+               let photoKey = imageStore.createKey()
+               do {
+                  try imageStore.store(image, forKey:photoKey)
+                  photoKeys.append(photoKey!)
+               } catch {
+                  MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
+                  return
+               }
+                           
+               if let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) {
+                  let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil)
+                  if let dict = imageProperties as? [String: Any] {
+                     if (takenDateForObs == nil) {
+                        // still need to look for a taken date
+                        if let exif = dict["{Exif}"] as? [String: Any] {
+                           
+                           let df = DateFormatter()
+                           df.dateFormat = "yyyy:MM:dd HH:mm:ss"
+                           
+
+                           if let takenDateExif = exif["DateTimeOriginal"] as? String,
+                              let takenDate = df.date(from: takenDateExif) {
+                              takenDateForObs = takenDate
+                           }
+                        }
+                     }
+                     
+                     if takenLatitudeForObs == nil || takenLongitudeForObs == nil {
+                        if let gps = dict["{GPS}"] as? [String: Any] {
+                           if let latitude = gps["Latitude"] as? NSNumber,
+                              let longitude = gps["Longitude"] as? NSNumber,
+                              let latitudeRef = gps["LatitudeRef"] as? String,
+                              let longitudeRef = gps["LongitudeRef"] as? String {
+                                                      
+                              if latitudeRef == "S" {
+                                 takenLatitudeForObs = latitude.doubleValue * -1
+                              } else {
+                                 takenLatitudeForObs = latitude.doubleValue
+                              }
+                              if longitudeRef == "W" {
+                                 takenLongitudeForObs = -1 * longitude.doubleValue
+                              } else {
+                                 takenLongitudeForObs = longitude.doubleValue
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+               
+               if photoKeys.count == results.count {
+                  // we've saved all the results to out photo library
+                  // and can safely make our observation and move on
+                  
+                  DispatchQueue.main.async {
+                     let o = ExploreObservationRealm()
+                     
+                     o.uuid = UUID().uuidString.lowercased()
+                     o.timeCreated = Date()
+                     o.timeUpdatedLocally = Date()
+                     
+                     if let latitude = takenLatitudeForObs {
+                        o.latitude = latitude
+                     }
+                     if let longitude = takenLongitudeForObs {
+                        o.longitude = longitude
+                     }
+                     if let date = takenDateForObs {
+                        o.timeObserved = date
+                     }
+
+                     for i in 0..<photoKeys.count {
+                        let op = ExploreObservationPhotoRealm()
+                        op.uuid = UUID().uuidString.lowercased()
+                        op.timeCreated = Date()
+                        op.timeUpdatedLocally = Date()
+                        op.position = i
+                        op.photoKey = photoKeys[i]
+                        
+                        o.observationPhotos.add(op)
+                     }
+                     
+                     if let taxonId = self.observingTaxonId,
+                        let taxon = ExploreTaxonRealm.object(forPrimaryKey: NSNumber(value: taxonId))
+                     {
+                        o.taxon = taxon
+                     }
+                     
+                     MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
+
+                     let editVC = ObsEditV2ViewController(nibName: nil, bundle: nil)
+                     editVC.standaloneObservation = o
+                     // photo was taken at the current location
+                     editVC.shouldContinueUpdatingLocation = false
+                     editVC.isMakingNewObservation = true
+                     
+                     let editVCNav = UINavigationController(rootViewController: editVC)
+                     self.present(editVCNav, animated: true)
+                  }
+
+               }
+            }
+         }
+      }
    }
 }
+
+
+
+/*
+ if let image = UIImage(contentsOfFile: url.absoluteString) {
+ let confirm = ConfirmPhotoViewController()
+ confirm.image = image
+ 
+ if let taxonId = self.observingTaxonId,
+ let taxon = ExploreTaxonRealm.object(forPrimaryKey: NSNumber(value: taxonId))
+ {
+ confirm.taxon = taxon
+ }
+ 
+ let nav = UINavigationController(rootViewController: confirm)
+ self.present(nav, animated: true, completion: nil)
+ }
+ */
