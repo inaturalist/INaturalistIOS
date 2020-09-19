@@ -62,17 +62,6 @@ class INatTabBarController: UITabBarController {
       Analytics.sharedClient()?.event(kAnalyticsEventNewObservationLibraryStart)
       
       if #available(iOS 14, *) {
-         let authStatus = PHPhotoLibrary.authorizationStatus(for: PHAccessLevel.readWrite)
-         if authStatus == .limited {
-            //photoLibrary.presentLimitedLibraryPicker(from: self)
-         }
-         print(authStatus)
-         
-         
-         PHPhotoLibrary.requestAuthorization(for: .readWrite) { (status) in
-            print("new status is \(status)")
-         }
-         
          var config = PHPickerConfiguration()
          config.filter = .images
          config.selectionLimit = 4
@@ -432,19 +421,3 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
 }
 
 
-
-/*
- if let image = UIImage(contentsOfFile: url.absoluteString) {
- let confirm = ConfirmPhotoViewController()
- confirm.image = image
- 
- if let taxonId = self.observingTaxonId,
- let taxon = ExploreTaxonRealm.object(forPrimaryKey: NSNumber(value: taxonId))
- {
- confirm.taxon = taxon
- }
- 
- let nav = UINavigationController(rootViewController: confirm)
- self.present(nav, animated: true, completion: nil)
- }
- */
