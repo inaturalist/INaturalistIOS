@@ -14,6 +14,7 @@
 @import UIColor_HTMLColors;
 @import JDStatusBarNotification;
 @import MHVideoPhotoGallery;
+@import PhotosUI;
 
 
 #import "ObsEditV2ViewController.h"
@@ -54,7 +55,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionDelete,
 };
 
-@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, TaxaSearchViewControllerDelegate, CLLocationManagerDelegate, GalleryWrapperDelegate, MediaPickerDelegate> {
+@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, TaxaSearchViewControllerDelegate, CLLocationManagerDelegate, GalleryWrapperDelegate, MediaPickerDelegate, PHPickerViewControllerDelegate> {
     
     CLLocationManager *_locationManager;
 }
@@ -85,8 +86,18 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     } else {
         // dismiss the media picker, present the gallery
         [self dismissViewControllerAnimated:YES completion:^{
-            UIViewController *gallery = self.galleryWrapper.gallery;
-            [self presentViewController:gallery animated:YES completion:nil];
+            if (@available(iOS 14.0, *)) {
+                PHPickerConfiguration *config = [[PHPickerConfiguration alloc] init];
+                config.selectionLimit = 4;
+                config.filter = PHPickerFilter.imagesFilter;
+                
+                PHPickerViewController *picker = [[PHPickerViewController alloc] initWithConfiguration:config];
+                picker.delegate = self;
+                [self presentViewController:picker animated:YES completion:nil];
+            } else {
+                UIViewController *gallery = self.galleryWrapper.gallery;
+                [self presentViewController:gallery animated:YES completion:nil];
+            }
         }];
     }
 }
@@ -316,8 +327,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         self.standaloneObservation.timeUpdatedLocally = [NSDate date];
         [[Analytics sharedClient] event:kAnalyticsEventObservationNotesChanged
                          withProperties:@{
-                                          @"Via": [self analyticsVia]
-                                          }];
+                             @"Via": [self analyticsVia]
+                         }];
     }
     
     if (textView.text.length == 0) {
@@ -441,6 +452,89 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self presentViewController:mediaPicker animated:YES completion:nil];
 }
 
+#pragma mark - PHPickerViewControllerDelelgate
+
+- (void)picker:(PHPickerViewController *)picker didFinishPicking:(NSArray<PHPickerResult *> *)results  API_AVAILABLE(ios(14)){
+    [picker dismissViewControllerAnimated:YES completion:nil];
+    
+    NSInteger idx = 0;
+    ExploreObservationPhotoRealm *lastOp = [[self.standaloneObservation sortedObservationPhotos] lastObject];
+    if (lastOp) {
+        idx = lastOp.position + 1;
+    }
+    
+    for (PHPickerResult *result in results) {
+        // each result gets a new index in order of the results,
+        // not in order of the load (which might return out of
+        // order?)
+        idx = [results indexOfObject:result] + idx;
+        if ([result.itemProvider canLoadObjectOfClass:[UIImage class]]) {
+            
+            [result.itemProvider loadObjectOfClass:[UIImage class]
+                                 completionHandler:^(UIImage *image, NSError * _Nullable loadError) {
+                
+                if (loadError) {
+                    NSString *saveErrorTitle = NSLocalizedString(@"Photo Load Error", @"Title for photo load error alert msg");
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
+                                                                                   message:loadError.localizedDescription
+                                                                            preferredStyle:UIAlertControllerStyleAlert];
+                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                              style:UIAlertActionStyleDefault
+                                                            handler:nil]];
+                    [self presentViewController:alert animated:YES completion:nil];
+                    return;
+                }
+                
+                if (!image) {
+                    NSString *photosErrorTitle = NSLocalizedString(@"Photos Error", @"Title for photos error alert msg");
+                    NSString *unknownErrMsg = NSLocalizedString(@"Unknown error", @"Message body when we don't know the error");
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:photosErrorTitle
+                                                                                   message:unknownErrMsg
+                                                                            preferredStyle:UIAlertControllerStyleAlert];
+                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                              style:UIAlertActionStyleDefault
+                                                            handler:nil]];
+                    [self presentViewController:alert animated:YES completion:nil];
+                    return;
+                }
+                
+                ImageStore *store = [ImageStore sharedImageStore];
+                NSString *photoKey = [store createKey];
+                NSError *error = nil;
+                [store storeImage:image forKey:photoKey error:&error];
+                if (error) {
+                    NSString *saveErrorTitle = NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg");
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
+                                                                                   message:error.localizedDescription
+                                                                            preferredStyle:UIAlertControllerStyleAlert];
+                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                              style:UIAlertActionStyleDefault
+                                                            handler:nil]];
+                    [self presentViewController:alert animated:YES completion:nil];
+                    return;
+                }
+                
+                
+                // this callback comes off the main thread, but we need to do realm work on the main thread,
+                // so jump over now
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    ExploreObservationPhotoRealm *op = [ExploreObservationPhotoRealm new];
+                    op.position = idx;
+                    op.uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
+                    [op setPhotoKey:photoKey];
+                    
+                    op.timeCreated = [NSDate date];
+                    op.timeUpdatedLocally = [NSDate date];
+                    
+                    [self.standaloneObservation.observationPhotos addObject:op];
+                    [self.tableView reloadData];
+                });
+            }];
+        }
+    }
+}
+
 #pragma mark - UIImagePickerControllerDelegate
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
@@ -525,7 +619,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     op.timeCreated = [NSDate date];
     op.timeUpdatedLocally = [NSDate date];
-
+    
     [self.standaloneObservation.observationPhotos addObject:op];
     [self.tableView reloadData];
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -578,12 +672,12 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         
         op.timeCreated = [NSDate date];
         op.timeUpdatedLocally = [NSDate date];
-
+        
         [self.standaloneObservation.observationPhotos addObject:op];
-
+        
         idx++;
     }
-
+    
     [self.tableView reloadData];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -598,10 +692,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
     [[Analytics sharedClient] event:kAnalyticsEventLocationPermissionsChanged
                      withProperties:@{
-                                      @"Via": NSStringFromClass(self.class),
-                                      @"NewValue": @(status),
-                                      }];
-
+                         @"Via": NSStringFromClass(self.class),
+                         @"NewValue": @(status),
+                     }];
+    
     switch (status) {
         case kCLAuthorizationStatusAuthorizedAlways:
         case kCLAuthorizationStatusAuthorizedWhenInUse:
@@ -699,7 +793,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     if (![[INatReachability sharedClient] isNetworkReachable]) {
         return;
     }
-        
+    
     if (!self.geoCoder) {
         self.geoCoder = [[CLGeocoder alloc] init];
     }
@@ -746,9 +840,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)taxonDeleted:(UIButton *)button {
     [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
                      withProperties:@{
-                                      @"Via": [self analyticsVia],
-                                      @"New Value": @"No Taxon"
-                                      }];
+                         @"Via": [self analyticsVia],
+                         @"New Value": @"No Taxon"
+                     }];
     
     self.standaloneObservation.speciesGuess = nil;
     self.standaloneObservation.taxon = nil;
@@ -852,7 +946,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             }
         }
     }
-        
+    
     [self.view.window.rootViewController dismissViewControllerAnimated:YES completion:^{
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         UploadManager *uploader = appDelegate.loginController.uploadManager;
@@ -888,10 +982,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
                      withProperties:@{
-                                      @"Via": [self analyticsVia],
-                                      @"New Value": newTaxonName,
-                                      @"Is Taxon": @"Yes",
-                                      }];
+                         @"Via": [self analyticsVia],
+                         @"New Value": newTaxonName,
+                         @"Is Taxon": @"Yes",
+                     }];
     
     [self.navigationController popToViewController:self animated:YES];
 }
@@ -904,10 +998,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationTaxonChanged
                      withProperties:@{
-                                      @"Via": [self analyticsVia],
-                                      @"New Value": speciesGuess,
-                                      @"Is Taxon": @"No",
-                                      }];
+                         @"Via": [self analyticsVia],
+                         @"New Value": speciesGuess,
+                         @"Is Taxon": @"No",
+                     }];
     
     [self.navigationController popToViewController:self animated:YES];
 }
@@ -938,8 +1032,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationLocationChanged
                      withProperties:@{
-                                      @"Via": [self analyticsVia],
-                                      }];
+                         @"Via": [self analyticsVia],
+                     }];
     
     [self.navigationController popToViewController:self animated:YES];
     
@@ -1134,45 +1228,45 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                datePickerMode:UIDatePickerModeDateAndTime
                                                  selectedDate:self.standaloneObservation.timeObserved ?: [NSDate date]
                                                     doneBlock:^(ActionSheetDatePicker *picker, id selectedDate, id origin) {
-                                                        
-                                                        NSDate *date = (NSDate *)selectedDate;
-                                                        
-                                                        if ([date timeIntervalSinceDate:self.standaloneObservation.timeObserved] == 0) {
-                                                            // nothing changed
-                                                            return;
-                                                        }
-                                                        
-                                                        if ([date timeIntervalSinceNow] > 0) {
-                                                            NSString *alertTitle = NSLocalizedString(@"Invalid Date",
-                                                                                                     @"Invalid date alert title");
-                                                            NSString *alertMsg = NSLocalizedString(@"Cannot choose a date in the future.",
-                                                                                                   @"Alert message for invalid date");
-                                                            UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
-                                                                                                                           message:alertMsg
-                                                                                                                    preferredStyle:UIAlertControllerStyleAlert];
-                                                            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                                                                      style:UIAlertActionStyleCancel
-                                                                                                    handler:nil]];
-                                                            [weakSelf presentViewController:alert animated:YES completion:nil];
-                                                            return;
-                                                        }
-                                                        
-                                                        [[Analytics sharedClient] event:kAnalyticsEventObservationDateChanged\
-                                                                         withProperties:@{
-                                                                                          @"Via": [self analyticsVia]
-                                                                                          }];
-                                                        
-                                                        
-                                                        __strong typeof(weakSelf) strongSelf = self;
-                                                        strongSelf.standaloneObservation.timeObserved = date;
-                                                        strongSelf.standaloneObservation.timeUpdatedLocally = [NSDate date];
-                                                        
-                                                        [strongSelf.tableView beginUpdates];
-                                                        [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                                                                    withRowAnimation:UITableViewRowAnimationNone];
-                                                        [strongSelf.tableView endUpdates];
-                                                        
-                                                    } cancelBlock:nil
+                    
+                    NSDate *date = (NSDate *)selectedDate;
+                    
+                    if ([date timeIntervalSinceDate:self.standaloneObservation.timeObserved] == 0) {
+                        // nothing changed
+                        return;
+                    }
+                    
+                    if ([date timeIntervalSinceNow] > 0) {
+                        NSString *alertTitle = NSLocalizedString(@"Invalid Date",
+                                                                 @"Invalid date alert title");
+                        NSString *alertMsg = NSLocalizedString(@"Cannot choose a date in the future.",
+                                                               @"Alert message for invalid date");
+                        UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                                       message:alertMsg
+                                                                                preferredStyle:UIAlertControllerStyleAlert];
+                        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                  style:UIAlertActionStyleCancel
+                                                                handler:nil]];
+                        [weakSelf presentViewController:alert animated:YES completion:nil];
+                        return;
+                    }
+                    
+                    [[Analytics sharedClient] event:kAnalyticsEventObservationDateChanged\
+                                     withProperties:@{
+                                         @"Via": [self analyticsVia]
+                                     }];
+                    
+                    
+                    __strong typeof(weakSelf) strongSelf = self;
+                    strongSelf.standaloneObservation.timeObserved = date;
+                    strongSelf.standaloneObservation.timeUpdatedLocally = [NSDate date];
+                    
+                    [strongSelf.tableView beginUpdates];
+                    [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
+                                                withRowAnimation:UITableViewRowAnimationNone];
+                    [strongSelf.tableView endUpdates];
+                    
+                } cancelBlock:nil
                                                        origin:cell] showActionSheetPicker];
             } else if (indexPath.item == 2) {
                 // show location chooser
@@ -1198,10 +1292,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 // really want swift enums here
                 NSArray *geoprivacyOptions = @[@"open", @"obscured", @"private"];
                 NSArray *presentableGeoPrivacyOptions = @[
-                                                          NSLocalizedString(@"Open", @"open geoprivacy"),
-                                                          NSLocalizedString(@"Obscured", @"obscured geoprivacy"),
-                                                          NSLocalizedString(@"Private", @"private geoprivacy"),
-                                                          ];
+                    NSLocalizedString(@"Open", @"open geoprivacy"),
+                    NSLocalizedString(@"Obscured", @"obscured geoprivacy"),
+                    NSLocalizedString(@"Private", @"private geoprivacy"),
+                ];
                 
                 NSInteger initialSelection = [geoprivacyOptions indexOfObject:self.standaloneObservation.geoprivacy];
                 if (initialSelection == NSNotFound) {
@@ -1213,25 +1307,25 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                            rows:presentableGeoPrivacyOptions
                                                initialSelection:initialSelection
                                                       doneBlock:^(ActionSheetStringPicker *picker, NSInteger selectedIndex, id selectedValue) {
-                                                          
-                                                          if (initialSelection == selectedIndex) { return; }
-                                                          
-                                                          __strong typeof(weakSelf) strongSelf = weakSelf;
-                                                          NSString *newValue = geoprivacyOptions[selectedIndex];
-                                                          
-                                                          strongSelf.standaloneObservation.geoprivacy = newValue;
-                                                          strongSelf.standaloneObservation.timeUpdatedLocally = [NSDate date];
-                                                          
-                                                          [[Analytics sharedClient] event:kAnalyticsEventObservationGeoprivacyChanged
-                                                                           withProperties:@{ @"Via": [self analyticsVia],
-                                                                                             @"New Value": newValue}];
-                                                          
-                                                          [strongSelf.tableView beginUpdates];
-                                                          [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                                                                      withRowAnimation:UITableViewRowAnimationNone];
-                                                          [strongSelf.tableView endUpdates];
-                                                          
-                                                      } cancelBlock:nil
+                    
+                    if (initialSelection == selectedIndex) { return; }
+                    
+                    __strong typeof(weakSelf) strongSelf = weakSelf;
+                    NSString *newValue = geoprivacyOptions[selectedIndex];
+                    
+                    strongSelf.standaloneObservation.geoprivacy = newValue;
+                    strongSelf.standaloneObservation.timeUpdatedLocally = [NSDate date];
+                    
+                    [[Analytics sharedClient] event:kAnalyticsEventObservationGeoprivacyChanged
+                                     withProperties:@{ @"Via": [self analyticsVia],
+                                                       @"New Value": newValue}];
+                    
+                    [strongSelf.tableView beginUpdates];
+                    [strongSelf.tableView reloadRowsAtIndexPaths:@[ indexPath ]
+                                                withRowAnimation:UITableViewRowAnimationNone];
+                    [strongSelf.tableView endUpdates];
+                    
+                } cancelBlock:nil
                                                          origin:cell] showActionSheetPicker];
             } else if (indexPath.item == 4) {
                 // captive/cultivated
@@ -1279,7 +1373,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
                                                               style:UIAlertActionStyleCancel
                                                             handler:nil]];
-                    [self presentViewController:alert animated:YES completion:nil];                    
+                    [self presentViewController:alert animated:YES completion:nil];
                 }
                 
                 
@@ -1298,9 +1392,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Yes, delete this observation",nil)
                                                       style:UIAlertActionStyleDestructive
                                                     handler:^(UIAlertAction * _Nonnull action) {
-                                                        [self deleteThisObservation];
-                                                    }]];
-
+                [self deleteThisObservation];
+            }]];
+            
             [self presentViewController:alert animated:YES completion:nil];
         }
             
