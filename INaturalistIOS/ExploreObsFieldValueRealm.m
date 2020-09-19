@@ -127,7 +127,7 @@
 }
 
 - (NSDictionary *)uploadableRepresentation {
-    if (self.obsField && self.observation) {
+    if (self.obsField && self.observation && self.uuid && self.value) {
         return @{
             @"observation_field_value": @{
                     @"uuid": self.uuid,
