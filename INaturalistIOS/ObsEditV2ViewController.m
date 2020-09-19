@@ -457,6 +457,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)picker:(PHPickerViewController *)picker didFinishPicking:(NSArray<PHPickerResult *> *)results  API_AVAILABLE(ios(14)){
     [picker dismissViewControllerAnimated:YES completion:nil];
     
+    if (results.count == 0) {
+        // user cancelled
+        return;
+    }
+
     NSInteger idx = 0;
     ExploreObservationPhotoRealm *lastOp = [[self.standaloneObservation sortedObservationPhotos] lastObject];
     if (lastOp) {

@@ -284,6 +284,11 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
    @available(iOS 14, *)
    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
       picker.dismiss(animated: true, completion: nil)
+      
+      if results.count == 0 {
+         // user cancelled
+         return
+      }
 
       var photoKeys = [String]()
       
