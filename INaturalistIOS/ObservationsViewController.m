@@ -1123,12 +1123,26 @@
     // this notification can come in off the main thread
     // update the ui for the logged in user on the main thread
     dispatch_async(dispatch_get_main_queue(), ^{
+        // configure the header for this new user
+        [self configureHeaderForLoggedInUser];
+
+        // update the UI
+        [self.tableView reloadData];
+        
         // request the users' observations from iNat
         [self refreshRequestedNotify:YES];
-        // load & configure the header for the user
-        [self loadUserForHeader];
     });
 }
+
+- (void)userSignedOut {
+    // this notification can come in off the main thread
+    // update the ui to reflect the logged out state
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.navigationItem.title = NSLocalizedString(@"Me", @"Placeholder text for not logged title on me tab.");
+        [self.tableView reloadData];
+    });
+}
+
 
 #pragma mark - MFMAilCompose delegate
 
@@ -1407,11 +1421,16 @@
     }
     
     
-    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(userSignedIn)
                                                  name:kUserLoggedInNotificationName
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userSignedOut)
+                                                 name:kUserLoggedOutNotificationName
+                                               object:nil];
+
     
     self.navigationItem.leftBarButtonItem = nil;
     FAKIcon *settings = [FAKIonIcons iosGearOutlineIconWithSize:30];
@@ -1493,7 +1512,8 @@
         [self refreshRequestedNotify:NO];
         [self checkForDeleted];
         [self checkNewActivity];
-    }    
+    }
+    
 }
 
 - (void)viewWillDisappear:(BOOL)animated

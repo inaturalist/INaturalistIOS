@@ -22,6 +22,7 @@
 
 extern NSString *INatJWTFailureErrorDomain;
 extern NSString *kUserLoggedInNotificationName;
+extern NSString *kUserLoggedOutNotificationName;
 extern NSInteger INatMinPasswordLength;
 
 typedef void (^LoginSuccessBlock)(NSDictionary *info);

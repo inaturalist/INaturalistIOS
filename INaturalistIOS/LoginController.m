@@ -43,6 +43,7 @@ static const NSTimeInterval LocalMeUserValidTimeInterval = 600;
 
 NSString *INatJWTFailureErrorDomain = @"org.inaturalist.jwtfailure";
 NSString *kUserLoggedInNotificationName = @"UserLoggedInNotificationName";
+NSString *kUserLoggedOutNotificationName = @"UserLoggedOutNotificationName";
 NSInteger INatMinPasswordLength = 6;
 
 @implementation LoginController
@@ -70,6 +71,9 @@ NSInteger INatMinPasswordLength = 6;
 - (void)logout {
     self.jwtToken = nil;
     [[A0SimpleKeychain keychain] deleteEntryForKey:INatJWTPrefKey];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedOutNotificationName
+                                                        object:nil];
 }
 
 #pragma mark - Facebook
