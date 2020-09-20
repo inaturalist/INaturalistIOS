@@ -270,32 +270,6 @@ didSignInForUser:(GIDGoogleUser *)user
     }
 }
 
-#pragma mark - Success / Failure helpers
-
-/*
-- (void)executeSuccess:(NSDictionary *)results {
-    @synchronized(self) {
-        if (self.currentSuccessBlock) {
-            self.currentSuccessBlock(results);
-        }
-        
-        self.currentSuccessBlock = nil;
-        self.currentErrorBlock = nil;
-    }
-}
-
-- (void)executeError:(NSError *)error {
-    @synchronized(self) {
-        if (self.currentErrorBlock) {
-            self.currentErrorBlock(error);
-        }
-        
-        self.currentSuccessBlock = nil;
-        self.currentErrorBlock = nil;
-    }
-}
- */
-
 #pragma mark - Partners
 
 - (void)loggedInUserSelectedPartner:(Partner *)partner completion:(void (^)(void))completion {
@@ -409,43 +383,6 @@ didSignInForUser:(GIDGoogleUser *)user
 
 - (User *)fetchMeFromCoreData {
     return nil;
-    /*
-	NSNumber *userId = nil;
-	NSString *username = nil;
-	if ([[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey]) {
-		userId = [[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey];	
-	} else {
-	    username = [[NSUserDefaults standardUserDefaults] valueForKey:INatUsernamePrefKey];
-	}
-	
-	if (userId) {
-        NSFetchRequest *meFetch = [[NSFetchRequest alloc] initWithEntityName:@"User"];
-        meFetch.predicate = [NSPredicate predicateWithFormat:@"recordID == %ld", (long)userId.integerValue];
-        NSError *fetchError;
-        User *me = [[[User managedObjectContext] executeFetchRequest:meFetch error:&fetchError] firstObject];
-        if (fetchError) {
-            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching: %@",
-                                                fetchError.localizedDescription]];
-            return nil;
-        }
-        return me;
-	} else if (username) {
-        NSFetchRequest *meFetch = [[NSFetchRequest alloc] initWithEntityName:@"User"];
-        meFetch.predicate = [NSPredicate predicateWithFormat:@"login == %@", username];
-        NSError *fetchError;
-        User *me = [[[User managedObjectContext] executeFetchRequest:meFetch error:&fetchError] firstObject];
-        if (fetchError) {
-            [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"error fetching: %@",
-                                                fetchError.localizedDescription]];
-            return nil;
-        }
-        [[NSUserDefaults standardUserDefaults] setValue:me.recordID forKey:kINatUserIdPrefKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        return me;
-    } else {
-        return nil;
-    }
-     */
 }
 
 - (BOOL)isLoggedIn {
