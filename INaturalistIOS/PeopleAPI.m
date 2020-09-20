@@ -62,14 +62,79 @@
         [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
         
         NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-        [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (error) {
+        [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {\
+            if (error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
                     done(nil, 0, error);
+                });
+            } else {
+                NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+                if (httpResponse.statusCode == 200) {
+                    
+                    NSError *jsonError = nil;
+                    id json = [NSJSONSerialization JSONObjectWithData:data
+                                                              options:NSJSONReadingAllowFragments
+                                                                error:&jsonError];
+                    
+                    if (jsonError) {
+                        // can't parse the json, so we can't get a userid
+                        // and finish creating the new user, so bail.
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            done(nil, 0, jsonError);
+                        });
+                    } else {
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            done(@[ json ], 1, nil);
+                        });
+                    }
                 } else {
-                    done(@[], 0, nil);
+                    // some type of server error, check for JSON text in the response
+                    NSError *jsonError = nil;
+                    id json = [NSJSONSerialization JSONObjectWithData:data
+                                                              options:NSJSONReadingAllowFragments
+                                                                error:&jsonError];
+                    if (jsonError) {
+                        // can't parse the json response, but not 200, so we can't say we succeeded
+                        NSError *error = [NSError errorWithDomain:@"org.inaturalist.api.http"
+                                                             code:httpResponse.statusCode
+                                                         userInfo:nil];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            done(nil, 0, error);
+                        });
+                    }
+                    if ([json valueForKey:@"errors"]) {
+                        NSArray *errors = [json valueForKey:@"errors"];
+                        NSString *firstErrorText = [errors firstObject];
+                        if (firstErrorText) {
+                            NSDictionary *userInfo = @{
+                                                       NSLocalizedDescriptionKey: firstErrorText,
+                                                       };
+                            NSError *error = [NSError errorWithDomain:@"org.inaturalist.api.http"
+                                                                 code:httpResponse.statusCode
+                                                             userInfo:userInfo];
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                done(nil, 0, error);
+                            });
+                        } else {
+                            // error array was empty, but not 200, so we can't say we succeeded
+                            NSError *error = [NSError errorWithDomain:@"org.inaturalist.api.http"
+                                                                 code:httpResponse.statusCode
+                                                             userInfo:nil];
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                done(nil, 0, error);
+                            });
+                        }
+                    } else {
+                        // no error array, but not 200, so we can't say we succeeded
+                        NSError *error = [NSError errorWithDomain:@"org.inaturalist.api.http"
+                                                             code:httpResponse.statusCode
+                                                         userInfo:nil];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            done(nil, 0, error);
+                        });
+                    }
                 }
-            });
+            }
         }] resume];
     }
 }
