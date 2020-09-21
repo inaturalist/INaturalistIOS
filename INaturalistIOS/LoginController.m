@@ -126,10 +126,36 @@ NSInteger INatMinPasswordLength = 6;
         if (error) {
             [weakSelf.delegate loginFailedWithError:error];
         } else {
-            [[Analytics sharedClient] event:kAnalyticsEventSignup];
+            id json = results.firstObject;
+            // require an ID response from the user
+            if (json && [json valueForKey:@"id"]) {
+                [[Analytics sharedClient] event:kAnalyticsEventSignup];
+                
+                ExploreUserRealm *me = [ExploreUserRealm new];
+                me.userId = [[json valueForKey:@"id"] integerValue];
+                me.login = username;
+                me.email = email;
+                me.observationsCount = 0;
+                me.siteId = siteId;
+                me.syncedAt = [NSDate date];
+                
+                RLMRealm *realm = [RLMRealm defaultRealm];
+                [realm beginWriteTransaction];
+                [realm addOrUpdateObject:me];
+                [realm commitWriteTransaction];
+                
+                // we have a me user, stash the userid in userdefaults
+                [[NSUserDefaults standardUserDefaults] setValue:@(me.userId)
+                                                         forKey:kINatUserIdPrefKey];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                // login to fetch an authtoken
+                [weakSelf loginWithUsername:username
+                                   password:password];
+            } else {
+                [weakSelf.delegate loginFailedWithError:nil];
+            }
             
-            [weakSelf loginWithUsername:username
-                               password:password];
         }
 
     }];    
@@ -171,7 +197,6 @@ NSInteger INatMinPasswordLength = 6;
 
 
 -(void)finishWithAuth2Login{
-    
     NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
     BOOL loginSucceeded = NO;
     for (NXOAuth2Account *account in [sharedStore accountsWithAccountType:accountType]) {
@@ -193,36 +218,44 @@ NSInteger INatMinPasswordLength = 6;
                                                  forKey:INatTokenPrefKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        [self removeOAuth2Observers];
         
-        __weak typeof(self)weakSelf = self;
-        [[self peopleApi] fetchMeHandler:^(NSArray *results, NSInteger count, NSError *error) {
-            if (error) {
-                [weakSelf.delegate loginFailedWithError:error];
-            } else {
-                ExploreUserRealm *me = [[ExploreUserRealm alloc] initWithMantleModel:results.firstObject];
-                me.syncedAt = [NSDate distantPast];
+        if (self.meUserLocal) {
+            [self removeOAuth2Observers];
+            [self.delegate loginSuccess];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
+                                                                object:nil];
+        } else {
+            
+            // just a login, not a create account
+            // we still need to fetch the me user object using our new authToken
+            __weak typeof(self) weakSelf = self;
+            [[self peopleApi] fetchMeHandler:^(NSArray *results, NSInteger count, NSError *error) {
+                if (error) {
+                    [weakSelf.delegate loginFailedWithError:error];
+                } else if (results.count != 1) {
+                    [weakSelf.delegate loginFailedWithError:nil];
+                } else {
+                    ExploreUserRealm *me = [[ExploreUserRealm alloc] initWithMantleModel:results.firstObject];
+                    me.syncedAt = [NSDate date];
+                    
+                    RLMRealm *realm = [RLMRealm defaultRealm];
+                    [realm beginWriteTransaction];
+                    [realm addOrUpdateObject:me];
+                    [realm commitWriteTransaction];
+                    
+                    // we have a me user, stash the userid in userdefaults
+                    [[NSUserDefaults standardUserDefaults] setValue:@(me.userId)
+                                                             forKey:kINatUserIdPrefKey];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+
+                    [weakSelf removeOAuth2Observers];
+                    [weakSelf.delegate loginSuccess];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
+                                                                        object:nil];
+                }
+            }];
+        }
                 
-                RLMRealm *realm = [RLMRealm defaultRealm];
-                [realm beginWriteTransaction];
-                [realm addOrUpdateObject:me];
-                [realm commitWriteTransaction];
-                
-                NSString *identifier = [NSString stringWithFormat:@"%ld", (long)me.userId];
-                [[Analytics sharedClient] registerUserWithIdentifier:identifier];
-                
-                [[NSUserDefaults standardUserDefaults] setValue:@(me.userId)
-                                                         forKey:kINatUserIdPrefKey];
-                [[NSUserDefaults standardUserDefaults] setValue:iNatAccessToken
-                                                         forKey:INatTokenPrefKey];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-                
-                [weakSelf.delegate loginSuccess];
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
-                                                                    object:nil];
-            }
-        }];
     } else {
         [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
                          withProperties:@{ @"from": @"iNaturalist",
@@ -363,7 +396,7 @@ didSignInForUser:(GIDGoogleUser *)user
 
 - (void)meUserRemoteCompletion:(void (^)(ExploreUserRealm *))completion {
     ExploreUserRealm *me = [self meUserLocal];
-    if (me.syncedAt && [me.syncedAt timeIntervalSinceNow] > -LocalMeUserValidTimeInterval) {
+    if (me.syncedAt && ([me.syncedAt timeIntervalSinceNow] > -LocalMeUserValidTimeInterval)) {
         completion(me);
     } else {
         [[self peopleApi] fetchMeHandler:^(NSArray *results, NSInteger count, NSError *error) {
