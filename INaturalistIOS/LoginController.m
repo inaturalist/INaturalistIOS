@@ -69,6 +69,7 @@ NSInteger INatMinPasswordLength = 6;
 }
 
 - (void)logout {
+    isLoginCompleted = NO;
     self.jwtToken = nil;
     [[A0SimpleKeychain keychain] deleteEntryForKey:INatJWTPrefKey];
     
@@ -176,17 +177,16 @@ NSInteger INatMinPasswordLength = 6;
                                                       object:[NXOAuth2AccountStore sharedStore]
                                                        queue:nil
                                                   usingBlock:^(NSNotification *aNotification){
-                                                      if (!isLoginCompleted) {
-                                                          [self finishWithAuth2Login];
-                                                      }
-                                                  }];
+        if (!isLoginCompleted) {
+            [self finishWithAuth2Login];
+        }
+    }];
     
     [[NSNotificationCenter defaultCenter] addObserverForName:NXOAuth2AccountStoreDidFailToRequestAccessNotification
                                                       object:[NXOAuth2AccountStore sharedStore]
                                                        queue:nil
                                                   usingBlock:^(NSNotification *aNotification) {
                                                       id err = [aNotification.userInfo objectForKey:NXOAuth2AccountStoreErrorKey];
-                                                      NSLog(@"err is %@", err);
                                                       if (err && [err isKindOfClass:[NSError class]]) {
                                                           [self.delegate loginFailedWithError:err];
                                                       } else {
@@ -196,7 +196,7 @@ NSInteger INatMinPasswordLength = 6;
 }
 
 
--(void)finishWithAuth2Login{
+-(void)finishWithAuth2Login {
     NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
     BOOL loginSucceeded = NO;
     for (NXOAuth2Account *account in [sharedStore accountsWithAccountType:accountType]) {
@@ -220,16 +220,17 @@ NSInteger INatMinPasswordLength = 6;
         
         
         if (self.meUserLocal) {
+            // we've already got a me user, so this was a create account
+            // via the iNat auth service. wrap up the oauth stuff and update
+            // the UI
             [self removeOAuth2Observers];
             [self.delegate loginSuccess];
             [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
                                                                 object:nil];
         } else {
-            
-            // just a login, not a create account
-            // we still need to fetch the me user object using our new authToken
             __weak typeof(self) weakSelf = self;
-            [[self peopleApi] fetchMeHandler:^(NSArray *results, NSInteger count, NSError *error) {
+            // shared callback handler
+            INatAPIFetchCompletionCountHandler handler = ^(NSArray *results, NSInteger count, NSError *error) {
                 if (error) {
                     [weakSelf.delegate loginFailedWithError:error];
                 } else if (results.count != 1) {
@@ -247,15 +248,30 @@ NSInteger INatMinPasswordLength = 6;
                     [[NSUserDefaults standardUserDefaults] setValue:@(me.userId)
                                                              forKey:kINatUserIdPrefKey];
                     [[NSUserDefaults standardUserDefaults] synchronize];
-
+                    
                     [weakSelf removeOAuth2Observers];
                     [weakSelf.delegate loginSuccess];
                     [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedInNotificationName
                                                                         object:nil];
                 }
-            }];
+            };
+            
+            if ([accountType isEqualToString:kINatAuthService]) {
+                // if the account was a new account made via create,
+                // we would already have the me user object stored
+                // via the responses. so this is a login, and we can
+                // fetch the user right away
+                [[self peopleApi] fetchMeHandler:handler];
+            } else {
+                // either a login or create account via social media,
+                // no way to know. we need to delay for a few seconds
+                // due to indexing delays when creating new accounts
+                [self.delegate delayForSettingUpAccount];
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    [[self peopleApi] fetchMeHandler:handler];
+                });
+            }
         }
-                
     } else {
         [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
                          withProperties:@{ @"from": @"iNaturalist",
@@ -300,6 +316,50 @@ didSignInForUser:(GIDGoogleUser *)user
         [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
                                                              assertionType:[NSURL URLWithString:@"http://google.com"]
                                                                  assertion:externalAccessToken];
+    }
+}
+
+#pragma mark - Apple Sign In methods
+
+- (void)authorizationController:(ASAuthorizationController *)controller didCompleteWithError:(NSError *)error  API_AVAILABLE(ios(13.0)) {
+    [self.delegate loginFailedWithError:error];
+}
+
+- (void)authorizationController:(ASAuthorizationController *)controller didCompleteWithAuthorization:(ASAuthorization *)authorization  API_AVAILABLE(ios(13.0)) {
+    
+    if ([authorization.credential isKindOfClass:ASAuthorizationAppleIDCredential.class]) {
+        [[Analytics sharedClient] event:kAnalyticsEventLogin
+                         withProperties:@{ @"Via": @"Apple" }];
+
+        ASAuthorizationAppleIDCredential *credential = (ASAuthorizationAppleIDCredential *)authorization.credential;
+        
+        NSData *identityTokenData = credential.identityToken;
+        NSString *identityToken = [[NSString alloc] initWithData:identityTokenData
+                                                        encoding:NSUTF8StringEncoding];
+        NSMutableDictionary *assertionDict = [NSMutableDictionary dictionaryWithObject:identityToken
+                                                                                forKey:@"id_token"];
+        
+        NSPersonNameComponentsFormatter *formatter = [[NSPersonNameComponentsFormatter alloc] init];
+        formatter.style = NSPersonNameComponentsFormatterStyleDefault;
+        NSString *nameString = [formatter stringFromPersonNameComponents:credential.fullName];
+        
+        if (nameString) {
+            assertionDict[@"name"] = nameString;
+        }
+        
+        NSError *jsonError = nil;
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:assertionDict
+                                                           options:0
+                                                             error:&jsonError];
+        NSString *assertionJSON = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        
+        [[Analytics sharedClient] event:kAnalyticsEventLogin
+                         withProperties:@{ @"Via": @"Apple" }];
+        externalAccessToken = [identityToken copy];
+        accountType = kINatAuthServiceExtToken;
+        [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
+                                                             assertionType:[NSURL URLWithString:@"https://appleid.apple.com"]
+                                                                 assertion:assertionJSON];
     }
 }
 

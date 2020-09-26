@@ -6,6 +6,8 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
+@import AuthenticationServices;
+
 #import <Foundation/Foundation.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 
@@ -16,6 +18,7 @@
 
 @protocol INatAuthenticationDelegate <NSObject>
 - (void)loginSuccess;
+- (void)delayForSettingUpAccount;
 - (void)loginFailedWithError:(NSError *)error;
 @end
 
@@ -28,7 +31,7 @@ extern NSInteger INatMinPasswordLength;
 typedef void (^LoginSuccessBlock)(NSDictionary *info);
 typedef void (^LoginErrorBlock)(NSError *error);
 
-@interface LoginController : NSObject <FBSDKLoginButtonDelegate>
+@interface LoginController : NSObject <FBSDKLoginButtonDelegate, ASAuthorizationControllerDelegate>
 
 @property (nonatomic, weak) id <INatAuthenticationDelegate> delegate;
 

@@ -7,6 +7,7 @@
 //
 
 @import CoreTelephony;
+@import AuthenticationServices;
 
 @import UIColor_HTMLColors;
 @import FontAwesomeKit;
@@ -32,7 +33,7 @@
 #import "INatReachability.h"
 #import "LoginSwitchContextButton.h"
 
-@interface OnboardingLoginViewController () <UITextFieldDelegate, INatWebControllerDelegate, INatAuthenticationDelegate, GIDSignInUIDelegate>
+@interface OnboardingLoginViewController () <UITextFieldDelegate, INatWebControllerDelegate, INatAuthenticationDelegate, GIDSignInUIDelegate, ASAuthorizationControllerPresentationContextProviding, ASAuthorizationControllerDelegate>
 
 @property IBOutlet UILabel *titleLabel;
 
@@ -58,6 +59,7 @@
 
 @property IBOutlet UILabel *reasonLabel;
 @property IBOutlet UILabel *orLabel;
+@property IBOutlet UIStackView *externalLoginStackView;
 @property IBOutlet FBSDKLoginButton *facebookButton;
 @property IBOutlet GIDSignInButton *googleButton;
 
@@ -252,11 +254,29 @@
         [[GIDSignIn sharedInstance] signOut];
     }
     
+    if (@available(iOS 13.0, *)) {
+        // make some room for the apple button
+        [self.googleButton setStyle:kGIDSignInButtonStyleIconOnly];
+        
+        // add the apple button
+        ASAuthorizationAppleIDButton *signinWithAppleButton = [[ASAuthorizationAppleIDButton alloc] init];
+        [signinWithAppleButton addTarget:self
+                                  action:@selector(handleAuthorizationAppleIDButtonPress)
+                        forControlEvents:UIControlEventTouchUpInside];
+        [self.externalLoginStackView insertArrangedSubview:signinWithAppleButton atIndex:0];
+        
+        // setup the height anchors, even though facebook for some bizarre reason
+        [signinWithAppleButton.heightAnchor constraintEqualToConstant:44].active = YES;
+        [self.googleButton.heightAnchor constraintEqualToConstant:44].active = YES;
+        [self.facebookButton.heightAnchor constraintEqualToConstant:44].active = YES;
+    }
+    
     self.signupUsernameField.placeholder = NSLocalizedString(@"Username", @"The desired username during signup.");
     self.loginUsernameField.placeholder = NSLocalizedString(@"Username or email", @"users can login with their username or their email address.");
     self.loginPasswordField.rightViewMode = UITextFieldViewModeUnlessEditing;
     self.signupPasswordField.rightViewMode = UITextFieldViewModeNever;
 }
+
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -472,6 +492,21 @@
     }
 }
 
+- (void)handleAuthorizationAppleIDButtonPress {
+    if (@available(iOS 13.0, *)) {
+        ASAuthorizationAppleIDProvider *provider = [[ASAuthorizationAppleIDProvider alloc] init];
+        ASAuthorizationAppleIDRequest *request = [provider createRequest];
+        request.requestedScopes = @[ASAuthorizationScopeEmail, ASAuthorizationScopeFullName];
+        
+        ASAuthorizationController *authController = [[ASAuthorizationController alloc] initWithAuthorizationRequests:@[ request ]];
+        
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+        authController.delegate = appDelegate.loginController;
+        authController.presentationContextProvider = self;
+        [authController performRequests];
+    }
+}
+
 #pragma mark - Actions
 
 - (void)signup {
@@ -520,14 +555,7 @@
     
     NSString *license = self.licenseMyData ? @"CC-BY-NC" : @"";
     NSInteger selectedPartnerId = self.selectedPartner ? self.selectedPartner.identifier : 1;
-    
-    UIView *hudView = self.parentViewController ? self.parentViewController.view : self.view;
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:hudView animated:YES];
-    hud.labelText = NSLocalizedString(@"Creating iNaturalist account...",
-                                      @"Notice while we're creating an iNat account for them");
-    hud.removeFromSuperViewOnHide = YES;
-    hud.dimBackground = YES;
-    
+        
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     [appDelegate.loginController createAccountWithEmail:self.signupEmailField.text
                                                password:self.signupPasswordField.text
@@ -578,13 +606,7 @@
     
     [[Analytics sharedClient] event:kAnalyticsEventOnboardingLoginPressed
                      withProperties:@{ @"mode": @"login" }];
-    
-    UIView *hudView = self.parentViewController ? self.parentViewController.view : self.view;
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:hudView animated:YES];
-    hud.labelText = NSLocalizedString(@"Logging in...", @"Notice while we're logging them in");
-    hud.removeFromSuperViewOnHide = YES;
-    hud.dimBackground = YES;
-    
+        
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     [appDelegate.loginController loginWithUsername:self.loginUsernameField.text
                                           password:self.loginPasswordField.text];
@@ -689,9 +711,20 @@
 
 #pragma mark - INatAuthenticationDelegate
 
+// sometimes we have to delay finishing new account setup due to
+// an indexing delay
+- (void)delayForSettingUpAccount {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = NSLocalizedString(@"Setting up iNaturalist account...",
+                                          @"Notice while we're setting up an iNat account for them");
+        hud.dimBackground = YES;
+        hud.removeFromSuperViewOnHide = YES;
+    });
+}
+
 - (void)loginFailedWithError:(NSError *)error {
-    UIView *hudView = self.parentViewController ? self.parentViewController.view : self.view;
-    [MBProgressHUD hideAllHUDsForView:hudView animated:YES];
+    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
 
     NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
     NSString *alertMsg;
@@ -721,8 +754,7 @@
 }
 
 - (void)loginSuccess {
-    UIView *hudView = self.parentViewController ? self.parentViewController.view : self.view;
-    [MBProgressHUD hideAllHUDsForView:hudView animated:YES];
+    [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
 
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -737,5 +769,12 @@
         }
     });
 }
+
+#pragma mark - ASAuthorizationControllerPresentationContextProviding
+
+- (ASPresentationAnchor)presentationAnchorForAuthorizationController:(ASAuthorizationController *)controller  API_AVAILABLE(ios(13.0)) {
+    return self.view.window;
+}
+
 
 @end
