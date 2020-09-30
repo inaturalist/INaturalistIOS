@@ -64,6 +64,9 @@
     
     self.showingSuggestions = NO;
     [self.tableView reloadData];
+}
+
+- (void)didPresentSearchController:(UISearchController *)searchController {
     [searchController.searchBar becomeFirstResponder];
 }
 
@@ -394,13 +397,14 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
+    // start the taxon search ui right away if we're not loading
+    // suggestions
     if (!self.showingSuggestions) {
         // have to enqueue this, otherwise it's too early to have
         // the searchBar -becomeFirstResponder, even in -viewDidAppear:
         dispatch_async(dispatch_get_main_queue(), ^{
             // start the search UI right away
             [self.searchController setActive:YES];
-            [self.searchController.searchBar becomeFirstResponder];
         });
     }
 }
