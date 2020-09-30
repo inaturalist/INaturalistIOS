@@ -534,7 +534,17 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                     op.timeCreated = [NSDate date];
                     op.timeUpdatedLocally = [NSDate date];
                     
-                    [self.standaloneObservation.observationPhotos addObject:op];
+                    if (self.standaloneObservation.observationPhotos.realm) {
+                        // the standalone observation shouldn't be in realm, but this can
+                        // happen when the observation is saved and and iCloud fetch is in flight
+                        // don't crash in this race condition
+                        RLMRealm *realm = self.standaloneObservation.observationPhotos.realm;
+                        [realm beginWriteTransaction];
+                        [self.standaloneObservation.observationPhotos addObject:op];
+                        [realm commitWriteTransaction];
+                    } else {
+                        [self.standaloneObservation.observationPhotos addObject:op];
+                    }
                     [self.tableView reloadData];
                 });
             }];
