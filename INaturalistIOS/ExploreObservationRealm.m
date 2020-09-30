@@ -222,6 +222,7 @@
                 NSDictionary *taxonValue = @{
                     @"taxonId": @(taxonId),
                     @"rankLevel": @(0),             // required or realm will crash
+                    @"observationCount": @(0),      // required or realm will crash
                 };
                 value[@"taxon"] = taxonValue;
             }
@@ -229,7 +230,8 @@
             // fallback
             NSDictionary *taxonValue = @{
                 @"taxonId": @(taxonId),
-                @"rankLevel": @(0),             // required or realm will crash
+                @"rankLevel": @(0),                 // required or realm will crash
+                @"observationCount": @(0),          // required or realm will crash
             };
             value[@"taxon"] = taxonValue;
         }
