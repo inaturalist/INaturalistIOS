@@ -174,9 +174,9 @@ PODS:
   - PBRevealViewController/ObjC (1.3.2)
   - PDKTStickySectionHeadersCollectionViewLayout (0.1)
   - RaptureXML (1.0.1)
-  - Realm (3.20.0):
-    - Realm/Headers (= 3.20.0)
-  - Realm/Headers (3.20.0)
+  - Realm (5.4.6):
+    - Realm/Headers (= 5.4.6)
+  - Realm/Headers (5.4.6)
   - SDWebImage (4.0.0):
     - SDWebImage/Core (= 4.0.0)
   - SDWebImage/Core (4.0.0)
@@ -223,7 +223,7 @@ DEPENDENCIES:
   - PBRevealViewController
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
   - RaptureXML (= 1.0.1)
-  - Realm (= 3.20.0)
+  - Realm (= 5.4.6)
   - SDWebImage (= 4.0.0)
   - SimpleKeychain
   - SSZipArchive (= 0.3.2)
@@ -333,11 +333,11 @@ SPEC CHECKSUMS:
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
-  Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
+  Crashlytics: 9220f5bc89e7a618df411b4f639389dbfb0e03d2
   CustomIOSAlertView: 94d2401e34fcfb0ac0134679d6947f5e251b0446
   DCRoundSwitch: 86d348f35be4d6ef18dbc9331c682aab6f85e980
   Down: 19deac4611bfbc1cabdf8f9657870a44d34ac7fa
-  Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
+  Fabric: ea977e3cd9c20425516d3dafd3bf8c941c51223f
   FBSDKCoreKit: fe5f3474499a81963e11e3f3a5c753d0a95ca2b4
   FBSDKLoginKit: 2f7249686d1e30ce8a5ef5400eedf50b3e3df332
   FileMD5Hash: 81918bf9f82de8bce6a2ae38584c2cc95b7b078c
@@ -374,7 +374,7 @@ SPEC CHECKSUMS:
   PBRevealViewController: 8532c1cc5837e7d9e1765f80567862a662c6e4e4
   PDKTStickySectionHeadersCollectionViewLayout: bedcfc09fa44ae3e232eab421c31286e3d2856ed
   RaptureXML: b5c33c04c1a4adfd8ad0d5463329a31820596e82
-  Realm: 8b2ca5bc6479a91f379b6b42b5922e396cd5ba5a
+  Realm: bb8d7be40d0bc92f139c47095124513c489c0baf
   SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
   SimpleKeychain: 0c657949c7afff92337d2ff64052d5eb5c53823e
   SSZipArchive: 11801759495fa4efb7512ef652eb0042d68305d7
@@ -385,6 +385,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 0ea60c9adf4e4943b84c42c3cbcca86badbc3e43
+PODFILE CHECKSUM: ba7a30fcb8ac59d3d8c6ec0212ff0d55f5bb6c96
 
 COCOAPODS: 1.9.3

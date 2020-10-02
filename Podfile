@@ -38,7 +38,7 @@ target :iNaturalist do
   pod 'NSString_stripHtml', '0.1.0'
   pod 'Mantle', '1.5.8'
   pod 'ICViewPager', :git => 'https://github.com/alexshepard/ICViewPager.git', :commit => '4c45423b6a36fb38753af86a1050b6a3a1d548b8'
-  pod 'Realm', '3.20.0'
+  pod 'Realm', '5.4.6'
   pod 'ARSafariActivity'
   pod 'M13ProgressSuite'
   pod 'MHVideoPhotoGallery', :git => 'https://github.com/alexshepard/MHVideoPhotoGallery', :commit => '0a343f12b60c8719a280db73b1e2b6d25fef164a'
@@ -53,4 +53,12 @@ target :iNaturalist do
   end
 end
 
-
+post_install do |installer|
+     installer.pods_project.targets.each do |target|
+         target.build_configurations.each do |config|
+             config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+             config.build_settings['EXCLUDED_ARCHS[sdk=watchsimulator*]'] = 'arm64'
+             config.build_settings['EXCLUDED_ARCHS[sdk=appletvsimulator*]'] = 'arm64'
+        end
+    end
+end
