@@ -49,180 +49,69 @@
 }
 
 - (void)migrateObservationsToRealmProgress:(INatRealmMigrationProgressHandler)progressBlock finished:(INatRealmMigrationCompletionHandler)done {
-    // migrate old observations to realm
-    // do this on a background thread so we can update the UI
-    
-    // migration report will be emailed to the user
-    NSMutableString *migrationReport = [NSMutableString string];
-    
-    NSMutableArray *cdUUIDs = [NSMutableArray array];
-    NSMutableArray *realmUUIDs = [NSMutableArray array];
-    
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Observation"];
     
     NSError *error = nil;
     NSArray *results = [[self coreDataMOC] executeFetchRequest:request error:&error];
     
+    NSMutableArray *observationsForRealm = [NSMutableArray array];
+    
     [Analytics.sharedClient debugLog:@"Migration: Begin"];
-    [migrationReport appendString:@"Migration: Begin\n"];
     
     if (error) {
         [Analytics.sharedClient debugLog:@"Migration: Failed - cannot get MOC"];
-        [migrationReport appendString:@"Migration: Failed - cannot get MOC\n"];
         [Analytics.sharedClient debugError:error];
         done(NO, @"", error);
     } else {
-        
-        RLMRealm *realm = [RLMRealm defaultRealm];
-        CGFloat totalObservations = (CGFloat)results.count;
-        NSInteger processedObservations = 0;
-        NSInteger skippedObservations = 0;
-        [Analytics.sharedClient debugLog:[NSString stringWithFormat:@"Migration: %ld to migrate", (long)totalObservations]];
-        [migrationReport appendFormat:@"Migration: %ld to migrate\n", (long)totalObservations];
-        
+        [Analytics.sharedClient debugLog:[NSString stringWithFormat:@"Migration: %ld to migrate", (long)results.count]];
+
         for (id cdObservation in results) {
-            [migrationReport appendString:@"\n\n"];
-            
-            [migrationReport appendFormat:@"Migration: working on %@\n", [cdObservation description]];
-            
             // debug, trigger fault to fire
             [cdObservation willAccessValueForKey:nil];
-            [migrationReport appendFormat:@"Migration: post fault fire, working on %@\n", [cdObservation description]];
-            
-            if ([cdObservation respondsToSelector:@selector(uploadableRepresentation)]) {
-                NSDictionary *uploadableRepresentation = [cdObservation performSelector:@selector(uploadableRepresentation)];
-                [migrationReport appendFormat:@"Migration: uploadable representation is %@\n", uploadableRepresentation];
-            } else {
-                [migrationReport appendString:@"Migration: no uploadable representation"];
-            }
-            
-            if ([cdObservation respondsToSelector:@selector(recordID)]) {
-                NSNumber *recordId = [cdObservation performSelector:@selector(recordID)];
-                [migrationReport appendFormat:@"Migration: record id is %@\n", recordId];
-            } else {
-                [migrationReport appendString:@"Migration: no record id"];
-            }
-            
+                                    
             if ([cdObservation respondsToSelector:@selector(uuid)]) {
                 NSString *uuid = [cdObservation performSelector:@selector(uuid)];
-                if (uuid) {
-                    [cdUUIDs addObject:uuid];
-                    [migrationReport appendFormat:@"Migration: uuid is %@\n", uuid];
-                } else {
-                    [migrationReport appendString:@"Migration: no uuid"];
-                }
-            } else {
-                [migrationReport appendString:@"Migration: no uuid"];
-            }
-            
-            if ([cdObservation respondsToSelector:@selector(syncedAt)]) {
-                NSDate *syncDate = [cdObservation performSelector:@selector(syncedAt)];
-                [migrationReport appendFormat:@"Migration: sync date is %@\n", syncDate];
-            } else {
-                [migrationReport appendString:@"Migration: no sync date"];
-            }
-            
-            if ([cdObservation respondsToSelector:@selector(updatedAt)]) {
-                NSDate *updatedDate = [cdObservation performSelector:@selector(updatedAt)];
-                [migrationReport appendFormat:@"Migration: updated date is %@\n", updatedDate];
-            } else {
-                [migrationReport appendString:@"Migration: no updated date"];
-            }
-            
-            // update the progress UI
-            processedObservations += 1;
-            CGFloat progress = (CGFloat)processedObservations / totalObservations;
-            [Analytics.sharedClient debugLog:@"Migration: updating progress"];
-            progressBlock(progress);
-            
-            NSError *error = nil;
-            NSDictionary *value = [ExploreObservationRealm valueForCoreDataModel:cdObservation error:&error];
-            [migrationReport appendFormat:@"Migration: migration value is %@\n", value];
-            
-            if (!value) {
-                if (error) {
-                    NSString *report = [NSString stringWithFormat:@"processed %ld of %ld, then bailed, got nil value for cd observation: %@",
-                                        (long)processedObservations,
-                                        (long)totalObservations,
-                                        error.localizedDescription];
-                    [migrationReport appendString:report];
-                    done(NO, migrationReport, error);
-                    return;
-                } else {
-                    // should be safe to skip
-                    skippedObservations += 1;
+                if (!uuid) {
+                    // can't do anything with observations without uuids
                     continue;
                 }
             }
-            [realm beginWriteTransaction];
-            ExploreObservationRealm *o = [ExploreObservationRealm createOrUpdateInRealm:realm
-                                                                              withValue:value];
-            [realm commitWriteTransaction];
+                        
+            NSError *error = nil;
+            NSDictionary *value = [ExploreObservationRealm valueForCoreDataModel:cdObservation error:&error];
+            
+            if (!value) {
+                if (error) {
+                    done(NO, nil, error);
+                    return;
+                } else {
+                    // can't do anything with an empty observation
+                    // should be safe to skip
+                    continue;
+                }
+            }
+            
+            ExploreObservationRealm *o = [[ExploreObservationRealm alloc] initWithValue:value];
+            
             if (!o) {
-                
                 NSError *error = [[NSError alloc] initWithDomain:@"org.inaturalist"
                                                             code:-1016
                                                         userInfo:@{ NSLocalizedDescriptionKey: @"value failed to insert to realm" }];
-                
                 [Analytics.sharedClient debugLog:@"Migration: Failed - value failed to insert to realm"];
                 [Analytics.sharedClient debugError:error];
-                
-                NSString *report = [NSString stringWithFormat:@"processed %ld of %ld, then bailed, value failed to insert to realm",
-                                    (long)processedObservations, (long)totalObservations];
-                [migrationReport appendString:report];
-                done(NO, migrationReport, error);
+                done(NO, nil, error);
                 return;
             }
             
-            if (o.uuid) {
-                [realmUUIDs addObject:o.uuid];
-            }
-            
-            [migrationReport appendFormat:@"Migration: realm value is %@\n", o];
-            [migrationReport appendFormat:@"Migration: realm uploadable representation is %@\n", [o uploadableRepresentation]];
-            
-            [Analytics.sharedClient debugLog:[NSString stringWithFormat:@"Migration: completed %ld of %ld",
-                                              (long)processedObservations, (long)totalObservations]];
+            [observationsForRealm addObject:o];
         }
         
-        if (totalObservations == 0 && processedObservations == 0) {
-            [Analytics.sharedClient debugLog:@"Migration: Empty Migration"];
-            [migrationReport appendString:@"Migration: Empty Migration"];
-        }  else {
-            [Analytics.sharedClient debugLog:@"Migration: Finished"];
-            [migrationReport appendString:@"Migration: Finished"];
-        }
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        [realm addOrUpdateObjects:observationsForRealm];
+        [realm commitWriteTransaction];
         
-        NSInteger obsCountWithNilUUID = 0;
-        for (ExploreObservationRealm *o in [ExploreObservationRealm allObjects]) {
-            if (![o uuid]) {
-                obsCountWithNilUUID += 1;
-            }
-        }
-        
-        BOOL sendMigrationReport = NO;
-        
-        if (obsCountWithNilUUID > 0) {
-            [migrationReport appendFormat:@"processed %ld of %ld, skipped %ld, completed. %ld observations with nil uuids, which will FAIL AT UPLOAD.",
-             (long)processedObservations,
-             (long)totalObservations,
-             (long)skippedObservations,
-             (long)obsCountWithNilUUID];
-            sendMigrationReport = YES;
-        }
-        
-        if ([realmUUIDs isEqual:cdUUIDs]) {
-            [migrationReport appendString:@"Migration: Before and After UUIDs Match"];
-        } else {
-            [migrationReport appendString:@"Migration: Before and After UUIDs DO NOT MATCH"];
-            sendMigrationReport = YES;
-        }
-        
-        if (sendMigrationReport) {
-            done(YES, migrationReport, nil);
-        } else {
-            done(YES, nil, nil);
-        }
+        done(YES, nil, nil);
     }
 }
 
