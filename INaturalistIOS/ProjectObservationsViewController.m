@@ -65,13 +65,13 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         if (!meUser) { return; }        // can't join projects if we don't have a me user
         
         RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
         for (ExploreProject *eg in results) {
             NSDictionary *value = [ExploreProjectRealm valueForMantleModel:eg];
-            [realm beginWriteTransaction];
             ExploreProjectRealm *project = [ExploreProjectRealm createOrUpdateInDefaultRealmWithValue:value];
             [meUser.joinedProjects addObject:project];
-            [realm commitWriteTransaction];
         }
+        [realm commitWriteTransaction];
 
         // update tableview
         [weakSelf.tableView reloadData];

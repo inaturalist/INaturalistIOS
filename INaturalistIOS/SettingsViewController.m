@@ -43,6 +43,7 @@
 #import "SettingsDetailTextCell.h"
 #import "SettingsVersionCell.h"
 #import "ExploreUserRealm.h"
+#import "ExploreObservationRealm.h"
 
 typedef NS_ENUM(NSInteger, SettingsSection) {
     SettingsSectionAccount = 0,
@@ -400,7 +401,6 @@ static const int ChangePartnerMinimumInterval = 86400;
     [realm beginWriteTransaction];
     [realm deleteAllObjects];
     [realm commitWriteTransaction];
-    
     // clear anything stashed in login
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.loginController logout];

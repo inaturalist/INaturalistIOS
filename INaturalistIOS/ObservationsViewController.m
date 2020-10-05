@@ -506,13 +506,13 @@
             [weakSelf.refreshControl endRefreshing];
             
             RLMRealm *realm = [RLMRealm defaultRealm];
+            [realm beginWriteTransaction];
             for (ExploreObservation *eo in results) {
                 id value = [ExploreObservationRealm valueForMantleModel:eo];
-                [realm beginWriteTransaction];
                 ExploreObservationRealm *obs = [ExploreObservationRealm createOrUpdateInRealm:realm withValue:value];
                 [obs setSyncedForSelfAndChildrenAt:[NSDate date]];
-                [realm commitWriteTransaction];
             }
+            [realm commitWriteTransaction];
             
             [weakSelf checkNewActivity];
         }];
@@ -525,13 +525,13 @@
             [weakSelf.refreshControl endRefreshing];
             
             RLMRealm *realm = [RLMRealm defaultRealm];
+            [realm beginWriteTransaction];
             for (ExploreObservation *eo in results) {
                 id value = [ExploreObservationRealm valueForMantleModel:eo];
-                [realm beginWriteTransaction];
                 ExploreObservationRealm *obs = [ExploreObservationRealm createOrUpdateInRealm:realm withValue:value];
                 [obs setSyncedForSelfAndChildrenAt:[NSDate date]];
-                [realm commitWriteTransaction];
             }
+            [realm commitWriteTransaction];
             
             [weakSelf checkNewActivity];
         }];
@@ -1221,6 +1221,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    NSLog(@"in obs did load, all obs in realm is %ld", [[ExploreObservationRealm allObjectsInRealm:realm] count]);
+
     
     RLMSortDescriptor *createdAtSort = [RLMSortDescriptor sortDescriptorWithKeyPath:@"timeCreated" ascending:FALSE];
     self.myObservations = [[ExploreObservationRealm myObservations] sortedResultsUsingDescriptors:@[ createdAtSort ]];

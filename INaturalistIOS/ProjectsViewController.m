@@ -156,13 +156,13 @@ static const int ListControlIndexNearby = 2;
         if (!me) { return; }        // can't sync user projects if we have no user
         
         RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
         for (ExploreProject *eg in results) {
             NSDictionary *value = [ExploreProjectRealm valueForMantleModel:eg];
-            [realm beginWriteTransaction];
             ExploreProjectRealm *project = [ExploreProjectRealm createOrUpdateInDefaultRealmWithValue:value];
             [me.joinedProjects addObject:project];
-            [realm commitWriteTransaction];
         }
+        [realm commitWriteTransaction];
 
         // update tableview
         [weakSelf.tableView reloadData];

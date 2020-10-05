@@ -136,12 +136,12 @@ static const int ListControlIndexNearby = 1;
                                      handler:^(NSArray *results, NSInteger count, NSError *error) {
             
             RLMRealm *realm = [RLMRealm defaultRealm];
+            [realm beginWriteTransaction];
             for (ExploreGuide *eg in results) {
                 id value = [ExploreGuideRealm valueForMantleModel:eg];
-                [realm beginWriteTransaction];
                 [ExploreGuideRealm createOrUpdateInRealm:realm withValue:value];
-                [realm commitWriteTransaction];
             }
+            [realm commitWriteTransaction];
             [weakSelf.tableView reloadData];
         }];
     } else {
@@ -155,12 +155,12 @@ static const int ListControlIndexNearby = 1;
         __weak typeof(self) weakSelf = self;
         [[self guidesApi] guidesForLoggedInUserHandler:^(NSArray *results, NSInteger count, NSError *error) {
             RLMRealm *realm = [RLMRealm defaultRealm];
+            [realm beginWriteTransaction];
             for (ExploreGuide *eg in results) {
                 id value = [ExploreGuideRealm valueForMantleModel:eg];
-                [realm beginWriteTransaction];
                 [ExploreGuideRealm createOrUpdateInDefaultRealmWithValue:value];
-                [realm commitWriteTransaction];
             }
+            [realm commitWriteTransaction];
             [weakSelf.tableView reloadData];
         }];
     } else {
@@ -470,12 +470,12 @@ static const int ListControlIndexNearby = 1;
         [[self guidesApi] guidesMatching:self.searchController.searchBar.text
                                  handler:^(NSArray *results, NSInteger count, NSError *error) {
             RLMRealm *realm = [RLMRealm defaultRealm];
+            [realm beginWriteTransaction];
             for (ExploreGuide *eg in results) {
                 id value = [ExploreGuideRealm valueForMantleModel:eg];
-                [realm beginWriteTransaction];
                 [ExploreGuideRealm createOrUpdateInRealm:realm withValue:value];
-                [realm commitWriteTransaction];
             }
+            [realm commitWriteTransaction];
             [weakSelf.tableView reloadData];
         }];
     }

@@ -222,13 +222,13 @@
             } else {
                 // stash in realm
                 RLMRealm *realm = [RLMRealm defaultRealm];
+                [realm beginWriteTransaction];
                 for (ExploreObservation *eo in results) {
                     NSDictionary *value = [ExploreObservationRealm valueForMantleModel:eo];
-                    [realm beginWriteTransaction];
                     ExploreObservationRealm *o = [ExploreObservationRealm createOrUpdateInRealm:realm withValue:value];
                     [o setSyncedForSelfAndChildrenAt:[NSDate date]];
-                    [realm commitWriteTransaction];
                 }
+                [realm commitWriteTransaction];
                 // reload this tableview
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [tableView reloadRowsAtIndexPaths:@[ indexPath ]
