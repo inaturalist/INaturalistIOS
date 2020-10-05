@@ -26,7 +26,7 @@
 
 - (void)observationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch observation from node"];
-    NSString *path = [NSString stringWithFormat:@"observations/%ld", (long)identifier];
+    NSString *path = [NSString stringWithFormat:@"observations/%ld?ttl=-1", (long)identifier];
     [self fetch:path classMapping:ExploreObservation.class handler:done];
 }
 
