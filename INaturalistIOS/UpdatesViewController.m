@@ -95,9 +95,11 @@
                                                                                         ascending:NO];
     
     self.updatesToken = [self.updates addNotificationBlock:^(RLMResults * _Nullable results, RLMCollectionChange * _Nullable change, NSError * _Nullable error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [weakSelf.tableView reloadData];
-        });
+        [weakSelf.tableView beginUpdates];
+        [weakSelf.tableView deleteRowsAtIndexPaths:[change deletionsInSection:0] withRowAnimation:UITableViewRowAnimationNone];
+        [weakSelf.tableView insertRowsAtIndexPaths:[change insertionsInSection:0] withRowAnimation:UITableViewRowAnimationNone];
+        [weakSelf.tableView reloadRowsAtIndexPaths:[change modificationsInSection:0] withRowAnimation:UITableViewRowAnimationNone];
+        [weakSelf.tableView endUpdates];
     }];
     
     [self loadUpdates];
@@ -105,9 +107,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    [self.tableView reloadData];
-    
+        
     [self markSeenObservations];
 }
 
@@ -211,7 +211,7 @@
     NSPredicate *obsPredicate = [NSPredicate predicateWithFormat:@"observationId == %d", eur.resourceId];
     ExploreObservationRealm *o = [[ExploreObservationRealm objectsWithPredicate:obsPredicate] firstObject];
     if (!o) {
-        // fetch this observation, reload the cell
+        // fetch this observation, which will update realm and trigger an update of the cell
         [[self observationApi] observationWithId:eur.resourceId handler:^(NSArray *results, NSInteger count, NSError *error) {
             if (error) {
                 // just get rid of this update
@@ -229,11 +229,6 @@
                     [o setSyncedForSelfAndChildrenAt:[NSDate date]];
                 }
                 [realm commitWriteTransaction];
-                // reload this tableview
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [tableView reloadRowsAtIndexPaths:@[ indexPath ]
-                                     withRowAnimation:UITableViewRowAnimationFade];
-                });
             }
         }];
     }
