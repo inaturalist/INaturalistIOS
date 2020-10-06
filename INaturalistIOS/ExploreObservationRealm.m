@@ -505,6 +505,9 @@
         }
     }
     
+    NSArray *sorts = @[ [NSSortDescriptor sortDescriptorWithKey:@"timeCreated" ascending:YES] ];
+    [obsNeedingUpload sortUsingDescriptors:sorts];
+    
     return [NSArray arrayWithArray:obsNeedingUpload];
 }
 
