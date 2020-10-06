@@ -528,21 +528,20 @@
 
     if (self.observation.hasUnviewedActivityBool) {
         
-        __weak typeof(self) weakSelf = self;
-        [[self observationApi] seenUpdatesForObservationId:self.observation.inatRecordId
-                                                   handler:^(NSArray *results, NSInteger count, NSError *error) {
-            
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            RLMResults *updates = [ExploreUpdateRealm updatesForObservationId:self.observation.inatRecordId];
+        // clear local unseen status right away
+        RLMResults *updates = [ExploreUpdateRealm updatesForObservationId:self.observation.inatRecordId];
 
-            RLMRealm *realm = [RLMRealm defaultRealm];
-            [realm beginWriteTransaction];
-            [updates setValue:@(YES) forKey:@"viewed"];
-            [updates setValue:@(YES) forKey:@"viewedLocally"];
-            [realm commitWriteTransaction];
-            
-            [strongSelf.delegate reloadTableView];
-        }];
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        [updates setValue:@(YES) forKey:@"viewed"];
+        [updates setValue:@(YES) forKey:@"viewedLocally"];
+        [realm commitWriteTransaction];
+        
+        [self.delegate reloadTableView];
+        
+        // notify the server that we've seen the updates for this observation
+        [[self observationApi] seenUpdatesForObservationId:self.observation.inatRecordId
+                                                   handler:^(NSArray *results, NSInteger count, NSError *error) { }];
     }
 }
 
