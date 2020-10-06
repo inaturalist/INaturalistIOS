@@ -342,6 +342,7 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                         if let exif = dict["{Exif}"] as? [String: Any] {
                            
                            let df = DateFormatter()
+                           df.calendar = Calendar(identifier: .gregorian)
                            df.dateFormat = "yyyy:MM:dd HH:mm:ss"
                            
 

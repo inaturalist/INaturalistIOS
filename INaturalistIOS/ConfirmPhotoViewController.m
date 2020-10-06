@@ -384,6 +384,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _df = [[NSDateFormatter alloc] init];
+        _df.calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
         [_df setDateFormat:@"yyyy:MM:dd HH:mm:ss"];
     });
     return _df;
