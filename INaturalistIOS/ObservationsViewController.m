@@ -1600,10 +1600,8 @@
     NSIndexPath *ip = [NSIndexPath indexPathForItem:[self.myObservations indexOfObject:o]
                                           inSection:0];
     if (ip) {
-        [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:@[ ip ]
-                              withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView endUpdates];
+                              withRowAnimation:UITableViewRowAnimationNone];
     }
 }
 
@@ -1618,10 +1616,8 @@
     NSIndexPath *ip = [NSIndexPath indexPathForItem:[self.myObservations indexOfObject:o]
                                           inSection:0];
     if (ip) {
-        [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:@[ ip ]
-                              withRowAnimation:UITableViewRowAnimationAutomatic];
-        [self.tableView endUpdates];
+                              withRowAnimation:UITableViewRowAnimationNone];
     }
 }
 
@@ -1632,10 +1628,8 @@
     NSIndexPath *ip = [NSIndexPath indexPathForItem:[self.myObservations indexOfObject:o]
                                           inSection:0];
     if (ip) {
-        [self.tableView beginUpdates];
         [self.tableView reloadRowsAtIndexPaths:@[ ip ]
                               withRowAnimation:UITableViewRowAnimationNone];
-        [self.tableView endUpdates];
     }
 }
 
