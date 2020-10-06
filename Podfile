@@ -56,6 +56,7 @@ end
 post_install do |installer|
      installer.pods_project.targets.each do |target|
          target.build_configurations.each do |config|
+             config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.3'
              config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
              config.build_settings['EXCLUDED_ARCHS[sdk=watchsimulator*]'] = 'arm64'
              config.build_settings['EXCLUDED_ARCHS[sdk=appletvsimulator*]'] = 'arm64'
