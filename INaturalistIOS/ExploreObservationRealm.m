@@ -535,11 +535,6 @@
                     found = YES;
                     if (property.type == RLMPropertyTypeBool) {
                         mutableParams[mappedName] = [[self valueForKey:key] boolValue] ? @"true" : @"false";
-                    } else if (property.type == RLMPropertyTypeString) {
-                        // only add string values if they exist
-                        if ([self valueForKey:key]) {
-                            mutableParams[mappedName] = [self valueForKey:key];
-                        }
                     } else {
                         mutableParams[mappedName] = [self valueForKey:key];
                     }
@@ -548,6 +543,18 @@
             }
             if (!found) {
                 mutableParams[mappedName] = [self valueForKey:key];
+            }
+        } else {
+            // no value, for string properties we send empty string instead
+            // of sending nothing
+            NSString *mappedName = mapping[key];
+            BOOL found = NO;
+            for (RLMProperty *property in self.objectSchema.properties) {
+                if ([property.name isEqualToString:key]) {
+                    found = YES;
+                    mutableParams[mappedName] = @"";
+                    break;
+                }
             }
         }
     }
