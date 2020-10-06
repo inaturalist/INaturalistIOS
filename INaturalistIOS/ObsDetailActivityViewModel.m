@@ -297,7 +297,7 @@
     NSString *path = [[NSBundle mainBundle] pathForResource:@"bootstrap" ofType:@"min.css"];
     NSError *error = nil;
     NSString *css = [NSString stringWithContentsOfFile:path
-                                              encoding:kCFStringEncodingUTF8
+                                              encoding:NSUTF8StringEncoding
                                                  error:&error];
     DownWrapper *dw = [[DownWrapper alloc] init];
     NSAttributedString *attrStr = [dw markdownToAttributedStringWithMarkdownStr:bodyText
