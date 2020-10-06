@@ -80,6 +80,7 @@
     static NSDateFormatter *dateFormatter;
     if (!dateFormatter) {
         dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.calendar = [NSCalendar calendarWithIdentifier:NSCalendarIdentifierGregorian];
         dateFormatter.dateFormat = @"yyyy-MM-dd";
     }
     NSString *sinceDateString = [dateFormatter stringFromDate:sinceDate];
