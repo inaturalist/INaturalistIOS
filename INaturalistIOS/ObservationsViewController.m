@@ -918,7 +918,7 @@
 
 - (void)configureHeaderForActiveUploading:(MeHeaderView *)view {
     [view.iconButton cancelImageDownloadTaskForState:UIControlStateNormal];
-    [view.iconButton setImage:nil forState:UIControlStateNormal];
+    [view.iconButton setBackgroundImage:nil forState:UIControlStateNormal];
     [view.iconButton setTintColor:[UIColor whiteColor]];
     view.iconButton.backgroundColor = [UIColor inatTint];
     
@@ -975,7 +975,7 @@
             
             // image seems to override title text, so clear it
             [view.iconButton cancelImageDownloadTaskForState:UIControlStateNormal];
-            [view.iconButton setImage:nil forState:UIControlStateNormal];
+            [view.iconButton setBackgroundImage:nil forState:UIControlStateNormal];
             view.iconButton.accessibilityLabel = NSLocalizedString(@"Upload",
                                                                    @"accessibility labelf for upload button");
             
@@ -1048,32 +1048,21 @@
         
         // icon
         if (user.userIconMedium) {
-            // render the user icon as an image, not a mask
-            NSURLRequest *request = [NSURLRequest requestWithURL:user.userIconMedium];
-            __weak typeof(view)weakView = view;
-            [view.iconButton setImageForState:UIControlStateNormal
-                               withURLRequest:request
-                             placeholderImage:nil
-                                      success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
-                [weakView.iconButton setImage:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-                                     forState:UIControlStateNormal];
-            } failure:nil];
+            [view.iconButton setTitle:nil forState:UIControlStateNormal];
+            [view.iconButton setBackgroundImageForState:UIControlStateNormal
+                                                withURL:user.userIconMedium];
         } else if (user.userIcon) {
-            // render the user icon as an image, not a mask
-            NSURLRequest *request = [NSURLRequest requestWithURL:user.userIcon];
-            __weak typeof(view)weakView = view;
-            [view.iconButton setImageForState:UIControlStateNormal
-                               withURLRequest:request
-                             placeholderImage:nil
-                                      success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
-                [weakView.iconButton setImage:[image imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-                                     forState:UIControlStateNormal];
-            } failure:nil];
+            [view.iconButton setTitle:nil forState:UIControlStateNormal];
+            [view.iconButton setBackgroundImageForState:UIControlStateNormal
+                                                withURL:user.userIcon];
         } else {
             FAKIcon *person = [FAKIonIcons iosPersonIconWithSize:80.0f];
             [person addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
-            [view.iconButton setImage:[[person imageWithSize:CGSizeMake(80, 80)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-                             forState:UIControlStateNormal];
+            UIImage *personImage = [[person imageWithSize:CGSizeMake(80,80)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            
+            [view.iconButton setTitle:nil forState:UIControlStateNormal];
+            [view.iconButton setBackgroundImage:personImage
+                                       forState:UIControlStateNormal];
         }
         
         // observation count
