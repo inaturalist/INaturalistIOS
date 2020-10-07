@@ -292,6 +292,10 @@
                                                         handler:nil]];
                 [weakSelf presentViewController:alert animated:YES completion:nil];
             } else {
+                // dirty the me user to force re-fetching
+                INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+                [appDelegate.loginController dirtyLocalMeUser];
+
                 [weakSelf loadUserForHeader];
             }
         }];
