@@ -218,11 +218,6 @@
         return;
     }
     
-    if ([self.observation isKindOfClass:ExploreObservation.class]) {
-        // don't re-download observations on explore tab
-        return;
-    }
-    
     NSInteger obsIdToReload = 0;
     if (self.observation) {
         obsIdToReload = self.observation.recordId;
@@ -238,12 +233,19 @@
     // load the full observation from the server, to fetch comments, ids & faves
     __weak typeof(self)weakSelf = self;
     [[self observationApi] observationWithId:obsIdToReload handler:^(NSArray *results, NSInteger count, NSError *error) {
+        if (results.count != 1) { return; }
+        if (!weakSelf) { return; }
         
-        RLMRealm *realm = [RLMRealm defaultRealm];
-        for (ExploreObservation *eo in results) {
+        if ([weakSelf.observation isKindOfClass:ExploreObservation.class]) {
+            weakSelf.observation = results.firstObject;
+            weakSelf.viewModel.observation = results.firstObject;
+        } else {
+            // we need to serialize the observation
+            RLMRealm *realm = [RLMRealm defaultRealm];
+            id obsValue = [ExploreObservationRealm valueForMantleModel:results.firstObject];
             [realm beginWriteTransaction];
             ExploreObservationRealm *o = [ExploreObservationRealm createOrUpdateInRealm:realm
-                                                                              withValue:[ExploreObservationRealm valueForMantleModel:eo]];
+                                                                              withValue:obsValue];
             [o setSyncedForSelfAndChildrenAt:[NSDate date]];
             [realm commitWriteTransaction];
         }
