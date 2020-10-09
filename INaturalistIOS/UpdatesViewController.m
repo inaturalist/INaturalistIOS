@@ -105,38 +105,6 @@
     [self loadUpdates];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-        
-    [self markSeenObservations];
-}
-
-- (void)markSeenObservations {
-    // stash the new IDs so we can notify the server that it's been seen
-    NSMutableSet *obsIds = [NSMutableSet set];
-    for (ExploreUpdateRealm *new in [self.updates objectsWhere:@"viewed == NO"]) {
-        [obsIds addObject:@(new.resourceId)];
-    }
-    
-    // clear flag on all updates
-    [[RLMRealm defaultRealm] transactionWithBlock:^{
-        [self.updates setValue:@(YES) forKey:@"viewed"];
-    }];
-    
-    for (NSNumber *obsId in obsIds) {
-        [[self observationApi] seenUpdatesForObservationId:obsId.integerValue handler:^(NSArray *results, NSInteger count, NSError *error) {
-            
-            RLMResults *updates = [ExploreUpdateRealm updatesForObservationId:obsId.integerValue];
-
-            RLMRealm *realm = [RLMRealm defaultRealm];
-            [realm beginWriteTransaction];
-            [updates setValue:@(YES) forKey:@"viewed"];
-            [updates setValue:@(YES) forKey:@"viewedLocally"];
-            [realm commitWriteTransaction];
-        }];
-    }
-}
-
 - (ObservationAPI *)observationApi {
     static ObservationAPI *_api = nil;
     static dispatch_once_t onceToken;
@@ -167,7 +135,6 @@
         
         if (self.viewIfLoaded) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self markSeenObservations];
                 [self.tableView.pullToRefreshView stopAnimating];
             });
         }
@@ -191,11 +158,10 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if (self.updates.count > 0) {
         tableView.backgroundView.hidden = YES;
-        return 1;
     } else {
         tableView.backgroundView.hidden = NO;
-        return 0;
     }
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
