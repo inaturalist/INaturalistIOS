@@ -1609,10 +1609,16 @@
 - (void)uploadSessionProgress:(float)progress for:(NSString *)observationUUID {
     self.uploadProgress[observationUUID] = @(progress);
     
+    // don't update the UI if this view controller is offscreen
+    if (self.presentedViewController) { return; }
+    if (self.navigationController.topViewController != self) { return; }
+    if (self.tabBarController.selectedViewController != self.navigationController) { return; }
+    
     ExploreObservationRealm *o = [ExploreObservationRealm objectForPrimaryKey:observationUUID];
     NSIndexPath *ip = [NSIndexPath indexPathForItem:[self.myObservations indexOfObject:o]
                                           inSection:0];
-    if (ip) {
+    
+    if (ip && [self.tableView.indexPathsForVisibleRows containsObject:ip]) {
         [self.tableView reloadRowsAtIndexPaths:@[ ip ]
                               withRowAnimation:UITableViewRowAnimationNone];
     }
