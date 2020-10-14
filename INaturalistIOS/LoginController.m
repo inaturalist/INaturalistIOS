@@ -469,6 +469,11 @@ didSignInForUser:(GIDGoogleUser *)user
             }
             [realm commitWriteTransaction];
             
+            // we have a me user, stash the userid in userdefaults
+            [[NSUserDefaults standardUserDefaults] setValue:@(me.userId)
+                                                     forKey:kINatUserIdPrefKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
             completion(me);
         }];
     }
