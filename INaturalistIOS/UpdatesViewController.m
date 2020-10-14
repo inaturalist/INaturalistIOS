@@ -39,6 +39,11 @@
                                                  selector:@selector(userLoggedIn)
                                                      name:kUserLoggedInNotificationName
                                                    object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(userLoggedOut)
+                                                     name:kUserLoggedOutNotificationName
+                                                   object:nil];
     }
     
     return self;
@@ -50,7 +55,17 @@
 }
 
 - (void)userLoggedIn {
-    [self loadUpdates];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self loadUpdates];
+    });
+}
+
+- (void)userLoggedOut {
+    // this notification can come in off the main thread
+    // update the ui to reflect the logged out state
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.tableView reloadData];
+    });
 }
 
 - (void)viewDidLoad {
