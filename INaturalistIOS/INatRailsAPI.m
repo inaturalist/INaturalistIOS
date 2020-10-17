@@ -42,7 +42,9 @@
                     completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             if (error) {
                 // check for errors
-                done(nil, 0, error);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    done(nil, 0, error);
+                });
             } else if (((NSHTTPURLResponse *)response).statusCode != 200) {
                 // check for non success response code
                 NSError *error = [NSError errorWithDomain:@"org.inaturalist.rails.http"
@@ -56,7 +58,9 @@
                 [self extractObjectsFromData:data classMapping:classForMapping handler:done];
             } else {
                 // if no response body
-                done(@[ ], 0, nil);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    done(@[ ], 0, nil);
+                });
             }
             
         }] resume];

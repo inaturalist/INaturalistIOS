@@ -138,7 +138,9 @@
         [appDelegate.loginController getJWTTokenSuccess:^(NSDictionary *info) {
             [weakSelf requestMethod:method path:path params:params jwt:info[@"token"] classMapping:classForMapping handler:done];
         } failure:^(NSError *error) {
-            done(nil, 0, error);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                done(nil, 0, error);
+            });
         }];
     } else {
         [self requestMethod:method path:path params:params jwt:nil classMapping:classForMapping handler:done];
