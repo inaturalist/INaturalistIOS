@@ -517,8 +517,6 @@
                 [obs setSyncedForSelfAndChildrenAt:[NSDate date]];
             }
             [realm commitWriteTransaction];
-            
-            [weakSelf checkNewActivity];
         }];
         
         
