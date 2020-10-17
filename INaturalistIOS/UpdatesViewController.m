@@ -110,11 +110,9 @@
                                                                                         ascending:NO];
     
     self.updatesToken = [self.updates addNotificationBlock:^(RLMResults * _Nullable results, RLMCollectionChange * _Nullable change, NSError * _Nullable error) {
-        [weakSelf.tableView beginUpdates];
-        [weakSelf.tableView deleteRowsAtIndexPaths:[change deletionsInSection:0] withRowAnimation:UITableViewRowAnimationNone];
-        [weakSelf.tableView insertRowsAtIndexPaths:[change insertionsInSection:0] withRowAnimation:UITableViewRowAnimationNone];
-        [weakSelf.tableView reloadRowsAtIndexPaths:[change modificationsInSection:0] withRowAnimation:UITableViewRowAnimationNone];
-        [weakSelf.tableView endUpdates];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.tableView reloadData];
+        });
     }];
     
     [self loadUpdates];
