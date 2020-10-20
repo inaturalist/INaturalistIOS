@@ -256,8 +256,9 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         [self.geoCoder cancelGeocode];
     }
     
-    if (self.locationManager) {
-        [self.locationManager stopUpdatingLocation];
+    // don't use property here
+    if (_locationManager) {
+        [_locationManager stopUpdatingLocation];
     }
 }
 
