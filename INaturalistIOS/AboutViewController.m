@@ -35,6 +35,7 @@
                                    NSLocalizedString(@"CalTech and Cornell Tech helped develop the computer vision system that suggests identifications from photographs. We thank Grant Van Horn, Serge Belongie, and Pietro Perona for advancing the computer vision research. More information can be found at visipedia.org. Special thanks to NVIDIA for additional assistance.", @"vision assistance"),
                                    
                                    NSLocalizedString(@"The international iNaturalist Network supports localized, fully integrated, iNaturalist-based websites in the following countries, thanks to the support of associated partner organizations.", @"partners"),
+                                   NSLocalizedString(@"Argentina: Fundación Vida Silvestre Argentina supporting ArgentiNat (www.argentinat.org).", @"argentina partner"),
                                    NSLocalizedString(@"Canada: Canadian Wildlife Federation, the Royal Ontario Museum, NatureServe Canada, and Parks Canada operating iNaturalist Canada (inaturalist.ca).", @"canada partner"),
                                    NSLocalizedString(@"Colombia: Instituto Humboldt operating Naturalista (colombia.inaturalist.org).", @"colombia partner"),
                                    NSLocalizedString(@"Mexico: Comisión nacional para el conocimiento y uso de la biodiversidad (CONABIO) operating NaturaLista (NaturaLista.mx).", @"mexico partner"),
