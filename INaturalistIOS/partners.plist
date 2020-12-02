@@ -210,5 +210,23 @@
 			<string>425</string>
 		</array>
 	</dict>
+	<dict>
+		<key>logoName</key>
+		<string>network_logo_cl</string>
+		<key>countryName</key>
+		<string>Chile</string>
+		<key>identifier</key>
+		<string>18</string>
+		<key>name</key>
+		<string>iNaturalist Chile</string>
+		<key>shortName</key>
+		<string>iNaturalistCL</string>
+		<key>baseUrl</key>
+		<string>https://inaturalist.mma.gob.cl/</string>
+		<key>mobileCountryCodes</key>
+		<array>
+			<string>730</string>
+		</array>
+	</dict>
 </array>
 </plist>

@@ -48,6 +48,9 @@
                 NSLocalizedString(@"Canada: Canadian Wildlife Federation, the Royal Ontario Museum, NatureServe Canada, and Parks Canada operating iNaturalist Canada (inaturalist.ca).",
                                   @"canada partner")];
     bodyText = [bodyText stringByAppendingFormat:@"%@\n",
+                NSLocalizedString(@"Chile: Ministerio del Medio Ambiente supporting iNaturalist Chile (inaturalist.mma.gob.cl).",
+                                  @"chile partner")];
+    bodyText = [bodyText stringByAppendingFormat:@"%@\n",
                 NSLocalizedString(@"Colombia: Instituto Humboldt operating Naturalista (colombia.inaturalist.org).",
                                   @"colombia partner")];
     bodyText = [bodyText stringByAppendingFormat:@"%@\n",
@@ -59,7 +62,6 @@
     bodyText = [bodyText stringByAppendingFormat:@"%@\n",
                 NSLocalizedString(@"Israel: University of Haifa supporting iNaturalist Israel (israel.inaturalist.org).",
                                   @"israel partner")];
-    
     bodyText = [bodyText stringByAppendingFormat:@"%@\n",
                 NSLocalizedString(@"Mexico: Comisión nacional para el conocimiento y uso de la biodiversidad (CONABIO) operating NaturaLista (NaturaLista.mx).",
                                   @"mexico partner")];
