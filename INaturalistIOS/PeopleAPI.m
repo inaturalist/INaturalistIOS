@@ -271,4 +271,14 @@
     [self put:path params:params classMapping:nil handler:done];
 }
 
+- (void)setPrefersNoTracking:(BOOL)preference forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
+    
+    [[Analytics sharedClient] debugLog:@"Network - set tracking preference via node"];
+    NSDictionary *params = @{
+        @"user": @{ @"prefers_no_tracking": preference ? @"true" : @"false" }
+    };
+    NSString *path = [NSString stringWithFormat:@"users/%ld", (long)userId];
+    [self put:path params:params classMapping:nil handler:done];
+}
+
 @end

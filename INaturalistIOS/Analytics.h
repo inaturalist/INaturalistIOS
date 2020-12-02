@@ -10,6 +10,7 @@
 
 @interface Analytics : NSObject
 
++ (BOOL)canTrack;
 + (Analytics *)sharedClient;
 
 - (void)event:(NSString *)name;

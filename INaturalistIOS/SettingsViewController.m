@@ -66,9 +66,10 @@ typedef NS_ENUM(NSInteger, SettingsAppCell) {
     SettingsAppCellAutocompleteNames,
     SettingsAppCellAutomaticUpload,
     SettingsAppCellSuggestSpecies,
+    SettingsAppCellPreferNoTracking,
     SettingsAppCellNetwork
 };
-static const int SettingsAppRowCount = 6;
+static const int SettingsAppRowCount = 7;
 
 typedef NS_ENUM(NSInteger, SettingsAccountCell) {
     SettingsAccountCellUsername,
@@ -539,9 +540,33 @@ static const int ChangePartnerMinimumInterval = 86400;
     [[NSUserDefaults standardUserDefaults] setBool:newValue forKey:key];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
-    // kick off autouploads if necessary
-    
-    if ([key isEqualToString:kInatAutouploadPrefKey]) {
+    if ([key isEqualToString:kINatPreferNoTrackPrefKey]) {
+        // make an API call to notify the server about this
+        // kick off autouploads if necessary
+        // note that we don't stash the setting on the me user
+        // since it's not returned from the server every time.
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if (appDelegate.loggedIn) {
+            ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+            __weak typeof(self) weakSelf = self;
+            [[self peopleApi] setPrefersNoTracking:newValue forUserId:me.userId handler:^(NSArray *results, NSInteger count, NSError *error) {
+                if (error) {
+                    NSString *title = NSLocalizedString(@"Error changing setting.", @"failure title when changing a setting.");
+                    NSString *msg = NSLocalizedString(@"Please try again later.", @"failure message when the user should just try again.");
+                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                                   message:msg
+                                                                            preferredStyle:UIAlertControllerStyleAlert];
+                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                              style:UIAlertActionStyleDefault
+                                                            handler:nil]];
+                    [self presentViewController:alert animated:YES completion:nil];
+                }
+                [weakSelf.tableView reloadData];
+            }];
+        }
+
+    } else if ([key isEqualToString:kInatAutouploadPrefKey]) {
+        // kick off autouploads if necessary
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         UploadManager *uploadManager = appDelegate.loginController.uploadManager;
         if (newValue) {
@@ -764,6 +789,8 @@ static const int ChangePartnerMinimumInterval = 86400;
             return [self tableView:tableView appAutoUploadCellForIndexPath:indexPath];
         } else if (indexPath.item == SettingsAppCellSuggestSpecies) {
             return [self tableView:tableView appSuggestSpeciesCellForIndexPath:indexPath];
+        } else if (indexPath.item == SettingsAppCellPreferNoTracking) {
+            return [self tableView:tableView appPrefersNoTrackingCellForIndexPath:indexPath];
         } else {
             return [self tableView:tableView appInaturalistNetworkCellForIndexPath:indexPath];
         }
@@ -941,6 +968,23 @@ static const int ChangePartnerMinimumInterval = 86400;
     } forControlEvents:UIControlEventValueChanged];
     return cell;
 }
+
+- (UITableViewCell *)tableView:(UITableView *)tableView appPrefersNoTrackingCellForIndexPath:(NSIndexPath *)indexPath {
+    
+    SettingsSwitchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switch"
+                                                               forIndexPath:indexPath];
+    cell.switchLabel.text = NSLocalizedString(@"Prefer No Tracking", @"label for prefer no tracking switch in settings");
+    
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    cell.switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatPreferNoTrackPrefKey];
+    
+    __weak typeof(self)weakSelf = self;
+    [cell.switcher bk_addEventHandler:^(UISwitch *sender) {
+        [weakSelf settingChanged:kINatPreferNoTrackPrefKey newValue:sender.isOn];
+    } forControlEvents:UIControlEventValueChanged];
+    return cell;
+}
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView appInaturalistNetworkCellForIndexPath:(NSIndexPath *)indexPath {
     SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"

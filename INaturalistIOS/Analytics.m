@@ -16,40 +16,63 @@
 
 @implementation Analytics
 
++ (BOOL)canTrack {
+    BOOL prefersNoTrack = [[NSUserDefaults standardUserDefaults] boolForKey:kINatPreferNoTrackPrefKey];
+    if (prefersNoTrack) {
+        return NO;
+    } else {
+        return YES;
+    }
+}
+
 + (Analytics *)sharedClient {
     static Analytics *_sharedClient = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _sharedClient = [[Analytics alloc] init];
-        [FIRApp configure];
+        if ([Analytics canTrack]) {
+            [FIRApp configure];
+        }
     });
     return _sharedClient;
 }
 
 - (void)logMetric:(NSString *)metricName value:(NSNumber *)metricValue {
-    [self event:metricName withProperties:@{ @"Amount": metricValue }];
+    if ([Analytics canTrack]) {
+        [self event:metricName withProperties:@{ @"Amount": metricValue }];
+    }
 }
 
 - (void)event:(NSString *)name {
-    [FIRAnalytics logEventWithName:name parameters:nil];
+    if ([Analytics canTrack]) {
+        [FIRAnalytics logEventWithName:name parameters:nil];
+    }
 }
 
 - (void)event:(NSString *)name withProperties:(NSDictionary *)properties {
-    [FIRAnalytics logEventWithName:name parameters:properties];
+    if ([Analytics canTrack]) {
+        [FIRAnalytics logEventWithName:name parameters:properties];
+    }
 }
 
 - (void)debugLog:(NSString *)logMessage {
-    CLSLog(@"Debug Log: %@", logMessage);
+    if ([Analytics canTrack]) {
+        CLSLog(@"Debug Log: %@", logMessage);
+    }
 }
 
 - (void)debugError:(NSError *)error {
-    [Crashlytics.sharedInstance recordError:error];
+    if ([Analytics canTrack]) {
+        [Crashlytics.sharedInstance recordError:error];
+    }
 }
-
 
 - (void)registerUserWithIdentifier:(NSString *)userIdentifier {
-    [FIRAnalytics setUserID:userIdentifier];
+    if ([Analytics canTrack]) {
+        [FIRAnalytics setUserID:userIdentifier];
+    }
 }
+
 
 @end
 

@@ -19,6 +19,7 @@
 - (void)setEmailAddress:(NSString *)email forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
 
 - (void)setSiteId:(NSInteger)siteId forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)setPrefersNoTracking:(BOOL)preference forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
 
 - (void)createUserEmail:(NSString *)email
                   login:(NSString *)login

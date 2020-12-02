@@ -21,6 +21,7 @@
 #define kInatAutouploadPrefKey @"InatAutouploadPrefKey"
 #define kINatUserIdPrefKey @"INatUserIdPrefKey"
 #define kINatSuggestionsPrefKey @"INatSuggestionsPrefKey"
+#define kINatPreferNoTrackPrefKey @"INatPreferNoTrackPrefKey"
 
 #ifdef DEBUG1
     #define INatBaseURL @"http://localhost:3000"

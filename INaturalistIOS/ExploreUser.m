@@ -19,6 +19,7 @@
              @"email": @"email",
              @"observationsCount": @"observations_count",
              @"siteId": @"site_id",
+             @"prefersNoTracking": @"prefers_no_tracking",
              };
 }
 
@@ -37,6 +38,8 @@
     if ([key isEqualToString:@"siteId"]) {
         // inaturalist site
         self.siteId = 1;
+    } else if ([key isEqualToString:@"prefersNoTracking"]) {
+        self.prefersNoTracking = FALSE;
     } else {
         [super setNilValueForKey:key];
     }

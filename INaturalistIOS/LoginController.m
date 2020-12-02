@@ -460,6 +460,17 @@ didSignInForUser:(GIDGoogleUser *)user
         completion(me);
     } else {
         [[self peopleApi] fetchMeHandler:^(NSArray *results, NSInteger count, NSError *error) {
+            // results firstobject should contain a prefersNoTracking variable
+            // we don't stash this on the realm user because it'll get clobbered when
+            // the user is fetched in other contexts and this value isn't returned
+            // by the server.
+            if (results.firstObject) {
+                ExploreUser *euMe = results.firstObject;
+                [[NSUserDefaults standardUserDefaults] setBool:euMe.prefersNoTracking
+                                                        forKey:kINatPreferNoTrackPrefKey];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            }
+            
             RLMRealm *realm = [RLMRealm defaultRealm];
             [realm beginWriteTransaction];
             ExploreUserRealm *me = nil;
