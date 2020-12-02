@@ -8,7 +8,6 @@
 
 @import MessageUI;
 @import VTAcknowledgementsViewController;
-@import JDFTooltips;
 @import BlocksKit;
 @import MHVideoPhotoGallery;
 @import GoogleSignIn;
@@ -83,10 +82,7 @@ static const int SettingsVersionRowCount = 1;
 static NSString * const LastChangedPartnerDateKey = @"org.inaturalist.lastChangedPartnerDateKey";
 static const int ChangePartnerMinimumInterval = 86400;
 
-@interface SettingsViewController () <MFMailComposeViewControllerDelegate> {
-    UITapGestureRecognizer *tapAway;
-    JDFTooltipView *tooltip;
-}
+@interface SettingsViewController () <MFMailComposeViewControllerDelegate>
 @property (nonatomic, strong) NSString *versionText;
 @property PartnerController *partnerController;
 @end
@@ -813,39 +809,7 @@ static const int ChangePartnerMinimumInterval = 86400;
             
             return;
         } else {
-            // show popover
-            NSString *tooltipText;
-            if (indexPath.item == SettingsAppCellAutocompleteNames) {
-                // autocorrect
-                tooltipText = NSLocalizedString(@"Enable to allow iOS to auto-correct and spell-check Species names.", @"tooltip text for autocorrect settings option.");
-            } else if (indexPath.item == SettingsAppCellAutomaticUpload) {
-                // automatically upload
-                tooltipText = NSLocalizedString(@"Automatically upload new or edited content to iNaturalist.org",
-                                                @"tooltip text for automatically upload option.");
-            } else if (indexPath.item == SettingsAppCellSuggestSpecies) {
-                // suggestions
-                tooltipText = NSLocalizedString(@"Show species suggestions for observations or identifications", nil);
-            }
-            
-            tooltip = [[JDFTooltipView alloc] initWithTargetView:[[tableView cellForRowAtIndexPath:indexPath] viewWithTag:100+indexPath.item]
-                                                        hostView:tableView
-                                                     tooltipText:tooltipText
-                                                  arrowDirection:JDFTooltipViewArrowDirectionDown
-                                                           width:200.0f
-                                             showCompletionBlock:^{
-                                                 if (!tapAway) {
-                                                     tapAway = [[UITapGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender, UIGestureRecognizerState state, CGPoint location) {
-                                                         [tooltip hideAnimated:YES];
-                                                     }];
-                                                     [self.view addGestureRecognizer:tapAway];
-                                                 }
-                                                 tapAway.enabled = YES;
-                                             } hideCompletionBlock:^{
-                                                 tapAway.enabled = NO;
-                                             }];
-            [tooltip show];
-            
-            
+            // do nothing
             return;
         }
     } else if (indexPath.section == SettingsSectionHelp) {
