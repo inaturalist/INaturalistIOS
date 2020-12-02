@@ -495,8 +495,7 @@
     }
 }
 
-- (void)refreshData
-{
+- (void)refreshData {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     if ([appDelegate.loginController isLoggedIn]) {
         

@@ -7,8 +7,19 @@
 //
 
 #import "ExploreFaveRealm.h"
+#import "ExploreObservationRealm.h"
 
 @implementation ExploreFaveRealm
+
++ (NSDictionary *)linkingObjectsProperties {
+    return @{
+        @"observations": [RLMPropertyDescriptor descriptorWithClass:ExploreObservationRealm.class propertyName:@"faves"],
+    };
+}
+
++ (NSString *)primaryKey {
+    return @"faveId";
+}
 
 + (NSDictionary *)valueForMantleModel:(ExploreFave *)model {
     NSMutableDictionary *value = [NSMutableDictionary dictionary];

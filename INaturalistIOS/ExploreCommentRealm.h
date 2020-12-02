@@ -18,6 +18,8 @@
 @property ExploreUserRealm *commenter;
 @property NSDate *commentedDate;
 
+@property (readonly) RLMLinkingObjects *observations;
+
 - (instancetype)initWithMantleModel:(ExploreComment *)model;
 + (NSDictionary *)valueForMantleModel:(ExploreComment *)model;
 + (NSDictionary *)valueForCoreDataModel:(id)cdModel;

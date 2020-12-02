@@ -35,4 +35,9 @@ enum {
 - (void)clearEntireStore;
 + (NSArray *)assetCollectionSubtypes;
 + (UIImage *)imageWithImage:(UIImage *)image squashedToFillSize:(CGSize)size;
+
+- (void)cleanupImageStoreUsingValidPhotoKeys:(NSArray *)validPhotoKeys
+                             syncedPhotoKeys:(NSArray *)syncedPhotoKeys
+                        allowedExecutionTime:(NSTimeInterval)allowedExecutionSeconds;
+
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "ExploreIdentificationRealm.h"
+#import "ExploreObservationRealm.h"
 
 @implementation ExploreIdentificationRealm
 
@@ -27,6 +28,12 @@
 
     }
     return self;
+}
+
++ (NSDictionary *)linkingObjectsProperties {
+    return @{
+        @"observations": [RLMPropertyDescriptor descriptorWithClass:ExploreObservationRealm.class propertyName:@"identifications"],
+    };
 }
 
 + (NSDictionary *)valueForMantleModel:(ExploreIdentification *)model {

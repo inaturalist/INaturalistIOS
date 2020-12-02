@@ -23,6 +23,8 @@
 @property ExploreUserRealm *identifier;
 @property ExploreTaxonRealm *taxon;
 
+@property (readonly) RLMLinkingObjects *observations;
+
 - (instancetype)initWithMantleModel:(ExploreIdentification *)model;
 + (NSDictionary *)valueForMantleModel:(ExploreIdentification *)model;
 + (NSDictionary *)valueForCoreDataModel:(id)cdModel;

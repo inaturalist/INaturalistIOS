@@ -23,6 +23,10 @@
     return [NSDictionary dictionaryWithDictionary:value];
 }
 
++ (NSString *)primaryKey {
+    return @"uuid";
+}
+
 + (NSDictionary *)valueForCoreDataModel:(id)cdModel {
     NSMutableDictionary *value = [NSMutableDictionary dictionary];
     

@@ -15,6 +15,7 @@
 @import UIColor_HTMLColors;
 @import JDStatusBarNotification;
 @import FBSDKCoreKit;
+@import SDWebImage;
 
 #import "INaturalistAppDelegate.h"
 #import "Observation.h"
@@ -50,6 +51,7 @@
 #import "ExploreGuideRealm.h"
 #import "ExploreObservationRealm.h"
 #import "iNaturalist-Swift.h"
+#import "ImageStore.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -115,6 +117,20 @@
     return YES;
 }
 
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    __block UIBackgroundTaskIdentifier taskId = [application beginBackgroundTaskWithName:@"PhotoCleanUp" expirationHandler:^{
+        [application endBackgroundTask:taskId];
+        taskId = UIBackgroundTaskInvalid;
+    }];
+    
+    [self cleanupDatabaseExecutionSeconds:10];
+    
+    [self cleanupPhotosExecutionSeconds:20];
+    
+    [application endBackgroundTask:taskId];
+    taskId = UIBackgroundTaskInvalid;
+}
+
 - (void)setupAnalytics {
     // setup analytics
     [[Analytics sharedClient] event:kAnalyticsEventAppLaunch];    
@@ -175,7 +191,7 @@
 
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
     NSLog(@"config file URL %@", config.fileURL);
-	config.schemaVersion = 18;
+	config.schemaVersion = 20;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
         if (oldSchemaVersion < 1) {
             // add searchable (ie diacritic-less) taxon names
@@ -238,6 +254,46 @@
             }
              */
         }
+        if (oldSchemaVersion < 19) {
+            // added a primary key to ExploreObservationPhotoRealm
+            NSMutableSet *attachedPhotos = [NSMutableSet set];
+            [migration enumerateObjects:ExploreObservationRealm.className
+                                  block:^(RLMObject * _Nullable oldObject, RLMObject * _Nullable newObject) {
+                RLMArray <ExploreObservationPhotoRealm> *photos = oldObject[@"observationPhotos"];
+                for (ExploreObservationPhotoRealm *op in photos) {
+                    [attachedPhotos addObject:op];
+                }
+            }];
+                        
+            [migration enumerateObjects:ExploreObservationPhotoRealm.className
+                                  block:^(RLMObject *oldObject, RLMObject *newObject) {
+                if (![attachedPhotos containsObject:oldObject]) {
+                    [migration deleteObject:newObject];
+                }
+            }];
+        }
+        
+        
+        if (oldSchemaVersion < 20) {
+            // added a primary key to ExploreFaveRealm
+            NSMutableSet *seenFaveIds = [NSMutableSet set];
+            [migration enumerateObjects:ExploreFaveRealm.className
+                                  block:^(RLMObject *oldObject, RLMObject *newObject) {
+                NSInteger faveId = [oldObject[@"faveId"] integerValue];
+                
+                if (faveId == 0) {
+                    [migration deleteObject:newObject];
+                    return;
+                }
+                
+                if ([seenFaveIds containsObject:@(faveId)]) {
+                    [migration deleteObject:newObject];
+                    return;
+                }
+                
+                [seenFaveIds addObject:@(faveId)];
+            }];
+        }
     };
     [RLMRealmConfiguration setDefaultConfiguration:config];
     
@@ -273,6 +329,78 @@
         [realm deleteObjects:[ExploreDeletedRecord allObjects]];
         [realm commitWriteTransaction];
     }
+}
+
+- (void)cleanupDatabaseExecutionSeconds:(NSInteger)allowedExecutionSeconds {
+    NSDate *beginDate = [NSDate date];
+    
+    // we need to periodically delete unattached child records
+    // for example, an observation photo without an observation isn't
+    // meaningful
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    NSPredicate *nilObsPredicate = [NSPredicate predicateWithFormat:@"observations.@count == 0"];
+    
+    NSArray *childClassesToCleanup = @[
+        ExploreObservationPhotoRealm.class,
+        ExploreCommentRealm.class,
+        ExploreIdentificationRealm.class,
+        ExploreFaveRealm.class,
+        ExploreObsFieldValueRealm.class,
+        ExploreProjectObservationRealm.class,
+    ];
+    
+    NSInteger deletedItems = 0;
+    NSInteger classesCompleted = 0;
+    
+    for (Class klass in childClassesToCleanup) {
+        RLMResults *unattachedObjects = [klass objectsWithPredicate:nilObsPredicate];
+        deletedItems += unattachedObjects.count;
+
+        [realm beginWriteTransaction];
+        [realm deleteObjects:unattachedObjects];
+        [realm commitWriteTransaction];
+        
+        NSDate *afterDelete = [NSDate date];
+        NSTimeInterval elapsedAfterDelete = [afterDelete timeIntervalSinceDate:beginDate];
+        if (elapsedAfterDelete > allowedExecutionSeconds) {
+            break;
+        }
+        classesCompleted += 1;
+    }
+    
+    NSDate *endDate = [NSDate date];
+    NSTimeInterval elapsed = [endDate timeIntervalSinceDate:beginDate];
+    
+    [[Analytics sharedClient] event:@"CleanupRealmDatabase"
+                     withProperties:@{
+                         @"DeletedCount": @(deletedItems),
+                         @"ClassesPlanned": @(childClassesToCleanup.count),
+                         @"ClassesCompleted": @(classesCompleted),
+                         @"ExecutionElapsed": @(elapsed),
+                     }];
+}
+
+- (void)cleanupPhotosExecutionSeconds:(NSInteger)allowedExecutionSeconds {
+    NSDate *beginDate = [NSDate date];
+    
+    RLMResults *allPhotos = [ExploreObservationPhotoRealm allObjects];
+    NSMutableArray *validPhotoKeys = [NSMutableArray arrayWithCapacity:allPhotos.count];
+    NSMutableArray *syncedPhotoKeys = [NSMutableArray arrayWithCapacity:allPhotos.count];
+    for (ExploreObservationPhotoRealm *op in allPhotos) {
+        if (op.photoKey && op.photoKey.length > 0) {
+            [validPhotoKeys addObject:op.photoKey];
+            if (op.timeSynced) {
+                [syncedPhotoKeys addObject:op.photoKey];
+            }
+        }
+    }
+    
+    NSDate *afterPhotoKeyListDate = [NSDate date];
+    NSTimeInterval elapsedAfterList = [afterPhotoKeyListDate timeIntervalSinceDate:beginDate];
+    
+    [[ImageStore sharedImageStore] cleanupImageStoreUsingValidPhotoKeys:validPhotoKeys
+                                                        syncedPhotoKeys:syncedPhotoKeys
+                                                   allowedExecutionTime:allowedExecutionSeconds-elapsedAfterList];
 }
 
 - (void)configureGlobalStyles {

@@ -7,6 +7,7 @@
 //
 
 #import "ExploreCommentRealm.h"
+#import "ExploreObservationRealm.h"
 
 @implementation ExploreCommentRealm
 
@@ -20,6 +21,12 @@
         }
     }
     return self;
+}
+
++ (NSDictionary *)linkingObjectsProperties {
+    return @{
+        @"observations": [RLMPropertyDescriptor descriptorWithClass:ExploreObservationRealm.class propertyName:@"comments"],
+    };
 }
 
 + (NSDictionary *)valueForMantleModel:(ExploreComment *)model {

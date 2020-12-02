@@ -18,6 +18,8 @@
 @property NSDate *faveDate;
 @property NSInteger faveId;
 
+@property (readonly) RLMLinkingObjects *observations;
+
 + (NSDictionary *)valueForMantleModel:(ExploreFave *)model;
 
 @end

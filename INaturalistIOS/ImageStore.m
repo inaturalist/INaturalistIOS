@@ -83,7 +83,7 @@
     @autoreleasepool {
         // large = fullsize image but truncated to 2048x2048 pixels max (aspect ratio scaled)
         CGSize imageSize = image.size;
-        CGFloat longestSide = imageSize.width > imageSize.height ? imageSize.width : imageSize.height;
+        CGFloat longestSide = MAX(imageSize.width, imageSize.height);
         CGFloat scale = 1;
         
         if (longestSide > INATURALIST_ORG_MAX_PHOTO_EDGE) {
@@ -101,7 +101,7 @@
     @autoreleasepool {
         // small = 640x640
         CGSize imageSize = image.size;
-        CGFloat longestSide = imageSize.width > imageSize.height ? imageSize.width : imageSize.height;
+        CGFloat longestSide = MAX(imageSize.width, imageSize.height);
         CGFloat scale = 1;
         
         if (longestSide > 640.0) {
@@ -192,22 +192,15 @@
     if (!imgKey) { return; }
     
     NSString *largeKey = [self keyForKey:imgKey forSize:ImageStoreLargeSize];
-    UIImage *large = [self findInNonExpiringCacheSizedKey:largeKey];
-    [[SDImageCache sharedImageCache] storeImage:large forKey:largeKey toDisk:YES completion:^{
-        [self deleteFromNonExpiringCacheSizedKey:largeKey];
-    }];
-
     NSString *smallKey = [self keyForKey:imgKey forSize:ImageStoreSmallSize];
-    UIImage *small = [self findInNonExpiringCacheSizedKey:smallKey];
-    [[SDImageCache sharedImageCache] storeImage:small forKey:smallKey toDisk:YES completion:^{
-        [self deleteFromNonExpiringCacheSizedKey:smallKey];
-    }];
-
     NSString *thumbKey = [self keyForKey:imgKey forSize:ImageStoreSquareSize];
-    UIImage *thumb = [self findInNonExpiringCacheSizedKey:thumbKey];
-    [[SDImageCache sharedImageCache] storeImage:thumb forKey:thumbKey toDisk:YES completion:^{
-        [self deleteFromNonExpiringCacheSizedKey:thumbKey];
-    }];
+    
+    for (NSString *sizedKey in @[ largeKey, smallKey, thumbKey ]) {
+        NSData *data = [self dataForNonExpiringCacheSizedKey:sizedKey];
+        // stash this synchronously
+        [[SDImageCache sharedImageCache] storeImageDataToDisk:data forKey:sizedKey];
+        [self deleteFromNonExpiringCacheSizedKey:sizedKey];
+    }
 }
 
 - (NSString *)keyForKey:(NSString *)key forSize:(int)size
@@ -323,6 +316,10 @@
     return [UIImage imageWithContentsOfFile:[self pathInNonExpiringCacheSizedKey:sizedKey]];
 }
 
+- (NSData *)dataForNonExpiringCacheSizedKey:(NSString *)sizedKey {
+    return [NSData dataWithContentsOfFile:[self pathInNonExpiringCacheSizedKey:sizedKey]];
+}
+
 - (NSString *)pathInNonExpiringCacheSizedKey:(NSString *)sizedKey {
     NSString *filePath = [[self nonExpiringCacheBasePath] stringByAppendingPathComponent:sizedKey];
     return filePath;
@@ -350,6 +347,82 @@
                                                         error:nil];
     }
     return photoDirPath;
+}
+
+- (void)cleanupImageStoreUsingValidPhotoKeys:(NSArray *)validPhotoKeys
+                             syncedPhotoKeys:(NSArray *)syncedPhotoKeys
+                        allowedExecutionTime:(NSTimeInterval)allowedExecutionSeconds {
+    
+    NSDate *beginCleanupDate = [NSDate date];
+        
+    // clear the non-expiring cache
+    NSString *photoDirPath = [self nonExpiringCacheBasePath];
+    NSError *listError = nil;
+    NSArray *allNonExpiringFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:photoDirPath error:&listError];
+    if (listError) { return; }
+    
+    NSInteger deletedCount = 0;
+    NSInteger checkedCount = 0;
+    NSInteger makeExpiredCount = 0;
+    
+    for (NSString *nonExpiringFilename in allNonExpiringFiles) {
+        NSDate *now = [NSDate date];
+        NSTimeInterval timeCleaningSoFar = [now timeIntervalSinceDate:beginCleanupDate];
+        
+        if (timeCleaningSoFar >= allowedExecutionSeconds) {
+            break;
+        }
+        
+        if (nonExpiringFilename.length <= 37) { continue; }
+        
+        NSString *key = nil;
+        // 92E177B0-0B8F-47C0-B13D-7D9A3041562A-large
+        NSRange sizeRange = NSMakeRange(36, nonExpiringFilename.length - 36);
+        key = [nonExpiringFilename stringByReplacingCharactersInRange:sizeRange
+                                                           withString:@""];
+        
+        // simple sanity checks
+        if (!key) { break; }
+        if (key.length == 0) { break; }
+        
+        // if it's not in the valid photo key list, it's not a photo we need
+        // to care about anymore - we don't have an observation photo for it
+        // so delete this photo
+        if (![validPhotoKeys containsObject:key]) {
+            // safe to delete this file
+            NSString *filePath = [photoDirPath stringByAppendingPathComponent:nonExpiringFilename];
+            NSError *deleteError = nil;
+            [[NSFileManager defaultManager] removeItemAtPath:filePath error:&deleteError];
+            if (deleteError) { break; }
+            
+            deletedCount += 1;
+        }
+        
+        // if we've synced this observation photo, then the photo can safely be moved
+        // to the SDImageCache where it can be expired based on date & space used
+        if ([syncedPhotoKeys containsObject:key]) {
+            [self makeExpiring:key];
+            
+            makeExpiredCount += 1;
+        }
+        
+        checkedCount += 1;
+    }
+    
+    NSDate *now = [NSDate date];
+    NSTimeInterval cleanupExecutionSecondsUsed = [now timeIntervalSinceDate:beginCleanupDate];
+    
+    [[Analytics sharedClient] event:@"CleanupImageStore"
+                     withProperties:@{
+                         @"DeletedCount": @(deletedCount),
+                         @"CheckedCount": @(checkedCount),
+                         @"MakeExpiredCount": @(makeExpiredCount),
+                         @"BeginningNonExpiringFilesCount": @(allNonExpiringFiles.count),
+                         @"ValidKeysCount": @(validPhotoKeys.count),
+                         @"SyncedKeysCount": @(syncedPhotoKeys.count),
+                         @"ExecutionSecondsAllowedForCleanup": @(allowedExecutionSeconds),
+                         @"ExecutionSecondsTakenForCleanup": @(cleanupExecutionSecondsUsed),
+                     }];
 }
 
 
