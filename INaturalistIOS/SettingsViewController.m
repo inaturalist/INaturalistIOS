@@ -128,9 +128,10 @@ static const int ChangePartnerMinimumInterval = 86400;
     [super viewDidLoad];
     
     NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
-    self.versionText = [NSString stringWithFormat:NSLocalizedString(@"%@, build %@",nil),
+    self.versionText = [NSString stringWithFormat:NSLocalizedString(@"%@, build %@, iOS %@",nil),
                         [info objectForKey:@"CFBundleShortVersionString"] ?: @"unknown version",
-                        [info objectForKey:@"CFBundleVersion"] ?: @"unknown version"];
+                        [info objectForKey:@"CFBundleVersion"] ?: @"unknown version",
+                        [[UIDevice currentDevice] systemVersion]];
     
     self.partnerController = [[PartnerController alloc] init];
     
