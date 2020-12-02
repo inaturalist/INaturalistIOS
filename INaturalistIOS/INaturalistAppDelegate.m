@@ -234,26 +234,6 @@
                 }
             }];
         }
-        if (oldSchemaVersion < 17) {
-            // TODO: update migration code
-            
-            /*
-            for (Guide *g in [Guide allObjects]) {
-                id value = [ExploreGuideRealm valueForCoreDataModel:g];
-                if (!value) {
-                    // not the end of the world if we can't migrate a core data guide
-                    continue;
-                }
-                
-                @try {
-                    [migration createObject:ExploreGuideRealm.className withValue:value];
-                } @catch (NSException *exception) {
-                    // not the end of the world if this migration fails
-                    continue;
-                }
-            }
-             */
-        }
         if (oldSchemaVersion < 19) {
             // added a primary key to ExploreObservationPhotoRealm
             NSMutableSet *attachedPhotos = [NSMutableSet set];
