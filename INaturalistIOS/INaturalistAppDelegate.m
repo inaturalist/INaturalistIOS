@@ -236,18 +236,25 @@
         }
         if (oldSchemaVersion < 19) {
             // added a primary key to ExploreObservationPhotoRealm
-            NSMutableSet *attachedPhotos = [NSMutableSet set];
+            // delete all photos that aren't nested under observation photos
+            //      photos could have been orphaned in the previous scheme
+            // make sure that every photo UUID that makes it through the migration
+            //      is unique
+            NSMutableDictionary *attachedPhotos = [NSMutableDictionary dictionary];
             [migration enumerateObjects:ExploreObservationRealm.className
                                   block:^(RLMObject * _Nullable oldObject, RLMObject * _Nullable newObject) {
                 RLMArray <ExploreObservationPhotoRealm> *photos = oldObject[@"observationPhotos"];
                 for (ExploreObservationPhotoRealm *op in photos) {
-                    [attachedPhotos addObject:op];
+                    NSString *uuid = op[@"uuid"];
+                    if (uuid && uuid.length > 0) {
+                        attachedPhotos[uuid] = op;
+                    }
                 }
             }];
                         
             [migration enumerateObjects:ExploreObservationPhotoRealm.className
                                   block:^(RLMObject *oldObject, RLMObject *newObject) {
-                if (![attachedPhotos containsObject:oldObject]) {
+                if (![attachedPhotos.allValues containsObject:oldObject]) {
                     [migration deleteObject:newObject];
                 }
             }];
