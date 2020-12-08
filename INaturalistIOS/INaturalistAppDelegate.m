@@ -107,7 +107,9 @@
 
     [self showLoadingScreen];
     
-    [self configureApplication];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self configureApplicationInBackground];
+    });
 
     // Use Crashlytics for crash reporting
     if ([Analytics canTrack]) {
@@ -183,11 +185,12 @@
     [self.window setRootViewController:loadingVC];
 }
 
-- (void)configureApplication {
+- (void)configureApplicationInBackground {
     
-    [self configureOAuth2Client];
-    [self configureGlobalStyles];    
-    //[self configureRestKit];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self configureOAuth2Client];
+        [self configureGlobalStyles];
+    });
 
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
     NSLog(@"config file URL %@", config.fileURL);
@@ -240,24 +243,53 @@
             //      photos could have been orphaned in the previous scheme
             // make sure that every photo UUID that makes it through the migration
             //      is unique
-            NSMutableDictionary *attachedPhotos = [NSMutableDictionary dictionary];
+            
+            NSLog(@"starting photo migration");
+            NSMutableDictionary *photosToKeep = [NSMutableDictionary dictionary];
+            
+            // first loop through observations to find which photos are attached
             [migration enumerateObjects:ExploreObservationRealm.className
-                                  block:^(RLMObject * _Nullable oldObject, RLMObject * _Nullable newObject) {
-                RLMArray <ExploreObservationPhotoRealm> *photos = oldObject[@"observationPhotos"];
-                for (ExploreObservationPhotoRealm *op in photos) {
-                    NSString *uuid = op[@"uuid"];
-                    if (uuid && uuid.length > 0) {
-                        attachedPhotos[uuid] = op;
+                                  block:^(RLMObject *oldObject, RLMObject *newObject) {
+                
+                RLMArray <RLMObject *> *obsPhotos = oldObject[@"observationPhotos"];
+                for (RLMObject *op in obsPhotos) {
+                    // photos that haven't been synced will be automatically kept anyways
+                    
+                    if (op[@"uuid"] && op[@"timeSynced"]) {
+                        photosToKeep[op[@"uuid"]] = op[@"timeSynced"];
                     }
                 }
+                
             }];
-                        
+            
+            
+            // make a set of attached photo sync times for fast lookup
+            // this should help speed up large migrations
+            NSSet *attachedPhotoSyncTimes = [NSSet setWithArray:photosToKeep.allValues];
+
+            // now loop through all photos to delete everything that we're not keeping
+            // keep anything that hasn't been synced
+            // keep anything that's got a sync time in the attachedPhotoSyncTimes set
+            // drop everything else
             [migration enumerateObjects:ExploreObservationPhotoRealm.className
                                   block:^(RLMObject *oldObject, RLMObject *newObject) {
-                if (![attachedPhotos.allValues containsObject:oldObject]) {
-                    [migration deleteObject:newObject];
+
+                // it hasn't been synced (photoId is zero), keep it in the migration
+                NSInteger obsPhotoId = [oldObject[@"observationPhotoId"] integerValue];
+                if (obsPhotoId != 0) {
+                    NSDate *syncDate = oldObject[@"timeSynced"];
+                    if (![attachedPhotoSyncTimes containsObject:syncDate]) {
+                        // if we have this exact sync date in the list of attached
+                        // photo sync times, then we can keep this photo. otherwise
+                        // delete it, we'll keep another of these photo objects.
+                        [migration deleteObject:newObject];
+                    }
                 }
+                
             }];
+                        
+            NSLog(@"done with photo migration");
+
         }
         
         
@@ -282,6 +314,7 @@
             }];
         }
     };
+    
     [RLMRealmConfiguration setDefaultConfiguration:config];
     
     // on every launch, do some housekeeping of deleted records
