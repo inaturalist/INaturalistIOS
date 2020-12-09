@@ -141,18 +141,27 @@
 }
 
 + (void)syncedDelete:(ExploreProjectObservationRealm *)model {
-    RLMRealm *realm = [model realm];
-    if (realm) {
-        // create a deleted record for the observation
-        ExploreDeletedRecord *dr = [model deletedRecordForModel];
-        
+    RLMRealm *realm  = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    [realm addOrUpdateObject:[model deletedRecordForModel]];
+    [realm commitWriteTransaction];
+    
+    if ([model realm]) {
+        // model has made it into realm, delete it
+        [[model realm] beginWriteTransaction];
+        [[model realm] deleteObject:model];
+        [[model realm] commitWriteTransaction];
+    } else {
+        // model is still standalone, can happen
+        // look for it in the default realm,
+        // delete it there
         RLMRealm *realm = [RLMRealm defaultRealm];
-        [realm beginWriteTransaction];
-        // insert the deleted obs
-        [realm addOrUpdateObject:dr];
-        // delete the model object
-        [realm deleteObject:model];
-        [realm commitWriteTransaction];
+        ExploreObservationPhotoRealm *modelInRealm = [ExploreObservationPhotoRealm objectForPrimaryKey:model.uuid];
+        if (modelInRealm) {
+            [realm beginWriteTransaction];
+            [realm deleteObject:modelInRealm];
+            [realm commitWriteTransaction];
+        }
     }
 }
 
