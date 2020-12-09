@@ -38,49 +38,53 @@ PODS:
   - Bolts/AppLinks (1.9.0):
     - Bolts/Tasks
   - Bolts/Tasks (1.9.0)
-  - Crashlytics (3.14.0):
-    - Fabric (~> 1.10.2)
   - CustomIOSAlertView (0.9.3)
   - DCRoundSwitch (0.0.1)
   - Down (0.6.2)
-  - Fabric (1.10.2)
   - FBSDKCoreKit (4.37.0):
     - Bolts (~> 1.7)
   - FBSDKLoginKit (4.37.0):
     - FBSDKCoreKit
   - FileMD5Hash (0.0.1)
-  - Firebase/Analytics (6.11.0):
+  - Firebase/Analytics (6.34.0):
     - Firebase/Core
-  - Firebase/Core (6.11.0):
+  - Firebase/Core (6.34.0):
     - Firebase/CoreOnly
-    - FirebaseAnalytics (= 6.1.3)
-  - Firebase/CoreOnly (6.11.0):
-    - FirebaseCore (= 6.3.2)
-  - FirebaseAnalytics (6.1.3):
-    - FirebaseCore (~> 6.3)
-    - FirebaseInstanceID (~> 4.2)
-    - GoogleAppMeasurement (= 6.1.3)
-    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
-    - GoogleUtilities/MethodSwizzler (~> 6.0)
-    - GoogleUtilities/Network (~> 6.0)
-    - "GoogleUtilities/NSData+zlib (~> 6.0)"
-    - nanopb (~> 0.3.901)
-  - FirebaseCore (6.3.2):
-    - FirebaseCoreDiagnostics (~> 1.0)
-    - FirebaseCoreDiagnosticsInterop (~> 1.0)
-    - GoogleUtilities/Environment (~> 6.2)
-    - GoogleUtilities/Logger (~> 6.2)
-  - FirebaseCoreDiagnostics (1.1.1):
-    - FirebaseCoreDiagnosticsInterop (~> 1.0)
-    - GoogleDataTransportCCTSupport (~> 1.0)
-    - GoogleUtilities/Environment (~> 6.2)
-    - GoogleUtilities/Logger (~> 6.2)
-    - nanopb (~> 0.3.901)
-  - FirebaseCoreDiagnosticsInterop (1.0.0)
-  - FirebaseInstanceID (4.2.6):
-    - FirebaseCore (~> 6.0)
-    - GoogleUtilities/Environment (~> 6.0)
-    - GoogleUtilities/UserDefaults (~> 6.0)
+    - FirebaseAnalytics (= 6.9.0)
+  - Firebase/CoreOnly (6.34.0):
+    - FirebaseCore (= 6.10.4)
+  - Firebase/Crashlytics (6.34.0):
+    - Firebase/CoreOnly
+    - FirebaseCrashlytics (~> 4.6.2)
+  - FirebaseAnalytics (6.9.0):
+    - FirebaseCore (~> 6.10)
+    - FirebaseInstallations (~> 1.7)
+    - GoogleAppMeasurement (= 6.9.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 6.7)
+    - GoogleUtilities/MethodSwizzler (~> 6.7)
+    - GoogleUtilities/Network (~> 6.7)
+    - "GoogleUtilities/NSData+zlib (~> 6.7)"
+    - nanopb (~> 1.30906.0)
+  - FirebaseCore (6.10.4):
+    - FirebaseCoreDiagnostics (~> 1.6)
+    - GoogleUtilities/Environment (~> 6.7)
+    - GoogleUtilities/Logger (~> 6.7)
+  - FirebaseCoreDiagnostics (1.7.0):
+    - GoogleDataTransport (~> 7.4)
+    - GoogleUtilities/Environment (~> 6.7)
+    - GoogleUtilities/Logger (~> 6.7)
+    - nanopb (~> 1.30906.0)
+  - FirebaseCrashlytics (4.6.2):
+    - FirebaseCore (~> 6.10)
+    - FirebaseInstallations (~> 1.6)
+    - GoogleDataTransport (~> 7.2)
+    - nanopb (~> 1.30906.0)
+    - PromisesObjC (~> 1.2)
+  - FirebaseInstallations (1.7.0):
+    - FirebaseCore (~> 6.10)
+    - GoogleUtilities/Environment (~> 6.7)
+    - GoogleUtilities/UserDefaults (~> 6.7)
+    - PromisesObjC (~> 1.2)
   - FontAwesomeKit (2.2.1):
     - FontAwesomeKit/Core (= 2.2.1)
     - FontAwesomeKit/FontAwesome (= 2.2.1)
@@ -104,47 +108,46 @@ PODS:
     - FontAwesomeKit/Core
   - Gallery (2.2.2)
   - GeoJSONSerialization (0.0.4)
-  - GoogleAppMeasurement (6.1.3):
-    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
-    - GoogleUtilities/MethodSwizzler (~> 6.0)
-    - GoogleUtilities/Network (~> 6.0)
-    - "GoogleUtilities/NSData+zlib (~> 6.0)"
-    - nanopb (~> 0.3.901)
-  - GoogleDataTransport (3.0.1)
-  - GoogleDataTransportCCTSupport (1.2.1):
-    - GoogleDataTransport (~> 3.0)
-    - nanopb (~> 0.3.901)
+  - GoogleAppMeasurement (6.9.0):
+    - GoogleUtilities/AppDelegateSwizzler (~> 6.7)
+    - GoogleUtilities/MethodSwizzler (~> 6.7)
+    - GoogleUtilities/Network (~> 6.7)
+    - "GoogleUtilities/NSData+zlib (~> 6.7)"
+    - nanopb (~> 1.30906.0)
+  - GoogleDataTransport (7.5.1):
+    - nanopb (~> 1.30906.0)
   - GoogleSignIn (4.4.0):
     - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
     - "GoogleToolboxForMac/NSString+URLArguments (~> 2.1)"
     - GTMSessionFetcher/Core (~> 1.1)
-  - GoogleToolboxForMac/DebugUtils (2.2.0):
-    - GoogleToolboxForMac/Defines (= 2.2.0)
-  - GoogleToolboxForMac/Defines (2.2.0)
-  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.2.0)":
-    - GoogleToolboxForMac/DebugUtils (= 2.2.0)
-    - GoogleToolboxForMac/Defines (= 2.2.0)
-    - "GoogleToolboxForMac/NSString+URLArguments (= 2.2.0)"
-  - "GoogleToolboxForMac/NSString+URLArguments (2.2.0)"
-  - GoogleUtilities/AppDelegateSwizzler (6.3.1):
+  - GoogleToolboxForMac/DebugUtils (2.3.0):
+    - GoogleToolboxForMac/Defines (= 2.3.0)
+  - GoogleToolboxForMac/Defines (2.3.0)
+  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.3.0)":
+    - GoogleToolboxForMac/DebugUtils (= 2.3.0)
+    - GoogleToolboxForMac/Defines (= 2.3.0)
+    - "GoogleToolboxForMac/NSString+URLArguments (= 2.3.0)"
+  - "GoogleToolboxForMac/NSString+URLArguments (2.3.0)"
+  - GoogleUtilities/AppDelegateSwizzler (6.7.2):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
-  - GoogleUtilities/Environment (6.3.1)
-  - GoogleUtilities/Logger (6.3.1):
+  - GoogleUtilities/Environment (6.7.2):
+    - PromisesObjC (~> 1.2)
+  - GoogleUtilities/Logger (6.7.2):
     - GoogleUtilities/Environment
-  - GoogleUtilities/MethodSwizzler (6.3.1):
+  - GoogleUtilities/MethodSwizzler (6.7.2):
     - GoogleUtilities/Logger
-  - GoogleUtilities/Network (6.3.1):
+  - GoogleUtilities/Network (6.7.2):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
     - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (6.3.1)"
-  - GoogleUtilities/Reachability (6.3.1):
+  - "GoogleUtilities/NSData+zlib (6.7.2)"
+  - GoogleUtilities/Reachability (6.7.2):
     - GoogleUtilities/Logger
-  - GoogleUtilities/UserDefaults (6.3.1):
+  - GoogleUtilities/UserDefaults (6.7.2):
     - GoogleUtilities/Logger
-  - GTMSessionFetcher/Core (1.2.1)
+  - GTMSessionFetcher/Core (1.5.0)
   - HexColors (2.3.0)
   - ICViewPager (1.5.1)
   - JDFTooltips (1.0)
@@ -162,17 +165,18 @@ PODS:
     - Masonry
     - SDWebImage
     - TTTAttributedLabel (= 1.13.3)
-  - nanopb (0.3.901):
-    - nanopb/decode (= 0.3.901)
-    - nanopb/encode (= 0.3.901)
-  - nanopb/decode (0.3.901)
-  - nanopb/encode (0.3.901)
+  - nanopb (1.30906.0):
+    - nanopb/decode (= 1.30906.0)
+    - nanopb/encode (= 1.30906.0)
+  - nanopb/decode (1.30906.0)
+  - nanopb/encode (1.30906.0)
   - NSString_stripHtml (0.1.0)
   - NXOAuth2Client (1.2.8)
-  - PBRevealViewController (1.3.2):
-    - PBRevealViewController/ObjC (= 1.3.2)
-  - PBRevealViewController/ObjC (1.3.2)
+  - PBRevealViewController (1.3.5):
+    - PBRevealViewController/ObjC (= 1.3.5)
+  - PBRevealViewController/ObjC (1.3.5)
   - PDKTStickySectionHeadersCollectionViewLayout (0.1)
+  - PromisesObjC (1.2.11)
   - RaptureXML (1.0.1)
   - Realm (5.4.6):
     - Realm/Headers (= 5.4.6)
@@ -180,7 +184,7 @@ PODS:
   - SDWebImage (4.0.0):
     - SDWebImage/Core (= 4.0.0)
   - SDWebImage/Core (4.0.0)
-  - SimpleKeychain (0.11.1)
+  - SimpleKeychain (0.12.1)
   - SSZipArchive (0.3.2)
   - SVPullToRefresh (0.4.1)
   - TTTAttributedLabel (1.13.3)
@@ -195,15 +199,14 @@ DEPENDENCIES:
   - ARSafariActivity
   - BlocksKit (= 2.2.5)
   - Bolts (= 1.9.0)
-  - Crashlytics
   - CustomIOSAlertView (= 0.9.3)
   - DCRoundSwitch (= 0.0.1)
   - Down (from `https://github.com/ocshing/Down-gfm`)
-  - Fabric
   - FBSDKCoreKit (= 4.37.0)
   - FBSDKLoginKit (= 4.37.0)
   - FileMD5Hash (from `https://github.com/FutureWorkshops/FileMD5Hash.git`, commit `6864c180c010ab4b0514ba5c025091e12ab01199`)
   - Firebase/Analytics
+  - Firebase/Crashlytics
   - FontAwesomeKit (= 2.2.1)
   - Gallery
   - GeoJSONSerialization (= 0.0.4)
@@ -241,24 +244,21 @@ SPEC REPOS:
     - Base64
     - BlocksKit
     - Bolts
-    - Crashlytics
     - CustomIOSAlertView
     - DCRoundSwitch
-    - Fabric
     - FBSDKCoreKit
     - FBSDKLoginKit
     - Firebase
     - FirebaseAnalytics
     - FirebaseCore
     - FirebaseCoreDiagnostics
-    - FirebaseCoreDiagnosticsInterop
-    - FirebaseInstanceID
+    - FirebaseCrashlytics
+    - FirebaseInstallations
     - FontAwesomeKit
     - Gallery
     - GeoJSONSerialization
     - GoogleAppMeasurement
     - GoogleDataTransport
-    - GoogleDataTransportCCTSupport
     - GoogleSignIn
     - GoogleToolboxForMac
     - GoogleUtilities
@@ -276,6 +276,7 @@ SPEC REPOS:
     - NXOAuth2Client
     - PBRevealViewController
     - PDKTStickySectionHeadersCollectionViewLayout
+    - PromisesObjC
     - RaptureXML
     - Realm
     - SDWebImage
@@ -333,30 +334,27 @@ SPEC CHECKSUMS:
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   BlocksKit: 7f422b971407001178d181a43b99014ea2591fe6
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
-  Crashlytics: 9220f5bc89e7a618df411b4f639389dbfb0e03d2
   CustomIOSAlertView: 94d2401e34fcfb0ac0134679d6947f5e251b0446
   DCRoundSwitch: 86d348f35be4d6ef18dbc9331c682aab6f85e980
   Down: 19deac4611bfbc1cabdf8f9657870a44d34ac7fa
-  Fabric: ea977e3cd9c20425516d3dafd3bf8c941c51223f
   FBSDKCoreKit: fe5f3474499a81963e11e3f3a5c753d0a95ca2b4
   FBSDKLoginKit: 2f7249686d1e30ce8a5ef5400eedf50b3e3df332
   FileMD5Hash: 81918bf9f82de8bce6a2ae38584c2cc95b7b078c
-  Firebase: bc9cfc7a96c73268656d5aaab453ff1b4b530e0e
-  FirebaseAnalytics: 0e3ecff2c5d86070f7d4325e21f1edabfbd558dc
-  FirebaseCore: beeff42c07c30ea94702471d99db2089b594fbbd
-  FirebaseCoreDiagnostics: af29e43048607588c050889d19204f4d7b758c9f
-  FirebaseCoreDiagnosticsInterop: 6829da2b8d1fc795ff1bd99df751d3788035d2cb
-  FirebaseInstanceID: d0eafcd8bdbd3447cd694594734078c3e3e77d8b
+  Firebase: c23a36d9e4cdf7877dfcba8dd0c58add66358999
+  FirebaseAnalytics: 3bb096873ee0d7fa4b6c70f5e9166b6da413cc7f
+  FirebaseCore: d3a978a3cfa3240bf7e4ba7d137fdf5b22b628ec
+  FirebaseCoreDiagnostics: 770ac5958e1372ce67959ae4b4f31d8e127c3ac1
+  FirebaseCrashlytics: 1a747c9cc084a24dc6d9511c991db1cd078154eb
+  FirebaseInstallations: 466c7b4d1f58fe16707693091da253726a731ed2
   FontAwesomeKit: 3614979b3dbb0ec3f7fac1bd760b91f66c31db67
   Gallery: 634ea7d58b93fcb8e787a846febac73ec354e7d9
   GeoJSONSerialization: 55a3d24fe9af26508e3af76873114b39b13ba479
-  GoogleAppMeasurement: 434cc7be25e71dc04b8d0e3079125127b330e84a
-  GoogleDataTransport: 166f9b9f82cbf60a204e8fe2daa9db3e3ec1fb15
-  GoogleDataTransportCCTSupport: f6ab1962e9dc05ab1fb938b795e5b310209edeec
+  GoogleAppMeasurement: a6a3a066369828db64eda428cb2856dc1cdc7c4e
+  GoogleDataTransport: f56af7caa4ed338dc8e138a5d7c5973e66440833
   GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
-  GoogleToolboxForMac: ff31605b7d66400dcec09bed5861689aebadda4d
-  GoogleUtilities: f895fde57977df4e0233edda0dbeac490e3703b6
-  GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
+  GoogleToolboxForMac: 1350d40e86a76f7863928d63bcb0b89c84c521c5
+  GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
+  GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
   HexColors: 6ad3947c3447a055a3aa8efa859def096351fe5f
   ICViewPager: 74e83c8bebd572b3baebac5959875d0fb5e70000
   JDFTooltips: 439e3f1010b5e689e8438f66fce8448726e59897
@@ -368,15 +366,16 @@ SPEC CHECKSUMS:
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
   MHVideoPhotoGallery: aa36cdd9b75c6d5a19b48005cddb9b730c2e27e8
-  nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
+  nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   NSString_stripHtml: ba10acfb1c0f7f687055f8e4300a8a78e142f1ea
   NXOAuth2Client: 98c4d4c594edd2b289cfc34a8928653e1dab7adf
-  PBRevealViewController: 8532c1cc5837e7d9e1765f80567862a662c6e4e4
+  PBRevealViewController: dea8c21b8ca00d4aed0f8bfb102882eead6e5c18
   PDKTStickySectionHeadersCollectionViewLayout: bedcfc09fa44ae3e232eab421c31286e3d2856ed
+  PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
   RaptureXML: b5c33c04c1a4adfd8ad0d5463329a31820596e82
   Realm: bb8d7be40d0bc92f139c47095124513c489c0baf
   SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
-  SimpleKeychain: 0c657949c7afff92337d2ff64052d5eb5c53823e
+  SimpleKeychain: 77443015b0f29005c16f74bf858469a9e9fb05e8
   SSZipArchive: 11801759495fa4efb7512ef652eb0042d68305d7
   SVPullToRefresh: ba2e718695a43253d8bea6852d2960097dc15d8c
   TTTAttributedLabel: 6f3174aef8e738f44dff97c2eb7d8184f6ab6277
@@ -385,6 +384,6 @@ SPEC CHECKSUMS:
   YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: c5bf3da7fa6a1dcaa87ed770dc6958b3c84d1a09
+PODFILE CHECKSUM: eff10dddbaae3b04f45603593dc900bf1d91b6b7
 
 COCOAPODS: 1.9.3

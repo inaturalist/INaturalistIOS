@@ -7,7 +7,8 @@
 //
 
 @import Firebase;
-@import Crashlytics;
+@import FirebaseAnalytics;
+@import FirebaseCrashlytics;
 
 #import "Analytics.h"
 
@@ -57,19 +58,20 @@
 
 - (void)debugLog:(NSString *)logMessage {
     if ([Analytics canTrack]) {
-        CLSLog(@"Debug Log: %@", logMessage);
+        [[FIRCrashlytics crashlytics] log:logMessage];
     }
 }
 
 - (void)debugError:(NSError *)error {
     if ([Analytics canTrack]) {
-        [Crashlytics.sharedInstance recordError:error];
+        [[FIRCrashlytics crashlytics] recordError:error];
     }
 }
 
 - (void)registerUserWithIdentifier:(NSString *)userIdentifier {
     if ([Analytics canTrack]) {
         [FIRAnalytics setUserID:userIdentifier];
+        [[FIRCrashlytics crashlytics] setUserID:userIdentifier];
     }
 }
 

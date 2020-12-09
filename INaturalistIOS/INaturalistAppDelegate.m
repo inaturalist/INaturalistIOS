@@ -7,8 +7,7 @@
 //
 
 @import Firebase;
-@import Fabric;
-@import Crashlytics;
+@import FirebaseCrashlytics;
 @import Realm;
 @import FBSDKCoreKit;
 @import GoogleSignIn;
@@ -113,7 +112,7 @@
 
     // Use Crashlytics for crash reporting
     if ([Analytics canTrack]) {
-        [Fabric with:@[[Crashlytics class]]];
+        [FIRApp configure];
     }
 
     return YES;

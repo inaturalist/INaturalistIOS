@@ -6,9 +6,8 @@ use_frameworks!
 
 target :iNaturalist do
   pod 'Gallery'
-  pod 'Fabric'
-  pod 'Crashlytics'
   pod 'Firebase/Analytics'
+  pod 'Firebase/Crashlytics'
   pod 'JWT', '2.2.0'
   pod 'FBSDKCoreKit', '4.37.0'
   pod 'FBSDKLoginKit', '4.37.0'
