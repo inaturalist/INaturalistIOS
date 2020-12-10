@@ -121,18 +121,20 @@
     return YES;
 }
 
+
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     __block UIBackgroundTaskIdentifier taskId = [application beginBackgroundTaskWithName:@"PhotoCleanUp" expirationHandler:^{
         [application endBackgroundTask:taskId];
         taskId = UIBackgroundTaskInvalid;
     }];
     
-    [self cleanupDatabaseExecutionSeconds:10];
-    
-    [self cleanupPhotosExecutionSeconds:20];
-    
-    [application endBackgroundTask:taskId];
-    taskId = UIBackgroundTaskInvalid;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self cleanupDatabaseExecutionSeconds:10];
+        [self cleanupPhotosExecutionSeconds:10];
+        
+        [application endBackgroundTask:taskId];
+        taskId = UIBackgroundTaskInvalid;
+    });
 }
 
 - (void)setupAnalytics {
