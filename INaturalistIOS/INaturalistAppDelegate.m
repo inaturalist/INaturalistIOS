@@ -246,7 +246,6 @@
             // make sure that every photo UUID that makes it through the migration
             //      is unique
             
-            NSLog(@"starting photo migration");
             NSMutableDictionary *photosToKeep = [NSMutableDictionary dictionary];
             
             // first loop through observations to find which photos are attached
@@ -264,34 +263,57 @@
                 
             }];
             
+            NSMutableSet *keptUUIDs = [NSMutableSet set];
             
-            // make a set of attached photo sync times for fast lookup
-            // this should help speed up large migrations
-            NSSet *attachedPhotoSyncTimes = [NSSet setWithArray:photosToKeep.allValues];
-
             // now loop through all photos to delete everything that we're not keeping
-            // keep anything that hasn't been synced
-            // keep anything that's got a sync time in the attachedPhotoSyncTimes set
-            // drop everything else
             [migration enumerateObjects:ExploreObservationPhotoRealm.className
                                   block:^(RLMObject *oldObject, RLMObject *newObject) {
 
-                // it hasn't been synced (photoId is zero), keep it in the migration
+                
                 NSInteger obsPhotoId = [oldObject[@"observationPhotoId"] integerValue];
-                if (obsPhotoId != 0) {
-                    NSDate *syncDate = oldObject[@"timeSynced"];
-                    if (![attachedPhotoSyncTimes containsObject:syncDate]) {
-                        // if we have this exact sync date in the list of attached
-                        // photo sync times, then we can keep this photo. otherwise
-                        // delete it, we'll keep another of these photo objects.
-                        [migration deleteObject:newObject];
-                    }
+                NSString *uuid = oldObject[@"uuid"];
+                NSDate *syncDate = oldObject[@"timeSynced"];
+                
+                // if it doesn't have a uuid, don't keep it in the migration
+                // if the uuid is an empty string, don't keep it in the migration
+                if (!uuid || [uuid isEqualToString:@""]) {
+                    [migration deleteObject:newObject];
+                    return;
                 }
                 
-            }];
-                        
-            NSLog(@"done with photo migration");
+                // if we've already kept it, don't keep it twice
+                // less than ideal, since we might be keeping the
+                // "wrong"" one, but it's better than crashing
+                if ([keptUUIDs containsObject:uuid]) {
+                    [migration deleteObject:newObject];
+                    return;
+                }
 
+                // it hasn't been synced (photoId is zero), keep it in the migration
+                if (obsPhotoId == 0) {
+                    [keptUUIDs addObject:uuid];
+                    return;
+                }
+                                
+                // if there's no sync date, keep it in the migration
+                if (!syncDate) {
+                    [keptUUIDs addObject:uuid];
+                    return;
+                }
+                
+                // if the sync date for this uuid doesn't
+                // match the "attached" sync date for this
+                // photo uuid, don't keep it in the migration
+                if (![syncDate isEqualToDate:photosToKeep[uuid]]) {
+                    [migration deleteObject:newObject];
+                    return;
+                }
+                
+                // keep it in the migration, & make a note of
+                // the uuid to make sure we don't keep it twice
+                [keptUUIDs addObject:uuid];
+                
+            }];
         }
         
         
