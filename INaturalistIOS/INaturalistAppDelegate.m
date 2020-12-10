@@ -112,7 +112,10 @@
 
     // Use Crashlytics for crash reporting
     if ([Analytics canTrack]) {
-        [FIRApp configure];
+        if (![FIRApp defaultApp]) {
+            [FIRApp configure];
+        }
+        [Analytics enableCrashReporting];
     }
 
     return YES;

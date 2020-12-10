@@ -11,6 +11,10 @@
 @interface Analytics : NSObject
 
 + (BOOL)canTrack;
+
++ (void)disableCrashReporting;
++ (void)enableCrashReporting;
+
 + (Analytics *)sharedClient;
 
 - (void)event:(NSString *)name;

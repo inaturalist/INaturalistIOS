@@ -2160,6 +2160,7 @@
 				1927513114E9CCC9000ABAC4 /* Resources */,
 				FA88B7681ABCD34A0004B4C6 /* Build Acknowledgements */,
 				C110890B09E5A0D7B69DC989 /* [CP] Copy Pods Resources */,
+				FA48A581258192D200180E82 /* ShellScript */,
 				92F229D3DF9592FC1577A92E /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
@@ -2482,6 +2483,25 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		FA48A581258192D200180E82 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
 		};
 		FA88B7681ABCD34A0004B4C6 /* Build Acknowledgements */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -3116,7 +3136,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 614;
+				CURRENT_PROJECT_VERSION = 616;
 				DEVELOPMENT_TEAM = N5J7L4P93Z;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386 armv7";
@@ -3172,7 +3192,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 614;
+				CURRENT_PROJECT_VERSION = 616;
 				DEVELOPMENT_TEAM = N5J7L4P93Z;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (

@@ -26,13 +26,24 @@
     }
 }
 
++ (void)disableCrashReporting {
+    [[FIRCrashlytics crashlytics] setCrashlyticsCollectionEnabled:NO];
+}
+
++ (void)enableCrashReporting {
+    [[FIRCrashlytics crashlytics] setCrashlyticsCollectionEnabled:YES];
+}
+
 + (Analytics *)sharedClient {
     static Analytics *_sharedClient = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _sharedClient = [[Analytics alloc] init];
         if ([Analytics canTrack]) {
-            [FIRApp configure];
+            if (![FIRApp defaultApp]) {
+                [FIRApp configure];
+            }
+            [[FIRCrashlytics crashlytics] setCrashlyticsCollectionEnabled:YES];
         }
     });
     return _sharedClient;
@@ -45,31 +56,31 @@
 }
 
 - (void)event:(NSString *)name {
-    if ([Analytics canTrack]) {
+    if ([Analytics canTrack] && [FIRApp defaultApp]) {
         [FIRAnalytics logEventWithName:name parameters:nil];
     }
 }
 
 - (void)event:(NSString *)name withProperties:(NSDictionary *)properties {
-    if ([Analytics canTrack]) {
+    if ([Analytics canTrack] && [FIRApp defaultApp]) {
         [FIRAnalytics logEventWithName:name parameters:properties];
     }
 }
 
 - (void)debugLog:(NSString *)logMessage {
-    if ([Analytics canTrack]) {
+    if ([Analytics canTrack] && [FIRApp defaultApp]) {
         [[FIRCrashlytics crashlytics] log:logMessage];
     }
 }
 
 - (void)debugError:(NSError *)error {
-    if ([Analytics canTrack]) {
+    if ([Analytics canTrack] && [FIRApp defaultApp]) {
         [[FIRCrashlytics crashlytics] recordError:error];
     }
 }
 
 - (void)registerUserWithIdentifier:(NSString *)userIdentifier {
-    if ([Analytics canTrack]) {
+    if ([Analytics canTrack] && [FIRApp defaultApp]) {
         [FIRAnalytics setUserID:userIdentifier];
         [[FIRCrashlytics crashlytics] setUserID:userIdentifier];
     }

@@ -542,6 +542,12 @@ static const int ChangePartnerMinimumInterval = 86400;
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     if ([key isEqualToString:kINatPreferNoTrackPrefKey]) {
+        if (newValue) {
+            [Analytics enableCrashReporting];
+        } else {
+            [Analytics disableCrashReporting];
+        }
+        
         // make an API call to notify the server about this
         // kick off autouploads if necessary
         // note that we don't stash the setting on the me user
