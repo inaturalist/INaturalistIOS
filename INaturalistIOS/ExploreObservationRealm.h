@@ -38,8 +38,11 @@
 
 @property CLLocationDegrees latitude;
 @property CLLocationDegrees longitude;
-@property CLLocationAccuracy publicPositionalAccuracy;
 
+@property CLLocationDegrees privateLatitude;
+@property CLLocationDegrees privateLongitude;
+
+@property CLLocationAccuracy publicPositionalAccuracy;
 @property CLLocationAccuracy privatePositionalAccuracy;
 
 @property BOOL coordinatesObscuredToUser;
@@ -47,6 +50,8 @@
 
 @property (readonly) CLLocationAccuracy positionalAccuracy;
 @property (readonly) CLLocationCoordinate2D location;
+@property (readonly) CLLocationCoordinate2D privateLocation;
+
 
 // to-many relationships
 @property RLMArray<ExploreObservationPhotoRealm *><ExploreObservationPhotoRealm> *observationPhotos;

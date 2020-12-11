@@ -32,6 +32,9 @@
     
     value[@"latitude"] = @(mtlModel.latitude);
     value[@"longitude"] = @(mtlModel.longitude);
+    value[@"privateLatitude"] = @(mtlModel.privateLocation.latitude);
+    value[@"privateLongitude"] = @(mtlModel.privateLocation.longitude);
+
     value[@"privatePositionalAccuracy"] = @(mtlModel.privatePositionalAccuracy);
     value[@"publicPositionalAccuracy"] = @(mtlModel.publicPositionalAccuracy);
     
@@ -319,10 +322,24 @@
     }
 }
 
+- (CLLocationCoordinate2D)privateLocation {
+    if (self.privateLatitude == 0.0 || self.privateLongitude == 0.0) {
+        return kCLLocationCoordinate2DInvalid;
+    } else {
+        CLLocationCoordinate2D loc = CLLocationCoordinate2DMake(self.privateLatitude, self.privateLongitude);
+        if (CLLocationCoordinate2DIsValid(loc)) {
+            return loc;
+        } else {
+            return kCLLocationCoordinate2DInvalid;
+        }
+    }
+}
+
+
 - (CLLocationAccuracy)positionalAccuracy {
-    if (self.privatePositionalAccuracy != -1) {
+    if (self.privatePositionalAccuracy != 0) {
         return self.privatePositionalAccuracy;
-    } else if (self.publicPositionalAccuracy != -1) {
+    } else if (self.publicPositionalAccuracy != 0) {
         return self.publicPositionalAccuracy;
     } else {
         return 0;
@@ -436,7 +453,9 @@
 }
 
 - (CLLocationCoordinate2D)visibleLocation {
-    if (CLLocationCoordinate2DIsValid(self.location)) {
+    if (CLLocationCoordinate2DIsValid(self.privateLocation)) {
+        return self.privateLocation;
+    } else if (CLLocationCoordinate2DIsValid(self.location)) {
         return self.location;
     } else {
         return kCLLocationCoordinate2DInvalid;
@@ -444,7 +463,11 @@
 }
 
 - (CLLocationAccuracy)visiblePositionalAccuracy {
-    return self.positionalAccuracy;
+    if (self.privatePositionalAccuracy != 0) {
+        return self.privatePositionalAccuracy;
+    } else {
+        return self.publicPositionalAccuracy;
+    }
 }
 
 - (NSString *)observedOnStringForUploading {

@@ -43,6 +43,7 @@
 @property (nonatomic, assign) BOOL ownersIdentificationFromVision;
 
 @property (nonatomic, assign) CLLocationCoordinate2D location;
+@property (nonatomic, assign) CLLocationCoordinate2D privateLocation;
 
 @property (nonatomic, assign) CLLocationAccuracy publicPositionalAccuracy;
 @property (nonatomic, assign) CLLocationAccuracy privatePositionalAccuracy;
@@ -52,6 +53,7 @@
 
 @property (readonly) CLLocationDegrees latitude;
 @property (readonly) CLLocationDegrees longitude;
+
 @property (nonatomic, copy) NSString *uuid;
 
 @property (nonatomic, readonly) BOOL commentsAndIdentificationsSynchronized;

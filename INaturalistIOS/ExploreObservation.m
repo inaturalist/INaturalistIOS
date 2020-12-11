@@ -33,6 +33,7 @@
     return @{
              @"observationId": @"id",
              @"location": @"location",
+             @"privateLocation": @"private_location",
              @"inatDescription": @"description",
              @"speciesGuess": @"species_guess",
              @"timeObserved": @"time_observed_at",
@@ -161,6 +162,23 @@
     }];
 }
 
++ (NSValueTransformer *)privateLocationJSONTransformer {
+    return [MTLValueTransformer transformerWithBlock:^id(NSString *locationCoordinateString) {
+        NSArray *c = [locationCoordinateString componentsSeparatedByString:@","];
+        if (c.count == 2) {
+            CLLocationDegrees latitude = [((NSString *)c[0]) doubleValue];
+            CLLocationDegrees longitude = [((NSString *)c[1]) doubleValue];
+            CLLocationCoordinate2D coords = CLLocationCoordinate2DMake(latitude, longitude);
+            return [NSValue valueWithMKCoordinate:coords];
+        } else {
+            NSValue *val = [NSValue valueWithMKCoordinate:kCLLocationCoordinate2DInvalid];
+            return val;
+        }
+    }];
+}
+
+
+
 - (void)setNilValueForKey:(NSString *)key {
     if ([key isEqualToString:@"identificationsCount"]) {
         self.identificationsCount = 0;
@@ -175,6 +193,8 @@
     } else if ([key isEqualToString:@"privatePositionalAccuracy"]) {
         self.privatePositionalAccuracy = 0;
     } else if ([key isEqualToString:@"location"]) {
+        self.location = kCLLocationCoordinate2DInvalid;
+    } else if ([key isEqualToString:@"privateLocation"]) {
         self.location = kCLLocationCoordinate2DInvalid;
     } else if ([key isEqualToString:@"captive"]) {
         self.captive = NO;
@@ -344,7 +364,11 @@
 }
 
 - (CLLocationCoordinate2D)visibleLocation {
-    return self.location;
+    if (CLLocationCoordinate2DIsValid(self.privateLocation)) {
+        return self.privateLocation;
+    } else {
+        return self.location;
+    }
 }
 
 - (CLLocationDistance)visiblePositionalAccuracy {
@@ -362,7 +386,7 @@
 #pragma mark - MKAnnotation coordinate
 
 - (CLLocationCoordinate2D)coordinate {
-    return self.location;
+    return [self visibleLocation];
 }
 
 @end

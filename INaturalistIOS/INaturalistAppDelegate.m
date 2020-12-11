@@ -198,7 +198,7 @@
 
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
     NSLog(@"config file URL %@", config.fileURL);
-	config.schemaVersion = 20;
+    config.schemaVersion = 21;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
         if (oldSchemaVersion < 1) {
             // add searchable (ie diacritic-less) taxon names
@@ -338,6 +338,19 @@
                 
                 [seenFaveIds addObject:@(faveId)];
             }];
+        }
+        if (oldSchemaVersion < 21) {
+            // added private latitude & longitude to observation model
+            
+            // first loop through observations to find which photos are attached
+            [migration enumerateObjects:ExploreObservationRealm.className
+                                  block:^(RLMObject *oldObject, RLMObject *newObject) {
+                
+                newObject[@"privateLatitude"] = @(kCLLocationCoordinate2DInvalid.latitude);
+                newObject[@"privateLongitude"] = @(kCLLocationCoordinate2DInvalid.longitude);
+                
+            }];
+
         }
     };
     
