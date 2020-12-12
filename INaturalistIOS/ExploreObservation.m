@@ -23,6 +23,7 @@
     // set defaults for these
     NSDictionary *defaults = @{
         @"location": [NSValue valueWithMKCoordinate:kCLLocationCoordinate2DInvalid],
+        @"privateLocation": [NSValue valueWithMKCoordinate:kCLLocationCoordinate2DInvalid],
     };
     dictionaryValue = [defaults mtl_dictionaryByAddingEntriesFromDictionary:dictionaryValue];
     return [super initWithDictionary:dictionaryValue error:error];
