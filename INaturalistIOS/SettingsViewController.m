@@ -56,9 +56,10 @@ typedef NS_ENUM(NSInteger, SettingsHelpCell) {
     SettingsHelpCellTutorial = 0,
     SettingsHelpCellContact,
     SettingsHelpCellReview,
-    SettingsHelpCellStore
+    SettingsHelpCellStore,
+    SettingsHelpCellDonate
 };
-static const int SettingsHelpRowCount = 4;
+static const int SettingsHelpRowCount = 5;
 
 typedef NS_ENUM(NSInteger, SettingsAppCell) {
     SettingsAppCellChangeUsername = 0,
@@ -808,8 +809,10 @@ static const int ChangePartnerMinimumInterval = 86400;
             return [self tableView:tableView contactUsCellForIndexPath:indexPath];
         } else if (indexPath.item == SettingsHelpCellReview) {
             return [self tableView:tableView rateUsCellForIndexPath:indexPath];
-        } else {
+        } else if (indexPath.item == SettingsHelpCellStore) {
             return [self tableView:tableView storeCellForIndexPath:indexPath];
+        } else {
+            return [self tableView:tableView donateCellForIndexPath:indexPath];
         }
     } else {
         return [self tableView:tableView versionCellForIndexPath:indexPath];
@@ -855,6 +858,8 @@ static const int ChangePartnerMinimumInterval = 86400;
             [self launchRateUs];
         } else if (indexPath.item == SettingsHelpCellStore) {
             [self launchStore];
+        } else if (indexPath.item == SettingsHelpCellDonate) {
+            [self launchDonate];
         }
     } else if (indexPath.section == SettingsSectionAccount) {
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -1037,6 +1042,14 @@ static const int ChangePartnerMinimumInterval = 86400;
     cell.leadingTextLabel.text = NSLocalizedString(@"Shop the iNat Store", @"label for iNaturalist store (tshirts/etc) action in settings.");
     return cell;
 }
+
+- (UITableViewCell *)tableView:(UITableView *)tableView donateCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsDetailTextCell *cell = [tableView dequeueReusableCellWithIdentifier:@"detailText"
+                                                                   forIndexPath:indexPath];
+    cell.leadingTextLabel.text = NSLocalizedString(@"Donate to iNaturalist", @"label for iNaturalist donate call to action.");
+    return cell;
+}
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView versionCellForIndexPath:(NSIndexPath *)indexPath {
     SettingsVersionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"version"
