@@ -385,6 +385,22 @@
         if (!key) { break; }
         if (key.length == 0) { break; }
         
+        NSString *filePath = [photoDirPath stringByAppendingPathComponent:nonExpiringFilename];
+        
+        // don't delete anything less than 24 hours old - should make sure if
+        // you start an obs, then close and reopen the app to do something else,
+        // we don't delete the photo for the in-progress observation. basically, the
+        // obs photo may not have been inserted into realm yet, so it's not safe
+        // to just delete it.
+        NSError *attrError = nil;
+        NSDictionary *attrs = [[NSFileManager defaultManager] attributesOfItemAtPath:filePath
+                                                                               error:&attrError];
+        if (attrError) { break; }
+        NSDate *modDate = [attrs objectForKey:NSFileCreationDate];
+        if (!modDate) { break; }
+        NSTimeInterval since = [[NSDate date] timeIntervalSinceDate:modDate];
+        if (since < 60 * 60 * 24) { break; }
+        
         // if it's not in the valid photo key list, it's not a photo we need
         // to care about anymore - we don't have an observation photo for it
         // so delete this photo
