@@ -617,6 +617,13 @@
 		FA49C2C325CA16FE00B7D627 /* lt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lt; path = lt.lproj/Guides.strings; sourceTree = "<group>"; };
 		FA49C2C425CA16FE00B7D627 /* lt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lt; path = lt.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FA49C2C525CA16FF00B7D627 /* lt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lt; path = lt.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FA49C2C625CA176000B7D627 /* lv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lv; path = lv.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		FA49C2C725CA178D00B7D627 /* lv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lv; path = lv.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FA49C2C825CA178D00B7D627 /* lv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lv; path = lv.lproj/Projects.strings; sourceTree = "<group>"; };
+		FA49C2C925CA178E00B7D627 /* lv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lv; path = lv.lproj/Activity.strings; sourceTree = "<group>"; };
+		FA49C2CA25CA178E00B7D627 /* lv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lv; path = lv.lproj/Guides.strings; sourceTree = "<group>"; };
+		FA49C2CB25CA178E00B7D627 /* lv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lv; path = lv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA49C2CC25CA178E00B7D627 /* lv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lv; path = lv.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA4B096421116F5600E942B3 /* UserVisualization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserVisualization.h; sourceTree = "<group>"; };
 		FA4C195F1B30EDB70066CA22 /* partners.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = partners.plist; sourceTree = "<group>"; };
 		FA4C19621B30EE890066CA22 /* Partner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Partner.h; sourceTree = "<group>"; };
@@ -2277,6 +2284,7 @@
 				bg,
 				el,
 				lt,
+				lv,
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -2862,6 +2870,7 @@
 				FA7BB65C25CA15990032C722 /* bg */,
 				FA49C2B625CA168F00B7D627 /* el */,
 				FA49C2BF25CA16FD00B7D627 /* lt */,
+				FA49C2C625CA176000B7D627 /* lv */,
 			);
 			name = MainStoryboard.storyboard;
 			path = INaturalistIOS;
@@ -2899,6 +2908,7 @@
 				FA7BB66125CA159B0032C722 /* bg */,
 				FA49C2BB25CA168F00B7D627 /* el */,
 				FA49C2C425CA16FE00B7D627 /* lt */,
+				FA49C2CB25CA178E00B7D627 /* lv */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2935,6 +2945,7 @@
 				FA7BB66225CA159B0032C722 /* bg */,
 				FA49C2BC25CA169000B7D627 /* el */,
 				FA49C2C525CA16FF00B7D627 /* lt */,
+				FA49C2CC25CA178E00B7D627 /* lv */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2973,6 +2984,7 @@
 				FA7BB65E25CA159A0032C722 /* bg */,
 				FA49C2B825CA168F00B7D627 /* el */,
 				FA49C2C125CA16FE00B7D627 /* lt */,
+				FA49C2C825CA178D00B7D627 /* lv */,
 			);
 			name = Projects.storyboard;
 			path = INaturalistIOS;
@@ -2988,6 +3000,7 @@
 				FA7BB65F25CA159A0032C722 /* bg */,
 				FA49C2B925CA168F00B7D627 /* el */,
 				FA49C2C225CA16FE00B7D627 /* lt */,
+				FA49C2C925CA178E00B7D627 /* lv */,
 			);
 			name = Activity.storyboard;
 			path = INaturalistIOS;
@@ -3027,6 +3040,7 @@
 				FA7BB66025CA159A0032C722 /* bg */,
 				FA49C2BA25CA168F00B7D627 /* el */,
 				FA49C2C325CA16FE00B7D627 /* lt */,
+				FA49C2CA25CA178E00B7D627 /* lv */,
 			);
 			name = Guides.storyboard;
 			path = INaturalistIOS;
@@ -3066,6 +3080,7 @@
 				FA7BB65D25CA159A0032C722 /* bg */,
 				FA49C2B725CA168F00B7D627 /* el */,
 				FA49C2C025CA16FE00B7D627 /* lt */,
+				FA49C2C725CA178D00B7D627 /* lv */,
 			);
 			name = Onboarding.storyboard;
 			path = INaturalistIOS;
