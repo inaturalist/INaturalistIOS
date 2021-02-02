@@ -1,0 +1,21 @@
+
+/* Class = "UILabel"; text = "Details"; ObjectID = "1sf-TG-XOI"; */
+"1sf-TG-XOI.text" = "Details";
+
+/* Class = "UILabel"; text = "Guide name"; ObjectID = "349-K6-4Od"; */
+"349-K6-4Od.text" = "Guide name";
+
+/* Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "fUj-Ua-JrI"; */
+"fUj-Ua-JrI.title" = "Observe";
+
+/* Class = "UILabel"; text = "Taxon name"; ObjectID = "fxG-Ko-HJJ"; */
+"fxG-Ko-HJJ.text" = "Taxon name";
+
+/* Class = "UIBarButtonItem"; title = "Observe"; ObjectID = "gaA-yq-1wc"; */
+"gaA-yq-1wc.title" = "Observe";
+
+/* Class = "UINavigationItem"; title = "Guides"; ObjectID = "hhs-MN-AbZ"; */
+"hhs-MN-AbZ.title" = "Guides";
+
+/* Class = "UINavigationItem"; title = "Guide Title"; ObjectID = "lIl-fs-5kb"; */
+"lIl-fs-5kb.title" = "Guide Title";

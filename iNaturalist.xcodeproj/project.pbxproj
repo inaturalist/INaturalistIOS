@@ -603,6 +603,13 @@
 		FA4529E71A03F70200147895 /* ExploreRegion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreRegion.m; sourceTree = "<group>"; };
 		FA4714F61ED7A88F00D57FDE /* TaxonSelectButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxonSelectButtonCell.h; sourceTree = "<group>"; };
 		FA4714F71ED7A88F00D57FDE /* TaxonSelectButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonSelectButtonCell.m; sourceTree = "<group>"; };
+		FA49C2B625CA168F00B7D627 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		FA49C2B725CA168F00B7D627 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FA49C2B825CA168F00B7D627 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Projects.strings; sourceTree = "<group>"; };
+		FA49C2B925CA168F00B7D627 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Activity.strings; sourceTree = "<group>"; };
+		FA49C2BA25CA168F00B7D627 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Guides.strings; sourceTree = "<group>"; };
+		FA49C2BB25CA168F00B7D627 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA49C2BC25CA169000B7D627 /* el */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = el; path = el.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA4B096421116F5600E942B3 /* UserVisualization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserVisualization.h; sourceTree = "<group>"; };
 		FA4C195F1B30EDB70066CA22 /* partners.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = partners.plist; sourceTree = "<group>"; };
 		FA4C19621B30EE890066CA22 /* Partner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Partner.h; sourceTree = "<group>"; };
@@ -2261,6 +2268,7 @@
 				uk,
 				"fi-FI",
 				bg,
+				el,
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -2844,6 +2852,7 @@
 				FA9E2B2222FB97AD00FE4026 /* uk */,
 				FAF16A1B24745F3300209D96 /* fi-FI */,
 				FA7BB65C25CA15990032C722 /* bg */,
+				FA49C2B625CA168F00B7D627 /* el */,
 			);
 			name = MainStoryboard.storyboard;
 			path = INaturalistIOS;
@@ -2879,6 +2888,7 @@
 				FA9E2B2722FB97AE00FE4026 /* uk */,
 				FAF16A2024745F3400209D96 /* fi-FI */,
 				FA7BB66125CA159B0032C722 /* bg */,
+				FA49C2BB25CA168F00B7D627 /* el */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2913,6 +2923,7 @@
 				FA9E2B2822FB97AE00FE4026 /* uk */,
 				FAF16A2124745F3400209D96 /* fi-FI */,
 				FA7BB66225CA159B0032C722 /* bg */,
+				FA49C2BC25CA169000B7D627 /* el */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2949,6 +2960,7 @@
 				FA9E2B2422FB97AE00FE4026 /* uk */,
 				FAF16A1D24745F3400209D96 /* fi-FI */,
 				FA7BB65E25CA159A0032C722 /* bg */,
+				FA49C2B825CA168F00B7D627 /* el */,
 			);
 			name = Projects.storyboard;
 			path = INaturalistIOS;
@@ -2962,6 +2974,7 @@
 				FA9E2B2522FB97AE00FE4026 /* uk */,
 				FAF16A1E24745F3400209D96 /* fi-FI */,
 				FA7BB65F25CA159A0032C722 /* bg */,
+				FA49C2B925CA168F00B7D627 /* el */,
 			);
 			name = Activity.storyboard;
 			path = INaturalistIOS;
@@ -2999,6 +3012,7 @@
 				FA9E2B2622FB97AE00FE4026 /* uk */,
 				FAF16A1F24745F3400209D96 /* fi-FI */,
 				FA7BB66025CA159A0032C722 /* bg */,
+				FA49C2BA25CA168F00B7D627 /* el */,
 			);
 			name = Guides.storyboard;
 			path = INaturalistIOS;
@@ -3036,6 +3050,7 @@
 				FA9E2B2322FB97AE00FE4026 /* uk */,
 				FAF16A1C24745F3300209D96 /* fi-FI */,
 				FA7BB65D25CA159A0032C722 /* bg */,
+				FA49C2B725CA168F00B7D627 /* el */,
 			);
 			name = Onboarding.storyboard;
 			path = INaturalistIOS;
