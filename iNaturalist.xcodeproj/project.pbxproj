@@ -932,6 +932,13 @@
 		FAA8D25F23CD266400757A1E /* ExploreProjectObsField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreProjectObsField.m; sourceTree = "<group>"; };
 		FAA8D26123CD267200757A1E /* ExploreObsField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreObsField.h; sourceTree = "<group>"; };
 		FAA8D26223CD267200757A1E /* ExploreObsField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreObsField.m; sourceTree = "<group>"; };
+		FAAE356225CA193E0068AA12 /* si */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = si; path = si.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		FAAE356325CA193F0068AA12 /* si */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = si; path = si.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FAAE356425CA193F0068AA12 /* si */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = si; path = si.lproj/Projects.strings; sourceTree = "<group>"; };
+		FAAE356525CA193F0068AA12 /* si */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = si; path = si.lproj/Activity.strings; sourceTree = "<group>"; };
+		FAAE356625CA193F0068AA12 /* si */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = si; path = si.lproj/Guides.strings; sourceTree = "<group>"; };
+		FAAE356725CA193F0068AA12 /* si */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = si; path = si.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FAAE356825CA19400068AA12 /* si */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = si; path = si.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FAB0B8E3237CE4E800E73681 /* ExploreGuide.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreGuide.h; sourceTree = "<group>"; };
 		FAB0B8E4237CE4E800E73681 /* ExploreGuide.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreGuide.m; sourceTree = "<group>"; };
 		FAB0B8E6237F17DE00E73681 /* GuidesAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GuidesAPI.h; sourceTree = "<group>"; };
@@ -2285,6 +2292,7 @@
 				el,
 				lt,
 				lv,
+				si,
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -2871,6 +2879,7 @@
 				FA49C2B625CA168F00B7D627 /* el */,
 				FA49C2BF25CA16FD00B7D627 /* lt */,
 				FA49C2C625CA176000B7D627 /* lv */,
+				FAAE356225CA193E0068AA12 /* si */,
 			);
 			name = MainStoryboard.storyboard;
 			path = INaturalistIOS;
@@ -2909,6 +2918,7 @@
 				FA49C2BB25CA168F00B7D627 /* el */,
 				FA49C2C425CA16FE00B7D627 /* lt */,
 				FA49C2CB25CA178E00B7D627 /* lv */,
+				FAAE356725CA193F0068AA12 /* si */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2946,6 +2956,7 @@
 				FA49C2BC25CA169000B7D627 /* el */,
 				FA49C2C525CA16FF00B7D627 /* lt */,
 				FA49C2CC25CA178E00B7D627 /* lv */,
+				FAAE356825CA19400068AA12 /* si */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -2985,6 +2996,7 @@
 				FA49C2B825CA168F00B7D627 /* el */,
 				FA49C2C125CA16FE00B7D627 /* lt */,
 				FA49C2C825CA178D00B7D627 /* lv */,
+				FAAE356425CA193F0068AA12 /* si */,
 			);
 			name = Projects.storyboard;
 			path = INaturalistIOS;
@@ -3001,6 +3013,7 @@
 				FA49C2B925CA168F00B7D627 /* el */,
 				FA49C2C225CA16FE00B7D627 /* lt */,
 				FA49C2C925CA178E00B7D627 /* lv */,
+				FAAE356525CA193F0068AA12 /* si */,
 			);
 			name = Activity.storyboard;
 			path = INaturalistIOS;
@@ -3041,6 +3054,7 @@
 				FA49C2BA25CA168F00B7D627 /* el */,
 				FA49C2C325CA16FE00B7D627 /* lt */,
 				FA49C2CA25CA178E00B7D627 /* lv */,
+				FAAE356625CA193F0068AA12 /* si */,
 			);
 			name = Guides.storyboard;
 			path = INaturalistIOS;
@@ -3081,6 +3095,7 @@
 				FA49C2B725CA168F00B7D627 /* el */,
 				FA49C2C025CA16FE00B7D627 /* lt */,
 				FA49C2C725CA178D00B7D627 /* lv */,
+				FAAE356325CA193F0068AA12 /* si */,
 			);
 			name = Onboarding.storyboard;
 			path = INaturalistIOS;

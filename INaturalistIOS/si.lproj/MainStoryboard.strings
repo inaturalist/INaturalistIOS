@@ -1,0 +1,78 @@
+
+/* Class = "UIBarButtonItem"; title = "Save"; ObjectID = "3BD-cp-ntb"; */
+"3BD-cp-ntb.title" = "Save";
+
+/* Class = "UILabel"; text = "Scientific Name"; ObjectID = "CRm-ye-28T"; */
+"CRm-ye-28T.text" = "Scientific Name";
+
+/* Class = "UINavigationItem"; title = "Taxon"; ObjectID = "F6V-RD-Yrx"; */
+"F6V-RD-Yrx.title" = "Taxon";
+
+/* Class = "UILabel"; text = "Common Name"; ObjectID = "GA9-ST-rLY"; */
+"GA9-ST-rLY.text" = "Common Name";
+
+/* Class = "UILabel"; text = "Research Grade"; ObjectID = "Ghi-b0-mds"; */
+"Ghi-b0-mds.text" = "Research Grade";
+
+/* Class = "UINavigationItem"; title = "Add Identification"; ObjectID = "Ml3-QP-W2S"; */
+"Ml3-QP-W2S.title" = "Add Identification";
+
+/* Class = "UILabel"; text = "Needs ID"; ObjectID = "QaI-aC-heW"; */
+"QaI-aC-heW.text" = "Needs ID";
+
+/* Class = "UISegmentedControl"; VjR-qL-q95.segmentTitles[0] = "Standard"; ObjectID = "VjR-qL-q95"; */
+"VjR-qL-q95.segmentTitles[0]" = "Standard";
+
+/* Class = "UISegmentedControl"; VjR-qL-q95.segmentTitles[1] = "Satellite"; ObjectID = "VjR-qL-q95"; */
+"VjR-qL-q95.segmentTitles[1]" = "Satellite";
+
+/* Class = "UISegmentedControl"; VjR-qL-q95.segmentTitles[2] = "Hybrid"; ObjectID = "VjR-qL-q95"; */
+"VjR-qL-q95.segmentTitles[2]" = "Hybrid";
+
+/* Class = "UIBarButtonItem"; title = "Cancel"; ObjectID = "ZBp-ec-FjM"; */
+"ZBp-ec-FjM.title" = "Cancel";
+
+/* Class = "UIBarButtonItem"; title = "Cancel"; ObjectID = "Zq5-BG-IXA"; */
+"Zq5-BG-IXA.title" = "Cancel";
+
+/* Class = "UIButton"; normalTitle = "Comment"; ObjectID = "drv-xl-rKi"; */
+"drv-xl-rKi.normalTitle" = "Comment";
+
+/* Class = "UINavigationItem"; title = "Add Comment"; ObjectID = "hQf-3u-7NV"; */
+"hQf-3u-7NV.title" = "Add Comment";
+
+/* Class = "UIBarButtonItem"; title = "Save"; ObjectID = "jjH-JI-aEw"; */
+"jjH-JI-aEw.title" = "Save";
+
+/* Class = "UITabBarItem"; title = "Settings"; ObjectID = "l3n-dl-Zr0"; */
+"l3n-dl-Zr0.title" = "Settings";
+
+/* Class = "UILabel"; text = "Choose a map type"; ObjectID = "lol-PH-r6p"; */
+"lol-PH-r6p.text" = "Choose a map type";
+
+/* Class = "UILabel"; text = "Loading suggestions"; ObjectID = "qle-TF-Ddf"; */
+"qle-TF-Ddf.text" = "Loading suggestions";
+
+/* Class = "UITabBarItem"; title = "Observations"; ObjectID = "s0d-iz-ydn"; */
+"s0d-iz-ydn.title" = "Observations";
+
+/* Class = "UILabel"; text = "Casual Grade"; ObjectID = "sFv-C3-tQc"; */
+"sFv-C3-tQc.text" = "Casual Grade";
+
+/* Class = "UIButton"; normalTitle = "Select Taxon"; ObjectID = "tER-uG-YRP"; */
+"tER-uG-YRP.normalTitle" = "Select Taxon";
+
+/* Class = "UINavigationItem"; title = "Observations"; ObjectID = "uR8-0q-Vnf"; */
+"uR8-0q-Vnf.title" = "Observations";
+
+/* Class = "UIButton"; normalTitle = "Suggest ID"; ObjectID = "vUq-gN-XYD"; */
+"vUq-gN-XYD.normalTitle" = "Suggest ID";
+
+/* Class = "UIButton"; normalTitle = "More Info on iNaturalist.org"; ObjectID = "xXw-vv-sTU"; */
+"xXw-vv-sTU.normalTitle" = "More Info on iNaturalist.org";
+
+/* Class = "UIButton"; normalTitle = "Agree"; ObjectID = "zb7-C4-rX1"; */
+"zb7-C4-rX1.normalTitle" = "Agree";
+
+/* Class = "UINavigationItem"; title = "Edit Location"; ObjectID = "zpr-b5-V8G"; */
+"zpr-b5-V8G.title" = "Edit Location";
