@@ -1,69 +1,65 @@
-
-/* Class = "UIButton"; normalTitle = "Already have an account?"; ObjectID = "082-Nj-s4i"; */
-"082-Nj-s4i.normalTitle" = "Already have an account?";
-
 /* Class = "UILabel"; text = "Observe"; ObjectID = "0HC-89-zFL"; */
-"0HC-89-zFL.text" = "Observe";
+"0HC-89-zFL.text" = "නිරීක්ෂණය කරන්න";
 
 /* Class = "UITextField"; placeholder = "Email"; ObjectID = "2e2-wM-KPk"; */
-"2e2-wM-KPk.placeholder" = "Email";
+"2e2-wM-KPk.placeholder" = "විද්‍යුත් තැපෑල";
 
 /* Class = "UILabel"; text = "Discuss"; ObjectID = "2hB-WM-pN1"; */
-"2hB-WM-pN1.text" = "Discuss";
+"2hB-WM-pN1.text" = "සාකච්ඡා කරන්න";
 
 /* Class = "UILabel"; text = "Or Log in with:"; ObjectID = "Bfj-77-C1k"; */
-"Bfj-77-C1k.text" = "Or Log in with:";
-
-/* Class = "UITextField"; placeholder = "Username"; ObjectID = "CsX-uq-JNZ"; */
-"CsX-uq-JNZ.placeholder" = "Username";
+"Bfj-77-C1k.text" = "හෝ සමඟ ඇතුල් වන්න:";
 
 /* Class = "UITextField"; placeholder = "Password"; ObjectID = "FZ5-km-oDo"; */
-"FZ5-km-oDo.placeholder" = "Password";
+"FZ5-km-oDo.placeholder" = "මුරපදය";
 
-/* Class = "UIButton"; normalTitle = "Skip ›"; ObjectID = "J6N-uD-ctb"; */
-"J6N-uD-ctb.normalTitle" = "Skip ›";
-
-/* Class = "UILabel"; text = "Swipe ›"; ObjectID = "L6Y-1o-yPc"; */
-"L6Y-1o-yPc.text" = "Swipe ›";
+/* Class = "UIButton"; normalTitle = "Skip >"; ObjectID = "J6N-uD-ctb"; */
+"J6N-uD-ctb.normalTitle" = "මඟහරින්න >";
 
 /* Class = "UIButton"; normalTitle = "Sign Up"; ObjectID = "LVz-7N-QYA"; */
-"LVz-7N-QYA.normalTitle" = "Sign Up";
+"LVz-7N-QYA.normalTitle" = "ලියාපදිංචි වන්න";
 
-/* Class = "UITextField"; placeholder = "Password"; ObjectID = "Loy-OH-ug5"; */
-"Loy-OH-ug5.placeholder" = "Password";
+/* Class = "UIButton"; normalTitle = "X"; ObjectID = "MC0-kW-bph"; */
+"MC0-kW-bph.normalTitle" = "X";
 
 /* Class = "UILabel"; text = "iNaturalist will automatically generate suggestions based on your photo and location."; ObjectID = "Nb8-x2-D2v"; */
-"Nb8-x2-D2v.text" = "iNaturalist will automatically generate suggestions based on your photo and location.";
+"Nb8-x2-D2v.text" = "iNaturalist ඔබගේ ඡායාරූපය සහ ස්ථානය මත පදනම්ව ස්වයංක්‍රීයව යෝජනා ජනනය කරනු ඇත.";
 
 /* Class = "UILabel"; text = "Explore and Connect with Nature"; ObjectID = "RqF-E7-mYe"; */
-"RqF-E7-mYe.text" = "Explore and Connect with Nature";
+"RqF-E7-mYe.text" = "ගවේෂණය කර ස්වභාව ධර්මය සමඟ සම්බන්ධ වන්න";
+
+/* Class = "UILabel"; text = "Swipe >"; ObjectID = "L6Y-1o-yPc"; */
+"L6Y-1o-yPc.text" = "ස්වයිප් කරන්න >";
 
 /* Class = "UILabel"; text = "Get outside and observe an individual organism. Pick something wild, and take a clear, full frame photo."; ObjectID = "XWS-dF-hpb"; */
-"XWS-dF-hpb.text" = "Get outside and observe an individual organism. Pick something wild, and take a clear, full frame photo.";
+"XWS-dF-hpb.text" = "පිටතට ගොස් තනි ජීවියෙකු නිරීක්ෂණය කරන්න. වන දෙයක් තෝරාගෙන පැහැදිලි, පූර්ණ රාමු ඡායාරූපයක් ගන්න.";
+
+/* Class = "UILabel"; text = "By using iNaturalist you agree to the Terms of Service and Privacy Policy"; ObjectID = "YtY-We-SSc"; */
+"YtY-We-SSc.text" = "iNaturalist භාවිතා කිරීමෙන් ඔබ සේවා කොන්දේසි සහ රහස්‍යතා ප්‍රතිපත්තියට එකඟ වේ";
 
 /* Class = "UITextField"; placeholder = "Username"; ObjectID = "dSw-gs-zGG"; */
-"dSw-gs-zGG.placeholder" = "Username";
+"dSw-gs-zGG.placeholder" = "පරිශීලක නාමය";
 
 /* Class = "UILabel"; text = "Share your observation with the community to discuss and confirm your findings."; ObjectID = "ixn-0U-lJ7"; */
-"ixn-0U-lJ7.text" = "Share your observation with the community to discuss and confirm your findings.";
-
-/* Class = "UILabel"; text = "Label"; ObjectID = "oAC-8Z-BHX"; */
-"oAC-8Z-BHX.text" = "Label";
+"ixn-0U-lJ7.text" = "ඔබේ සොයාගැනීම් සාකච්ඡා කිරීමට සහ තහවුරු කිරීමට ප්‍රජාව සමඟ ඔබේ නිරීක්ෂණය බෙදා ගන්න.";
 
 /* Class = "UILabel"; text = "Your observation may be vetted as Research Grade and shared with scientists working to better understand and protect nature. "; ObjectID = "oro-uB-RY1"; */
-"oro-uB-RY1.text" = "Your observation may be vetted as Research Grade and shared with scientists working to better understand and protect nature. ";
+"oro-uB-RY1.text" = "සමහරවිට ඔබේ නිරීක්‍ෂණය පර්යේෂණ ශ්‍රේණියේ ලෙස පිරික්සා තක්සේරු කොට සොබාදහම වඩා හොඳින් අවබෝධ කර ගැනීමට සහ ආරක්ෂා කිරීමට කටයුතු කරන විද්‍යාඥයින් සමඟ බෙදා ගනු ඇත. ";
 
 /* Class = "UILabel"; text = "Sign Up"; ObjectID = "pbQ-o3-5Xy"; */
-"pbQ-o3-5Xy.text" = "Sign Up";
+"pbQ-o3-5Xy.text" = "ලියාපදිංචි වන්න";
 
 /* Class = "UILabel"; text = "Contribute"; ObjectID = "sBd-1Y-eNL"; */
-"sBd-1Y-eNL.text" = "Contribute";
+"sBd-1Y-eNL.text" = "දායක වන්න";
 
-/* Class = "UIButton"; normalTitle = "Forgot Password?"; ObjectID = "sZe-lG-yg8"; */
-"sZe-lG-yg8.normalTitle" = "Forgot Password?";
+/* Class = "UIButton"; normalTitle = "Already have an account?"; ObjectID = "uop-S8-3lF"; */
+"uop-S8-3lF.normalTitle" = "දැනටමත් ගිණුමක් තිබේද?";
 
 /* Class = "UILabel"; text = "Identify"; ObjectID = "vCH-CP-6hM"; */
-"vCH-CP-6hM.text" = "Identify";
+"vCH-CP-6hM.text" = "හඳුනා ගන්න";
 
 /* Class = "UILabel"; text = "Yes, license my content so scientists can use my data! Learn More"; ObjectID = "xUc-8o-XIN"; */
-"xUc-8o-XIN.text" = "Yes, license my content so scientists can use my data! Learn More";
+"xUc-8o-XIN.text" = "ඔව්, විද්‍යාඥයින්ට මගේ දත්ත භාවිතා කළ හැකි වෙන ලෙස මගේ අන්තර්ගතයට බලපත්‍ර ලබා දෙන්න! වැඩිදුර ඉගෙන ගන්න";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "yxB-jO-b09"; */
+"yxB-jO-b09.normalTitle" = "බොත්තම";

@@ -1,5 +1,5 @@
 /* Localized versions of Info.plist keys */
-
 // TODO figure out how to use ${PRODUCT_NAME} here
-"NSLocationWhenInUseUsageDescription" = "Add GPS coordinates to observations, show your location on maps, and more.";
-"NSPhotoLibraryUsageDescription" = "Export and import iNaturalist photos to and from your library.";
+
+"NSLocationWhenInUseUsageDescription" = "Pievieno novērojumiem GPS koordinātas, apskati savu atrašanās vietu kartē un vēl.";
+"NSPhotoLibraryUsageDescription" = "Eksportē un importē savā bibliotēkā iNaturalist fotogrāfijas.";
