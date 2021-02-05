@@ -415,10 +415,7 @@ static const int ChangePartnerMinimumInterval = 86400;
 #ifdef INatTutorialURL
     if ([[INatReachability sharedClient] isNetworkReachable]) {
         [[Analytics sharedClient] event:kAnalyticsEventTutorial];
-        NSURL *tutorialUrl = [NSURL URLWithString:INatTutorialURL];
-        
-        SFSafariViewController *safari = [[SFSafariViewController alloc] initWithURL:tutorialUrl];
-        [self.navigationController presentViewController:safari animated:YES completion:nil];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:INatTutorialURL]];
     } else {
         [self networkUnreachableAlert];
     }
