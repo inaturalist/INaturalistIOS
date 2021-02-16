@@ -432,22 +432,8 @@ static const int ChangePartnerMinimumInterval = 86400;
 #endif
 }
 
-- (void)sendSupportEmail
-{
-    if (![MFMailComposeViewController canSendMail]) {
-        UIAlertController *alert = [[UIAlertController alloc] init];
-        alert.title = NSLocalizedString(@"Cannot Send Email", @"Title of alert when the system is not configured for the user to send email");
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                  style:UIAlertActionStyleDefault
-                                                handler:nil]];
-        
-        [self presentViewController:alert animated:YES completion:nil];
-        return;
-    }
-    
-    MFMailComposeViewController* composeVC = [[MFMailComposeViewController alloc] init];
-    composeVC.mailComposeDelegate = self;
-    
+- (void)sendSupportEmail {
+    // email params
     NSString *supportEmailAddress = @"help@inaturalist.org";
     NSString *supportTitle = [NSString stringWithFormat:@"iNaturalist iPhone help - version %@",
                               self.versionText];
@@ -461,12 +447,36 @@ static const int ChangePartnerMinimumInterval = 86400;
         supportTitle = [supportTitle stringByAppendingString:@" user not logged in"];
     }
     
-    // Configure the fields of the interface.
-    [composeVC setToRecipients:@[ supportEmailAddress ]];
-    [composeVC setSubject:supportTitle];
-    
-    // Present the view controller modally.
-    [self presentViewController:composeVC animated:YES completion:nil];
+    // try built in mail client
+    if ([MFMailComposeViewController canSendMail]) {
+        MFMailComposeViewController* composeVC = [[MFMailComposeViewController alloc] init];
+        composeVC.mailComposeDelegate = self;
+        
+        [composeVC setToRecipients:@[ supportEmailAddress ]];
+        [composeVC setSubject:supportTitle];
+        
+        [self presentViewController:composeVC animated:YES completion:nil];
+    } else {
+        // try mailto:
+        NSString *mailToUrlString = [NSString stringWithFormat:@"mailto:%@?subject=%@", supportEmailAddress, supportTitle];
+        NSString *percentEncodedURLString = [[NSURL URLWithDataRepresentation:[mailToUrlString dataUsingEncoding:NSUTF8StringEncoding]
+                                                                relativeToURL:nil] relativeString];
+        
+        NSURL *url = [NSURL URLWithString:percentEncodedURLString];
+        if (url) {
+            if ([[UIApplication sharedApplication] canOpenURL:url]) {
+                [[UIApplication sharedApplication] openURL:url];
+            } else {
+                UIAlertController *alert = [[UIAlertController alloc] init];
+                alert.title = NSLocalizedString(@"Cannot Send Email", @"Title of alert when the system is not configured for the user to send email");
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil]];
+                
+                [self presentViewController:alert animated:YES completion:nil];
+            }
+        }
+    }
 }
 
 
