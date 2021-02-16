@@ -67,10 +67,12 @@ typedef NS_ENUM(NSInteger, SettingsAppCell) {
     SettingsAppCellAutocompleteNames,
     SettingsAppCellAutomaticUpload,
     SettingsAppCellSuggestSpecies,
+    SettingsAppCellShowCommonNames,
+    SettingsAppCellShowScientficNamesFirst,
     SettingsAppCellPreferNoTracking,
     SettingsAppCellNetwork
 };
-static const int SettingsAppRowCount = 7;
+static const int SettingsAppRowCount = 9;
 
 typedef NS_ENUM(NSInteger, SettingsAccountCell) {
     SettingsAccountCellUsername,
@@ -539,7 +541,27 @@ static const int ChangePartnerMinimumInterval = 86400;
     [[NSUserDefaults standardUserDefaults] setBool:newValue forKey:key];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
-    if ([key isEqualToString:kINatPreferNoTrackPrefKey]) {
+    if ([key isEqualToString:kINatShowCommonNamesPrefKey]) {
+        
+        // make an api call to notify the server about this
+        // not a critical setting, so fire and forget
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if (appDelegate.loggedIn) {
+            ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+            [[self peopleApi] setPrefersShowCommonNames:newValue forUserId:me.userId handler:^(NSArray *results, NSInteger count, NSError *error) { }];
+        }
+        
+    } else if ([key isEqualToString:kINatShowScientificNamesFirstPrefKey]) {
+        
+        // make an api call to notify the server about this
+        // not a critical setting, so fire and forget
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if (appDelegate.loggedIn) {
+            ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+            [[self peopleApi] setPrefersShowScientificNamesFirst:newValue forUserId:me.userId handler:^(NSArray *results, NSInteger count, NSError *error) { }];
+        }
+        
+    } else if ([key isEqualToString:kINatPreferNoTrackPrefKey]) {
         if (newValue) {
             [Analytics enableCrashReporting];
         } else {
@@ -547,7 +569,6 @@ static const int ChangePartnerMinimumInterval = 86400;
         }
         
         // make an API call to notify the server about this
-        // kick off autouploads if necessary
         // note that we don't stash the setting on the me user
         // since it's not returned from the server every time.
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -794,6 +815,10 @@ static const int ChangePartnerMinimumInterval = 86400;
             return [self tableView:tableView appAutoUploadCellForIndexPath:indexPath];
         } else if (indexPath.item == SettingsAppCellSuggestSpecies) {
             return [self tableView:tableView appSuggestSpeciesCellForIndexPath:indexPath];
+        } else if (indexPath.item == SettingsAppCellShowCommonNames) {
+            return [self tableView:tableView appShowCommonNamesCellForIndexPath:indexPath];
+        } else if (indexPath.item == SettingsAppCellShowScientficNamesFirst) {
+            return [self tableView:tableView appShowScientificNamesFirstCellForIndexPath:indexPath];
         } else if (indexPath.item == SettingsAppCellPreferNoTracking) {
             return [self tableView:tableView appPrefersNoTrackingCellForIndexPath:indexPath];
         } else {
@@ -977,6 +1002,31 @@ static const int ChangePartnerMinimumInterval = 86400;
     } forControlEvents:UIControlEventValueChanged];
     return cell;
 }
+
+- (UITableViewCell *)tableView:(UITableView *)tableView appShowCommonNamesCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsSwitchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switch"
+                                                               forIndexPath:indexPath];
+    cell.switchLabel.text = NSLocalizedString(@"Show common names", @"label for show common names switch in settings");
+    cell.switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatShowCommonNamesPrefKey];
+    __weak typeof(self)weakSelf = self;
+    [cell.switcher bk_addEventHandler:^(UISwitch *sender) {
+        [weakSelf settingChanged:kINatShowCommonNamesPrefKey newValue:sender.isOn];
+    } forControlEvents:UIControlEventValueChanged];
+    return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView appShowScientificNamesFirstCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsSwitchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switch"
+                                                               forIndexPath:indexPath];
+    cell.switchLabel.text = NSLocalizedString(@"Show scientific names first", @"label for scientific names shown first switch in settings");
+    cell.switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatShowScientificNamesFirstPrefKey];
+    __weak typeof(self)weakSelf = self;
+    [cell.switcher bk_addEventHandler:^(UISwitch *sender) {
+        [weakSelf settingChanged:kINatShowScientificNamesFirstPrefKey newValue:sender.isOn];
+    } forControlEvents:UIControlEventValueChanged];
+    return cell;
+}
+
 
 - (UITableViewCell *)tableView:(UITableView *)tableView appPrefersNoTrackingCellForIndexPath:(NSIndexPath *)indexPath {
     

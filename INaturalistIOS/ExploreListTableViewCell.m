@@ -56,9 +56,9 @@ static NSDateFormatter *shortFormatter;
             UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
             label.translatesAutoresizingMaskIntoConstraints = NO;
             
-            label.textColor = [UIColor colorForIconicTaxon:nil];
             label.font = [UIFont boldSystemFontOfSize:17.0f];
             label.textAlignment = NSTextAlignmentNatural;
+            label.textColor = [UIColor blackColor];
             label;
         });
         [self.contentView addSubview:commonNameLabel];
@@ -347,6 +347,9 @@ static NSDateFormatter *shortFormatter;
     observationAttrLabel.text = nil;
     observationAttrLabel.hidden = YES;
     observedOnLabel.text = nil;
+    
+    commonNameLabel.font = [UIFont systemFontOfSize:commonNameLabel.font.pointSize];
+    scientificNameLabel.font = [UIFont systemFontOfSize:scientificNameLabel.font.pointSize];
 }
 
 - (void)setObservation:(ExploreObservation *)observation {
@@ -361,42 +364,14 @@ static NSDateFormatter *shortFormatter;
         [observationImageView setImageWithURL:[NSURL URLWithString:mediumUrlString]];
     }
     
-    NSString *commonName = nil;
-    NSString *scientificName = nil;
-    NSString *speciesGuess = observation.speciesGuess;
-    NSString *taxonRank = nil;
-    
-    if (observation.taxon) {
-        commonName = observation.taxon.commonName;
-        scientificName = observation.taxon.scientificName;
-        taxonRank = observation.taxon.rankName;
+    commonNameLabel.text = observation.taxon.displayFirstName;
+    if (observation.taxon.displayFirstNameIsItalicized) {
+        commonNameLabel.font = [UIFont italicSystemFontOfSize:commonNameLabel.font.pointSize];
     }
     
-    if (commonName && ![commonName isEqualToString:@""]) {
-        commonNameLabel.text = commonName;
-        commonNameLabel.font = [UIFont boldSystemFontOfSize:commonNameLabel.font.pointSize];
-    } else if (speciesGuess && ![speciesGuess isEqualToString:@""]) {
-        commonNameLabel.text = speciesGuess;
-        if ([speciesGuess isEqualToString:scientificName]) {
-            commonNameLabel.font = [UIFont fontForTaxonRankName:taxonRank
-                                                         ofSize:commonNameLabel.font.pointSize];
-        } else {
-            commonNameLabel.font = [UIFont boldSystemFontOfSize:commonNameLabel.font.pointSize];
-        }
-    } else if (scientificName && ![scientificName isEqualToString:@""]) {
-        commonNameLabel.text = scientificName;
-        commonNameLabel.font = [UIFont fontForTaxonRankName:taxonRank
-                                                     ofSize:commonNameLabel.font.pointSize];
-    } else {
-        commonNameLabel.text = NSLocalizedString(@"Unknown", nil);
-        commonNameLabel.font = [UIFont boldSystemFontOfSize:commonNameLabel.font.pointSize];
-    }
-    commonNameLabel.textColor = [UIColor colorForIconicTaxon:observation.iconicTaxonName];
-    
-    // don't show the same name twice
-    if (![scientificName isEqualToString:commonNameLabel.text]) {
-        scientificNameLabel.text = scientificName;
-        scientificNameLabel.font = [UIFont fontForTaxonRankName:taxonRank ofSize:14.0f];
+    scientificNameLabel.text = observation.taxon.displaySecondName;
+    if (observation.taxon.displaySecondNameIsItalicized) {
+        scientificNameLabel.font = [UIFont italicSystemFontOfSize:14.0f];
     }
     
     observerNameLabel.text = observation.username;

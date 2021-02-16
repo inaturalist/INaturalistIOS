@@ -25,4 +25,11 @@
     // Configure the view for the selected state
 }
 
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    
+    self.primaryName.font = [UIFont systemFontOfSize:self.primaryName.font.pointSize];
+    self.secondaryName.font = [UIFont systemFontOfSize:self.secondaryName.font.pointSize];
+}
+
 @end

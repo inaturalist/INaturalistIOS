@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface TaxonSummaryCell : UITableViewCell
-@property IBOutlet UILabel *commonNameLabel;
-@property IBOutlet UILabel *scientificNameLabel;
+@property IBOutlet UILabel *firstNameLabel;
+@property IBOutlet UILabel *secondNameLabel;
 @property IBOutlet UITextView *summaryTextView;
 @end

@@ -104,6 +104,7 @@
     observationImageView.image = nil;
     [observationImageView cancelImageDownloadTask];
     observationNameLabel.text = @"";
+    observationNameLabel.font = [UIFont systemFontOfSize:observationNameLabel.font.pointSize];
 }
 
 #pragma mark - observation setter/getter
@@ -134,7 +135,10 @@
     }
     
     if ([observation taxon]) {
-        observationNameLabel.text = observation.taxon.commonName ?: observation.taxon.scientificName;
+        observationNameLabel.text = observation.taxon.displayFirstName;
+        if (observation.taxon.displayFirstNameIsItalicized) {
+            observationNameLabel.font = [UIFont italicSystemFontOfSize:observationNameLabel.font.pointSize];
+        }
     } else if (observation.speciesGuess) {
         observationNameLabel.text = observation.speciesGuess;
     } else {

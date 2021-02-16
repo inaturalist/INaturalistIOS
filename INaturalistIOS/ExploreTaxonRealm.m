@@ -202,4 +202,61 @@
     }
 }
 
+- (NSString *)displayFirstName {
+    if (!self.commonName) {
+        return [self displayScientificName];
+    }
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([defaults boolForKey:kINatShowCommonNamesPrefKey]) {
+        if ([defaults boolForKey:kINatShowScientificNamesFirstPrefKey]) {
+            return [self displayScientificName];
+        } else {
+            return self.commonName;
+        }
+    } else {
+        return [self displayScientificName];
+    }
+}
+
+- (BOOL)displayFirstNameIsItalicized {
+    return [self nameIsItalicized:self.displayFirstName];
+}
+
+- (NSString *)displaySecondName {
+    if (!self.commonName) { return nil; }
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if ([defaults boolForKey:kINatShowCommonNamesPrefKey]) {
+        if ([defaults boolForKey:kINatShowScientificNamesFirstPrefKey]) {
+            return self.commonName;
+        } else {
+            return [self displayScientificName];
+        }
+    } else {
+        return nil;
+    }
+}
+
+- (BOOL)displaySecondNameIsItalicized {
+    return [self nameIsItalicized:self.displaySecondName];
+}
+
+- (BOOL)nameIsItalicized:(NSString *)name {
+    if ([name isEqualToString:self.scientificName] && self.rankLevel > 0 && self.rankLevel <= 20) {
+        return YES;
+    } else {
+        return NO;
+    }
+}
+
+- (NSString *)displayScientificName {
+    if (self.rankLevel > 20) {
+        return [NSString stringWithFormat:@"%@ %@", [self.rankName capitalizedString], self.scientificName];
+    } else {
+        return self.scientificName;
+    }
+}
+
+
 @end

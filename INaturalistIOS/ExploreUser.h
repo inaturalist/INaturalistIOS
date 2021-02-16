@@ -20,7 +20,12 @@
 @property (copy) NSString *email;
 @property (assign) NSInteger observationsCount;
 @property (assign) NSInteger siteId;
+
+// user pref stuff
 @property (assign) BOOL prefersNoTracking;
+@property (assign) BOOL showCommonNames;
+@property (assign) BOOL showScientificNamesFirst;
+
 
 @property (readonly) NSURL *userIconMedium;
 

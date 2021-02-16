@@ -20,6 +20,8 @@
              @"observationsCount": @"observations_count",
              @"siteId": @"site_id",
              @"prefersNoTracking": @"prefers_no_tracking",
+             @"showCommonNames": @"prefers_common_names",
+             @"showScientificNamesFirst": @"prefers_scientific_name_first",
              };
 }
 
@@ -40,6 +42,10 @@
         self.siteId = 1;
     } else if ([key isEqualToString:@"prefersNoTracking"]) {
         self.prefersNoTracking = FALSE;
+    } else if ([key isEqualToString:@"showCommonNames"]) {
+        self.showCommonNames = FALSE;
+    } else if ([key isEqualToString:@"showScientificNamesFirst"]) {
+        self.showScientificNamesFirst = FALSE;
     } else {
         [super setNilValueForKey:key];
     }

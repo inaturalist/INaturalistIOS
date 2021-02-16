@@ -11,8 +11,8 @@
 @interface TaxonSuggestionCell : UITableViewCell
 
 @property IBOutlet UIImageView *image;
-@property IBOutlet UILabel *commonName;
-@property IBOutlet UILabel *scientificName;
+@property IBOutlet UILabel *primaryName;
+@property IBOutlet UILabel *secondaryName;
 @property IBOutlet UILabel *comment;
 
 @end

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ln2-Xm-kuL">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="ln2-Xm-kuL">
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -1154,8 +1154,8 @@
                                 </tableViewCellContentView>
                                 <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <connections>
-                                    <outlet property="commonNameLabel" destination="GA9-ST-rLY" id="Wb4-h1-o6F"/>
-                                    <outlet property="scientificNameLabel" destination="CRm-ye-28T" id="bfg-2T-gn7"/>
+                                    <outlet property="firstNameLabel" destination="GA9-ST-rLY" id="Owd-Ws-CNH"/>
+                                    <outlet property="secondNameLabel" destination="CRm-ye-28T" id="7py-6H-jdt"/>
                                     <outlet property="summaryTextView" destination="O1a-Ik-EWe" id="1qM-RN-mcc"/>
                                 </connections>
                             </tableViewCell>
@@ -1369,9 +1369,9 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="comment" destination="4IJ-tc-xrG" id="Pqz-qV-NvP"/>
-                                            <outlet property="commonName" destination="jAy-9p-w4f" id="PIy-FI-594"/>
                                             <outlet property="image" destination="aMo-YU-wI4" id="9kt-gN-tzq"/>
-                                            <outlet property="scientificName" destination="iul-aV-NRe" id="FkB-Ie-GeV"/>
+                                            <outlet property="primaryName" destination="jAy-9p-w4f" id="hH7-jy-xeV"/>
+                                            <outlet property="secondaryName" destination="iul-aV-NRe" id="Qob-cZ-xcJ"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -1784,9 +1784,6 @@
         <image name="ic_unknown" width="66" height="66"/>
         <image name="notebook-tab.png" width="18" height="25"/>
         <image name="settings-tab.png" width="20" height="20"/>
-        <systemColor name="groupTableViewBackgroundColor">
-            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
         <systemColor name="groupTableViewBackgroundColor">
             <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

@@ -38,6 +38,7 @@
     
     [self.taxonImageView cancelImageDownloadTask];
     self.taxonImageView.image = nil;
+
 }
 
 @end

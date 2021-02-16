@@ -100,8 +100,9 @@
         cell.photoImageView.contentMode = UIViewContentModeTop;  // don't scale
     }
     
+    
     if (obs.taxon) {
-        cell.obsText.text = obs.taxon.commonName ?: obs.taxon.scientificName;
+        cell.obsText.text = obs.taxon.displayFirstName;
     } else if (obs.speciesGuess) {
         cell.obsText.text = obs.speciesGuess;
     } else {

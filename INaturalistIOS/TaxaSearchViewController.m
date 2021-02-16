@@ -478,32 +478,17 @@
             [cell.image setImage:iconicTaxonImage];
         }
         
-        if (taxon.commonName) {
-            cell.commonName.text = taxon.commonName;
-            cell.scientificName.text = taxon.scientificName;
-            CGFloat pointSize = cell.scientificName.font.pointSize;
-            if (taxon.rankLevel > 0 && taxon.rankLevel <= 20) {
-                cell.scientificName.font = [UIFont italicSystemFontOfSize:pointSize];
-            } else {
-                cell.scientificName.text = [NSString stringWithFormat:@"%@ %@",
-                                            [taxon.rankName capitalizedString],
-                                            [taxon scientificName]];
-                cell.scientificName.font = [UIFont systemFontOfSize:pointSize];
-            }
-        } else {
-            cell.commonName.text = taxon.scientificName;
-            cell.scientificName.text = @"";
-            CGFloat pointSize = cell.commonName.font.pointSize;
-            if (taxon.rankLevel > 0 && taxon.rankLevel <= 20) {
-                cell.commonName.font = [UIFont italicSystemFontOfSize:pointSize];
-            } else {
-                cell.commonName.font = [UIFont systemFontOfSize:pointSize];
-                cell.commonName.text = [NSString stringWithFormat:@"%@ %@",
-                                        [taxon.rankName capitalizedString],
-                                        [taxon scientificName]];
-            }
+        cell.primaryName.text = taxon.displayFirstName;
+        if (taxon.displayFirstNameIsItalicized) {
+            cell.primaryName.font = [UIFont italicSystemFontOfSize:cell.primaryName.font.pointSize];
         }
-
+        
+        cell.secondaryName.text = taxon.displaySecondName;
+        if (taxon.displaySecondNameIsItalicized) {
+            cell.secondaryName.font = [UIFont italicSystemFontOfSize:cell.secondaryName.font.pointSize];
+        } else {
+            cell.secondaryName.font = [UIFont systemFontOfSize:cell.secondaryName.font.pointSize];
+        }
         
         return cell;
     }
@@ -775,33 +760,14 @@
     }
     cell.taxonImageView.layer.borderWidth = 1.0f;
     
+    cell.taxonNameLabel.text = etr.displayFirstName;
+    if (etr.displayFirstNameIsItalicized) {
+        cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:cell.taxonNameLabel.font.pointSize];
+    }
     
-    if (etr.commonName) {
-        cell.taxonNameLabel.text = etr.commonName;
-        cell.taxonSecondaryNameLabel.text = etr.scientificName;
-        CGFloat pointSize = cell.taxonSecondaryNameLabel.font.pointSize;
-        
-        if ([etr scientificNameIsItalicized]) {
-            cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:pointSize];
-        } else {
-            cell.taxonSecondaryNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                                 [etr.rankName capitalizedString],
-                                                 [etr scientificName]];
-            cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:pointSize];
-        }
-    } else {
-        cell.taxonNameLabel.text = etr.scientificName;
-        cell.taxonSecondaryNameLabel.text = @"";
-        CGFloat pointSize = cell.taxonNameLabel.font.pointSize;
-        
-        if ([etr scientificNameIsItalicized]) {
-            cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:pointSize];
-        } else {
-            cell.taxonNameLabel.font = [UIFont systemFontOfSize:pointSize];
-            cell.taxonNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                        [etr.rankName capitalizedString],
-                                        [etr scientificName]];
-        }
+    cell.taxonSecondaryNameLabel.text = etr.displaySecondName;
+    if (etr.displaySecondNameIsItalicized) {
+        cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:cell.taxonSecondaryNameLabel.font.pointSize];
     }
     
     cell.accessoryType = UITableViewCellAccessoryDetailButton;

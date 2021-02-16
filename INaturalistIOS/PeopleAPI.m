@@ -281,4 +281,25 @@
     [self put:path params:params classMapping:nil handler:done];
 }
 
+- (void)setPrefersShowCommonNames:(BOOL)preference forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
+    
+    [[Analytics sharedClient] debugLog:@"Network - set show common names preference via node"];
+    NSDictionary *params = @{
+        @"user": @{ @"prefers_common_names": preference ? @"true" : @"false" }
+    };
+    NSString *path = [NSString stringWithFormat:@"users/%ld", (long)userId];
+    [self put:path params:params classMapping:nil handler:done];
+}
+
+- (void)setPrefersShowScientificNamesFirst:(BOOL)preference forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
+    
+    [[Analytics sharedClient] debugLog:@"Network - set show scientific names first preference via node"];
+    NSDictionary *params = @{
+        @"user": @{ @"prefers_scientific_name_first": preference ? @"true" : @"false" }
+    };
+    NSString *path = [NSString stringWithFormat:@"users/%ld", (long)userId];
+    [self put:path params:params classMapping:nil handler:done];
+}
+
+
 @end

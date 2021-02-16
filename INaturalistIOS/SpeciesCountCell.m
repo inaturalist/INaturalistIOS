@@ -33,6 +33,9 @@
     self.taxonNameLabel.text = @"";
     self.taxonImageView.image = nil;
     [self.taxonImageView cancelImageDownloadTask];
+  
+    self.taxonNameLabel.font = [UIFont systemFontOfSize:self.taxonNameLabel.font.pointSize];
+    self.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:self.taxonSecondaryNameLabel.font.pointSize];
 }
 
 @end

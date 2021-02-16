@@ -220,7 +220,7 @@
 	cell.selectionStyle = UITableViewCellSelectionStyleDefault;
 	
     RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", [self.observation taxonRecordID]];
-
+    
     cell.taxonNameLabel.textColor = [UIColor blackColor];
 
 	if ([self.observation taxonRecordID] != 0 && results.count == 0) {
@@ -243,35 +243,17 @@
 		}];
 	} else if (results.count == 1) {
         ExploreTaxonRealm *etr = [results firstObject];
-        if (!etr.commonName || [etr.commonName isEqualToString:etr.scientificName]) {
-            // no common name, so only show scientific name in the main label
-            cell.taxonNameLabel.text = etr.scientificName;
-            cell.taxonSecondaryNameLabel.text = nil;
-            
-            if (etr.isGenusOrLower) {
-                cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:17];
-                cell.taxonNameLabel.text = etr.scientificName;
-            } else {
-                cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
-                cell.taxonNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                            [etr.rankName capitalizedString], etr.scientificName];
-            }
-        } else {
-            // show both common & scientific names
-            cell.taxonNameLabel.text = etr.commonName;
-            cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
-            
-            if (etr.isGenusOrLower) {
-                cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:14];
-                cell.taxonSecondaryNameLabel.text = etr.scientificName;
-            } else {
-                cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
-                cell.taxonSecondaryNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                                     [etr.rankName capitalizedString], etr.scientificName];
-
-            }
+        
+        cell.taxonNameLabel.text = etr.displayFirstName;
+        if (etr.displayFirstNameIsItalicized) {
+            cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:cell.taxonNameLabel.font.pointSize];
         }
-
+        
+        cell.taxonSecondaryNameLabel.text = etr.displaySecondName;
+        if (etr.displaySecondNameIsItalicized) {
+            cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:cell.taxonNameLabel.font.pointSize];
+        }
+        
         if ([etr.iconicTaxonName isEqualToString:etr.commonName]) {
             cell.taxonImageView.image = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
         } else if (etr.photoUrl) {

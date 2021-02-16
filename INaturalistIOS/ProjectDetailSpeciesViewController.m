@@ -76,35 +76,17 @@
     SpeciesCount *count = self.speciesCounts[indexPath.item];
     
     cell.countLabel.text = [NSString stringWithFormat:@"%ld", (long)count.speciesCount];
-
-    if ([count.taxon.scientificName isEqualToString:count.taxon.commonName] || count.taxon.commonName == nil || [count.taxon.commonName isEqualToString:@""]) {
-        // no common name, so only show the scientific name in the main label
-        cell.taxonNameLabel.text = count.taxon.scientificName;
-        cell.taxonSecondaryNameLabel.text = nil;
-        
-        if ([count isGenusOrLower]) {
-            cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:17];
-        } else {
-            cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
-            cell.taxonNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                        [[count.taxon rankName] capitalizedString], count.taxon.scientificName];
-        }
-    } else {
-        // show both common & scientfic names
-        cell.taxonNameLabel.text = count.taxon.commonName;
-        cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
-        
-        if ([count isGenusOrLower]) {
-            cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:15];
-            cell.taxonSecondaryNameLabel.text = count.taxon.scientificName;
-        } else {
-            cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:15];
-            cell.taxonSecondaryNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                                 [count.taxon.rankName capitalizedString], count.taxon.scientificName];
-            
-        }
+    
+    cell.taxonNameLabel.text = count.taxon.displayFirstName;
+    if (count.taxon.displayFirstNameIsItalicized) {
+        cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:cell.taxonNameLabel.font.pointSize];
     }
     
+    cell.taxonSecondaryNameLabel.text = count.taxon.displaySecondName;
+    if (count.taxon.displaySecondNameIsItalicized) {
+        cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:cell.taxonSecondaryNameLabel.font.pointSize];
+    }
+        
     [cell.taxonImageView setImageWithURL:count.taxon.photoUrl];
     
     return cell;

@@ -13,9 +13,12 @@
 @implementation ProjectObsPhotoCell
 
 - (void)prepareForReuse {
+    [super prepareForReuse];
+    
     self.photoImageView.image = nil;
     [self.photoImageView cancelImageDownloadTask];
     self.obsText.text = @"";
+    self.obsText.font = [UIFont italicSystemFontOfSize:self.obsText.font.pointSize];
 }
 
 @end

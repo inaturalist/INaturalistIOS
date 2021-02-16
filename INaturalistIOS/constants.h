@@ -21,6 +21,8 @@
 #define kInatAutouploadPrefKey @"InatAutouploadPrefKey"
 #define kINatUserIdPrefKey @"INatUserIdPrefKey"
 #define kINatSuggestionsPrefKey @"INatSuggestionsPrefKey"
+#define kINatShowCommonNamesPrefKey @"INatShowCommonNamesPrefKey"
+#define kINatShowScientificNamesFirstPrefKey @"INatShowScientificNamesFirstPrefKey"
 #define kINatPreferNoTrackPrefKey @"INatPreferNoTrackPrefKey"
 
 #ifdef DEBUG1

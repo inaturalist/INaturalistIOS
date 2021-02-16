@@ -189,7 +189,7 @@
     self.fullTaxon = [ExploreTaxonRealm objectForPrimaryKey:@(self.taxonId)];
     
     if (self.fullTaxon) {
-        self.title = self.fullTaxon.commonName ?: self.fullTaxon.scientificName;
+        self.title = self.fullTaxon.displayFirstName;
     }
 
     self.mapRect = MKMapRectNull;
@@ -226,7 +226,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             // reload the full taxon on the main thread
             weakSelf.fullTaxon = [ExploreTaxonRealm objectForPrimaryKey:@(weakSelf.taxonId)];
-            weakSelf.title = self.fullTaxon.commonName ?: self.fullTaxon.scientificName;
+            weakSelf.title = self.fullTaxon.displayFirstName;
             weakSelf.photoPageVC.taxon = self.fullTaxon;
             [weakSelf.photoPageVC reloadPages];
             [weakSelf.tableView reloadData];
@@ -303,11 +303,7 @@
             NSString *selectBase = NSLocalizedString(@"Select \"%@\"", @"select taxon title");
 
             if (self.fullTaxon) {
-                if (self.fullTaxon.commonName && self.fullTaxon.commonName.length != 0) {
-                    selectTitle = [NSString stringWithFormat:selectBase, self.fullTaxon.commonName];
-                } else {
-                    selectTitle = [NSString stringWithFormat:selectBase, self.fullTaxon.scientificName];
-                }
+                selectTitle = [NSString stringWithFormat:selectBase, self.fullTaxon.displayFirstName];
             }
             [cell.button setTitle:selectTitle forState:UIControlStateNormal];
             
@@ -319,22 +315,19 @@
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             
             if (self.fullTaxon) {
-                cell.commonNameLabel.text = self.fullTaxon.commonName;
-                cell.scientificNameLabel.text = self.fullTaxon.scientificName;
+                cell.firstNameLabel.text = self.fullTaxon.displayFirstName;
+                if (self.fullTaxon.displayFirstNameIsItalicized) {
+                    cell.firstNameLabel.font = [UIFont italicSystemFontOfSize:cell.firstNameLabel.font.pointSize];
+                }
+                
+                cell.secondNameLabel.text = self.fullTaxon.displaySecondName;
+                if (self.fullTaxon.displaySecondNameIsItalicized) {
+                    cell.secondNameLabel.font = [UIFont italicSystemFontOfSize:cell.secondNameLabel.font.pointSize];
+                }
+                
                 cell.summaryTextView.text = nil;
             }
-            
-            CGFloat scientificNameSize = cell.scientificNameLabel.font.pointSize;
-            if (self.fullTaxon.isGenusOrLower) {
-                cell.scientificNameLabel.font = [UIFont italicSystemFontOfSize:scientificNameSize];
-                cell.scientificNameLabel.text = self.fullTaxon.scientificName;
-            } else {
-                cell.scientificNameLabel.font = [UIFont systemFontOfSize:scientificNameSize];
-                cell.scientificNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                                 [self.fullTaxon.rankName capitalizedString],
-                                                 self.fullTaxon.scientificName];
-            }
-            
+                        
             if (self.fullTaxon) {
                 cell.summaryTextView.attributedText = [self.fullTaxon wikipediaSummaryAttrStringWithSystemFontSize:15.0f];
                 [cell.summaryTextView sizeToFit];
@@ -411,7 +404,7 @@
     } else if (indexPath.section == 0) {
         if ((self.showsActionButton && indexPath.item == 1) || (!self.showsActionButton)) {
             TaxonSummaryCell *cell = (TaxonSummaryCell *)[tableView cellForRowAtIndexPath:indexPath];
-            [self toggleTooltipInView:cell.scientificNameLabel parentView:cell.contentView];
+            [self toggleTooltipInView:cell.secondNameLabel parentView:cell.contentView];
         }
     }
 }

@@ -464,12 +464,20 @@ didSignInForUser:(GIDGoogleUser *)user
             // we don't stash this on the realm user because it'll get clobbered when
             // the user is fetched in other contexts and this value isn't returned
             // by the server.
+            // we'll also stash some other variables for user preferences around common
+            // names and such
             if (results.firstObject) {
                 ExploreUser *euMe = results.firstObject;
                 [[NSUserDefaults standardUserDefaults] setBool:euMe.prefersNoTracking
                                                         forKey:kINatPreferNoTrackPrefKey];
+                [[NSUserDefaults standardUserDefaults] setBool:euMe.showCommonNames
+                                                        forKey:kINatShowCommonNamesPrefKey];
+                [[NSUserDefaults standardUserDefaults] setBool:euMe.showScientificNamesFirst
+                                                        forKey:kINatShowScientificNamesFirstPrefKey];
+
                 [[NSUserDefaults standardUserDefaults] synchronize];
             }
+            
             
             RLMRealm *realm = [RLMRealm defaultRealm];
             [realm beginWriteTransaction];

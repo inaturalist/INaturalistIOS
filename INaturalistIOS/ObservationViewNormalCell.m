@@ -61,4 +61,11 @@
     
 }
 
+- (void)prepareForReuse {
+    [super prepareForReuse];
+    
+    // clear potentially italicized fonts
+    self.titleLabel.font = [UIFont systemFontOfSize:self.titleLabel.font.pointSize];
+}
+
 @end

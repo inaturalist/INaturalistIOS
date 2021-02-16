@@ -776,10 +776,11 @@
     cell.observationImage.layer.borderColor = [UIColor colorWithHexString:@"#C8C7CC"].CGColor;
     cell.observationImage.clipsToBounds = YES;
     
-    if ([o exploreTaxonRealm]) {
-        [cell.titleLabel setText:o.exploreTaxonRealm.commonName ?: o.exploreTaxonRealm.scientificName];
-    } else if ([o taxon]) {
-        [cell.titleLabel setText:o.taxon.commonName ?: o.taxon.scientificName];
+    if ([o taxon]) {
+        [cell.titleLabel setText:o.taxon.displayFirstName];
+        if (o.taxon.displayFirstNameIsItalicized) {
+            cell.titleLabel.font = [UIFont italicSystemFontOfSize:cell.titleLabel.font.pointSize];
+        }
     } else if (o.speciesGuess && o.speciesGuess.length > 0) {
         [cell.titleLabel setText:o.speciesGuess];
     } else {
@@ -1319,6 +1320,7 @@
     static NSString *SeenV262Key = @"seenVersion262";
     static NSString *SeenV27Key = @"seenVersion27";
     static NSString *RanMigrationToRealmKey = @"ranMigrationToRealmKey7";
+    static NSString *SeenV32Key = @"seenVersion32";     // added some common name prefs
     
     // re-using 'firstSignInSeen' BOOL, which used to be set during the initial launch
     // when the user saw the login prompt for the first time.
@@ -1404,6 +1406,20 @@
                 [weakSelf presentViewController:alert animated:YES completion:nil];
             }
         }];
+    }
+    
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:SeenV32Key]) {
+        // existing users default to see common names, scientific names second
+        // this will be overwritten next time we fetch a user object
+        // from iNat.org, but good to start with sensible defaults
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:kINatShowCommonNamesPrefKey];
+        [[NSUserDefaults standardUserDefaults] setBool:NO
+                                                forKey:kINatShowScientificNamesFirstPrefKey];
+
+        [[NSUserDefaults standardUserDefaults] setBool:YES
+                                                forKey:SeenV32Key];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     }
     
     

@@ -18,6 +18,11 @@
 - (NSInteger)rankLevel;
 - (NSString *)iconicTaxonName;
 
+- (NSString *)displayFirstName;
+- (BOOL)displayFirstNameIsItalicized;
+- (NSString *)displaySecondName;
+- (BOOL)displaySecondNameIsItalicized;
+
 - (BOOL)isGenusOrLower;
 
 - (NSURL *)wikipediaUrl;
