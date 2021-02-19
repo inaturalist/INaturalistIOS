@@ -304,7 +304,7 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
       }
       
       for result in results {
-         result.itemProvider.loadFileRepresentation(forTypeIdentifier: "public.item") { (url, error) in
+         result.itemProvider.loadFileRepresentation(forTypeIdentifier: "public.jpeg") { (url, error) in
             
             if let error = error {
                print(error)
