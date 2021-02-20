@@ -7,7 +7,6 @@
 //
 
 @import AFNetworking;
-@import YLMoment;
 @import SVPullToRefresh;
 @import UIColor_HTMLColors;
 @import Realm;
@@ -25,6 +24,7 @@
 #import "ObsDetailV2ViewController.h"
 #import "UIColor+INaturalist.h"
 #import "ExploreObservationRealm.h"
+#import "NSDate+INaturalist.h"
 
 @interface UpdatesViewController ()
 @property RLMResults *updates;
@@ -220,8 +220,8 @@
         cell.observationImageView.image = [UIImage imageForIconicTaxon:iconicTaxonName];
     }
     
-    YLMoment *moment = [YLMoment momentWithDate:eur.createdAt];
-    cell.updateDateTextLabel.text = [moment fromNowWithSuffix:NO];
+    
+    cell.updateDateTextLabel.text = [eur.createdAt inat_shortRelativeDateString];
     
     if (!eur.viewedLocally) {
         cell.backgroundColor = [[UIColor inatTint] colorWithAlphaComponent:0.1f];

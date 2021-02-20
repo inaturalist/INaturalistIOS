@@ -8,7 +8,6 @@
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
-#import <YLMoment/YLMoment.h>
 #import <NSString_stripHtml/NSString_stripHTML.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import <Realm/Realm.h>
@@ -24,6 +23,7 @@
 #import "INatReachability.h"
 #import "PostsAPI.h"
 #import "ExplorePost.h"
+#import "NSDate+INaturalist.h"
 
 static UIImage *briefcase;
 
@@ -151,8 +151,9 @@ static UIImage *briefcase;
     
     cell.postTitle.text = post.postTitle;
     cell.postBody.text = post.postPlainTextExcerpt;
-    cell.postedAt.text = [[YLMoment momentWithDate:post.postPublishedAt] fromNowWithSuffix:NO];
     
+    cell.postedAt.text = [post.postPublishedAt inat_shortRelativeDateString];
+
     return cell;
 }
 

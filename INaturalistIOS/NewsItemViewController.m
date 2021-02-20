@@ -6,12 +6,12 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <YLMoment/YLMoment.h>
 #import <ARSafariActivity/ARSafariActivity.h>
 
 #import "NewsItemViewController.h"
 #import "ExplorePost.h"
 #import "Analytics.h"
+#import "NSDate+INaturalist.h"
 
 @interface NewsItemViewController ()
 
@@ -77,7 +77,7 @@
     NSString *authorIconURL = self.post.authorIconUrl;
     html = [html stringByAppendingString:[NSString stringWithFormat:@"<p style=\"font-size: 14; color: #686868;\">%@:<img class=\"user\" src=%@ />", postedBy, authorIconURL]];
     NSString *author = self.post.authorLogin ?: NSLocalizedString(@"Unknown author", @"Text shown in place of a post author when a post has no known author");
-    NSString *publishedAt = [[YLMoment momentWithDate:self.post.postPublishedAt] fromNowWithSuffix:NO];
+    NSString *publishedAt = [self.post.postPublishedAt inat_shortRelativeDateString];
     html = [html stringByAppendingString:[NSString stringWithFormat:@"%@  •  %@</p>", author, publishedAt]];
 
     html = [html stringByAppendingString:self.post.postBody];

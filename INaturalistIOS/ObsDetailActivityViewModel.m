@@ -9,7 +9,6 @@
 @import AFNetworking;
 @import UIColor_HTMLColors;
 @import MBProgressHUD;
-@import YLMoment;
 
 #import "ObsDetailActivityViewModel.h"
 #import "Observation.h"
@@ -41,6 +40,7 @@
 #import "IdentificationsAPI.h"
 #import "ObservationAPI.h"
 #import "iNaturalist-Swift.h"
+#import "NSDate+INaturalist.h"
 
 
 @interface ObsDetailActivityViewModel () {
@@ -326,8 +326,7 @@
             cell.authorImageView.image = [UIImage inat_defaultUserImage];
         }
         
-        YLMoment *moment = [YLMoment momentWithDate:activity.createdAt];
-        cell.dateLabel.text = [moment fromNowWithSuffix:NO];
+        cell.dateLabel.text = [activity.createdAt inat_shortRelativeDateString];
         cell.dateLabel.textColor = [UIColor lightGrayColor];
         
         if ([activity conformsToProtocol:@protocol(IdentificationVisualization)]) {

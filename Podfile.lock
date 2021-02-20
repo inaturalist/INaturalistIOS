@@ -190,7 +190,6 @@ PODS:
   - TTTAttributedLabel (1.13.3)
   - UIColor-HTMLColors (1.0.0)
   - VTAcknowledgementsViewController (0.15)
-  - YLMoment (0.6.0)
   - YLProgressBar (3.9.0)
 
 DEPENDENCIES:
@@ -233,7 +232,6 @@ DEPENDENCIES:
   - SVPullToRefresh (= 0.4.1)
   - UIColor-HTMLColors (= 1.0.0)
   - VTAcknowledgementsViewController (= 0.15)
-  - YLMoment (from `https://github.com/inaturalist/YLMoment.git`, commit `35521e9f80c23de6f885771f97a6c1febe245c00`)
   - YLProgressBar (= 3.9.0)
 
 SPEC REPOS:
@@ -303,9 +301,6 @@ EXTERNAL SOURCES:
   MHVideoPhotoGallery:
     :commit: 0a343f12b60c8719a280db73b1e2b6d25fef164a
     :git: https://github.com/alexshepard/MHVideoPhotoGallery
-  YLMoment:
-    :commit: 35521e9f80c23de6f885771f97a6c1febe245c00
-    :git: https://github.com/inaturalist/YLMoment.git
 
 CHECKOUT OPTIONS:
   Down:
@@ -323,9 +318,6 @@ CHECKOUT OPTIONS:
   MHVideoPhotoGallery:
     :commit: 0a343f12b60c8719a280db73b1e2b6d25fef164a
     :git: https://github.com/alexshepard/MHVideoPhotoGallery
-  YLMoment:
-    :commit: 35521e9f80c23de6f885771f97a6c1febe245c00
-    :git: https://github.com/inaturalist/YLMoment.git
 
 SPEC CHECKSUMS:
   ActionSheetPicker-3.0: 9fd0713777fad3a3f3b89ea58c75d59ccdef28f4
@@ -381,9 +373,8 @@ SPEC CHECKSUMS:
   TTTAttributedLabel: 6f3174aef8e738f44dff97c2eb7d8184f6ab6277
   UIColor-HTMLColors: ce7466daa46e5c8a68a4fb137909b37b30f034f1
   VTAcknowledgementsViewController: 575f5841fb47b7d9c852ccb406104ea68de07b21
-  YLMoment: a342e85269150756105901c4b701070154f82c16
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: eff10dddbaae3b04f45603593dc900bf1d91b6b7
+PODFILE CHECKSUM: 3065b017c44f6f530ba7e06d20a5f62bd0cf4870
 
 COCOAPODS: 1.9.3

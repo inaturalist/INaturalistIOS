@@ -11,7 +11,6 @@
 @import BlocksKit;
 @import CustomIOSAlertView;
 @import JDStatusBarNotification;
-@import YLMoment;
 @import UIColor_HTMLColors;
 @import AFNetworking;
 @import MBProgressHUD;
@@ -48,6 +47,7 @@
 #import "ExploreObservationRealm.h"
 #import "ObservationAPI.h"
 #import "InaturalistRealmMigration.h"
+#import "NSDate+INaturalist.h"
 
 @interface ObservationsViewController () <UploadManagerNotificationDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, MFMailComposeViewControllerDelegate>
 
@@ -795,7 +795,7 @@
     
     id <ObservationVisualization> o = [self.myObservations objectAtIndex:indexPath.item];
     
-    cell.dateLabel.text = [[YLMoment momentWithDate:o.observedOn] fromNowWithSuffix:NO];
+    cell.dateLabel.text = [o.observedOn inat_shortRelativeDateString];
     cell.subtitleLabel.text = NSLocalizedString(@"Needs Your Attention", @"subtitle for an observation that failed validation.");
 }
 
@@ -811,8 +811,8 @@
         [cell.progressBar setProgress:progress];
     }
     
-    cell.dateLabel.text = [[YLMoment momentWithDate:o.observedOn] fromNowWithSuffix:NO];
-    
+    cell.dateLabel.text = [o.observedOn inat_shortRelativeDateString];
+
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
 }
 
@@ -878,7 +878,11 @@
                                        action:@selector(clickedActivity:event:)
                              forControlEvents:UIControlEventTouchUpInside];
     
-    cell.dateLabel.text = [[YLMoment momentWithDate:o.timeObserved] fromNowWithSuffix:NO];
+    if (o.timeObserved) {
+        cell.dateLabel.text = [o.timeObserved inat_shortRelativeDateString];
+    } else {
+        cell.dateLabel.text = nil;
+    }
 }
 
 
