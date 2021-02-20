@@ -654,16 +654,21 @@
     
 }
 
-- (void)clickedActivity:(id)sender event:(UIEvent *)event {
+- (IBAction)tappedActivity:(id)sender event:(UIEvent *)event {
     CGPoint currentTouchPosition = [event.allTouches.anyObject locationInView:self.tableView];
     NSIndexPath *indexPath = [self.tableView indexPathForRowAtPoint:currentTouchPosition];
     id <ObservationVisualization> o = [self.myObservations objectAtIndex:indexPath.item];
-    // fake a selection
+    
+    // fake selection animation
     [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
-    // transition to obs detail
-    [self performSegueWithIdentifier:@"obsDetailV2" sender:o];
-    return;
+    
+    // since the user tapped the activity section, show it if there is any
+    if (o.activityCount > 0) {
+        [self performSegueWithIdentifier:@"obsDetailV2ShowActivity" sender:o];
+    } else {
+        [self performSegueWithIdentifier:@"obsDetailV2" sender:o];
+    }
 }
 
 - (void)showError:(NSString *)errorMessage{
@@ -868,15 +873,9 @@
     
     if (o.activityCount > 0) {
         cell.activityButton.hidden = NO;
-        cell.interactiveActivityButton.hidden = NO;
     } else {
         cell.activityButton.hidden = YES;
-        cell.interactiveActivityButton.hidden = YES;
     }
-    
-    [cell.interactiveActivityButton addTarget:self
-                                       action:@selector(clickedActivity:event:)
-                             forControlEvents:UIControlEventTouchUpInside];
     
     if (o.timeObserved) {
         cell.dateLabel.text = [o.timeObserved inat_shortRelativeDateString];
@@ -1538,6 +1537,12 @@
     if ([segue.identifier isEqualToString:@"obsDetailV2"]) {
         ObsDetailV2ViewController *ovc = [segue destinationViewController];
         ovc.observation = (ExploreObservationRealm *)sender;
+        [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
+                         withProperties:@{ @"via": @"Me Tab" }];
+    } else if ([segue.identifier isEqual:@"obsDetailV2ShowActivity"]) {
+        ObsDetailV2ViewController *ovc = [segue destinationViewController];
+        ovc.observation = (ExploreObservationRealm *)sender;
+        ovc.shouldShowActivityOnLoad = YES;
         [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
                          withProperties:@{ @"via": @"Me Tab" }];
     }
