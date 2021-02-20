@@ -159,14 +159,17 @@ static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
     // incorrect, but we don't want to do another API call for every row, so just show * like on
     // the web.
     if (obsCount > 0) {
-        cell.observationCount.text = [NSString stringWithFormat:@"Observations: %ld", (long)obsCount];
+        NSString *obsCountBaseString = NSLocalizedString(@"Observations: %ld", @"observation count on the explore leaderboard.");
+        cell.observationCount.text = [NSString stringWithFormat:obsCountBaseString, (long)obsCount];
     } else {
-        cell.observationCount.text = @"Observations: *";
+        cell.observationCount.text = NSLocalizedString(@"Observations: *", @"observation count on explore leaderboard when the user has species but not observations in the leaderboard.");
     }
     if (speciesCount > 0) {
-        cell.speciesCount.text = [NSString stringWithFormat:@"Species: %ld", (long)speciesCount];
+        NSString *speciesCountBaseString = NSLocalizedString(@"Species: %ld", @"species count on the explore leaderboard.");
+        cell.speciesCount.text = [NSString stringWithFormat:speciesCountBaseString, (long)speciesCount];
     } else {
-        cell.speciesCount.text = @"Species: *";
+        cell.speciesCount.text = NSLocalizedString(@"Species: *", @"observation count on explore leaderboard when the user has observations but not species in the leaderboard.");
+
     }
     
     if (userIconUrl) {
