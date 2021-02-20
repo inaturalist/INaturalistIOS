@@ -1551,6 +1551,14 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 - (UITableViewCell *)locationCellInTableView:(UITableView *)tableView {
     
+    static NSNumberFormatter *coordinateFormatter = nil;
+    if (!coordinateFormatter) {
+        coordinateFormatter = [[NSNumberFormatter alloc] init];
+        coordinateFormatter.locale = [NSLocale currentLocale];
+        coordinateFormatter.numberStyle = NSNumberFormatterDecimalStyle;
+        coordinateFormatter.maximumFractionDigits = 3;
+    }
+    
     DisclosureCell *cell;
     
     CLLocationCoordinate2D coords = kCLLocationCoordinate2DInvalid;
@@ -1565,13 +1573,16 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         
         NSString *positionalAccuracy = nil;
         if (self.standaloneObservation.positionalAccuracy) {
-            positionalAccuracy = [NSString stringWithFormat:@"%ld m", (long)self.standaloneObservation.positionalAccuracy];
+            NSString *accuracyBaseString = NSLocalizedString(@"%ld m", "format string for showing positional accuracy in meters");
+            positionalAccuracy = [NSString stringWithFormat:accuracyBaseString,
+                                  (long)self.standaloneObservation.positionalAccuracy];
         } else {
             positionalAccuracy = NSLocalizedString(@"???", @"positional accuracy when we don't know");
         }
-        NSString *subtitleString = [NSString stringWithFormat:@"Lat: %.3f  Long: %.3f  Acc: %@",
-                                    coords.latitude,
-                                    coords.longitude,
+        NSString *coordinateBaseString = NSLocalizedString(@"Lat: %1$@, Long: %2$@, Acc: %3$@", @"format string for showing latitude, longitude, & positional accuracy");
+        NSString *subtitleString = [NSString stringWithFormat:coordinateBaseString,
+                                    [coordinateFormatter stringFromNumber:[NSNumber numberWithDouble:coords.latitude]],
+                                    [coordinateFormatter stringFromNumber:[NSNumber numberWithDouble:coords.longitude]],
                                     positionalAccuracy];
         subtitleCell.subtitleLabel.text = subtitleString;
         
