@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 #import "ActivityVisualization.h"
+#import "TaxonVisualization.h"
 
 @protocol IdentificationVisualization <ActivityVisualization>
 
@@ -23,6 +24,8 @@
 - (NSString *)taxonScientificName;
 - (NSString *)taxonIconicName;
 - (NSURL *)taxonIconUrl;
+
+- (id <TaxonVisualization>)taxon;
 
 - (NSString *)userName;
 - (NSInteger)userId;

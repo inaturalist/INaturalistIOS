@@ -377,35 +377,18 @@
     ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
-    if (![identification taxonCommonName]) {
-        // no common name, so only show scientific name in the main label
-        cell.taxonNameLabel.text = [identification taxonScientificName];
-        cell.taxonSecondaryNameLabel.text = nil;
-        
-        if ([identification taxonRankLevel] > 0 && [identification taxonRankLevel] <= 20) {
-            cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:17];
-            cell.taxonNameLabel.text = [identification taxonScientificName];
-        } else {
-            cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
-            cell.taxonNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                        [[identification taxonRank] capitalizedString],
-                                        [identification taxonScientificName]];
-        }
+    cell.taxonNameLabel.text = [[identification taxon] displayFirstName];
+    if ([[identification taxon] displayFirstNameIsItalicized]) {
+        cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:17];
     } else {
-        // show both common & scientfic names
-        cell.taxonNameLabel.text = [identification taxonCommonName];
         cell.taxonNameLabel.font = [UIFont systemFontOfSize:17];
-        
-        if ([identification taxonRankLevel] > 0 && [identification taxonRankLevel] <= 20) {
-            cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:14];
-            cell.taxonSecondaryNameLabel.text = [identification taxonScientificName];
-        } else {
-            cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
-            cell.taxonSecondaryNameLabel.text = [NSString stringWithFormat:@"%@ %@",
-                                                 [[identification taxonRank] capitalizedString],
-                                                 [identification taxonScientificName]];
-            
-        }
+    }
+    
+    cell.taxonSecondaryNameLabel.text = [[identification taxon] displaySecondName];
+    if ([[identification taxon] displaySecondNameIsItalicized]) {
+        cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:14];
+    } else {
+        cell.taxonSecondaryNameLabel.font = [UIFont systemFontOfSize:14];
     }
     
     // upon cell re-use, these attrs aren't always cleared :(
