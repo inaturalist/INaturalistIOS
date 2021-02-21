@@ -1,0 +1,91 @@
+/* 
+  TaxaRanks.strings
+  iNaturalist
+
+  Created by Alex Shepard on 2/20/21.
+  Copyright © 2021 iNaturalist. All rights reserved.
+*/
+
+// See https://github.com/inaturalist/inaturalist/blob/9ffb192b85fdc7cf2166eafedf5e71385c869cb7/app/webpack/taxa/shared/util.js#L187
+// for canonical list of rank names and levels
+
+/* kingdom rank in tree of life */
+"kingdom" = "kingdom";
+/* subkingdom rank in tree of life */
+"subkingdom" = "subkingdom";
+
+/* phylum rank in tree of life */
+"phylum" = "phylum";
+/* subphylum rank in tree of life */
+"subphylum" = "subphylum";
+
+/* superclass rank in tree of life */
+"superclass" = "superclass";
+/* class rank in tree of life */
+"class" = "class";
+/* subclass rank in tree of life */
+"subclass" = "subclass";
+/* infraclass rank in tree of life */
+"infraclass" = "infraclass";
+
+/* superorder rank in tree of life */
+"superorder" = "superorder";
+/* order rank in tree of life */
+"order" = "order";
+/* suborder rank in tree of life */
+"suborder" = "sous-ordre";
+/* infraorder rank in tree of life */
+"infraorder" = "infraorder";
+/* parvorder rank in tree of life */
+"parvorder" = "parvorder";
+
+/* zoosection rank in tree of life */
+"zoosection" = "zoosection";
+/* zoosubsection rank in tree of life */
+"zoosubsection" = "zoosubsection";
+
+/* superfamily rank in tree of life */
+"superfamily" = "superfamily";
+/* epifamily rank in tree of life */
+"epifamily" = "epifamily";
+/* family rank in tree of life */
+"family" = "family";
+/* subfamily rank in tree of life */
+"subfamily" = "subfamily";
+
+/* supertribe rank in tree of life */
+"supertribe" = "supertribe";
+/* tribe rank in tree of life */
+"tribe" = "tribe";
+/* subtribe rank in tree of life */
+"subtribe" = "subtribe";
+
+/* epifamily rank in tree of life */
+"genus" = "genus";
+/* genushybrid rank in tree of life */
+"genushybrid" = "genushybrid";
+/* subgenus rank in tree of life */
+"subgenus" = "subgenus";
+
+/* section rank in tree of life */
+"section" = "section";
+/* subsection rank in tree of life */
+"subsection" = "subsection";
+
+/* species rank in tree of life */
+"species" = "species";
+/* hybrid rank in tree of life */
+"hybrid" = "hybrid";
+
+/* subspecies rank in tree of life */
+"subspecies" = "subspecies";
+/* variety rank in tree of life */
+"variety" = "variety";
+/* form rank in tree of life */
+"form" = "form";
+/* infrahybrid rank in tree of life */
+"infrahybrid" = "infrahybrid";
+
+
+
+

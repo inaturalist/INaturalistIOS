@@ -25,7 +25,8 @@
     } else {
         // italiicize the taxon name portion of the subtitle
         NSMutableAttributedString *subtitle = [[NSMutableAttributedString alloc] init];
-        NSMutableAttributedString *rank = [[NSMutableAttributedString alloc] initWithString:self.rankName.capitalizedString
+        NSString *localizedRankName = NSLocalizedStringFromTable(self.rankName, @"TaxaRanks", nil);
+        NSMutableAttributedString *rank = [[NSMutableAttributedString alloc] initWithString:localizedRankName.localizedCapitalizedString
                                                                                  attributes:@{ NSFontAttributeName: [UIFont systemFontOfSize:11.0f] }];
         [subtitle appendAttributedString:rank];
         [subtitle appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];;

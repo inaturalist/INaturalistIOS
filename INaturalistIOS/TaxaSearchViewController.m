@@ -615,8 +615,8 @@
             if (section == 0) {
                 NSString *base = NSLocalizedString(@"We're pretty sure this is in the %1$@ %2$@.",
                                                    @"comment for common ancestor suggestion. %1$@ is the rank name (order, family), whereas %2$@ is the actual rank (Animalia, Insecta)");
-                return [NSString stringWithFormat:base,
-                        self.commonAncestor.rankName, self.commonAncestor.scientificName];
+                NSString *localizedRankName = NSLocalizedStringFromTable(self.commonAncestor.rankName, @"TaxaRanks", nil);
+                return [NSString stringWithFormat:base, localizedRankName, self.commonAncestor.scientificName];
             } else {
                 return NSLocalizedString(@"Here are our top ten species suggestions:", nil);
             }
