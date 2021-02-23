@@ -82,10 +82,10 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>${PRODUCT_NAME} uses the camera to add photos to your observations of nature.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Record sound observations of nature.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Add GPS coordinates to observations, show your location on maps, and more.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Record sound observations of nature.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Export and import ${PRODUCT_NAME} photos to and from your library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
