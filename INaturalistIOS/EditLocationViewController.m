@@ -12,12 +12,15 @@
 #import "CrossHairView.h"
 #import "AccuracyCircleView.h"
 #import "Analytics.h"
+#import "iNaturalist-Swift.h"
+#import "ExploreLocation.h"
 
-@interface EditLocationViewController () <CLLocationManagerDelegate> {
+@interface EditLocationViewController () <CLLocationManagerDelegate, LocationSearchDelegate> {
     CLLocationManager *_locationManager;
 }
 @property UISegmentedControl *mapTypeSegmentedControl;
 @property (readonly) CLLocationManager *locationManager;
+@property (strong, nonatomic) UIBarButtonItem *locationSearchButton;
 @end
 
 @implementation EditLocationViewController
@@ -37,6 +40,10 @@
                                                                       style:UIBarButtonItemStylePlain
                                                                      target:self
                                                                      action:@selector(clickedCurrentLocationButton)];
+        
+        self.locationSearchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                                                                                  target:self
+                                                                                  action:@selector(tappedLocationSearch)];
         [self.currentLocationButton setWidth:30];
     }
     if (!self.mapTypeButton) {
@@ -53,10 +60,15 @@
         
         self.mapTypeButton = [[UIBarButtonItem alloc] initWithCustomView:self.mapTypeSegmentedControl];
     }
+    
     UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
                                                                           target:nil
-                                                                          action:nil];
-    self.toolbarItems = @[ self.currentLocationButton, flex, self.mapTypeButton, flex ];
+                                                                          action:nil];;
+    self.toolbarItems = @[ self.currentLocationButton,
+                           flex,
+                           self.mapTypeButton,
+                           flex,
+                           self.locationSearchButton];
     
     if (self.currentLocation && self.currentLocation.latitude) {
         double lat = [self.currentLocation.latitude doubleValue];
@@ -296,6 +308,16 @@
     }
 }
 
+- (void)tappedLocationSearch {
+    NSLog(@"Search location");
+    
+    LocationSearchViewController *search = [[LocationSearchViewController alloc] initWithNibName:nil bundle:nil];
+    search.locationSearchDelegate = self;
+    UINavigationController *searchNav = [[UINavigationController alloc] initWithRootViewController:search];
+    
+    [self presentViewController:searchNav animated:YES completion:nil];
+}
+
 - (void)clickedMapTypeButton
 {
     [self performSegueWithIdentifier:@"MapTypeSegue" sender:self];
@@ -305,6 +327,33 @@
 {
     self.crossHairView.xLabel.text = [NSString stringWithFormat:@"Lon: %f", self.mapView.centerCoordinate.longitude];
     self.crossHairView.yLabel.text = [NSString stringWithFormat:@"Lat: %f", self.mapView.centerCoordinate.latitude];
+}
+
+#pragma mark - LocationSearchDelegate
+
+- (void)locationSearchControllerCancelled:(LocationSearchViewController *)search {
+    [search dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)locationSearchController:(LocationSearchViewController *)search choseInatPlace:(ExploreLocation *)location {
+    [search dismissViewControllerAnimated:YES completion:nil];
+    
+    if (MKMapRectIsNull(location.boundingBox)) {
+        self.mapView.centerCoordinate = location.location;
+    } else {
+        [self.mapView setVisibleMapRect:location.boundingBox];
+    }
+}
+
+- (void)locationSearchController:(LocationSearchViewController *)search chosePlaceMark:(CLPlacemark *)placemark {
+    [search dismissViewControllerAnimated:YES completion:nil];
+    if (placemark.region && [placemark.region isKindOfClass:CLCircularRegion.class]) {
+        CLCircularRegion *circularRegion = (CLCircularRegion *)placemark.region;
+        MKCoordinateRegion mapRegion = MKCoordinateRegionMakeWithDistance(circularRegion.center, circularRegion.radius * 2, circularRegion.radius * 2);
+        [self.mapView setRegion:mapRegion animated:YES];
+    } else if (placemark.location) {
+        self.mapView.centerCoordinate = placemark.location.coordinate;
+    }
 }
 
 # pragma mark - MKMapViewDelegate

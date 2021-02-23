@@ -11,3 +11,6 @@
 #import "ImageStore.h"
 #import "CLLocation+EXIFGPSDictionary.h"
 #import "UIImage+INaturalist.h"
+#import "ExploreLocation.h"
+#import "PlaceAPI.h"
+#import "CLPlacemark+INat.h"

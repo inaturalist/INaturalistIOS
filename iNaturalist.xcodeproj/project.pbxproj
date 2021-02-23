@@ -277,6 +277,8 @@
 		FAC59DF520D9D8C2000A6558 /* UploadObservationOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC59DF420D9D8C2000A6558 /* UploadObservationOperation.m */; };
 		FAC59DF820D9DF87000A6558 /* DeleteRecordOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC59DF720D9DF87000A6558 /* DeleteRecordOperation.m */; };
 		FAC59DFC20DB0890000A6558 /* UploadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC59DFB20DB0890000A6558 /* UploadOperation.m */; };
+		FAC59EE925E5896A00DF23FD /* LocationSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC59EE825E5896A00DF23FD /* LocationSearchViewController.swift */; };
+		FAC59EF025E59C9B00DF23FD /* PlaceAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC59EEF25E59C9B00DF23FD /* PlaceAPI.m */; };
 		FAC9A8531F9EC0F2008E75EC /* NSData+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FAC9A8521F9EC0F2008E75EC /* NSData+INaturalist.m */; };
 		FACACA121BFBB17D002223D7 /* ObsDetailV2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA111BFBB17D002223D7 /* ObsDetailV2ViewController.m */; };
 		FACACA1B1BFBE0A9002223D7 /* ObsDetailViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = FACACA1A1BFBE0A9002223D7 /* ObsDetailViewModel.m */; };
@@ -1066,6 +1068,9 @@
 		FAC59DF720D9DF87000A6558 /* DeleteRecordOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeleteRecordOperation.m; sourceTree = "<group>"; };
 		FAC59DFA20DB0890000A6558 /* UploadOperation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UploadOperation.h; sourceTree = "<group>"; };
 		FAC59DFB20DB0890000A6558 /* UploadOperation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UploadOperation.m; sourceTree = "<group>"; };
+		FAC59EE825E5896A00DF23FD /* LocationSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchViewController.swift; sourceTree = "<group>"; };
+		FAC59EEE25E59C9B00DF23FD /* PlaceAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlaceAPI.h; sourceTree = "<group>"; };
+		FAC59EEF25E59C9B00DF23FD /* PlaceAPI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlaceAPI.m; sourceTree = "<group>"; };
 		FAC9A8511F9EC0F2008E75EC /* NSData+INaturalist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+INaturalist.h"; sourceTree = "<group>"; };
 		FAC9A8521F9EC0F2008E75EC /* NSData+INaturalist.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+INaturalist.m"; sourceTree = "<group>"; };
 		FACACA101BFBB17D002223D7 /* ObsDetailV2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailV2ViewController.h; sourceTree = "<group>"; };
@@ -1397,7 +1402,6 @@
 		19F621A2150ECD3000C58F28 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				FAB341F4247B709100992A80 /* MediaPicker */,
 				19AE897A18DD0AA700505918 /* AddCommentViewController.h */,
 				19AE897B18DD0AA700505918 /* AddCommentViewController.m */,
 				19AE897C18DD0AA700505918 /* AddIdentificationViewController.h */,
@@ -1421,10 +1425,12 @@
 				FA3759CF23EB467E0053F783 /* INatTabBarController.swift */,
 				19F874821522E58E00A65F9A /* INatWebController.h */,
 				19F874831522E58F00A65F9A /* INatWebController.m */,
+				FAC59EE825E5896A00DF23FD /* LocationSearchViewController.swift */,
 				FA9EE9F91C20BA6900CACF70 /* LocationViewController.h */,
 				FA9EE9FA1C20BA6900CACF70 /* LocationViewController.m */,
 				19640DE41508100A003BF888 /* MapTypeViewController.h */,
 				19640DE51508100A003BF888 /* MapTypeViewController.m */,
+				FAB341F4247B709100992A80 /* MediaPicker */,
 				FADDA3B91DBABA7800FB054F /* News */,
 				FA430BE31CA48E3F00FDC6E4 /* Observation Detail */,
 				1927514C14E9CCC9000ABAC4 /* ObservationsViewController.h */,
@@ -1438,6 +1444,7 @@
 				19F62186150EC6B700C58F28 /* ProjectsViewController.h */,
 				19F62187150EC6B700C58F28 /* ProjectsViewController.m */,
 				FA97666320D1E26600D172DC /* Settings */,
+				FAC415FF25E31157002814C7 /* SoundRecordViewController.swift */,
 				19F87497152679F000A65F9A /* TaxaSearchViewController.h */,
 				19F87498152679F100A65F9A /* TaxaSearchViewController.m */,
 				FACCEB3D1ED4E590009C9A19 /* Taxon Details */,
@@ -2208,6 +2215,8 @@
 				FA9437851C869B7300CB10F3 /* ObservationAPI.m */,
 				FA711AA21D515F3000C4FFDB /* PeopleAPI.h */,
 				FA711AA31D515F3000C4FFDB /* PeopleAPI.m */,
+				FAC59EEE25E59C9B00DF23FD /* PlaceAPI.h */,
+				FAC59EEF25E59C9B00DF23FD /* PlaceAPI.m */,
 				FA60EA1223EA453D0026F7A3 /* PostsAPI.h */,
 				FA60EA1323EA453D0026F7A3 /* PostsAPI.m */,
 				FA9437811C869AA400CB10F3 /* ProjectsAPI.h */,
@@ -2729,6 +2738,7 @@
 				FA3F1F911A12B42E00928102 /* ExploreTaxon+SearchResultsHelper.m in Sources */,
 				FA2552131D1F4D62005D2128 /* TaxaAPI.m in Sources */,
 				FA7591D020F439ED0062DE7F /* SettingsDetailTextCell.m in Sources */,
+				FAC59EE925E5896A00DF23FD /* LocationSearchViewController.swift in Sources */,
 				FACACA211BFD278F002223D7 /* ObsDetailInfoViewModel.m in Sources */,
 				FA4E72F119FACEF000A9AB5D /* ExploreSearchPredicate.m in Sources */,
 				FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */,
@@ -2793,6 +2803,7 @@
 				FAB6214C1D73830E0026FDC6 /* IconAndTextControl.m in Sources */,
 				19C26203160CF42B005565F8 /* UIView+UIViewHelpers.m in Sources */,
 				FAC0F1691A9EAE3B000F20C4 /* ConfirmPhotoViewController.m in Sources */,
+				FAC59EF025E59C9B00DF23FD /* PlaceAPI.m in Sources */,
 				FAE625CF247B08B40000E191 /* GalleryWrapper.swift in Sources */,
 				FA9249821EF85FD000E0C387 /* ExploreTaxonScore.m in Sources */,
 				FAEF23381C7D090900208F44 /* ProjectDetailObservationsViewController.m in Sources */,
