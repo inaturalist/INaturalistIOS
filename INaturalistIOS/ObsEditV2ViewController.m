@@ -767,6 +767,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         [self.tableView endUpdates];
         
         if (newLocation.horizontalAccuracy < 10) {
+            self.shouldContinueUpdatingLocation = NO;
             [self stopUpdatingLocation];
         }
         
@@ -796,7 +797,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)stopUpdatingLocation {
-    self.shouldContinueUpdatingLocation = NO;
     [self.locationManager stopUpdatingLocation];
 }
 
@@ -874,17 +874,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 }
 
 - (void)cancelledNewObservation:(UIBarButtonItem *)item {
+    self.shouldContinueUpdatingLocation = NO;
     [self stopUpdatingLocation];
     
     if (self.isMakingNewObservation) {
         [[Analytics sharedClient] event:kAnalyticsEventNewObservationCancel];
-        
-        [self stopUpdatingLocation];
-    } else {
-        
-        // TODO: handle rollback?
-        // https://stackoverflow.com/questions/33633092/is-there-a-way-to-modify-a-rlmobject-without-persisting-it
-        //[self.observation.managedObjectContext rollback];
     }
     
     [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
@@ -930,6 +924,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)validatedSave {
     [self.view endEditing:YES];
     
+    self.shouldContinueUpdatingLocation = NO;
     [self stopUpdatingLocation];
     
     // clear upload validation error message
@@ -1032,6 +1027,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 - (void)editLocationViewControllerDidSave:(EditLocationViewController *)controller location:(INatLocation *)location {
     
+    self.shouldContinueUpdatingLocation = NO;
     [self stopUpdatingLocation];
     
     if (location.latitude.integerValue == 0 && location.longitude.integerValue == 0) {
