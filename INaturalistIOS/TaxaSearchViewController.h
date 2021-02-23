@@ -30,3 +30,8 @@
 @property (nonatomic, strong) NSDate *observedOn;
 @property (nonatomic, strong) id <ObservationVisualization> observationToClassify;
 @end
+
+@interface SwitcherCell : UITableViewCell
+@property IBOutlet UILabel *switchLabel;
+@property IBOutlet UISwitch *switcher;
+@end

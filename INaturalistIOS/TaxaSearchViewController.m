@@ -43,6 +43,7 @@
 @property NSArray <NSString *> *creditNames;
 @property ExploreTaxonRealm *commonAncestor;
 @property BOOL showingSuggestions;
+@property BOOL showingNearbySuggestionsOnly;
 
 @property IBOutlet UIImageView *headerImageView;
 @property IBOutlet UITableView *tableView;
@@ -51,6 +52,7 @@
 @property IBOutlet UILabel *statusLabel;
 @property IBOutlet UIActivityIndicatorView *loadingSpinner;
 @property IBOutlet UIView *suggestionHeaderView;
+@property UIBarButtonItem *nearbySwitchButton;
 @end
 
 @implementation TaxaSearchViewController
@@ -61,7 +63,7 @@
 - (void)willPresentSearchController:(UISearchController *)searchController {
     self.headerHeightConstraint.constant = 0.0f;
     [self.view setNeedsLayout];
-    
+
     self.showingSuggestions = NO;
     [self.tableView reloadData];
 }
@@ -81,7 +83,7 @@
         // switch back to suggestions mode
         self.headerHeightConstraint.constant = 132.0f;
         [self.view setNeedsLayout];
-        
+
         self.showingSuggestions = YES;
         [self.tableView reloadData];
         if (self.scores.count == 0 && !self.commonAncestor) {
@@ -129,25 +131,25 @@
     if (self.showingSuggestions) {
         return;
     }
-    
+
     self.tableView.backgroundView.hidden = TRUE;
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableView reloadData];
     });
-    
+
     // don't bother querying api until the user has entered a reasonable amount of text
     if (![self shouldQueryAPI]) {
         self.searchResults = nil;
         [self.tableView reloadData];
         return;
     }
-    
+
     // update the local results
-    
+
     [self searchLocal:searchController.searchBar.text];
-    
-    
+
+
     // query node, put into realm, update UI
     [self.api taxaMatching:searchController.searchBar.text handler:^(NSArray *results, NSInteger count, NSError *error) {
         // put the results into realm
@@ -158,7 +160,7 @@
             [realm addOrUpdateObject:etr];
         }
         [realm commitWriteTransaction];
-        
+
         // update the UI
         dispatch_async(dispatch_get_main_queue(), ^{
             [self searchLocal:searchController.searchBar.text];
@@ -171,21 +173,21 @@
                                      locale:[NSLocale currentLocale]];
     // query realm
     RLMResults *results = [ExploreTaxonRealm objectsWhere:@"searchableCommonName contains[c] %@ OR searchableScientificName contains[c] %@ OR searchableLastMatchedTerm contains[c] %@", term, term, term];
-    
+
     NSArray *sorts = @[
                        [RLMSortDescriptor sortDescriptorWithKeyPath:@"rankLevel"
                                                           ascending:NO],
                        [RLMSortDescriptor sortDescriptorWithKeyPath:@"observationCount"
                                                           ascending:NO]
                        ];
-    
+
     self.searchResults = [results sortedResultsUsingDescriptors:sorts];
-    
+
     // invalidate & re-create the update token for the new search results
     if (self.searchResultsToken) {
         [self.searchResultsToken invalidate];
     }
-    
+
     __weak typeof(self)weakSelf = self;
     self.searchResultsToken = [self.searchResults addNotificationBlock:^(RLMResults * _Nullable results, RLMCollectionChange * _Nullable change, NSError * _Nullable error) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -205,6 +207,9 @@
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
         self.coordinate = kCLLocationCoordinate2DInvalid;
+
+        // default to only showing nearby suggestions
+        self.showingNearbySuggestionsOnly = YES;
     }
     return self;
 }
@@ -216,7 +221,11 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 
-    
+    UISwitch *switcher = [[UISwitch alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+    self.nearbySwitchButton = [[UIBarButtonItem alloc] initWithCustomView:switcher];
+    self.nearbySwitchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:nil];
+    self.navigationItem.rightBarButtonItem = self.nearbySwitchButton;
+
     // setup the search controller
     self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
     self.searchController.searchResultsUpdater = self;
@@ -242,14 +251,14 @@
          forCellReuseIdentifier:@"TaxonCell"];
     // don't show the extra lines when no tv rows
     self.tableView.tableFooterView = [UIView new];
-    
+
     // design tweaks for suggestions header
     self.suggestionHeaderView.layer.borderWidth = 0.5f;
     self.suggestionHeaderView.layer.borderColor = [UIColor lightGrayColor].CGColor;
     self.headerImageView.layer.cornerRadius = 1.0f;
     self.headerImageView.layer.borderWidth = 1.0f;
     self.headerImageView.layer.borderColor = [UIColor lightGrayColor].CGColor;
-    
+
     // we're shrinking a decently sized image down to a small square,
     // so provide a minification filter that's easier on the eyes and
     // produces fewer resizing artifacts
@@ -258,7 +267,7 @@
 
 
     NSDate *beforeSuggestions = [NSDate date];
-    
+
     // this is the callback for our suggestions api call
     INatAPISuggestionsCompletionHandler done = ^(NSArray *suggestions, ExploreTaxon *parent, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -280,7 +289,7 @@
                     [[Analytics sharedClient] logMetric:kAnalyticsEventSuggestionsObservationGauge
                                                   value:@(fabs([beforeSuggestions timeIntervalSinceNow]))];
                 }
-                
+
                 RLMRealm *realm = [RLMRealm defaultRealm];
                 [realm beginWriteTransaction];
                 if (parent) {
@@ -288,13 +297,14 @@
                     [realm addOrUpdateObject:etr];
                     self.commonAncestor = etr;
                 }
-                
+
                 for (ExploreTaxonScore *ets in suggestions) {
                     ExploreTaxonRealm *etr = [[ExploreTaxonRealm alloc] initWithMantleModel:ets.exploreTaxon];
                     [realm addOrUpdateObject:etr];
                 }
-                
+
                 [realm commitWriteTransaction];
+
                 self.scores = suggestions;
 
                 [[Analytics sharedClient] event:kAnalyticsEventSuggestionsLoaded
@@ -306,11 +316,11 @@
                                                   @"TopTaxonScore": @(self.scores.firstObject.combinedScore ?: 0),
                                                   }];
 
-                
+
                 // remove the loading view
                 self.tableView.backgroundView = nil;
                 [self.tableView reloadData];
-                
+
                 NSMutableArray *taxaIds = [NSMutableArray array];
                 if (self.commonAncestor) {
                     [taxaIds addObject:@(self.commonAncestor.taxonId)];
@@ -318,7 +328,7 @@
                 for (ExploreTaxonScore *ets in self.scores) {
                     [taxaIds addObject:@(ets.exploreTaxon.taxonId)];
                 }
-                
+
                 if (arc4random_uniform(2) == 1) {
                     // load observers
                     [[self obsApi] topObserversForTaxaIds:taxaIds handler:^(NSArray *results, NSInteger count, NSError *error) {
@@ -348,15 +358,15 @@
                     }];
 
                 }
-                
+
             }
         });
     };
-    
+
     if (self.hidesDoneButton) {
         self.navigationItem.rightBarButtonItem = nil;
     }
-    
+
     if (![[NSUserDefaults standardUserDefaults] boolForKey:kINatSuggestionsPrefKey]) {
         // no suggestions without permission
         [[Analytics sharedClient] event:kAnalyticsEventLoadTaxaSearch
@@ -396,7 +406,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
+
     // start the taxon search ui right away if we're not loading
     // suggestions
     if (!self.showingSuggestions) {
@@ -440,22 +450,46 @@
 }
 
 
+- (void)changeSuggestionsFilter {
+    self.showingNearbySuggestionsOnly = !self.showingNearbySuggestionsOnly;
+    [self.tableView reloadData];
+}
+
 #pragma mark - UITableViewDelegate
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([self showingSuggestions]) {
+
+        // switcher cell is the last TV section
+        if ((self.commonAncestor && indexPath.section == 2) || (!self.commonAncestor && indexPath.section == 1)) {
+            SwitcherCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switcher"
+                                                                 forIndexPath:indexPath];
+
+            cell.switchLabel.text = NSLocalizedString(@"Show nearby suggestions only", nil);
+            cell.switcher.on = self.showingNearbySuggestionsOnly;
+            [cell.switcher addTarget:self
+                              action:@selector(changeSuggestionsFilter)
+                    forControlEvents:UIControlEventValueChanged];
+
+            return cell;
+        }
+
         TaxonSuggestionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"suggestion"
                                                                     forIndexPath:indexPath];
-        
+
         ExploreTaxonScore *ts = nil;
         id <TaxonVisualization> taxon = nil;
         if (indexPath.section == 0 && self.commonAncestor) {
             taxon = self.commonAncestor;
         } else {
-            ts = [self.scores objectAtIndex:indexPath.item];
+            if (self.showingNearbySuggestionsOnly) {
+                ts = [[self nearbyScores] objectAtIndex:indexPath.item];
+            } else {
+                ts = [self.scores objectAtIndex:indexPath.item];
+            }
             taxon = [ts exploreTaxon];
         }
-        
+
         if (ts) {
             NSString *reason = @"";
             if (ts.visionScore > 0 && ts.frequencyScore > 0) {
@@ -469,7 +503,7 @@
         } else {
             cell.comment.text = nil;
         }
-        
+
         UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
         if (taxon.photoUrl) {
             [cell.image setImageWithURL:taxon.photoUrl
@@ -477,22 +511,22 @@
         } else {
             [cell.image setImage:iconicTaxonImage];
         }
-        
+
         cell.primaryName.text = taxon.displayFirstName;
         if (taxon.displayFirstNameIsItalicized) {
             cell.primaryName.font = [UIFont italicSystemFontOfSize:cell.primaryName.font.pointSize];
         }
-        
+
         cell.secondaryName.text = taxon.displaySecondName;
         if (taxon.displaySecondNameIsItalicized) {
             cell.secondaryName.font = [UIFont italicSystemFontOfSize:cell.secondaryName.font.pointSize];
         } else {
             cell.secondaryName.font = [UIFont systemFontOfSize:cell.secondaryName.font.pointSize];
         }
-        
+
         return cell;
     }
-    
+
     if (self.allowsFreeTextSelection && indexPath.section == 1) {
         return [self cellForUnknownTaxonInTableView:tableView];
     } else {
@@ -503,7 +537,10 @@
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
     if ([self showingSuggestions]) {
-        if (indexPath.section == 0 && self.commonAncestor) {
+        if ((self.commonAncestor && indexPath.section == 2) || (!self.commonAncestor && indexPath.section == 1)) {
+            // no accessory for switcher cell but let's be safe
+            return;
+        } else if (indexPath.section == 0 && self.commonAncestor) {
             [[Analytics sharedClient] event:kAnalyticsEventShowTaxonDetails
                              withProperties:@{
                                               @"Suggestions": @"Yes",
@@ -511,7 +548,15 @@
                                               }];
             [self showTaxonId:self.commonAncestor.taxonId];
         } else {
-            ExploreTaxon *taxon = [[self.scores objectAtIndex:indexPath.item] exploreTaxon];
+            ExploreTaxonScore *ets = nil;
+            if (self.showingNearbySuggestionsOnly) {
+                ets = [[self nearbyScores] objectAtIndex:indexPath.item];
+            } else {
+                ets = [self.scores objectAtIndex:indexPath.item];
+            }
+
+            ExploreTaxon *taxon = ets.exploreTaxon;
+
             [[Analytics sharedClient] event:kAnalyticsEventShowTaxonDetails
                              withProperties:@{
                                               @"Suggestions": @"Yes",
@@ -521,6 +566,7 @@
         }
     } else {
         if (self.searchResults.count > 0 && indexPath.section == 0) {
+
             ExploreTaxonRealm *taxon = [self.searchResults objectAtIndex:indexPath.item];
             [[Analytics sharedClient] event:kAnalyticsEventShowTaxonDetails
                              withProperties:@{
@@ -535,7 +581,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([self showingSuggestions]) {
-        if (indexPath.section == 0 && self.commonAncestor) {
+        if ((self.commonAncestor && indexPath.section == 2) || (!self.commonAncestor && indexPath.section == 1)) {
+            // be safe for switcher cell
+            return;
+        } else if (indexPath.section == 0 && self.commonAncestor) {
             [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
                              withProperties:@{
                                               @"IsTaxon": @"Yes",
@@ -554,7 +603,17 @@
                                               @"Suggestion Rank": @(indexPath.item+1),
                                               @"Via": @"List",
                                               }];
-            [self.delegate taxaSearchViewControllerChoseTaxon:[[self.scores objectAtIndex:indexPath.item] exploreTaxon]
+
+            ExploreTaxonScore *ets = nil;
+            if (self.showingNearbySuggestionsOnly) {
+                ets = [[self nearbyScores] objectAtIndex:indexPath.item];
+            } else {
+                ets = [self.scores objectAtIndex:indexPath.item];
+            }
+
+            ExploreTaxon *taxon = ets.exploreTaxon;
+
+            [self.delegate taxaSearchViewControllerChoseTaxon:taxon
                                               chosenViaVision:YES];
         }
     } else {
@@ -587,7 +646,11 @@
 #pragma mark - Table view data source
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([self showingSuggestions]) {
-        return 80;
+        if ((self.commonAncestor && indexPath.section == 2) || (!self.commonAncestor && indexPath.section == 1)) {
+            return 60;
+        } else {
+            return 80;
+        }
     } else {
         return 60;
     }
@@ -595,7 +658,7 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if ([self showingSuggestions]) {
-        return self.commonAncestor ? 2 : 1;
+        return self.commonAncestor ? 3 : 2;
     } else if ([self shouldQueryAPI]) {
         return self.allowsFreeTextSelection ? 2 : 1;
     } else if (self.scores.count > 0) {
@@ -611,17 +674,21 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
     if ([self showingSuggestions]) {
-        if (self.commonAncestor) {
-            if (section == 0) {
-                NSString *base = NSLocalizedString(@"We're pretty sure this is in the %1$@ %2$@.",
-                                                   @"comment for common ancestor suggestion. %1$@ is the rank name (order, family), whereas %2$@ is the actual rank (Animalia, Insecta)");
-                NSString *localizedRankName = NSLocalizedStringFromTable(self.commonAncestor.rankName, @"TaxaRanks", nil);
-                return [NSString stringWithFormat:base, localizedRankName, self.commonAncestor.scientificName];
-            } else {
-                return NSLocalizedString(@"Here are our top ten species suggestions:", nil);
+        if ((self.commonAncestor && section == 2) || (!self.commonAncestor && section == 1)) {
+            return NSLocalizedString(@"Nearby Suggestions Filter", nil);
+        } else {
+            if (self.commonAncestor) {
+                if (section == 0) {
+                    NSString *base = NSLocalizedString(@"We're pretty sure this is in the %1$@ %2$@.",
+                                                       @"comment for common ancestor suggestion. %1$@ is the rank name (order, family), whereas %2$@ is the actual rank (Animalia, Insecta)");
+                    return [NSString stringWithFormat:base,
+                            self.commonAncestor.rankName, self.commonAncestor.scientificName];
+                } else {
+                    return NSLocalizedString(@"Here are our top species suggestions:", nil);
+                }
+            } else if (self.scores.count > 0) {
+                return NSLocalizedString(@"We're not confident enough to make a recommendation, but here are our top suggestions.", nil);
             }
-        } else if (self.scores.count > 0) {
-            return NSLocalizedString(@"We're not confident enough to make a recommendation, but here are our top 10 suggestions.", nil);
         }
     } else {
         if (self.allowsFreeTextSelection) {
@@ -636,20 +703,37 @@
             }
         }
     }
-    
+
     return nil;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if ([self showingSuggestions]) {
-        if (self.commonAncestor) {
-            if (section == 0) {
+        if ((self.commonAncestor && section == 2) || (!self.commonAncestor && section == 1)) {
+            // don't show the switcher until we've had a chance to load the suggestions
+            if (self.scores) {
                 return 1;
             } else {
-                return self.scores.count;
+                return 0;
             }
         } else {
-            return self.scores.count;
+            if (self.commonAncestor) {
+                if (section == 0) {
+                    return 1;
+                } else {
+                    if (self.showingNearbySuggestionsOnly) {
+                        return [[self nearbyScores] count];
+                    } else {
+                        return self.scores.count;
+                    }
+                }
+            } else {
+                if (self.showingNearbySuggestionsOnly) {
+                    return [[self nearbyScores] count];
+                } else {
+                    return self.scores.count;
+                }
+            }
         }
     } else {
         if (self.allowsFreeTextSelection) {
@@ -692,7 +776,7 @@
 #pragma mark - TaxonDetailViewControllerDelegate
 
 - (void)taxonDetailViewControllerClickedActionForTaxonId:(NSInteger)taxonId {
-    
+
     [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
                      withProperties:@{
                                       @"IsTaxon": @"Yes",
@@ -726,20 +810,20 @@
 
 - (UITableViewCell *)cellForUnknownTaxonInTableView:(UITableView *)tableView {
 	ObsDetailTaxonCell *cell = (ObsDetailTaxonCell *)[tableView dequeueReusableCellWithIdentifier:@"TaxonCell"];
-	
+
 	FAKIcon *unknown = [FAKINaturalist speciesUnknownIconWithSize:44.0f];
 	[unknown addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
     [cell.taxonImageView cancelImageDownloadTask];
 	[cell.taxonImageView setImage:[unknown imageWithSize:CGSizeMake(44, 44)]];
 	cell.taxonImageView.layer.borderWidth = 0.0f;
-	
+
 	cell.taxonNameLabel.text = self.searchController.searchBar.text;
 	cell.taxonNameLabel.textColor = [UIColor blackColor];
 	cell.taxonNameLabel.font = [UIFont systemFontOfSize:cell.taxonNameLabel.font.pointSize];
 	cell.taxonSecondaryNameLabel.text = @"";
-	
+
 	cell.accessoryType = UITableViewCellAccessoryNone;
-	
+
 	return cell;
 }
 
@@ -747,10 +831,10 @@
     if (!etr) {
         return [self cellForUnknownTaxonInTableView:tableView];
     }
-    
+
     ObsDetailTaxonCell *cell = (ObsDetailTaxonCell *)[tableView dequeueReusableCellWithIdentifier:@"TaxonCell"];
-    
-    
+
+
     UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
     if (etr.photoUrl) {
         [cell.taxonImageView setImageWithURL:etr.photoUrl
@@ -759,20 +843,38 @@
         [cell.taxonImageView setImage:iconicTaxonImage];
     }
     cell.taxonImageView.layer.borderWidth = 1.0f;
-    
+
     cell.taxonNameLabel.text = etr.displayFirstName;
     if (etr.displayFirstNameIsItalicized) {
         cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:cell.taxonNameLabel.font.pointSize];
     }
-    
+
     cell.taxonSecondaryNameLabel.text = etr.displaySecondName;
     if (etr.displaySecondNameIsItalicized) {
         cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:cell.taxonSecondaryNameLabel.font.pointSize];
     }
-    
+
     cell.accessoryType = UITableViewCellAccessoryDetailButton;
-    
+
     return cell;
 }
+
+- (NSArray *)nearbyScores {
+    static NSPredicate *nearbyPredicate = nil;
+
+    if (!nearbyPredicate) {
+        nearbyPredicate = [NSPredicate predicateWithBlock:^BOOL(ExploreTaxonScore *score, NSDictionary *bindings) {
+            return score.frequencyScore > 0;
+        }];
+    }
+
+    return [self.scores filteredArrayUsingPredicate:nearbyPredicate];
+}
+
+@end
+
+
+
+@implementation SwitcherCell
 
 @end

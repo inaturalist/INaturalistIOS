@@ -1458,6 +1458,40 @@
                                             <outlet property="secondaryName" destination="iul-aV-NRe" id="Qob-cZ-xcJ"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="switcher" rowHeight="80" id="Nkw-bq-lzj" customClass="SwitcherCell">
+                                        <rect key="frame" x="0.0" y="135.33333206176758" width="414" height="80"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Nkw-bq-lzj" id="CNz-Sz-ezZ">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="80"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="bGI-y3-emJ">
+                                                    <rect key="frame" x="15" y="11" width="384" height="58"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ClL-Sr-dO4">
+                                                            <rect key="frame" x="0.0" y="19" width="325" height="20.333333333333329"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pAB-c8-EVR">
+                                                            <rect key="frame" x="335" y="13.666666666666668" width="51" height="31.000000000000004"/>
+                                                        </switch>
+                                                    </subviews>
+                                                </stackView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="bGI-y3-emJ" secondAttribute="bottom" id="3Tg-ci-MO5"/>
+                                                <constraint firstAttribute="topMargin" secondItem="bGI-y3-emJ" secondAttribute="top" id="MDm-V6-xyQ"/>
+                                                <constraint firstAttribute="leading" secondItem="bGI-y3-emJ" secondAttribute="leading" constant="-15" id="bRV-ja-oSy"/>
+                                                <constraint firstAttribute="trailing" secondItem="bGI-y3-emJ" secondAttribute="trailing" constant="15" id="dS3-qf-wgx"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="switchLabel" destination="ClL-Sr-dO4" id="YJa-Af-hzj"/>
+                                            <outlet property="switcher" destination="pAB-c8-EVR" id="mMC-6d-uK7"/>
+                                        </connections>
+                                    </tableViewCell>
                                 </prototypes>
                                 <connections>
                                     <outlet property="dataSource" destination="1lj-NA-4j7" id="cKo-0b-JX0"/>
