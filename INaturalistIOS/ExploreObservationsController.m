@@ -350,6 +350,12 @@ NSInteger const ObsFetchEmptyCode = -100;
     }];
 }
 
+- (NSArray *)observationsWithMedia {
+    return [self.observations.array bk_select:^BOOL(ExploreObservation *observation) {
+        return observation.observationMedia.count > 0;
+    }];
+}
+
 - (NSArray *)observationsWithPhotos {
     return [self.observations.array bk_select:^BOOL(ExploreObservation *observation) {
         return observation.observationPhotos.count > 0;

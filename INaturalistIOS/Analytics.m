@@ -133,6 +133,7 @@ NSString *kAnalyticsEventObservationlessOFVSaved =              @"Observationles
 NSString *kAnalyticsEventNewObservationLibraryStart =           @"New_Obs_Start_Library";
 NSString *kAnalyticsEventNewObservationCameraStart =            @"New_Obs_Start_Camera";
 NSString *kAnalyticsEventNewObservationNoPhotoStart =           @"New_Obs_Start_No_Photo";
+NSString *kAnalyticsEventNewObservationSoundRecordingStart =    @"New_Obs_Start_Sound_Record";
 
 NSString *kAnalyticsEventNewObservationStart =                  @"New_Obs_Start";
 NSString *kAnalyticsEventNewObservationShutter =                @"New_Obs_Shutter";

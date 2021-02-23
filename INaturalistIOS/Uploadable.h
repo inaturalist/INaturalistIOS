@@ -32,5 +32,7 @@
 
 @optional
 - (NSString *)fileUploadParameter;
+- (NSString *)fileName;
+- (NSString *)mimeType;
 - (void)deleteFileSystemAssociations;
 @end

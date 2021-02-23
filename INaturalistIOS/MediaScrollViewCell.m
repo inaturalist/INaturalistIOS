@@ -1,5 +1,5 @@
 //
-//  PhotoScrollViewCell.m
+//  MediaScrollViewCell.m
 //  
 //
 //  Created by Alex Shepard on 10/22/15.
@@ -9,19 +9,22 @@
 #import <FontAwesomeKit/FAKIonIcons.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
 
-#import "PhotoScrollViewCell.h"
+#import "MediaScrollViewCell.h"
 #import "PhotoChicletCell.h"
 #import "ObservationPhoto.h"
 #import "ImageStore.h"
 #import "AddChicletCell.h"
+#import "INatSound.h"
+#import "iNaturalist-Swift.h"
+#import "ExploreObservationSoundRealm.h"
 
 static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
 
-@interface PhotoScrollViewCell () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
+@interface MediaScrollViewCell () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
 @property NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
 @end
 
-@implementation PhotoScrollViewCell
+@implementation MediaScrollViewCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
@@ -80,7 +83,7 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
 - (void)prepareForReuse {
     [super prepareForReuse];
     
-    self.photos = nil;
+    self.media = nil;
     [self.collectionView reloadData];
 }
 
@@ -95,14 +98,14 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
     UICollectionViewCell *cell = (PhotoChicletCell *)button.superview.superview;
     NSIndexPath *ip = [self.collectionView indexPathForCell:cell];
     
-    ObservationPhoto *op = self.photos[ip.item-1];
-    NSMutableArray *mutablePhotos = [self.photos mutableCopy];
-    [mutablePhotos removeObject:op];
-    self.photos = [NSArray arrayWithArray:mutablePhotos];
+    id obsMediaItem = self.media[ip.item-1];
+    NSMutableArray *mutableMedia = [self.media mutableCopy];
+    [mutableMedia removeObject:obsMediaItem];
+    self.media = [NSArray arrayWithArray:mutableMedia];
     
     [self.collectionView deleteItemsAtIndexPaths:@[ ip ]];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.33 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.delegate photoScrollView:self deletedIndex:ip.item - 1];
+        [self.delegate mediaScrollView:self deletedIndex:ip.item - 1];
     });
 }
 
@@ -110,11 +113,11 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
     PhotoChicletCell *cell = (PhotoChicletCell *)button.superview.superview;
     NSIndexPath *ip = [self.collectionView indexPathForCell:cell];
     
-    ObservationPhoto *op = self.photos[ip.item-1];
-    NSMutableArray *mutablePhotos = [self.photos mutableCopy];
-    [mutablePhotos removeObject:op];
-    [mutablePhotos insertObject:op atIndex:0];
-    self.photos = [NSArray arrayWithArray:mutablePhotos];
+    id obsMediaItem = self.media[ip.item-1];
+    NSMutableArray *mutableMedia = [self.media mutableCopy];
+    [mutableMedia removeObject:obsMediaItem];
+    [mutableMedia insertObject:obsMediaItem atIndex:0];
+    self.media = [NSArray arrayWithArray:mutableMedia];
     
     [self.collectionView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:YES];
     
@@ -125,7 +128,7 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
     
     
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.33 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.delegate photoScrollView:self setDefaultIndex:ip.item-1];
+        [self.delegate mediaScrollView:self setDefaultIndex:ip.item-1];
     });
 }
 
@@ -141,19 +144,37 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
     } else {
         PhotoChicletCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"photoChiclet" forIndexPath:indexPath];
         
-        ObservationPhoto *obsPhoto = (ObservationPhoto *)self.photos[indexPath.item - 1];
-        if (obsPhoto.photoKey) {
-            cell.photoImageView.image = [[ImageStore sharedImageStore] find:obsPhoto.photoKey
-                                                                    forSize:ImageStoreSquareSize];
-        }
-        if (!cell.photoImageView.image) {
-            if ([obsPhoto squarePhotoUrl]) {
-                [cell.photoImageView setImageWithURL:[obsPhoto squarePhotoUrl]];
+        id mediaItem = self.media[indexPath.item - 1];
+        if ([mediaItem conformsToProtocol:@protocol(INatPhoto)]) {
+            ObservationPhoto *obsPhoto = (ObservationPhoto *)self.media[indexPath.item - 1];
+            if (obsPhoto.photoKey) {
+                cell.photoImageView.image = [[ImageStore sharedImageStore] find:obsPhoto.photoKey
+                                                                        forSize:ImageStoreSquareSize];
             }
+            if (!cell.photoImageView.image) {
+                if ([obsPhoto squarePhotoUrl]) {
+                    [cell.photoImageView setImageWithURL:[obsPhoto squarePhotoUrl]];
+                }
+            }
+            
+            [cell.deleteButton addTarget:self action:@selector(deletePressed:) forControlEvents:UIControlEventTouchUpInside];
+            [cell.defaultButton addTarget:self action:@selector(defaultPressed:) forControlEvents:UIControlEventTouchUpInside];
+            cell.defaultButton.hidden = FALSE;
+        } else if ([mediaItem conformsToProtocol:@protocol(INatSound)]) {
+            
+            FAKIonIcons *soundIcon = [FAKIonIcons iosVolumeHighIconWithSize:40];
+            
+            [soundIcon addAttribute:NSForegroundColorAttributeName
+                              value:[UIColor lightGrayColor]];
+            
+            cell.photoImageView.image = [soundIcon imageWithSize:CGSizeMake(40, 40)];
+            cell.photoImageView.contentMode = UIViewContentModeCenter;  // don't scale
+
+            [cell.deleteButton addTarget:self action:@selector(deletePressed:) forControlEvents:UIControlEventTouchUpInside];
+            [cell.defaultButton removeTarget:self action:@selector(defaultPressed:) forControlEvents:UIControlEventTouchUpInside];
+            cell.defaultButton.hidden = TRUE;
         }
         
-        [cell.deleteButton addTarget:self action:@selector(deletePressed:) forControlEvents:UIControlEventTouchUpInside];
-        [cell.defaultButton addTarget:self action:@selector(defaultPressed:) forControlEvents:UIControlEventTouchUpInside];
         
         if (indexPath.item == 1) {
             [cell.defaultButton setAttributedTitle:self.defaultPhotoStr forState:UIControlStateNormal];
@@ -166,7 +187,7 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.photos.count + 1;
+    return self.media.count + 1;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -175,10 +196,9 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.item == 0) {
-        [self.delegate photoScrollViewAddPressed:self];
+        [self.delegate mediaScrollViewAddPressed:self];
     } else {
-        // do nothing? show the hires photo?
-        [self.delegate photoScrollView:self selectedIndex:indexPath.item - 1];
+        [self.delegate mediaScrollView:self selectedIndex:indexPath.item - 1];
     }
 }
 

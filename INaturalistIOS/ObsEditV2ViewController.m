@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
+@import AVKit;
 @import AFNetworking;
 @import FontAwesomeKit;
 @import ActionSheetPicker_3_0;
@@ -35,7 +36,7 @@
 #import "LoginController.h"
 #import "UploadManager.h"
 #import "Analytics.h"
-#import "PhotoScrollViewCell.h"
+#import "MediaScrollViewCell.h"
 #import "ObsCenteredLabelCell.h"
 #import "ObsDetailTaxonCell.h"
 #import "ExploreUpdateRealm.h"
@@ -55,7 +56,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionDelete,
 };
 
-@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, PhotoScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, TaxaSearchViewControllerDelegate, CLLocationManagerDelegate, GalleryWrapperDelegate, MediaPickerDelegate, PHPickerViewControllerDelegate> {
+@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, MediaScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, TaxaSearchViewControllerDelegate, CLLocationManagerDelegate, GalleryWrapperDelegate, MediaPickerDelegate, PHPickerViewControllerDelegate> {
     
     CLLocationManager *_locationManager;
 }
@@ -83,7 +84,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             picker.sourceType = UIImagePickerControllerSourceTypeCamera;
             [self presentViewController:picker animated:YES completion:nil];
         }];
-    } else {
+    } else if (idx == 1) {
         // dismiss the media picker, present the gallery
         [self dismissViewControllerAnimated:YES completion:^{
             if (@available(iOS 14.0, *)) {
@@ -98,6 +99,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 UIViewController *gallery = self.galleryWrapper.gallery;
                 [self presentViewController:gallery animated:YES completion:nil];
             }
+        }];
+    } else if (idx == 2) {
+        // dismiss the media picker, present the sound recorder
+        [self dismissViewControllerAnimated:YES completion:^{
+            // TODO: show sound recorder
         }];
     }
 }
@@ -135,7 +141,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         
         [tv registerClass:[DisclosureCell class] forCellReuseIdentifier:@"disclosure"];
         [tv registerClass:[SubtitleDisclosureCell class] forCellReuseIdentifier:@"subtitleDisclosure"];
-        [tv registerClass:[PhotoScrollViewCell class] forCellReuseIdentifier:@"photos"];
+        [tv registerClass:[MediaScrollViewCell class] forCellReuseIdentifier:@"media"];
         [tv registerClass:[TextViewCell class] forCellReuseIdentifier:@"notes"];
         [tv registerClass:[ObsCenteredLabelCell class] forCellReuseIdentifier:@"singleButton"];
         
@@ -217,7 +223,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     if (!self.standaloneObservation && self.persistedObservation) {
         // standalone copy of the observation, with copies of the photos
         // so that we can delete or re-order photos as needed.
-        self.standaloneObservation = [self.persistedObservation standaloneCopyWithPhotos];
+        self.standaloneObservation = [self.persistedObservation standaloneCopyWithMedia];
     }
     
     self.recordsToDelete = [NSMutableArray array];
@@ -352,9 +358,11 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self.tableView endEditing:YES];
 }
 
-#pragma mark - PhotoScrollViewDelegate
+#pragma mark - MediaScrollViewDelegate
 
-- (void)photoScrollView:(PhotoScrollViewCell *)psv setDefaultIndex:(NSInteger)idx {
+- (void)mediaScrollView:(MediaScrollViewCell *)psv setDefaultIndex:(NSInteger)idx {
+    // this happens entirely within photos, sounds are simply placed at the end
+    // and have no position in the API
     // create a copy of sorted photos so we can re-order stuff safely
     NSMutableArray *photosCopy = [self.standaloneObservation.sortedObservationPhotos mutableCopy];
     // move the new default to the beginning of the copied array
@@ -380,18 +388,24 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self.tableView endUpdates];
 }
 
-- (void)photoScrollView:(PhotoScrollViewCell *)psv deletedIndex:(NSInteger)idx {
-    ExploreObservationPhotoRealm *photoToDelete = [[self.standaloneObservation observationPhotos] objectAtIndex:idx];
+- (void)mediaScrollView:(MediaScrollViewCell *)psv deletedIndex:(NSInteger)idx {
+    id recordToDelete = [[self.standaloneObservation observationMedia] objectAtIndex:idx];
     // stash it for deletion when we save
-    [self.recordsToDelete addObject:photoToDelete];
+    [self.recordsToDelete addObject:recordToDelete];
     
-    [self.standaloneObservation.observationPhotos removeObjectAtIndex:idx];
-    
-    // update sortable
-    for (int i = 0; i < self.standaloneObservation.sortedObservationPhotos.count; i++) {
-        ExploreObservationPhotoRealm *op = self.standaloneObservation.sortedObservationPhotos[i];
-        op.position = i;
-        op.timeUpdatedLocally = [NSDate date];
+    if ([recordToDelete isKindOfClass:ExploreObservationPhotoRealm.class]) {
+        NSInteger indexOfPhoto = [self.standaloneObservation.observationPhotos indexOfObject:recordToDelete];
+        [self.standaloneObservation.observationPhotos removeObjectAtIndex:indexOfPhoto];
+        
+        // update sortable
+        for (int i = 0; i < self.standaloneObservation.sortedObservationPhotos.count; i++) {
+            ExploreObservationPhotoRealm *op = self.standaloneObservation.sortedObservationPhotos[i];
+            op.position = i;
+            op.timeUpdatedLocally = [NSDate date];
+        }
+    } else if ([recordToDelete isKindOfClass:ExploreObservationSoundRealm.class]) {
+        NSInteger indexOfSound = [self.standaloneObservation.observationSounds indexOfObject:recordToDelete];
+        [self.standaloneObservation.observationSounds removeObjectAtIndex:indexOfSound];
     }
     
     [[Analytics sharedClient] event:kAnalyticsEventObservationDeletePhoto
@@ -403,50 +417,73 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self.tableView endUpdates];
 }
 
-- (void)photoScrollView:(PhotoScrollViewCell *)psv selectedIndex:(NSInteger)idx {
-    ExploreObservationPhotoRealm *op = self.standaloneObservation.sortedObservationPhotos[idx];
-    if (!op) { return; }
+- (void)mediaScrollView:(MediaScrollViewCell *)psv selectedIndex:(NSInteger)idx {
+    id selectedRecord = [self.standaloneObservation.observationMedia objectAtIndex:idx];
     
-    NSArray *galleryData = [self.standaloneObservation.sortedObservationPhotos bk_map:^id(ExploreObservationPhotoRealm *op) {
-        UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
-        if (img) {
-            return [MHGalleryItem itemWithImage:img];
-        } else {
-            return [MHGalleryItem itemWithURL:op.largePhotoUrl.absoluteString
-                                  galleryType:MHGalleryTypeImage];
-        }
-    }];
-    
-    MHUICustomization *customization = [[MHUICustomization alloc] init];
-    customization.showOverView = NO;
-    customization.showMHShareViewInsteadOfActivityViewController = NO;
-    customization.hideShare = YES;
-    customization.useCustomBackButtonImageOnImageViewer = NO;
-    
-    MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
-    gallery.galleryItems = galleryData;
-    gallery.presentationIndex = idx;
-    gallery.UICustomization = customization;
-    gallery.presentingFromImageView = [psv imageViewForIndex:idx];
-    
-    __weak MHGalleryController *blockGallery = gallery;
-    
-    gallery.finishedCallback = ^(NSInteger currentIndex, UIImage *image, MHTransitionDismissMHGallery *interactiveTransition, MHGalleryViewMode viewMode) {
+    if ([selectedRecord isKindOfClass:ExploreObservationPhotoRealm.class]) {
+        // open the gallery with this photo showing
+        NSArray *galleryData = [self.standaloneObservation.sortedObservationPhotos bk_map:^id(ExploreObservationPhotoRealm *op) {
+            UIImage *img = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
+            if (img) {
+                return [MHGalleryItem itemWithImage:img];
+            } else {
+                return [MHGalleryItem itemWithURL:op.largePhotoUrl.absoluteString
+                                      galleryType:MHGalleryTypeImage];
+            }
+        }];
         
-        __strong typeof(blockGallery)strongGallery = blockGallery;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [strongGallery dismissViewControllerAnimated:YES completion:nil];
-        });
-    };
-    
-    [[Analytics sharedClient] event:kAnalyticsEventObservationViewHiresPhoto
-                     withProperties:@{ @"Via": [self analyticsVia] }];
-    
-    [self presentMHGalleryController:gallery animated:YES completion:nil];
-    
+        MHUICustomization *customization = [[MHUICustomization alloc] init];
+        customization.showOverView = NO;
+        customization.showMHShareViewInsteadOfActivityViewController = NO;
+        customization.hideShare = YES;
+        customization.useCustomBackButtonImageOnImageViewer = NO;
+        
+        MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
+        gallery.galleryItems = galleryData;
+        gallery.presentationIndex = idx;
+        gallery.UICustomization = customization;
+        gallery.presentingFromImageView = [psv imageViewForIndex:idx];
+        
+        __weak MHGalleryController *blockGallery = gallery;
+        
+        gallery.finishedCallback = ^(NSInteger currentIndex, UIImage *image, MHTransitionDismissMHGallery *interactiveTransition, MHGalleryViewMode viewMode) {
+            
+            __strong typeof(blockGallery)strongGallery = blockGallery;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [strongGallery dismissViewControllerAnimated:YES completion:nil];
+            });
+        };
+        
+        [[Analytics sharedClient] event:kAnalyticsEventObservationViewHiresPhoto
+                         withProperties:@{ @"Via": [self analyticsVia] }];
+        
+        [self presentMHGalleryController:gallery animated:YES completion:nil];
+
+    } else if ([selectedRecord isKindOfClass:ExploreObservationSoundRealm.class]) {
+        
+        NSURL *soundUrl = nil;
+        
+        id <INatSound> sound = (id <INatSound>)selectedRecord;
+        MediaStore *ms = [[MediaStore alloc] init];
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSURL *localMediaUrl = [ms mediaUrlForKey:sound.mediaKey];
+        if (localMediaUrl && [fm fileExistsAtPath:localMediaUrl.path]) {
+            soundUrl = localMediaUrl;
+        } else {
+            soundUrl = [sound mediaUrl];
+        }
+        
+        AVPlayer *player = [[AVPlayer alloc] initWithURL:soundUrl];
+        AVPlayerViewController *playerVC = [[AVPlayerViewController alloc] initWithNibName:nil bundle:nil];
+        playerVC.player = player;
+        
+        [self presentViewController:playerVC animated:YES completion:^{
+            [player play];
+        }];
+    }
 }
 
-- (void)photoScrollViewAddPressed:(PhotoScrollViewCell *)psv {
+- (void)mediaScrollViewAddPressed:(MediaScrollViewCell *)psv {
     MediaPickerViewController *mediaPicker = [[MediaPickerViewController alloc] init];
     mediaPicker.mediaPickerDelegate = self;
     mediaPicker.showsNoPhotoOption = NO;
@@ -887,10 +924,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)saved:(UIButton *)button {
     UIAlertController *alert = nil;
     
-    if (!self.standaloneObservation.taxon && !self.standaloneObservation.speciesGuess && self.standaloneObservation.observationPhotos.count == 0) {
+    if (!self.standaloneObservation.taxon && !self.standaloneObservation.speciesGuess && self.standaloneObservation.observationMedia.count == 0) {
         // alert about the combo of no photos and no taxon/species guess being bad
-        NSString *title = NSLocalizedString(@"No Photos and Missing Identification", nil);
-        NSString *msg = NSLocalizedString(@"Without at least one photo, this observation will be impossible for others to help identify.", nil);
+        NSString *title = NSLocalizedString(@"No Photos or Sounds and Missing Identification", nil);
+        NSString *msg = NSLocalizedString(@"Without at least one photo or sound, this observation will be impossible for others to help identify.", nil);
         alert = [UIAlertController alertControllerWithTitle:title message:msg preferredStyle:UIAlertControllerStyleAlert];
     } else if (!self.standaloneObservation.timeObserved) {
         // alert about no date
@@ -1143,7 +1180,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     switch (indexPath.section) {
         case ConfirmObsSectionPhotos:
-            return [self photoCellInTableView:tableView];
+            return [self mediaCellInTableView:tableView];
             break;
         case ConfirmObsSectionIdentify:
             return [self speciesCellInTableView:tableView];
@@ -1429,10 +1466,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 #pragma mark - table view cell helpers
 
-- (UITableViewCell *)photoCellInTableView:(UITableView *)tableView {
-    PhotoScrollViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photos"];
+- (UITableViewCell *)mediaCellInTableView:(UITableView *)tableView {
+    MediaScrollViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"media"];
     
-    cell.photos = self.standaloneObservation.sortedObservationPhotos;
+    cell.media = self.standaloneObservation.observationMedia;
     cell.delegate = self;
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;

@@ -9,6 +9,8 @@
 @import AFNetworking;
 @import UIColor_HTMLColors;
 @import FontAwesomeKit;
+@import AudioToolbox;
+@import AVFoundation;
 
 #import "ObsDetailViewModel.h"
 #import "Observation.h"
@@ -37,10 +39,13 @@
 #import "UIImage+INaturalist.h"
 #import "NSLocale+INaturalist.h"
 #import "ExploreUserRealm.h"
+#import "MediaPageControlCell.h"
+#import "INatSound.h"
 
 @interface ObsDetailViewModel ()
 
-@property NSInteger viewingPhoto;
+@property NSInteger viewingMedia;
+@property AVPlayer *audioPlayer;
 
 @end
 
@@ -74,7 +79,7 @@
         if (indexPath.item == 0) {
             return [self userDateCellForTableView:tableView];
         } else if (indexPath.item == 1) {
-            return [self photoCellForTableView:tableView];
+            return [self mediaCellForTableView:tableView];
         } else if (indexPath.item == 2) {
             return [self taxonCellForTableView:tableView indexPath:indexPath];
         }
@@ -130,36 +135,52 @@
     return _api;
 }
 
-- (UITableViewCell *)photoCellForTableView:(UITableView *)tableView {
-    // photos
-    PhotosPageControlCell *cell = [tableView dequeueReusableCellWithIdentifier:@"photos"];
+- (UITableViewCell *)mediaCellForTableView:(UITableView *)tableView {
+    // photos and audio
     
-    if (self.observation.observationPhotos.count > 0) {
+    MediaPageControlCell *cell = [tableView dequeueReusableCellWithIdentifier:@"media"];
+    
+    if (self.observation.observationMedia.count > 0) {
         
-        if (self.viewingPhoto + 1 > self.observation.observationPhotos.count) {
-            // user was viewing, and deleted, the last photo in the observation
-            self.viewingPhoto = self.viewingPhoto - 1;
+        if (self.viewingMedia + 1 > self.observation.observationMedia.count) {
+            // user was viewing and deleted the last media item in the observation
+            self.viewingMedia = self.viewingMedia - 1;
         }
-
-        id <INatPhoto> op = self.observation.sortedObservationPhotos[self.viewingPhoto];
-        UIImage *localImage = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
-        if (localImage) {
-            cell.iv.image = localImage;
-        } else {
-            cell.spinner.hidden = NO;
-            cell.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
-            [cell.spinner startAnimating];
+        
+        id mediaItem = self.observation.observationMedia[self.viewingMedia];
+        if ([mediaItem conformsToProtocol:@protocol(INatPhoto)]) {
             
-            __weak typeof(cell.spinner)weakSpinner = cell.spinner;
-            __weak typeof(cell.iv)weakIv = cell.iv;
-            [cell.iv setImageWithURLRequest:[NSURLRequest requestWithURL:op.mediumPhotoUrl]
-                           placeholderImage:nil
-                                    success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
-                                        weakIv.image = image;
-                                        [weakSpinner stopAnimating];
-                                    } failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
-                                        [weakSpinner stopAnimating];
-                                    }];
+            id <INatPhoto> op = (id <INatPhoto>) mediaItem;
+            UIImage *localImage = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
+            if (localImage) {
+                cell.iv.image = localImage;
+            } else {
+                cell.spinner.hidden = NO;
+                cell.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+                [cell.spinner startAnimating];
+                
+                __weak typeof(cell.spinner)weakSpinner = cell.spinner;
+                __weak typeof(cell.iv)weakIv = cell.iv;
+                [cell.iv setImageWithURLRequest:[NSURLRequest requestWithURL:op.mediumPhotoUrl]
+                               placeholderImage:nil
+                                        success:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, UIImage * _Nonnull image) {
+                                            weakIv.image = image;
+                                            [weakSpinner stopAnimating];
+                                        } failure:^(NSURLRequest * _Nonnull request, NSHTTPURLResponse * _Nullable response, NSError * _Nonnull error) {
+                                            [weakSpinner stopAnimating];
+                                        }];
+            }
+
+        } else if ([mediaItem conformsToProtocol:@protocol(INatSound)]) {
+            
+            FAKIonIcons *soundIcon = [FAKIonIcons iosVolumeHighIconWithSize:200];
+            
+            [soundIcon addAttribute:NSForegroundColorAttributeName
+                              value:[UIColor lightGrayColor]];
+            
+            cell.iv.image = [soundIcon imageWithSize:CGSizeMake(200, 200)];
+            cell.iv.contentMode = UIViewContentModeCenter;  // don't scale
+
         }
     } else {
         // show iconic taxon image
@@ -173,14 +194,13 @@
         cell.iv.contentMode = UIViewContentModeCenter;  // don't scale
     }
     
-    if (self.observation.observationPhotos.count > 1) {
+    if (self.observation.observationMedia.count > 1) {
         cell.pageControl.hidden = NO;
-        cell.pageControl.numberOfPages = self.observation.observationPhotos.count;
-        cell.pageControl.currentPage = self.viewingPhoto;
+        cell.pageControl.numberOfPages = self.observation.observationMedia.count;
+        cell.pageControl.currentPage = self.viewingMedia;
         [cell.pageControl addTarget:self
                              action:@selector(pageControlChanged:)
                    forControlEvents:UIControlEventValueChanged];
-        
         
         UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self
                                                                                          action:@selector(swiped:)];
@@ -349,9 +369,13 @@
         if (indexPath.item == 0) {
             // do nothing
         } else if (indexPath.item == 1) {
-            // photos segue
-            if (self.observation.observationPhotos.count > 0) {
-                [self.delegate inat_performSegueWithIdentifier:@"photos" sender:@(self.viewingPhoto)];
+            // tapped media
+            id media = self.observation.observationMedia[self.viewingMedia];
+            if ([media conformsToProtocol:@protocol(INatPhoto)]) {
+                NSInteger viewingPhoto = [self.observation.sortedObservationPhotos indexOfObject:media];
+                [self.delegate inat_performSegueWithIdentifier:@"photos" sender:@(viewingPhoto)];
+            } else if ([media conformsToProtocol:@protocol(INatSound)]) {
+                [self.delegate inat_performSegueWithIdentifier:@"sound" sender:@(self.viewingMedia)];
             }
         } else if (indexPath.item == 2) {
             // taxa segue
@@ -384,7 +408,7 @@
 
 
 - (void)pageControlChanged:(UIPageControl *)pageControl {
-    self.viewingPhoto = pageControl.currentPage;
+    self.viewingMedia = pageControl.currentPage;
     
     NSIndexPath *photoIp = [NSIndexPath indexPathForItem:1 inSection:0];
     [self.delegate reloadRowAtIndexPath:photoIp];
@@ -404,19 +428,19 @@
     
     if (gesture.direction == UISwipeGestureRecognizerDirectionRight) {
         // swiping backward
-        if (self.viewingPhoto == 0) {
+        if (self.viewingMedia == 0) {
             // do nothing
         } else {
-            self.viewingPhoto--;
+            self.viewingMedia--;
             [self.delegate reloadRowAtIndexPath:photoIp withAnimation:UITableViewRowAnimationRight];
         }
 
     } else if (gesture.direction == UISwipeGestureRecognizerDirectionLeft) {
         // swiping forward
-        if (self.viewingPhoto + 1 == self.observation.observationPhotos.count) {
+        if (self.viewingMedia + 1 == self.observation.observationMedia.count) {
             // do nothing
         } else {
-            self.viewingPhoto++;
+            self.viewingMedia++;
             [self.delegate reloadRowAtIndexPath:photoIp withAnimation:UITableViewRowAnimationLeft];
         }
     }

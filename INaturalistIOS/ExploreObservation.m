@@ -16,6 +16,7 @@
 #import "ExploreTaxonRealm.h"
 #import "ExploreProjectObservation.h"
 #import "ExploreObsFieldValue.h"
+#import "ExploreObservationSound.h"
 
 @implementation ExploreObservation
 
@@ -49,6 +50,7 @@
              @"placeGuess": @"place_guess",
              @"user": @"user",
              @"observationPhotos": @"observation_photos",
+             @"observationSounds": @"observation_sounds",
              @"comments": @"comments",
              @"identifications": @"identifications",
              @"faves": @"faves",
@@ -118,6 +120,10 @@
 
 + (NSValueTransformer *)observationPhotosJSONTransformer {
     return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreObservationPhoto.class];
+}
+
++ (NSValueTransformer *)observationSoundsJSONTransformer {
+    return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreObservationSound.class];
 }
 
 + (NSValueTransformer *)commentsJSONTransformer {
@@ -234,6 +240,12 @@
 }
 
 #pragma mark - ObservationVisualization
+
+- (NSArray *)observationMedia {
+    NSMutableArray *media = [NSMutableArray arrayWithArray:self.sortedObservationPhotos];
+    [media addObjectsFromArray:self.observationSounds];
+    return [NSArray arrayWithArray:media];
+}
 
 - (NSString *)iconicTaxonName {
     return self.taxon.iconicTaxonName;

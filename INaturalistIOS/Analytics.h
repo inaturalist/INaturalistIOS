@@ -72,6 +72,7 @@ extern NSString *kAnalyticsEventObservationlessOFVSaved;
 extern NSString *kAnalyticsEventNewObservationLibraryStart;
 extern NSString *kAnalyticsEventNewObservationCameraStart;
 extern NSString *kAnalyticsEventNewObservationNoPhotoStart;
+extern NSString *kAnalyticsEventNewObservationSoundRecordingStart;
 
 extern NSString *kAnalyticsEventNewObservationStart;
 extern NSString *kAnalyticsEventNewObservationShutter;

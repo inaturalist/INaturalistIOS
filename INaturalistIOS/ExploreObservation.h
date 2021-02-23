@@ -23,6 +23,8 @@
 @property (nonatomic, copy) NSString *speciesGuess;
 @property (nonatomic, copy) NSString *inatDescription;
 @property (nonatomic, copy) NSArray *observationPhotos;
+@property (nonatomic, copy) NSArray *observationSounds;
+@property (nonatomic, readonly) NSArray *observationMedia;
 // both time and date for observations with both
 @property (nonatomic, copy) NSDate *timeObserved;
 // for observations with a date but without a time

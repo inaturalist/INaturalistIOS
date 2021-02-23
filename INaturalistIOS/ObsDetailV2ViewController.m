@@ -6,6 +6,8 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
+@import AVKit;
+
 #import <BlocksKit/BlocksKit.h>
 #import <MHVideoPhotoGallery/MHGalleryController.h>
 #import <MBProgressHUD/MBProgressHUD.h>
@@ -36,6 +38,8 @@
 #import "ObservationAPI.h"
 #import "ExploreObservationRealm.h"
 #import "ImageStore.h"
+#import "INatSound.h"
+#import "iNaturalist-Swift.h"
 
 @interface ObsDetailV2ViewController () <ObsDetailViewModelDelegate>
 
@@ -358,6 +362,34 @@
         };
         
         [self presentMHGalleryController:gallery animated:YES completion:nil];
+    } else if ([identifier isEqualToString:@"sound"]) {
+        
+        NSNumber *mediaIndex = (NSNumber *)object;
+        id media = [self.observation.observationMedia objectAtIndex:[mediaIndex integerValue]];
+        if ([media conformsToProtocol:@protocol(INatSound)]) {
+            
+            NSURL *soundUrl = nil;
+            
+            id <INatSound> sound = (id <INatSound>)media;
+            MediaStore *ms = [[MediaStore alloc] init];
+            NSFileManager *fm = [NSFileManager defaultManager];
+            NSURL *localMediaUrl = [ms mediaUrlForKey:sound.mediaKey];
+            if (localMediaUrl && [fm fileExistsAtPath:localMediaUrl.path]) {
+                soundUrl = localMediaUrl;
+            } else {
+                soundUrl = [sound mediaUrl];
+            }
+            
+            AVPlayer *player = [[AVPlayer alloc] initWithURL:soundUrl];
+            AVPlayerViewController *playerVC = [[AVPlayerViewController alloc] initWithNibName:nil bundle:nil];
+            playerVC.player = player;
+            
+            [self presentViewController:playerVC animated:YES completion:^{
+                [player play];
+            }];
+
+        }
+        
     } else if ([identifier isEqualToString:@"share"]) {
         // this isn't a storyboard thing either
         

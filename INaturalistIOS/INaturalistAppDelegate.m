@@ -198,7 +198,7 @@
 
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
     NSLog(@"config file URL %@", config.fileURL);
-    config.schemaVersion = 21;
+    config.schemaVersion = 22;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
         if (oldSchemaVersion < 1) {
             // add searchable (ie diacritic-less) taxon names
@@ -350,7 +350,10 @@
                 newObject[@"privateLongitude"] = @(kCLLocationCoordinate2DInvalid.longitude);
                 
             }];
-
+        }
+        if (oldSchemaVersion < 22) {
+            // added observation photos to observation model
+            // realm should take care of this automatically for us
         }
     };
     

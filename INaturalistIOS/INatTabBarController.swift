@@ -80,6 +80,16 @@ class INatTabBarController: UITabBarController {
       }
    }
    
+   func showSoundRecorder() {
+      Analytics.sharedClient()?.event(kAnalyticsEventNewObservationSoundRecordingStart)
+      
+      let soundRecorder = SoundRecordViewController(nibName: nil, bundle: nil)
+      soundRecorder.recorderDelegate = self
+      let soundNav = UINavigationController(rootViewController: soundRecorder)
+      
+      self.present(soundNav, animated: true, completion: nil)
+   }
+   
    func newObsNoPhoto() {
       Analytics.sharedClient()?.event(kAnalyticsEventNewObservationNoPhotoStart)
       
@@ -179,6 +189,8 @@ extension INatTabBarController: MediaPickerDelegate {
             self.showCamera()
          } else if idx == 2 {
             self.showCameraRoll()
+         } else if idx == 3 {
+            self.showSoundRecorder()
          }
       }
    }
@@ -275,6 +287,39 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
       picker.setNavigationBarHidden(false, animated: true)
       picker.pushViewController(editVC, animated: true)
    }   
+}
+
+extension INatTabBarController: SoundRecorderDelegate {
+   func recordedSound(recorder: SoundRecordViewController, uuidString: String) {
+      // with the standard image picker, no need to show confirmation screen
+      let o = ExploreObservationRealm()
+      o.uuid = UUID().uuidString.lowercased()
+      o.timeCreated = Date()
+      o.timeUpdatedLocally = Date()
+      
+      // photo was taken now
+      o.timeObserved = Date()
+      
+      let obsSound = ExploreObservationSoundRealm()
+      obsSound.uuid = uuidString
+      obsSound.timeUpdatedLocally = Date()
+      
+      o.observationSounds.add(obsSound)
+      
+      if let taxonId = self.observingTaxonId,
+         let taxon = ExploreTaxonRealm.object(forPrimaryKey: NSNumber(value: taxonId))
+      {
+         o.taxon = taxon
+      }
+      
+      let editVC = ObsEditV2ViewController(nibName: nil, bundle: nil)
+      editVC.standaloneObservation = o
+      // photo was taken at the current location
+      editVC.shouldContinueUpdatingLocation = true
+      editVC.isMakingNewObservation = true
+      
+      recorder.navigationController?.pushViewController(editVC, animated: true)
+   }
 }
 
 // required for UIImagePickerController delegate

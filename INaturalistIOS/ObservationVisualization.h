@@ -50,6 +50,8 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
 - (NSString *)iconicTaxonName;
 
 - (NSSet *)observationPhotos;
+- (NSArray *)observationSounds;
+- (NSArray *)observationMedia;
 - (NSArray *)sortedObservationPhotos;
 - (NSSet *)observationFieldValues;
 - (NSSet *)projectObservations;

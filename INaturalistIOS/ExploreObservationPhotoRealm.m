@@ -234,5 +234,12 @@
     [[ImageStore sharedImageStore] destroy:self.photoKey];
 }
 
+- (NSString *)fileName {
+    return @"original.jpg";
+}
+
+- (NSString *)mimeType {
+    return @"image/jpeg";
+}
 
 @end

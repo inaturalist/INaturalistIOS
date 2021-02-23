@@ -21,6 +21,7 @@
 #import "ExploreUpdateRealm.h"
 #import "ExploreObsFieldValueRealm.h"
 #import "ExploreProjectObservationRealm.h"
+#import "ExploreObservationSoundRealm.h"
 
 @interface ExploreObservationRealm : RLMObject <ObservationVisualization, Uploadable>
 
@@ -55,11 +56,14 @@
 
 // to-many relationships
 @property RLMArray<ExploreObservationPhotoRealm *><ExploreObservationPhotoRealm> *observationPhotos;
+@property RLMArray<ExploreObservationSoundRealm *><ExploreObservationSoundRealm> *observationSounds;
 @property RLMArray<ExploreCommentRealm *><ExploreCommentRealm> *comments;
 @property RLMArray<ExploreIdentificationRealm *><ExploreIdentificationRealm> *identifications;
 @property RLMArray<ExploreFaveRealm *><ExploreFaveRealm> *faves;
 @property RLMArray<ExploreObsFieldValueRealm *><ExploreObsFieldValueRealm> *observationFieldValues;
 @property RLMArray<ExploreProjectObservationRealm *><ExploreProjectObservationRealm> *projectObservations;
+
+@property (readonly) NSArray *observationMedia;
 
 @property NSString *validationErrorMsg;
 @property ExploreUserRealm *user;
@@ -81,6 +85,6 @@
 
 - (void)setSyncedForSelfAndChildrenAt:(NSDate *)syncDate;
 
-- (instancetype)standaloneCopyWithPhotos;
+- (instancetype)standaloneCopyWithMedia;
 
 @end

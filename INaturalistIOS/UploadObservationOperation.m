@@ -293,8 +293,8 @@
                     NSURL *fileUrl = [NSURL fileURLWithPath:path];
                     [formData appendPartWithFileURL:fileUrl
                                                name:@"file"
-                                           fileName:@"original.jpg"
-                                           mimeType:@"image/jpeg"
+                                           fileName:child.fileName
+                                           mimeType:child.mimeType
                                               error:nil];
                 };
                 

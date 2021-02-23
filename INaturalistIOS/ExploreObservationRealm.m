@@ -54,6 +54,14 @@
         value[@"observationPhotos"] = [NSArray arrayWithArray:eoprs];
     }
     
+    if (mtlModel.observationSounds) {
+        NSMutableArray *soundsForRealm = [NSMutableArray array];
+        for (ExploreObservationSound *mtlSound in mtlModel.observationSounds) {
+            [soundsForRealm addObject:[ExploreObservationSoundRealm valueForMantleModel:mtlSound]];
+        }
+        value[@"observationSounds"] = [NSArray arrayWithArray:soundsForRealm];
+    }
+    
     if (mtlModel.comments) {
         NSMutableArray *ecrs = [NSMutableArray array];
         for (ExploreComment *ec in mtlModel.comments) {
@@ -322,6 +330,16 @@
     }
 }
 
+- (NSArray *)observationMedia {
+    NSArray *photos = [self sortedObservationPhotos];
+    NSArray *sounds = [[self observationSounds] valueForKey:@"self"];
+    
+    NSMutableArray *media = [NSMutableArray arrayWithArray:photos];
+    [media addObjectsFromArray:sounds];
+    
+    return [NSArray arrayWithArray:media];
+}
+
 - (CLLocationCoordinate2D)privateLocation {
     if (self.privateLatitude == 0.0 || self.privateLongitude == 0.0) {
         return kCLLocationCoordinate2DInvalid;
@@ -498,6 +516,12 @@
         }
     }
     
+    for (ExploreObservationSoundRealm *os in self.observationSounds) {
+        if ([os needsUpload]) {
+            [recordsToUpload addObject:os];
+        }
+    }
+    
     for (ExploreObsFieldValueRealm *ofv in self.observationFieldValues) {
         if ([ofv needsUpload]) {
             [recordsToUpload addObject:ofv];
@@ -604,9 +628,11 @@
     // return an immutable copy
     // ignore_photos is required to avoid clobbering obs photos
     // when updating an observation via the node endpoint
+    // same with ignore_sounds?
     return @{
              @"observation": [NSDictionary dictionaryWithDictionary:mutableParams],
-             @"ignore_photos": @(YES)
+             @"ignore_photos": @(YES),
+             @"ignore_sounds": @(YES),
              };
 }
 
@@ -641,6 +667,10 @@
         op.timeSynced = syncDate;
     }
     
+    for (ExploreObservationSoundRealm *os in self.observationSounds) {
+        os.timeSynced = syncDate;
+    }
+    
     for (ExploreProjectObservationRealm *po in self.projectObservations) {
         po.timeSynced = syncDate;
     }
@@ -660,9 +690,15 @@
             [photo deleteFileSystemAssociations];
         }
         
+        // cached filesystem sound files
+        for (ExploreObservationSoundRealm *sound in observation.observationSounds) {
+            [sound deleteFileSystemAssociations];
+        }
+        
         // the server will cascade delete these for us
         // so just cascade the local stuff
         [realm deleteObjects:observation.observationPhotos];
+        [realm deleteObjects:observation.observationSounds];
         [realm deleteObjects:observation.projectObservations];
         [realm deleteObjects:observation.observationFieldValues];
         [realm deleteObjects:observation.comments];
@@ -687,7 +723,15 @@
         // only delete stuff from realm that's actually in realm
         for (ExploreObservationPhotoRealm *op in observation.observationPhotos) {
             if (op.realm) {
+                [op deleteFileSystemAssociations];
                 [realm deleteObject:op];
+            }
+        }
+        
+        for (ExploreObservationSoundRealm *sound in observation.observationSounds) {
+            if (sound.realm) {
+                [sound deleteFileSystemAssociations];
+                [realm deleteObject:sound];
             }
         }
         
@@ -730,16 +774,25 @@
 }
 
 
-- (instancetype)standaloneCopyWithPhotos {
+- (instancetype)standaloneCopyWithMedia {
     ExploreObservationRealm *copy = [[ExploreObservationRealm alloc] initWithValue:self];
     
     // remove photo relations, since they were shallowly copied
     [copy.observationPhotos removeAllObjects];
     
+    // remove sound relations, since they were shallowly copied
+    [copy.observationSounds removeAllObjects];
+    
     // re-add photo relations, with shallow copies
     for (ExploreObservationPhotoRealm *photo in self.observationPhotos) {
         ExploreObservationPhotoRealm *photoCopy = [[ExploreObservationPhotoRealm alloc] initWithValue:photo];
         [copy.observationPhotos addObject:photoCopy];
+    }
+    
+    // re-add sound relations, with shallow copies
+    for (ExploreObservationSoundRealm *sound in self.observationSounds) {
+        ExploreObservationSoundRealm *soundCopy = [[ExploreObservationSoundRealm alloc] initWithValue:sound];
+        [copy.observationSounds addObject:soundCopy];
     }
     
     return copy;

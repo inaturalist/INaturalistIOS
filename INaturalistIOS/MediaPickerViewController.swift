@@ -50,9 +50,9 @@ extension MediaPickerViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if showsNoPhotoOption {
-            return 3
+            return 4
         } else {
-            return 2
+            return 3
         }
     }
     
@@ -62,14 +62,18 @@ extension MediaPickerViewController: UICollectionViewDataSource {
                 return noPhotoCellForItemAt(indexPath: indexPath)
             } else if indexPath.item == 1 {
                 return cameraCellForItemAt(indexPath: indexPath)
-            } else {
+            } else if indexPath.item == 2 {
                 return photoLibraryCellForItemAt(indexPath: indexPath)
+            } else {
+                return recordSoundCellForItemAt(indexPath: indexPath)
             }
         } else {
             if indexPath.item == 0 {
                 return cameraCellForItemAt(indexPath: indexPath)
-            } else {
+            } else if indexPath.item == 1 {
                 return photoLibraryCellForItemAt(indexPath: indexPath)
+            } else {
+                return recordSoundCellForItemAt(indexPath: indexPath)
             }
         }
     }
@@ -115,6 +119,20 @@ extension MediaPickerViewController: UICollectionViewDataSource {
         }
         return cell
     }
+    
+    func recordSoundCellForItemAt(indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MediaPickerCell", for: indexPath) as! MediaPickerCell
+        cell.titleLabel.text = NSLocalizedString("Record Sound", comment: "Title for Camera button in media picker")
+        
+        if let micIcon = FAKIonIcons.micAIcon(withSize: 50),
+            let circleOutline = FAKIonIcons.iosCircleOutlineIcon(withSize: 80)
+        {
+            micIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
+            circleOutline.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
+            cell.iconImageView.image = UIImage(stackedIcons: [micIcon, circleOutline], imageSize: CGSize(width: 100, height: 100))
+        }
+        return cell
+    }
 }
 
 extension MediaPickerViewController: UICollectionViewDelegate {
@@ -125,7 +143,7 @@ extension MediaPickerViewController: UICollectionViewDelegate {
 
 extension MediaPickerViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 100, height: 150)
+        return CGSize(width: 60, height: 150)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -137,13 +155,13 @@ extension MediaPickerViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let totalCellWidth = 100 * (showsNoPhotoOption ? 3 : 2)
+        let totalCellWidth = 60 * (showsNoPhotoOption ? 3 : 2)
         let totalSpacingWidth = 1 * ((showsNoPhotoOption ? 3 : 2) - 1)
 
         let leftInset = (collectionView.frame.size.width - CGFloat(totalCellWidth + totalSpacingWidth)) / 2
         let rightInset = leftInset
-
-        return UIEdgeInsets(top: 10, left: leftInset, bottom: 0, right: rightInset)
+        print("left inset \(leftInset)")
+        return UIEdgeInsets(top: 10, left: leftInset - 60, bottom: 0, right: rightInset - 60)
     }
 }
 
@@ -158,11 +176,12 @@ class MediaPickerCell: UICollectionViewCell {
         iconImageView.contentMode = .center
         let titleLabel = UILabel(frame: .zero)
         titleLabel.numberOfLines = 2
+        titleLabel.textAlignment = .center
         
         let stack = UIStackView(arrangedSubviews: [iconImageView, titleLabel])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.alignment = .center
-        stack.distribution = .equalCentering
+        stack.distribution = .fillEqually
         stack.axis = .vertical
         stack.spacing = 0
         
