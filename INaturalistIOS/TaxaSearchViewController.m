@@ -684,7 +684,7 @@
                     return [NSString stringWithFormat:base,
                             self.commonAncestor.rankName, self.commonAncestor.scientificName];
                 } else {
-                    return NSLocalizedString(@"Here are our top species suggestions:", nil);
+                    return NSLocalizedString(@"Here are our top suggestions:", nil);
                 }
             } else if (self.scores.count > 0) {
                 return NSLocalizedString(@"We're not confident enough to make a recommendation, but here are our top suggestions.", nil);
