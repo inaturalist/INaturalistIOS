@@ -320,6 +320,10 @@ extension INatTabBarController: SoundRecorderDelegate {
       
       recorder.navigationController?.pushViewController(editVC, animated: true)
    }
+   
+   func cancelled(recorder: SoundRecordViewController) {
+      recorder.dismiss(animated: true, completion: nil)
+   }
 }
 
 // required for UIImagePickerController delegate

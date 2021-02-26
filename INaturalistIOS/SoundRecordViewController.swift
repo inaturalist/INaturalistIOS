@@ -12,6 +12,7 @@ import FontAwesomeKit
 
 @objc protocol SoundRecorderDelegate {
     func recordedSound(recorder: SoundRecordViewController, uuidString: String)
+    func cancelled(recorder: SoundRecordViewController)
 }
 
 
@@ -107,12 +108,41 @@ class SoundRecordViewController: UIViewController {
                     if allowed {
                         self.prepareRecording()
                     } else {
-                        print("no permissions, allowed is \(allowed)")
+                        let title = NSLocalizedString("No Microphone Permissions", comment: "title of alert when user tries to record a sound observation without granting mic permissions")
+                        let message = NSLocalizedString("If you wish to record a sound observation, you will need to give the iNaturalist app permission to use the microphone.", comment: "message of alert when mic permission is missing")
+                        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+                        
+                        let cancel = NSLocalizedString("Cancel", comment: "")
+                        alert.addAction(UIAlertAction(title: cancel, style: .cancel, handler: { _ in
+                            
+                            self.recorderDelegate?.cancelled(recorder: self)
+                        
+                        }))
+                        
+                        let openSettings = NSLocalizedString("Open Settings", comment: "button to open settings when user needs to adjust mic permissions")
+                        alert.addAction(UIAlertAction(title: openSettings, style: .default, handler: { _ in
+                            
+                            if let url = URL(string: UIApplication.openSettingsURLString) {
+                                UIApplication.shared.openURL(url)
+                            }
+                            
+                        }))
+                        
+                        self.present(alert, animated: true, completion: nil)
                     }
                 }
             }
-        } catch {
-            // failed to record!
+        } catch (let error) {
+            let title = NSLocalizedString("Failed to Setup Sound Recording", comment: "title of alert when sound recording setup fails")
+            let message = error.localizedDescription
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            
+            let cancel = NSLocalizedString("OK", comment: "")
+            alert.addAction(UIAlertAction(title: cancel, style: .default, handler: { _ in
+                
+                self.recorderDelegate?.cancelled(recorder: self)
+            
+            }))
         }
         
         
@@ -136,7 +166,7 @@ class SoundRecordViewController: UIViewController {
     
     
     @objc func donePressed() {
-        finishRecording(success: true)
+        finishRecording(success: true, error: nil)
         self.recorderDelegate?.recordedSound(recorder: self, uuidString: self.soundUUIDString)
     }
     
@@ -160,19 +190,19 @@ class SoundRecordViewController: UIViewController {
             AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
         ]
         
-        if let recorder = try? AVAudioRecorder(url: soundUrl, settings: settings) {
+        do {
+            let recorder = try AVAudioRecorder(url: soundUrl, settings: settings)
             recorder.delegate = self
             recorder.isMeteringEnabled = true
             recorder.prepareToRecord()
             
             timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(timerCallback), userInfo: nil, repeats: true)
-
+            
             self.audioRecorder = recorder
             
             self.recordButton.isEnabled = true
-            
-        } else {
-            finishRecording(success: false)
+        } catch (let error) {
+            finishRecording(success: false, error: error)
         }
     }
 
@@ -180,8 +210,20 @@ class SoundRecordViewController: UIViewController {
         self.audioRecorder?.pause()
     }
     
-    func finishRecording(success: Bool) {
+    func finishRecording(success: Bool, error: Error?) {
         if !success {
+            
+            let title = NSLocalizedString("Failed to Record", comment: "title of alert when sound recording fails")
+            let message = error?.localizedDescription ?? ""
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            
+            let cancel = NSLocalizedString("OK", comment: "")
+            alert.addAction(UIAlertAction(title: cancel, style: .default, handler: { _ in
+                
+                self.recorderDelegate?.cancelled(recorder: self)
+            
+            }))
+
             print("RECORDING FAILED")
             return
         }
@@ -226,7 +268,7 @@ class SoundRecordViewController: UIViewController {
 extension SoundRecordViewController: AVAudioRecorderDelegate {
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
         if !flag {
-            finishRecording(success: false)
+            finishRecording(success: false, error: nil)
             self.recorderDelegate?.recordedSound(recorder: self, uuidString: self.soundUUIDString)
         }
     }
