@@ -51,13 +51,10 @@
 }
 
 + (NSValueTransformer *)postPublishedAtJSONTransformer {
-    static NSDateFormatter *_dateFormatter = nil;
+    static NSISO8601DateFormatter *_dateFormatter = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _dateFormatter = [[NSDateFormatter alloc] init];
-        _dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
-        //2019-10-14T07:01:56.061Z
-        _dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+        _dateFormatter = [[NSISO8601DateFormatter alloc] init];
     });
 
     return [MTLValueTransformer transformerWithBlock:^id(id dateString) {

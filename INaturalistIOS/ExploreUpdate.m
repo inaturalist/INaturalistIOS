@@ -24,18 +24,13 @@
 
 
 + (NSValueTransformer *)createdAtJSONTransformer {
-    // 2016-10-21T11:16:15.536-07:00
-    
-    return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
-        
-        static NSDateFormatter *_dateFormatter = nil;
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            _dateFormatter = [[NSDateFormatter alloc] init];
-            _dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
-            _dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
-        });
+    static NSISO8601DateFormatter *_dateFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateFormatter = [[NSISO8601DateFormatter alloc] init];
+    });
 
+    return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
         return [_dateFormatter dateFromString:dateString];
     }];
 }

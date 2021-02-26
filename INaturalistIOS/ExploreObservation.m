@@ -76,12 +76,10 @@
 }
 
 + (NSValueTransformer *)timeObservedJSONTransformer {
-    static NSDateFormatter *_dateFormatter = nil;
+    static NSISO8601DateFormatter *_dateFormatter = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _dateFormatter = [[NSDateFormatter alloc] init];
-        _dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
-        _dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
+        _dateFormatter = [[NSISO8601DateFormatter alloc] init];
     });
 
     return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
@@ -90,12 +88,10 @@
 }
 
 + (NSValueTransformer *)dateObservedJSONTransformer {
-    static NSDateFormatter *_dateFormatter = nil;
+    static NSISO8601DateFormatter *_dateFormatter = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _dateFormatter = [[NSDateFormatter alloc] init];
-        _dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
-        _dateFormatter.dateFormat = @"yyyy-MM-dd";
+        _dateFormatter = [[NSISO8601DateFormatter alloc] init];
     });
 
     return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
@@ -105,12 +101,10 @@
 
 
 + (NSValueTransformer *)timeCreatedJSONTransformer {
-    static NSDateFormatter *_dateFormatter = nil;
+    static NSISO8601DateFormatter *_dateFormatter = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _dateFormatter = [[NSDateFormatter alloc] init];
-        _dateFormatter.locale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
-        _dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
+        _dateFormatter = [[NSISO8601DateFormatter alloc] init];
     });
 
     return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
