@@ -68,7 +68,7 @@
             if (appDelegate.loginController.isLoggedIn) {
                 footer.noInteractionLabel.text = NSLocalizedString(@"Upload this observation to enable faves.", nil);
             } else {
-                footer.noInteractionLabel.text = NSLocalizedString(@"Login to enable faves.", nil);
+                footer.noInteractionLabel.text = NSLocalizedString(@"Log in to enable faves.", nil);
             }
             
             return footer;

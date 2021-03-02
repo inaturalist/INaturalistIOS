@@ -739,7 +739,7 @@
             alertMsg = error.localizedDescription;
         }
     } else {
-        alertMsg = NSLocalizedString(@"Failed to login to iNaturalist. Please try again.",
+        alertMsg = NSLocalizedString(@"Failed to log in to iNaturalist. Please try again.",
                                      @"Unknown iNat login error");
     }
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle

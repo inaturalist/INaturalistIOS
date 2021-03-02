@@ -157,7 +157,7 @@
             if (appDelegate.loginController.isLoggedIn) {
                 noInteraction = NSLocalizedString(@"Upload this observation to enable comments & identifications.", nil);
             } else {
-                noInteraction = NSLocalizedString(@"Login and upload this observation to enable comments & identifications.", nil);
+                noInteraction = NSLocalizedString(@"Log in and upload this observation to enable comments & identifications.", nil);
             }
             
             ObsDetailNoInteractionHeaderFooter *footer = [tableView dequeueReusableHeaderFooterViewWithIdentifier:@"noInteraction"];

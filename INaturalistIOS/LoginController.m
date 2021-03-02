@@ -570,7 +570,7 @@ didSignInForUser:(GIDGoogleUser *)user
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *errorDesc = nil;
                     if ([httpResponse statusCode] == 401) {
-                        errorDesc = NSLocalizedString(@"You need to login to do that.",
+                        errorDesc = NSLocalizedString(@"You need to log in to do that.",
                                                       @"401 unauthorized message");
                     } else if ([httpResponse statusCode] == 403) {
                         errorDesc = NSLocalizedString(@"You don't have permission to do that. Your account may have been suspended. Please contact help@inaturalist.org",
