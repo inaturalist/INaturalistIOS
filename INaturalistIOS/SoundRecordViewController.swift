@@ -97,6 +97,11 @@ class SoundRecordViewController: UIViewController {
             meter.trailingAnchor.constraint(equalTo: stack.trailingAnchor),
         ])
         
+        let cancel = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelPressed))
+        self.navigationItem.leftBarButtonItem = cancel
+        
+        self.title = NSLocalizedString("Recording Sound", comment: "Title for sound recording screen")
+        
         recordingSession = AVAudioSession.sharedInstance()
         
         do {
@@ -164,6 +169,9 @@ class SoundRecordViewController: UIViewController {
     }
     
     
+    @objc func cancelPressed() {
+        self.recorderDelegate?.cancelled(recorder: self)
+    }
     
     @objc func donePressed() {
         finishRecording(success: true, error: nil)
