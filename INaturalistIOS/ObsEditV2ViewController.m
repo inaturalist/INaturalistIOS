@@ -473,6 +473,16 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             soundUrl = [sound mediaUrl];
         }
         
+        // request speaker audio output
+        NSError *error = nil;
+        AVAudioSession *session = [AVAudioSession sharedInstance];
+        BOOL categorySuccess = [session setCategory:AVAudioSessionCategoryPlayAndRecord error:&error];
+        BOOL overrideSuccess = [session overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker
+                                                          error:&error];
+        if (categorySuccess && overrideSuccess && !error) {
+            [session setActive:YES error:&error];
+        }
+
         AVPlayer *player = [[AVPlayer alloc] initWithURL:soundUrl];
         AVPlayerViewController *playerVC = [[AVPlayerViewController alloc] initWithNibName:nil bundle:nil];
         playerVC.player = player;
