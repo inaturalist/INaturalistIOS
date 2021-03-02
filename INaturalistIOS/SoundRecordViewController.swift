@@ -25,9 +25,9 @@ class SoundRecordViewController: UIViewController {
     var audioRecorder: AVAudioRecorder?
     var timer: Timer?
     var soundUUIDString: String!
-    
-    var micAttrString: NSAttributedString?
-    var pauseAttrString: NSAttributedString?
+        
+    var micImage: UIImage?
+    var pauseImage: UIImage?
     
     @objc weak var recorderDelegate: SoundRecorderDelegate?
     
@@ -44,30 +44,35 @@ class SoundRecordViewController: UIViewController {
         timerLabel = UILabel()
         timerLabel.accessibilityTraits = [.updatesFrequently]
         timerLabel.text = ""
+        timerLabel.font = UIFont.boldSystemFont(ofSize: 19)
+        timerLabel.textColor = UIColor.inatTint()
         
-        
-        if let micIcon = FAKIonIcons.micAIcon(withSize: 50) {
-            micIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
-            micAttrString = micIcon.attributedString()
+        if let mic = FAKIonIcons.micAIcon(withSize: 50),
+           let pause = FAKIonIcons.pauseIcon(withSize: 50),
+           let circle = FAKIonIcons.recordIcon(withSize: 75)
+        {
+            mic.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.white)
+            pause.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.white)
+            circle.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
+            
+            self.micImage = UIImage(stackedIcons: [circle, mic], imageSize: CGSize(width: 75, height: 75))?
+                .withRenderingMode(.alwaysOriginal)
+            self.pauseImage = UIImage(stackedIcons: [circle, pause], imageSize: CGSize(width: 75, height: 75))?
+                .withRenderingMode(.alwaysOriginal)
         }
-        
-        if let pauseIcon = FAKIonIcons.pauseIcon(withSize: 50) {
-            pauseIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
-            pauseAttrString = pauseIcon.attributedString()
-        }
-        
         
         meter = RecorderLevelView()
         meter.accessibilityTraits = [.updatesFrequently]
         
         recordButton = UIButton(type: .system)
-        recordButton.setAttributedTitle(micAttrString, for: .normal)
+        recordButton.setImage(self.micImage, for: .normal)
         recordButton.accessibilityLabel = NSLocalizedString("Record", comment: "Accessibility Label for Record/Pause Button")
         recordButton.addTarget(self, action: #selector(recordPressed), for: .touchUpInside)
         recordButton.isEnabled = false
+        recordButton.tintColor = UIColor.inatTint()
         
         doneButton = UIButton(type: .system)
-        doneButton.setTitle(NSLocalizedString("Done", comment: "Done button for recording observation sounds"), for: .normal)
+        doneButton.setTitle(NSLocalizedString("Save Recording", comment: "Done button for recording observation sounds"), for: .normal)
         doneButton.addTarget(self, action: #selector(donePressed), for: .touchUpInside)
         doneButton.tintColor = UIColor.inatTint()
         doneButton.isEnabled = false
@@ -75,8 +80,8 @@ class SoundRecordViewController: UIViewController {
         let bottomStack = UIStackView(arrangedSubviews: [recordButton, doneButton])
         bottomStack.translatesAutoresizingMaskIntoConstraints = false
         bottomStack.distribution = .fillEqually
-        bottomStack.axis = .horizontal
-        bottomStack.spacing = 40
+        bottomStack.axis = .vertical
+        bottomStack.spacing = 20
         bottomStack.alignment = .center
 
         let stack = UIStackView(arrangedSubviews: [timerLabel, meter, bottomStack])
@@ -156,12 +161,12 @@ class SoundRecordViewController: UIViewController {
     
     @objc func recordPressed() {
         if let recorder = self.audioRecorder, recorder.isRecording {
-            recordButton.setAttributedTitle(micAttrString, for: .normal)
+            recordButton.setImage(self.micImage, for: .normal)
             recordButton.accessibilityLabel = NSLocalizedString("Record", comment: "Accessibility Label for Record Button (when recording audio)")
 
             pauseRecording()
         } else {
-            recordButton.setAttributedTitle(pauseAttrString, for: .normal)
+            recordButton.setImage(self.pauseImage, for: .normal)
             recordButton.accessibilityLabel = NSLocalizedString("Pause", comment: "Accessibility Label for Pause Button (when recording audio)")
 
             startRecording()
