@@ -141,7 +141,7 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
     ObsDetailV2ViewController *obsDetail = [mainStoryboard instantiateViewControllerWithIdentifier:@"obsDetailV2"];
-    ExploreObservation *selectedObservation = [self.observationDataSource.observationsWithPhotos objectAtIndex:indexPath.item];
+    ExploreObservation *selectedObservation = [self.observationDataSource.observations objectAtIndex:indexPath.item];
     obsDetail.observation = selectedObservation;
     [self.navigationController pushViewController:obsDetail animated:YES];
     [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
@@ -153,13 +153,13 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.observationDataSource.observationsWithPhotos.count;
+    return self.observationDataSource.observations.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     ExploreGridCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:ExploreGridCellId
                                                                       forIndexPath:indexPath];
-    [cell setObservation:[self.observationDataSource.observationsWithPhotos objectAtIndex:indexPath.item]];
+    [cell setObservation:[self.observationDataSource.observations objectAtIndex:indexPath.item]];
     return cell;
 }
 
@@ -188,7 +188,7 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
 
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section {
-    if ([self.observationDataSource activeSearchLimitedByCurrentMapRegion] && self.observationDataSource.observationsWithPhotos.count > 0)
+    if ([self.observationDataSource activeSearchLimitedByCurrentMapRegion] && self.observationDataSource.observations.count > 0)
         return CGSizeMake(collectionView.frame.size.width, 44);
     else
         return CGSizeMake(0, 0);

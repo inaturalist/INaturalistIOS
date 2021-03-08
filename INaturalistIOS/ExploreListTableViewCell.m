@@ -362,6 +362,13 @@ static NSDateFormatter *shortFormatter;
                                                                          withString:@"medium"];
         
         [observationImageView setImageWithURL:[NSURL URLWithString:mediumUrlString]];
+    } else if (observation.observationSounds.count > 0) {
+        FAKIonIcons *soundIcon = [FAKIonIcons iosVolumeHighIconWithSize:40];
+        
+        [soundIcon addAttribute:NSForegroundColorAttributeName
+                          value:[UIColor lightGrayColor]];
+        
+        observationImageView.image = [soundIcon imageWithSize:CGSizeMake(40, 40)];
     }
     
     commonNameLabel.text = observation.taxon.displayFirstName;

@@ -45,7 +45,6 @@ typedef void(^FetchCompletionHandler)(NSArray *results, NSError *error);
 @protocol ExploreObservationsDataSource <NSObject>
 
 @property NSOrderedSet *observations;
-@property (readonly) NSArray *observationsWithPhotos;
 @property NSArray *activeSearchPredicates;
 @property ExploreRegion *limitingRegion;
 
