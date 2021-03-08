@@ -40,7 +40,7 @@
     
     if (mtlModel.placeGuess) { value[@"placeGuess"] = mtlModel.placeGuess; }
     
-    value[@"coordinatesObscuredToUser"] = @(mtlModel.coordinatesObscuredToUser);
+    value[@"coordinatesObscured"] = @(mtlModel.coordinatesObscured);
     
     value[@"captive"] = @(mtlModel.captive);
     value[@"geoprivacy"] = mtlModel.geoprivacy;
@@ -178,7 +178,7 @@
         value[@"ownersIdentificationFromVision"] = @(NO);
     }
     
-    value[@"coordinatesObscuredToUser"] = @(NO);
+    value[@"coordinatesObscured"] = @(NO);
     
     // mappings that require transformation
     if ([cdModel valueForKey:@"dataQuality"]) {
@@ -798,5 +798,10 @@
     return copy;
 }
 
+- (ObsTrueCoordinateVisibility)trueCoordinateVisibility {
+    // if it's in realm, it belongs to the logged in user, so we
+    // should always have the true coordinates
+    return ObsTrueCoordinatePrivacyVisible;
+}
 
 @end

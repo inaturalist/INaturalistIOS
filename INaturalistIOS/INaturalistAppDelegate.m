@@ -198,7 +198,7 @@
 
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
     NSLog(@"config file URL %@", config.fileURL);
-    config.schemaVersion = 22;
+    config.schemaVersion = 23;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
         if (oldSchemaVersion < 1) {
             // add searchable (ie diacritic-less) taxon names
@@ -341,8 +341,6 @@
         }
         if (oldSchemaVersion < 21) {
             // added private latitude & longitude to observation model
-            
-            // first loop through observations to find which photos are attached
             [migration enumerateObjects:ExploreObservationRealm.className
                                   block:^(RLMObject *oldObject, RLMObject *newObject) {
                 
@@ -354,6 +352,14 @@
         if (oldSchemaVersion < 22) {
             // added observation photos to observation model
             // realm should take care of this automatically for us
+        }
+        if (oldSchemaVersion < 23) {
+            // obs.coordinatesObscuredToUser renamed to obs.coordinatesObscured
+            [migration enumerateObjects:ExploreObservationRealm.className
+                                  block:^(RLMObject *oldObject, RLMObject *newObject) {
+                newObject[@"coordinatesObscured"] = oldObject[@"coordinatesObscuredToUser"];
+            }];
+
         }
     };
     

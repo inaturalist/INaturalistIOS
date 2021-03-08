@@ -21,6 +21,13 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
     ObsDataQualityNone
 };
 
+typedef NS_ENUM(NSInteger, ObsTrueCoordinateVisibility) {
+    ObsTrueCoordinatePrivacyVisible,
+    ObsTrueCoordinatePrivacyObscured,
+    ObsTrueCoordinatePrivacyHidden
+};
+
+
 @protocol ObservationVisualization <NSObject>
 
 
@@ -43,7 +50,8 @@ typedef NS_ENUM(NSInteger, ObsDataQuality) {
 - (BOOL)idPlease;
 - (NSString *)geoprivacy;
 
-- (BOOL)coordinatesObscuredToUser;
+- (ObsTrueCoordinateVisibility)trueCoordinateVisibility;
+- (BOOL)coordinatesObscured;
 - (NSString *)qualityGrade;
 - (ObsDataQuality)dataQuality;
 

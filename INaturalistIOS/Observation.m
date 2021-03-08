@@ -495,7 +495,7 @@
     return [self.hasUnviewedActivity boolValue] || [[self unseenUpdates] count] > 0;
 }
 
-- (BOOL)coordinatesObscuredToUser {
+- (BOOL)coordinatesObscured {
     // coordinates of my stuff are not obscured to me
     return NO;
 }

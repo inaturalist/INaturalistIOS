@@ -51,7 +51,7 @@
 @property (nonatomic, assign) CLLocationAccuracy privatePositionalAccuracy;
 @property (readonly) CLLocationAccuracy positionalAccuracy;
 
-@property (nonatomic, assign) BOOL coordinatesObscuredToUser;
+@property (nonatomic, assign) BOOL coordinatesObscured;
 
 @property (readonly) CLLocationDegrees latitude;
 @property (readonly) CLLocationDegrees longitude;

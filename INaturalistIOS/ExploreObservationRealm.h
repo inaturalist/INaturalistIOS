@@ -46,7 +46,7 @@
 @property CLLocationAccuracy publicPositionalAccuracy;
 @property CLLocationAccuracy privatePositionalAccuracy;
 
-@property BOOL coordinatesObscuredToUser;
+@property BOOL coordinatesObscured;
 @property NSString *placeGuess;
 
 @property (readonly) CLLocationAccuracy positionalAccuracy;

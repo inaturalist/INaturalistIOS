@@ -135,7 +135,7 @@
                                     value:[UIColor lightGrayColor]];
                     private.attributedString;
                 });
-            } else if ([self.observation.geoprivacy isEqualToString:@"obscured"] || [self.observation coordinatesObscuredToUser]) {
+            } else if ([self.observation.geoprivacy isEqualToString:@"obscured"] || [self.observation coordinatesObscured]) {
                 cell.geoprivacyLabel.attributedText = ({
                     FAKIcon *obscured = [FAKINaturalist icnLocationObscuredIconWithSize:24];
                     [obscured addAttribute:NSForegroundColorAttributeName
@@ -145,6 +145,8 @@
             } else {
                 cell.geoprivacyLabel.text = nil;
             }
+            
+            
             return cell;
         } else {
             // notes

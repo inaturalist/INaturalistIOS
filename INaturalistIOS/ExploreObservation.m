@@ -46,7 +46,7 @@
              @"mappable": @"mappable",
              @"publicPositionalAccuracy": @"public_positional_accuracy",
              @"privatePositionalAccuracy": @"positional_accuracy",
-             @"coordinatesObscuredToUser": @"obscured",
+             @"coordinatesObscured": @"obscured",
              @"placeGuess": @"place_guess",
              @"user": @"user",
              @"observationPhotos": @"observation_photos",
@@ -188,7 +188,7 @@
    	} else if ([key isEqualToString:@"mappable"]) {
         self.mappable = NO;
     } else if ([key isEqualToString:@"obscured"]) {
-        self.coordinatesObscuredToUser = NO;
+        self.coordinatesObscured = NO;
     } else if ([key isEqualToString:@"publicPositionalAccuracy"]) {
         self.publicPositionalAccuracy = 0;
     } else if ([key isEqualToString:@"privatePositionalAccuracy"]) {
@@ -196,7 +196,7 @@
     } else if ([key isEqualToString:@"location"]) {
         self.location = kCLLocationCoordinate2DInvalid;
     } else if ([key isEqualToString:@"privateLocation"]) {
-        self.location = kCLLocationCoordinate2DInvalid;
+        self.privateLocation = kCLLocationCoordinate2DInvalid;
     } else if ([key isEqualToString:@"captive"]) {
         self.captive = NO;
     } else if ([key isEqualToString:@"ownersIdentificationFromVision"]) {
@@ -371,6 +371,7 @@
 }
 
 - (CLLocationCoordinate2D)visibleLocation {
+    
     if (CLLocationCoordinate2DIsValid(self.privateLocation)) {
         return self.privateLocation;
     } else {
@@ -394,6 +395,23 @@
 
 - (CLLocationCoordinate2D)coordinate {
     return [self visibleLocation];
+}
+
+- (ObsTrueCoordinateVisibility)trueCoordinateVisibility {
+    if (self.coordinatesObscured) {
+        if (CLLocationCoordinate2DIsValid(self.privateLocation)) {
+            // obscured but we can see true coordinates
+            return ObsTrueCoordinatePrivacyVisible;
+        } else {
+            if ([self.geoprivacy isEqualToString:@"private"]) {
+                return ObsTrueCoordinatePrivacyHidden;
+            } else {
+                return ObsTrueCoordinatePrivacyObscured;
+            }
+        }
+    } else {
+        return ObsTrueCoordinatePrivacyVisible;
+    }
 }
 
 @end

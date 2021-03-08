@@ -14,15 +14,7 @@
 @implementation UIImage (MapAnnotations)
 
 + (UIImage *)annotationImageForObservation:(id <ObservationVisualization>)observation {
-    if (observation.coordinatesObscuredToUser) {
-        // style for iconic taxon of the observation
-        
-        FAKIcon *circle = [FAKIonIcons androidRadioButtonOffIconWithSize:25.0f];
-        //FAKIcon *circle = [FAKIonIcons iosCircleOutlineIconWithSize:25.0f];
-        [circle addAttribute:NSForegroundColorAttributeName value:[UIColor colorForIconicTaxon:observation.iconicTaxonName]];
-        
-        return [circle imageWithSize:CGSizeMake(25.0f, 25.0f)];
-    } else {
+    if (observation.trueCoordinateVisibility == ObsTrueCoordinatePrivacyVisible) {
         // style for iconic taxon of the observation
         FAKIcon *mapMarker = [FAKIonIcons iosLocationIconWithSize:25.0f];
         [mapMarker addAttribute:NSForegroundColorAttributeName value:[UIColor colorForIconicTaxon:observation.iconicTaxonName]];
@@ -33,6 +25,12 @@
         [mapMarker addAttribute:NSBaselineOffsetAttributeName value:@(25.0f)];
         [mapOutline addAttribute:NSBaselineOffsetAttributeName value:@(25.0f)];
         return [UIImage imageWithStackedIcons:@[mapMarker, mapOutline] imageSize:CGSizeMake(25.0f, 50.0f)];
+    } else {
+        // style for iconic taxon of the observation
+        FAKIcon *circle = [FAKIonIcons androidRadioButtonOffIconWithSize:25.0f];
+        [circle addAttribute:NSForegroundColorAttributeName value:[UIColor colorForIconicTaxon:observation.iconicTaxonName]];
+        
+        return [circle imageWithSize:CGSizeMake(25.0f, 25.0f)];
     }
 }
 
