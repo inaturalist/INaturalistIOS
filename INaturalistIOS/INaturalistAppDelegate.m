@@ -51,6 +51,7 @@
 #import "ExploreObservationRealm.h"
 #import "iNaturalist-Swift.h"
 #import "ImageStore.h"
+#import "ExploreObservationSoundRealm.h"
 
 @interface INaturalistAppDelegate () {
     NSManagedObjectModel *managedObjectModel;
@@ -129,8 +130,9 @@
     }];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self cleanupDatabaseExecutionSeconds:10];
-        [self cleanupPhotosExecutionSeconds:10];
+        [self cleanupDatabaseExecutionSeconds:9];
+        [self cleanupPhotosExecutionSeconds:9];
+        [self cleanupSoundsExecutionSeconds:9];
         
         [application endBackgroundTask:taskId];
         taskId = UIBackgroundTaskInvalid;
@@ -469,6 +471,30 @@
     [[ImageStore sharedImageStore] cleanupImageStoreUsingValidPhotoKeys:validPhotoKeys
                                                         syncedPhotoKeys:syncedPhotoKeys
                                                    allowedExecutionTime:allowedExecutionSeconds-elapsedAfterList];
+}
+
+- (void)cleanupSoundsExecutionSeconds:(NSInteger)allowedExecutionSeconds {
+    NSDate *beginDate = [NSDate date];
+    
+    RLMResults *allSounds = [ExploreObservationSoundRealm allObjects];
+    NSMutableArray *validSoundKeys = [NSMutableArray arrayWithCapacity:allSounds.count];
+    NSMutableArray *syncedSoundKeys = [NSMutableArray arrayWithCapacity:allSounds.count];
+    for (ExploreObservationSoundRealm *sound in allSounds) {
+        if (sound.mediaKey && sound.mediaKey.length > 0) {
+            [validSoundKeys addObject:sound.mediaKey];
+            if (sound.timeSynced) {
+                [syncedSoundKeys addObject:sound.mediaKey];
+            }
+        }
+    }
+    
+    NSDate *afterSoundKeyListDate = [NSDate date];
+    NSTimeInterval elapsedAfterList = [afterSoundKeyListDate timeIntervalSinceDate:beginDate];
+    
+    MediaStore *store = [[MediaStore alloc] init];
+    [store cleanupStoreWithValidMediaKeys:validSoundKeys
+                          syncedMediaKeys:syncedSoundKeys
+                              allowedTime:allowedExecutionSeconds-elapsedAfterList];
 }
 
 - (void)configureGlobalStyles {
