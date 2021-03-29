@@ -532,27 +532,31 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                  completionHandler:^(UIImage *image, NSError * _Nullable loadError) {
                 
                 if (loadError) {
-                    NSString *saveErrorTitle = NSLocalizedString(@"Photo Load Error", @"Title for photo load error alert msg");
-                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
-                                                                                   message:loadError.localizedDescription
-                                                                            preferredStyle:UIAlertControllerStyleAlert];
-                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                              style:UIAlertActionStyleDefault
-                                                            handler:nil]];
-                    [self presentViewController:alert animated:YES completion:nil];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        NSString *saveErrorTitle = NSLocalizedString(@"Photo Load Error", @"Title for photo load error alert msg");
+                        UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
+                                                                                       message:loadError.localizedDescription
+                                                                                preferredStyle:UIAlertControllerStyleAlert];
+                        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                                  style:UIAlertActionStyleDefault
+                                                                handler:nil]];
+                        [self presentViewController:alert animated:YES completion:nil];
+                    });
                     return;
                 }
                 
                 if (!image) {
-                    NSString *photosErrorTitle = NSLocalizedString(@"Photos Error", @"Title for photos error alert msg");
-                    NSString *unknownErrMsg = NSLocalizedString(@"Unknown error", @"Message body when we don't know the error");
-                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:photosErrorTitle
-                                                                                   message:unknownErrMsg
-                                                                            preferredStyle:UIAlertControllerStyleAlert];
-                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                              style:UIAlertActionStyleDefault
-                                                            handler:nil]];
-                    [self presentViewController:alert animated:YES completion:nil];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        NSString *photosErrorTitle = NSLocalizedString(@"Photos Error", @"Title for photos error alert msg");
+                        NSString *unknownErrMsg = NSLocalizedString(@"Unknown error", @"Message body when we don't know the error");
+                        UIAlertController *alert = [UIAlertController alertControllerWithTitle:photosErrorTitle
+                                                                                       message:unknownErrMsg
+                                                                                preferredStyle:UIAlertControllerStyleAlert];
+                        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                                  style:UIAlertActionStyleDefault
+                                                                handler:nil]];
+                        [self presentViewController:alert animated:YES completion:nil];
+                    });
                     return;
                 }
                 
@@ -561,14 +565,16 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 NSError *error = nil;
                 [store storeImage:image forKey:photoKey error:&error];
                 if (error) {
-                    NSString *saveErrorTitle = NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg");
-                    UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
-                                                                                   message:error.localizedDescription
-                                                                            preferredStyle:UIAlertControllerStyleAlert];
-                    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                              style:UIAlertActionStyleDefault
-                                                            handler:nil]];
-                    [self presentViewController:alert animated:YES completion:nil];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        NSString *saveErrorTitle = NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg");
+                        UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
+                                                                                       message:error.localizedDescription
+                                                                                preferredStyle:UIAlertControllerStyleAlert];
+                        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
+                                                                  style:UIAlertActionStyleDefault
+                                                                handler:nil]];
+                        [self presentViewController:alert animated:YES completion:nil];
+                    });
                     return;
                 }
                 
