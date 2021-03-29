@@ -352,18 +352,29 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
       }
       
       for result in results {
-         result.itemProvider.loadFileRepresentation(forTypeIdentifier: "public.jpeg") { (url, error) in
+         
+         // we can use the exact same load callback but have to call it with the
+         // explicit type identifier
+         let loadCallback = { (url: URL?, error: Error?) in
             
             if let error = error {
                DispatchQueue.main.async {
                   MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
+                  
+                  var localizedDescription = error.localizedDescription
+                  
+                  // check for an underlying error, which can happen with icloud stuff
+                  // if there is one, we want to show the underlying error localized desc
+                  let error = error as NSError
+                  if let underlyingError = error.userInfo[NSUnderlyingErrorKey] as? NSError {
+                     localizedDescription = underlyingError.localizedDescription
+                  }
+                  
+                  let alertTitle = NSLocalizedString("Photo Load Error", comment: "Title for photo library fetch error when making new obs")
+                  let alert = UIAlertController(title: alertTitle, message: localizedDescription, preferredStyle: .alert)
+                  alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
+                  self.present(alert, animated: true, completion: nil)
                }
-               
-               // notify about the error
-               let alertTitle = NSLocalizedString("Photo Load Error", comment: "Title for photo library fetch error when making new obs")
-               let alert = UIAlertController(title: alertTitle, message: error.localizedDescription, preferredStyle: .alert)
-               alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
-               self.present(alert, animated: true, completion: nil)
                
                return
             } else if let url = url, let image = UIImage(contentsOfFile: url.path) {
@@ -372,13 +383,13 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                guard let imageStore = ImageStore.shared() else {
                   DispatchQueue.main.async {
                      MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
+                     
+                     let alertTitle = NSLocalizedString("Photo Load Error", comment: "Title for photo library error when making new obs")
+                     let alertMsg = NSLocalizedString("ImageStore Creation Error", comment: "Message when we can't make the image store for the app")
+                     let alert = UIAlertController(title: alertTitle, message: alertMsg, preferredStyle: .alert)
+                     alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
+                     self.present(alert, animated: true, completion: nil)
                   }
-                  
-                  let alertTitle = NSLocalizedString("Photo Load Error", comment: "Title for photo library error when making new obs")
-                  let alertMsg = NSLocalizedString("ImageStore Creation Error", comment: "Message when we can't make the image store for the app")
-                  let alert = UIAlertController(title: alertTitle, message: alertMsg, preferredStyle: .alert)
-                  alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
-                  self.present(alert, animated: true, completion: nil)
                   
                   return
                }
@@ -390,13 +401,13 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                } catch {
                   DispatchQueue.main.async {
                      MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
+                     
+                     let alertTitle = NSLocalizedString("Photo Load Error", comment: "Title for photo library error when making new obs")
+                     let alertMsg = NSLocalizedString("ImageStore Save Error", comment: "Message when we can't save to the app image store")
+                     let alert = UIAlertController(title: alertTitle, message: alertMsg, preferredStyle: .alert)
+                     alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
+                     self.present(alert, animated: true, completion: nil)
                   }
-                  
-                  let alertTitle = NSLocalizedString("Photo Load Error", comment: "Title for photo library error when making new obs")
-                  let alertMsg = NSLocalizedString("ImageStore Save Error", comment: "Message when we can't save to the app image store")
-                  let alert = UIAlertController(title: alertTitle, message: alertMsg, preferredStyle: .alert)
-                  alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
-                  self.present(alert, animated: true, completion: nil)
                   
                   return
                }
@@ -498,9 +509,14 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                      let editVCNav = UINavigationController(rootViewController: editVC)
                      self.present(editVCNav, animated: true)
                   }
-
                }
             }
+         }
+         
+         if (result.itemProvider.hasItemConformingToTypeIdentifier("public.jpeg")) {
+            result.itemProvider.loadFileRepresentation(forTypeIdentifier: "public.jpeg", completionHandler: loadCallback)
+         } else if (result.itemProvider.hasItemConformingToTypeIdentifier("public.png")) {
+            result.itemProvider.loadFileRepresentation(forTypeIdentifier: "public.png", completionHandler: loadCallback)
          }
       }
    }
