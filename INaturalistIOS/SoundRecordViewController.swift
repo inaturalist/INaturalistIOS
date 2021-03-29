@@ -155,7 +155,40 @@ class SoundRecordViewController: UIViewController {
             }))
         }
         
+        // notifications about interruptions
+        NotificationCenter.default.addObserver(self, selector: #selector(audioInterruption), name: AVAudioSession.interruptionNotification, object:nil)
         
+    }
+    
+    @objc func audioInterruption(note: Notification) {
+        guard let userInfo = note.userInfo,
+              let typeValue = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt,
+              let type = AVAudioSession.InterruptionType(rawValue: typeValue) else {
+            return
+        }
+        
+        
+        switch type {
+        case .began:
+            if #available(iOS 10.3, *) {
+                if let suspended = userInfo[AVAudioSessionInterruptionWasSuspendedKey] as? NSNumber {
+                    if suspended.boolValue {
+                        // app was previously suspended, not actively interruped
+                        // ignore this notification, don't update the UI
+                        return
+                    }
+                }
+            }
+            
+            // interruption began
+            self.timer?.invalidate()
+            timerLabel.text = NSLocalizedString("Paused", comment: "")
+        case .ended:
+            // interruption ended
+            timerLabel.text = NSLocalizedString("Resuming", comment: "")
+            timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(timerCallback), userInfo: nil, repeats: true)
+        default: ()
+        }
     }
     
     
@@ -191,10 +224,8 @@ class SoundRecordViewController: UIViewController {
     }
     
     func prepareRecording() {
-        
         let mm = MediaStore()
         let soundUrl = mm.mediaUrlForKey(self.soundUUIDString)
-        print("sound path is \(soundUrl)")
         
         let settings = [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
@@ -232,12 +263,8 @@ class SoundRecordViewController: UIViewController {
             
             let cancel = NSLocalizedString("OK", comment: "")
             alert.addAction(UIAlertAction(title: cancel, style: .default, handler: { _ in
-                
                 self.recorderDelegate?.cancelled(recorder: self)
-            
             }))
-
-            print("RECORDING FAILED")
             return
         }
         
@@ -280,10 +307,15 @@ class SoundRecordViewController: UIViewController {
 
 extension SoundRecordViewController: AVAudioRecorderDelegate {
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        if !flag {
-            finishRecording(success: false, error: nil)
+        if flag {
             self.recorderDelegate?.recordedSound(recorder: self, uuidString: self.soundUUIDString)
+        } else {
+            finishRecording(success: false, error: nil)
         }
+    }
+    
+    func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
+        finishRecording(success: false, error: error)
     }
     
 }
@@ -297,8 +329,9 @@ class RecorderLevelView: UIView {
             if level < 0.0 { level = 0.0 }
             if level > 1.0 { level = 1.0 }
             
-            let baseString = NSLocalizedString("Recording Level %f", comment: "Accessibility label for sound recorder")
+            let baseString = NSLocalizedString("Recording Level (from 0 to 1)", comment: "Accessibility label for sound recorder")
             self.accessibilityLabel = String(format: baseString, level)
+            self.accessibilityValue = "\(level)"
             
             let scaledLevel = level * 30
             // anything less than 0.01 is basically nothing

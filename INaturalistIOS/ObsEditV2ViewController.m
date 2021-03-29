@@ -56,7 +56,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionDelete,
 };
 
-@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, MediaScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, TaxaSearchViewControllerDelegate, CLLocationManagerDelegate, GalleryWrapperDelegate, MediaPickerDelegate, PHPickerViewControllerDelegate> {
+@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, MediaScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, TaxaSearchViewControllerDelegate, CLLocationManagerDelegate, GalleryWrapperDelegate, MediaPickerDelegate, PHPickerViewControllerDelegate, SoundRecorderDelegate> {
     
     CLLocationManager *_locationManager;
 }
@@ -103,7 +103,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     } else if (idx == 2) {
         // dismiss the media picker, present the sound recorder
         [self dismissViewControllerAnimated:YES completion:^{
-            // TODO: show sound recorder
+            SoundRecordViewController *recorder = [[SoundRecordViewController alloc] initWithNibName:nil bundle:nil];
+            recorder.recorderDelegate = self;
+            UINavigationController *soundNav = [[UINavigationController alloc] initWithRootViewController:recorder];
+            [self presentViewController:soundNav animated:YES completion:nil];
         }];
     }
 }
@@ -598,6 +601,22 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             }];
         }
     }
+}
+
+#pragma mark - SoundRecorderDelegate
+
+- (void)recordedSoundWithRecorder:(SoundRecordViewController *)recorder uuidString:(NSString *)uuidString {
+    ExploreObservationSoundRealm *obsSound = [[ExploreObservationSoundRealm alloc] init];
+    obsSound.uuid = uuidString;
+    obsSound.timeUpdatedLocally = [NSDate date];
+    
+    [self.standaloneObservation.observationSounds addObject:obsSound];
+    [self.tableView reloadData];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)cancelledWithRecorder:(SoundRecordViewController *)recorder {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - UIImagePickerControllerDelegate
