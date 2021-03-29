@@ -119,7 +119,10 @@
 }
 
 - (BOOL)needsUpload {
-    return self.timeSynced == nil || [self.timeSynced timeIntervalSinceDate:self.timeUpdatedLocally] < 0;
+    if (self.uploadableRepresentation == nil) { return NO; }                                        // nothing to upload
+    if (self.timeSynced) { return YES; }                                                            // never uploaded, needs upload
+    if ([self.timeSynced timeIntervalSinceDate:self.timeUpdatedLocally] < 0) { return YES; }        // updated since last sync, needs upload
+    return NO;                                                                                      // doesn't need upload
 }
 
 + (NSArray *)needingUpload {
