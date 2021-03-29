@@ -291,13 +291,12 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
 
 extension INatTabBarController: SoundRecorderDelegate {
    func recordedSound(recorder: SoundRecordViewController, uuidString: String) {
-      // with the standard image picker, no need to show confirmation screen
       let o = ExploreObservationRealm()
       o.uuid = UUID().uuidString.lowercased()
       o.timeCreated = Date()
       o.timeUpdatedLocally = Date()
       
-      // photo was taken now
+      // observation was made now
       o.timeObserved = Date()
       
       let obsSound = ExploreObservationSoundRealm()
@@ -314,7 +313,7 @@ extension INatTabBarController: SoundRecorderDelegate {
       
       let editVC = ObsEditV2ViewController(nibName: nil, bundle: nil)
       editVC.standaloneObservation = o
-      // photo was taken at the current location
+      // observation was taken at the current location
       editVC.shouldContinueUpdatingLocation = true
       editVC.isMakingNewObservation = true
       
