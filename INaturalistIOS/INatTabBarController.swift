@@ -355,19 +355,31 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
          result.itemProvider.loadFileRepresentation(forTypeIdentifier: "public.jpeg") { (url, error) in
             
             if let error = error {
-               print(error)
                DispatchQueue.main.async {
                   MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
                }
+               
+               // notify about the error
+               let alertTitle = NSLocalizedString("Photo Load Error", comment: "Title for photo library fetch error when making new obs")
+               let alert = UIAlertController(title: alertTitle, message: error.localizedDescription, preferredStyle: .alert)
+               alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
+               self.present(alert, animated: true, completion: nil)
+               
                return
             } else if let url = url, let image = UIImage(contentsOfFile: url.path) {
-               print(url)
                
                // copy the file into my ImageStore
                guard let imageStore = ImageStore.shared() else {
                   DispatchQueue.main.async {
                      MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
                   }
+                  
+                  let alertTitle = NSLocalizedString("Photo Load Error", comment: "Title for photo library error when making new obs")
+                  let alertMsg = NSLocalizedString("ImageStore Creation Error", comment: "Message when we can't make the image store for the app")
+                  let alert = UIAlertController(title: alertTitle, message: alertMsg, preferredStyle: .alert)
+                  alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
+                  self.present(alert, animated: true, completion: nil)
+                  
                   return
                }
                
@@ -379,6 +391,13 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                   DispatchQueue.main.async {
                      MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
                   }
+                  
+                  let alertTitle = NSLocalizedString("Photo Load Error", comment: "Title for photo library error when making new obs")
+                  let alertMsg = NSLocalizedString("ImageStore Save Error", comment: "Message when we can't save to the app image store")
+                  let alert = UIAlertController(title: alertTitle, message: alertMsg, preferredStyle: .alert)
+                  alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
+                  self.present(alert, animated: true, completion: nil)
+                  
                   return
                }
                            
@@ -428,7 +447,7 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                }
                
                if photoKeys.count == results.count {
-                  // we've saved all the results to out photo library
+                  // we've saved all the results to our photo library
                   // and can safely make our observation and move on
                   
                   DispatchQueue.main.async {
