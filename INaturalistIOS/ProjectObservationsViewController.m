@@ -746,7 +746,9 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         // do the ofvs for this project's pofs
         for (ExploreProjectObsFieldRealm *pof in project.projectObsFields) {
             ExploreObsFieldValueRealm *ofvToDelete = [self.observation valueForObsField:pof.obsField];
+            if (!ofvToDelete) { continue; }                 // nothing to do
             NSInteger indexOfOfv = [self.observation.observationFieldValues indexOfObject:ofvToDelete];
+            if (indexOfOfv == NSNotFound) { continue; }     // nothing to do
             
             // delete it from the observation
             RLMRealm *realm = [RLMRealm defaultRealm];
