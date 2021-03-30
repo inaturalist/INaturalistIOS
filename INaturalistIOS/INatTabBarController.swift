@@ -367,7 +367,8 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                   // if there is one, we want to show the underlying error localized desc
                   let error = error as NSError
                   if let underlyingError = error.userInfo[NSUnderlyingErrorKey] as? NSError {
-                     localizedDescription = underlyingError.localizedDescription
+                     let baseMsg = NSLocalizedString("We're not able to fetch your photo from iCloud: %@", comment: "base error message when icloud photo fetch fails")
+                     localizedDescription = String(format: baseMsg, underlyingError.localizedDescription)
                   }
                   
                   let alertTitle = NSLocalizedString("Photo Load Error", comment: "Title for photo library fetch error when making new obs")
