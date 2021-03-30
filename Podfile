@@ -1,5 +1,5 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, :deployment_target => '9.3'
+platform :ios, :deployment_target => '10.2'
 
 inhibit_all_warnings!
 use_frameworks!
