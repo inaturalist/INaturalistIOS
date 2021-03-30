@@ -144,7 +144,7 @@
         
         if (self.viewingMedia + 1 > self.observation.observationMedia.count) {
             // user was viewing and deleted the last media item in the observation
-            self.viewingMedia = self.viewingMedia - 1;
+            self.viewingMedia = self.observation.observationMedia.count - 1;
         }
         
         id mediaItem = self.observation.observationMedia[self.viewingMedia];
