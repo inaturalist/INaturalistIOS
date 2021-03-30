@@ -25,15 +25,32 @@
 }
 
 + (NSValueTransformer *)commentedDateJSONTransformer {
-	static NSISO8601DateFormatter *_dateFormatter = nil;
-	static dispatch_once_t onceToken;
-	dispatch_once(&onceToken, ^{
-        _dateFormatter = [[NSISO8601DateFormatter alloc] init];
-	});
+    // fractional seconds in the automatic 8601 date parser are ios 11 and over
+    if (@available(iOS 11.0, *)) {
+        static NSISO8601DateFormatter *_dateFormatter = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            _dateFormatter = [[NSISO8601DateFormatter alloc] init];
+            _dateFormatter.formatOptions = NSISO8601DateFormatWithInternetDateTime|NSISO8601DateFormatWithFractionalSeconds;
+        });
+        
+        return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
+            return [_dateFormatter dateFromString:dateString];
+        }];
+    } else {
+        static NSDateFormatter *_dateFormatter = nil;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            _dateFormatter = [[NSDateFormatter alloc] init];
+            _dateFormatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ";
+        });
+        
+        return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
+            return [_dateFormatter dateFromString:dateString];
+        }];
+    }
+    
 
-    return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
-        return [_dateFormatter dateFromString:dateString];
-    }];
 }
 
 #pragma mark - CommentVisualization
