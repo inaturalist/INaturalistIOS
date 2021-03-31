@@ -749,13 +749,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
             if (!ofvToDelete) { continue; }                 // nothing to do
             NSInteger indexOfOfv = [self.observation.observationFieldValues indexOfObject:ofvToDelete];
             if (indexOfOfv == NSNotFound) { continue; }     // nothing to do
-            
-            // delete it from the observation
-            RLMRealm *realm = [RLMRealm defaultRealm];
-            [realm beginWriteTransaction];
-            [self.observation.observationFieldValues removeObjectAtIndex:indexOfOfv];
-            [realm commitWriteTransaction];
-            
+                        
             if ([ofvToDelete timeSynced]) {
                 [ExploreObsFieldValueRealm syncedDelete:ofvToDelete];
             } else {
