@@ -1,23 +1,23 @@
 {
   "images" : [
     {
+      "filename" : "iNaturalistCA-Wordmark-iOS.png",
       "idiom" : "universal",
-      "scale" : "1x",
-      "filename" : "network_logo_ca.png"
+      "scale" : "1x"
     },
     {
+      "filename" : "iNaturalistCA-Wordmark-iOS@2x.png",
       "idiom" : "universal",
-      "scale" : "2x",
-      "filename" : "network_logo_ca@2x.png"
+      "scale" : "2x"
     },
     {
+      "filename" : "iNaturalistCA-Wordmark-iOS@3x.png",
       "idiom" : "universal",
-      "scale" : "3x",
-      "filename" : "network_logo_ca@3x.png"
+      "scale" : "3x"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }

@@ -60,8 +60,14 @@
                 NSLocalizedString(@"Finland: Finnish Museum of Naturalist History (Luomus) supporting iNaturalist Finland (https://inaturalist.laji.fi).",
                                   @"finland partner")];
     bodyText = [bodyText stringByAppendingFormat:@"%@\n",
+                NSLocalizedString(@"Greece: iSea supporting iNaturalist Greece (greece.iNaturalist.org).",
+                                  @"greece partner")];
+    bodyText = [bodyText stringByAppendingFormat:@"%@\n",
                 NSLocalizedString(@"Israel: University of Haifa supporting iNaturalist Israel (israel.inaturalist.org).",
                                   @"israel partner")];
+    bodyText = [bodyText stringByAppendingFormat:@"%@\n",
+                NSLocalizedString(@"Luxembourg: Luxembourg National Museum of Natural History (MnhnL) supporting iNaturalist Luxembourg (inaturalist.lu).",
+                                  @"luxembourg partner")];
     bodyText = [bodyText stringByAppendingFormat:@"%@\n",
                 NSLocalizedString(@"Mexico: Comisión nacional para el conocimiento y uso de la biodiversidad (CONABIO) operating NaturaLista (NaturaLista.mx).",
                                   @"mexico partner")];
@@ -74,6 +80,9 @@
     bodyText = [bodyText stringByAppendingFormat:@"%@\n\n",
                 NSLocalizedString(@"Portugal: Associação Biodiversidade Para Todos operating Biodiversity4All (Biodiversity4All.org).",
                                   @"portugal partner")];
+    bodyText = [bodyText stringByAppendingFormat:@"%@\n\n",
+                NSLocalizedString(@"United Kingdom: National Biodiversity Network Trust supporting iNaturalist United Kingdom (uk.inaturalist.org).",
+                                  @"uk partner")];
     
     bodyText = [bodyText stringByAppendingFormat:@"%@\n\n",
                 NSLocalizedString(@"iNaturalist uses Glyphish icons by Joseph Wain, ionicons by Ben Sperry, and icons by Luis Prado and Roman Shlyakov from the Noun Project. iNaturalist is also deeply grateful to the Cocoapods community, and to the contributions of our own open source community. See https://github.com/inaturalist/INaturalistIOS.",

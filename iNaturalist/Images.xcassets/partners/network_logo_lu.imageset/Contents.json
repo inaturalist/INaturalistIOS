@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "iNaturalistEc-Wordmark-iOS.png",
+      "filename" : "iNaturalistLU-Wordmark-iOS.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "iNaturalistEc-Wordmark-iOS@2x.png",
+      "filename" : "iNaturalistLU-Wordmark-iOS@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "iNaturalistEc-Wordmark-iOS@3x.png",
+      "filename" : "iNaturalistLU-Wordmark-iOS@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

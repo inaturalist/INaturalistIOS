@@ -1,23 +1,23 @@
 {
   "images" : [
     {
+      "filename" : "NaturalistaCO-iOS.png",
       "idiom" : "universal",
-      "filename" : "6-logo.png",
       "scale" : "1x"
     },
     {
+      "filename" : "NaturalistaCO-iOS@2x.png",
       "idiom" : "universal",
-      "filename" : "6-logo-1.png",
       "scale" : "2x"
     },
     {
+      "filename" : "NaturalistaCO-iOS@3x.png",
       "idiom" : "universal",
-      "filename" : "6-logo-2.png",
       "scale" : "3x"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }
