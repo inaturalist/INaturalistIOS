@@ -1,26 +1,15 @@
-/* 
-  TaxaRanks.strings
-  iNaturalist
-
-  Created by Alex Shepard on 2/20/21.
-  Copyright © 2021 iNaturalist. All rights reserved.
-*/
-
-// See https://github.com/inaturalist/inaturalist/blob/9ffb192b85fdc7cf2166eafedf5e71385c869cb7/app/webpack/taxa/shared/util.js#L187
-// for canonical list of rank names and levels
-
 /* kingdom rank in tree of life */
-"kingdom" = "kingdom";
+"kingdom" = "rike";
 /* subkingdom rank in tree of life */
-"subkingdom" = "subkingdom";
+"subkingdom" = "underrike";
 
 /* phylum rank in tree of life */
-"phylum" = "phylum";
+"phylum" = "Rekke";
 /* subphylum rank in tree of life */
-"subphylum" = "subphylum";
+"subphylum" = "Underrekke";
 
 /* superclass rank in tree of life */
-"superclass" = "superclass";
+"superclass" = "Superklasse";
 /* class rank in tree of life */
 "class" = "class";
 /* subclass rank in tree of life */
@@ -73,19 +62,15 @@
 "subsection" = "subsection";
 
 /* species rank in tree of life */
-"species" = "species";
+"species" = "art";
 /* hybrid rank in tree of life */
 "hybrid" = "hybrid";
 
 /* subspecies rank in tree of life */
-"subspecies" = "subspecies";
+"subspecies" = "underart";
 /* variety rank in tree of life */
 "variety" = "variety";
 /* form rank in tree of life */
 "form" = "form";
 /* infrahybrid rank in tree of life */
 "infrahybrid" = "infrahybrid";
-
-
-
-

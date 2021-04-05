@@ -1,43 +1,32 @@
-/* 
-  TaxaRanks.strings
-  iNaturalist
-
-  Created by Alex Shepard on 2/20/21.
-  Copyright © 2021 iNaturalist. All rights reserved.
-*/
-
-// See https://github.com/inaturalist/inaturalist/blob/9ffb192b85fdc7cf2166eafedf5e71385c869cb7/app/webpack/taxa/shared/util.js#L187
-// for canonical list of rank names and levels
-
 /* kingdom rank in tree of life */
-"kingdom" = "kingdom";
+"kingdom" = "界";
 /* subkingdom rank in tree of life */
-"subkingdom" = "subkingdom";
+"subkingdom" = "亞界";
 
 /* phylum rank in tree of life */
-"phylum" = "phylum";
+"phylum" = "門";
 /* subphylum rank in tree of life */
-"subphylum" = "subphylum";
+"subphylum" = "亞門";
 
 /* superclass rank in tree of life */
-"superclass" = "superclass";
+"superclass" = "超綱";
 /* class rank in tree of life */
-"class" = "class";
+"class" = "綱";
 /* subclass rank in tree of life */
-"subclass" = "subclass";
+"subclass" = "亞綱";
 /* infraclass rank in tree of life */
-"infraclass" = "infraclass";
+"infraclass" = "下綱";
 
 /* superorder rank in tree of life */
-"superorder" = "superorder";
+"superorder" = "超目";
 /* order rank in tree of life */
-"order" = "order";
+"order" = "目";
 /* suborder rank in tree of life */
-"suborder" = "suborder";
+"suborder" = "亞目";
 /* infraorder rank in tree of life */
-"infraorder" = "infraorder";
+"infraorder" = "下目";
 /* parvorder rank in tree of life */
-"parvorder" = "parvorder";
+"parvorder" = "小目";
 
 /* zoosection rank in tree of life */
 "zoosection" = "zoosection";
@@ -45,47 +34,43 @@
 "zoosubsection" = "zoosubsection";
 
 /* superfamily rank in tree of life */
-"superfamily" = "superfamily";
+"superfamily" = "總科";
 /* epifamily rank in tree of life */
-"epifamily" = "epifamily";
+"epifamily" = "領科";
 /* family rank in tree of life */
-"family" = "family";
+"family" = "科";
 /* subfamily rank in tree of life */
-"subfamily" = "subfamily";
+"subfamily" = "亞科";
 
 /* supertribe rank in tree of life */
-"supertribe" = "supertribe";
+"supertribe" = "超族";
 /* tribe rank in tree of life */
-"tribe" = "tribe";
+"tribe" = "族";
 /* subtribe rank in tree of life */
-"subtribe" = "subtribe";
+"subtribe" = "亞族";
 
 /* epifamily rank in tree of life */
-"genus" = "genus";
+"genus" = "屬";
 /* genushybrid rank in tree of life */
-"genushybrid" = "genushybrid";
+"genushybrid" = "屬間雜交";
 /* subgenus rank in tree of life */
-"subgenus" = "subgenus";
+"subgenus" = "亞屬";
 
 /* section rank in tree of life */
-"section" = "section";
+"section" = "節";
 /* subsection rank in tree of life */
-"subsection" = "subsection";
+"subsection" = "亞節";
 
 /* species rank in tree of life */
-"species" = "species";
+"species" = "種";
 /* hybrid rank in tree of life */
-"hybrid" = "hybrid";
+"hybrid" = "雜交";
 
 /* subspecies rank in tree of life */
-"subspecies" = "subspecies";
+"subspecies" = "亞種";
 /* variety rank in tree of life */
-"variety" = "variety";
+"variety" = "變種";
 /* form rank in tree of life */
-"form" = "form";
+"form" = "型";
 /* infrahybrid rank in tree of life */
-"infrahybrid" = "infrahybrid";
-
-
-
-
+"infrahybrid" = "種內雜交";

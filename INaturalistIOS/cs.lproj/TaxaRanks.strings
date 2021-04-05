@@ -1,62 +1,51 @@
-/* 
-  TaxaRanks.strings
-  iNaturalist
-
-  Created by Alex Shepard on 2/20/21.
-  Copyright © 2021 iNaturalist. All rights reserved.
-*/
-
-// See https://github.com/inaturalist/inaturalist/blob/9ffb192b85fdc7cf2166eafedf5e71385c869cb7/app/webpack/taxa/shared/util.js#L187
-// for canonical list of rank names and levels
-
 /* kingdom rank in tree of life */
-"kingdom" = "kingdom";
+"kingdom" = "říše";
 /* subkingdom rank in tree of life */
-"subkingdom" = "subkingdom";
+"subkingdom" = "podříše";
 
 /* phylum rank in tree of life */
-"phylum" = "phylum";
+"phylum" = "kmen";
 /* subphylum rank in tree of life */
-"subphylum" = "subphylum";
+"subphylum" = "podkmen";
 
 /* superclass rank in tree of life */
-"superclass" = "superclass";
+"superclass" = "nadtřída";
 /* class rank in tree of life */
-"class" = "class";
+"class" = "třída";
 /* subclass rank in tree of life */
-"subclass" = "subclass";
+"subclass" = "podtřída";
 /* infraclass rank in tree of life */
-"infraclass" = "infraclass";
+"infraclass" = "infratřída";
 
 /* superorder rank in tree of life */
-"superorder" = "superorder";
+"superorder" = "nadřád";
 /* order rank in tree of life */
-"order" = "order";
+"order" = "řád";
 /* suborder rank in tree of life */
-"suborder" = "suborder";
+"suborder" = "podřád";
 /* infraorder rank in tree of life */
-"infraorder" = "infraorder";
+"infraorder" = "infrařád";
 /* parvorder rank in tree of life */
-"parvorder" = "parvorder";
+"parvorder" = "parvřád";
 
 /* zoosection rank in tree of life */
-"zoosection" = "zoosection";
+"zoosection" = "zoosekce";
 /* zoosubsection rank in tree of life */
-"zoosubsection" = "zoosubsection";
+"zoosubsection" = "zoopodsekce";
 
 /* superfamily rank in tree of life */
-"superfamily" = "superfamily";
+"superfamily" = "nadčeleď";
 /* epifamily rank in tree of life */
-"epifamily" = "epifamily";
+"epifamily" = "epičeleď";
 /* family rank in tree of life */
-"family" = "family";
+"family" = "čeleď";
 /* subfamily rank in tree of life */
-"subfamily" = "subfamily";
+"subfamily" = "podčeleď";
 
 /* supertribe rank in tree of life */
-"supertribe" = "supertribe";
+"supertribe" = "nadkmen";
 /* tribe rank in tree of life */
-"tribe" = "tribe";
+"tribe" = "kmen";
 /* subtribe rank in tree of life */
 "subtribe" = "subtribe";
 
@@ -70,22 +59,18 @@
 /* section rank in tree of life */
 "section" = "section";
 /* subsection rank in tree of life */
-"subsection" = "subsection";
+"subsection" = "podsekce";
 
 /* species rank in tree of life */
-"species" = "species";
+"species" = "druh";
 /* hybrid rank in tree of life */
-"hybrid" = "hybrid";
+"hybrid" = "kříženec";
 
 /* subspecies rank in tree of life */
-"subspecies" = "subspecies";
+"subspecies" = "poddruh";
 /* variety rank in tree of life */
-"variety" = "variety";
+"variety" = "odrůda";
 /* form rank in tree of life */
-"form" = "form";
+"form" = "forma";
 /* infrahybrid rank in tree of life */
-"infrahybrid" = "infrahybrid";
-
-
-
-
+"infrahybrid" = "infrakříženec";

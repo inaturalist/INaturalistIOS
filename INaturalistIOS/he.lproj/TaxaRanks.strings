@@ -1,14 +1,3 @@
-/* 
-  TaxaRanks.strings
-  iNaturalist
-
-  Created by Alex Shepard on 2/20/21.
-  Copyright © 2021 iNaturalist. All rights reserved.
-*/
-
-// See https://github.com/inaturalist/inaturalist/blob/9ffb192b85fdc7cf2166eafedf5e71385c869cb7/app/webpack/taxa/shared/util.js#L187
-// for canonical list of rank names and levels
-
 /* kingdom rank in tree of life */
 "kingdom" = "kingdom";
 /* subkingdom rank in tree of life */
@@ -85,7 +74,3 @@
 "form" = "form";
 /* infrahybrid rank in tree of life */
 "infrahybrid" = "infrahybrid";
-
-
-
-

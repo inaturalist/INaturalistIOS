@@ -1,91 +1,76 @@
-/* 
-  TaxaRanks.strings
-  iNaturalist
-
-  Created by Alex Shepard on 2/20/21.
-  Copyright © 2021 iNaturalist. All rights reserved.
-*/
-
-// See https://github.com/inaturalist/inaturalist/blob/9ffb192b85fdc7cf2166eafedf5e71385c869cb7/app/webpack/taxa/shared/util.js#L187
-// for canonical list of rank names and levels
-
 /* kingdom rank in tree of life */
-"kingdom" = "kingdom";
+"kingdom" = "regn";
 /* subkingdom rank in tree of life */
-"subkingdom" = "subkingdom";
+"subkingdom" = "subregn";
 
 /* phylum rank in tree of life */
-"phylum" = "phylum";
+"phylum" = "ramură";
 /* subphylum rank in tree of life */
-"subphylum" = "subphylum";
+"subphylum" = "subramură";
 
 /* superclass rank in tree of life */
-"superclass" = "superclass";
+"superclass" = "superclasă";
 /* class rank in tree of life */
-"class" = "class";
+"class" = "clasă";
 /* subclass rank in tree of life */
-"subclass" = "subclass";
+"subclass" = "subclasă";
 /* infraclass rank in tree of life */
-"infraclass" = "infraclass";
+"infraclass" = "infraclasă";
 
 /* superorder rank in tree of life */
-"superorder" = "superorder";
+"superorder" = "superordin";
 /* order rank in tree of life */
-"order" = "order";
+"order" = "ordin";
 /* suborder rank in tree of life */
-"suborder" = "suborder";
+"suborder" = "subordin";
 /* infraorder rank in tree of life */
-"infraorder" = "infraorder";
+"infraorder" = "infraordin";
 /* parvorder rank in tree of life */
-"parvorder" = "parvorder";
+"parvorder" = "parvordin";
 
 /* zoosection rank in tree of life */
-"zoosection" = "zoosection";
+"zoosection" = "zoosecțiune";
 /* zoosubsection rank in tree of life */
-"zoosubsection" = "zoosubsection";
+"zoosubsection" = "zoosubsecțiune";
 
 /* superfamily rank in tree of life */
-"superfamily" = "superfamily";
+"superfamily" = "superfamilie";
 /* epifamily rank in tree of life */
-"epifamily" = "epifamily";
+"epifamily" = "epifamilie";
 /* family rank in tree of life */
-"family" = "family";
+"family" = "familie";
 /* subfamily rank in tree of life */
-"subfamily" = "subfamily";
+"subfamily" = "subfamilie";
 
 /* supertribe rank in tree of life */
-"supertribe" = "supertribe";
+"supertribe" = "supertrib";
 /* tribe rank in tree of life */
-"tribe" = "tribe";
+"tribe" = "trib";
 /* subtribe rank in tree of life */
-"subtribe" = "subtribe";
+"subtribe" = "subtrib";
 
 /* epifamily rank in tree of life */
-"genus" = "genus";
+"genus" = "gen";
 /* genushybrid rank in tree of life */
-"genushybrid" = "genushybrid";
+"genushybrid" = "genhibrid";
 /* subgenus rank in tree of life */
-"subgenus" = "subgenus";
+"subgenus" = "subgen";
 
 /* section rank in tree of life */
-"section" = "section";
+"section" = "secțiune";
 /* subsection rank in tree of life */
-"subsection" = "subsection";
+"subsection" = "subsecțiune";
 
 /* species rank in tree of life */
-"species" = "species";
+"species" = "specii";
 /* hybrid rank in tree of life */
-"hybrid" = "hybrid";
+"hybrid" = "hibrid";
 
 /* subspecies rank in tree of life */
-"subspecies" = "subspecies";
+"subspecies" = "subspecii";
 /* variety rank in tree of life */
-"variety" = "variety";
+"variety" = "varietate";
 /* form rank in tree of life */
-"form" = "form";
+"form" = "formă";
 /* infrahybrid rank in tree of life */
-"infrahybrid" = "infrahybrid";
-
-
-
-
+"infrahybrid" = "infrahibrid";

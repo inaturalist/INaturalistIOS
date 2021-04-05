@@ -1,91 +1,76 @@
-/* 
-  TaxaRanks.strings
-  iNaturalist
-
-  Created by Alex Shepard on 2/20/21.
-  Copyright © 2021 iNaturalist. All rights reserved.
-*/
-
-// See https://github.com/inaturalist/inaturalist/blob/9ffb192b85fdc7cf2166eafedf5e71385c869cb7/app/webpack/taxa/shared/util.js#L187
-// for canonical list of rank names and levels
-
 /* kingdom rank in tree of life */
-"kingdom" = "kingdom";
+"kingdom" = "царство";
 /* subkingdom rank in tree of life */
-"subkingdom" = "subkingdom";
+"subkingdom" = "подцарство";
 
 /* phylum rank in tree of life */
-"phylum" = "phylum";
+"phylum" = "тип";
 /* subphylum rank in tree of life */
-"subphylum" = "subphylum";
+"subphylum" = "подтип";
 
 /* superclass rank in tree of life */
-"superclass" = "superclass";
+"superclass" = "надклас";
 /* class rank in tree of life */
-"class" = "class";
+"class" = "клас";
 /* subclass rank in tree of life */
-"subclass" = "subclass";
+"subclass" = "подклас";
 /* infraclass rank in tree of life */
-"infraclass" = "infraclass";
+"infraclass" = "инфраклас";
 
 /* superorder rank in tree of life */
-"superorder" = "superorder";
+"superorder" = "надразред";
 /* order rank in tree of life */
-"order" = "order";
+"order" = "разред";
 /* suborder rank in tree of life */
-"suborder" = "suborder";
+"suborder" = "подразред";
 /* infraorder rank in tree of life */
-"infraorder" = "infraorder";
+"infraorder" = "инфраразред";
 /* parvorder rank in tree of life */
-"parvorder" = "parvorder";
+"parvorder" = "парворазред";
 
 /* zoosection rank in tree of life */
-"zoosection" = "zoosection";
+"zoosection" = "зоосекция";
 /* zoosubsection rank in tree of life */
-"zoosubsection" = "zoosubsection";
+"zoosubsection" = "зооподсекция";
 
 /* superfamily rank in tree of life */
-"superfamily" = "superfamily";
+"superfamily" = "надсемейство";
 /* epifamily rank in tree of life */
-"epifamily" = "epifamily";
+"epifamily" = "еписемейство";
 /* family rank in tree of life */
-"family" = "family";
+"family" = "семейство";
 /* subfamily rank in tree of life */
-"subfamily" = "subfamily";
+"subfamily" = "подсемейство";
 
 /* supertribe rank in tree of life */
-"supertribe" = "supertribe";
+"supertribe" = "надтрибус";
 /* tribe rank in tree of life */
-"tribe" = "tribe";
+"tribe" = "трибус";
 /* subtribe rank in tree of life */
-"subtribe" = "subtribe";
+"subtribe" = "подтрибус";
 
 /* epifamily rank in tree of life */
-"genus" = "genus";
+"genus" = "род";
 /* genushybrid rank in tree of life */
-"genushybrid" = "genushybrid";
+"genushybrid" = "родов хибрид";
 /* subgenus rank in tree of life */
-"subgenus" = "subgenus";
+"subgenus" = "подрод";
 
 /* section rank in tree of life */
-"section" = "section";
+"section" = "секция";
 /* subsection rank in tree of life */
-"subsection" = "subsection";
+"subsection" = "подсекция";
 
 /* species rank in tree of life */
-"species" = "species";
+"species" = "вид";
 /* hybrid rank in tree of life */
-"hybrid" = "hybrid";
+"hybrid" = "хибрид";
 
 /* subspecies rank in tree of life */
-"subspecies" = "subspecies";
+"subspecies" = "подвид";
 /* variety rank in tree of life */
-"variety" = "variety";
+"variety" = "вариетет";
 /* form rank in tree of life */
-"form" = "form";
+"form" = "форма";
 /* infrahybrid rank in tree of life */
-"infrahybrid" = "infrahybrid";
-
-
-
-
+"infrahybrid" = "инфрахибрид";
