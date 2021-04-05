@@ -501,6 +501,22 @@
 		E7392A23E01CD0D45F0E3F02 /* Pods-iNaturalistTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNaturalistTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests.release.xcconfig"; sourceTree = "<group>"; };
 		FA0069211A0C51F600C64F28 /* MKMapView+ZoomLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMapView+ZoomLevel.h"; sourceTree = "<group>"; };
 		FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMapView+ZoomLevel.m"; sourceTree = "<group>"; };
+		FA03D5A3261B8D3C005F2B66 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		FA03D5A4261B8D3C005F2B66 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FA03D5A5261B8D3D005F2B66 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Projects.strings; sourceTree = "<group>"; };
+		FA03D5A6261B8D3D005F2B66 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Activity.strings; sourceTree = "<group>"; };
+		FA03D5A7261B8D3D005F2B66 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Guides.strings; sourceTree = "<group>"; };
+		FA03D5A8261B8D3D005F2B66 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA03D5A9261B8D3D005F2B66 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FA03D5AA261B8D3E005F2B66 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/TaxaRanks.strings; sourceTree = "<group>"; };
+		FA03D5AB261B8D45005F2B66 /* th */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = th; path = th.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		FA03D5AC261B8D45005F2B66 /* th */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = th; path = th.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FA03D5AD261B8D72005F2B66 /* th */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = th; path = th.lproj/Projects.strings; sourceTree = "<group>"; };
+		FA03D5AE261B8D73005F2B66 /* th */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = th; path = th.lproj/Activity.strings; sourceTree = "<group>"; };
+		FA03D5AF261B8D73005F2B66 /* th */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = th; path = th.lproj/Guides.strings; sourceTree = "<group>"; };
+		FA03D5B0261B8D73005F2B66 /* th */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = th; path = th.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA03D5B1261B8D73005F2B66 /* th */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = th; path = th.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FA03D5B2261B8D73005F2B66 /* th */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = th; path = th.lproj/TaxaRanks.strings; sourceTree = "<group>"; };
 		FA0600691DCEE1700025473C /* iNaturalist.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = iNaturalist.entitlements; path = iNaturalist/iNaturalist.entitlements; sourceTree = "<group>"; };
 		FA067F5E1DBACF0A00CBA5EF /* UpdatesItemCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdatesItemCell.h; sourceTree = "<group>"; };
 		FA067F5F1DBACF0A00CBA5EF /* UpdatesItemCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdatesItemCell.m; sourceTree = "<group>"; };
@@ -2364,6 +2380,8 @@
 				lt,
 				lv,
 				si,
+				ar,
+				th,
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -2958,6 +2976,8 @@
 				FA49C2BF25CA16FD00B7D627 /* lt */,
 				FA49C2C625CA176000B7D627 /* lv */,
 				FAAE356225CA193E0068AA12 /* si */,
+				FA03D5A3261B8D3C005F2B66 /* ar */,
+				FA03D5AB261B8D45005F2B66 /* th */,
 			);
 			name = MainStoryboard.storyboard;
 			path = INaturalistIOS;
@@ -2997,6 +3017,8 @@
 				FA49C2C425CA16FE00B7D627 /* lt */,
 				FA49C2CB25CA178E00B7D627 /* lv */,
 				FAAE356725CA193F0068AA12 /* si */,
+				FA03D5A8261B8D3D005F2B66 /* ar */,
+				FA03D5B0261B8D73005F2B66 /* th */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -3035,6 +3057,8 @@
 				FA49C2C525CA16FF00B7D627 /* lt */,
 				FA49C2CC25CA178E00B7D627 /* lv */,
 				FAAE356825CA19400068AA12 /* si */,
+				FA03D5A9261B8D3D005F2B66 /* ar */,
+				FA03D5B1261B8D73005F2B66 /* th */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -3075,6 +3099,8 @@
 				FA49C2C125CA16FE00B7D627 /* lt */,
 				FA49C2C825CA178D00B7D627 /* lv */,
 				FAAE356425CA193F0068AA12 /* si */,
+				FA03D5A5261B8D3D005F2B66 /* ar */,
+				FA03D5AD261B8D72005F2B66 /* th */,
 			);
 			name = Projects.storyboard;
 			path = INaturalistIOS;
@@ -3092,6 +3118,8 @@
 				FA49C2C225CA16FE00B7D627 /* lt */,
 				FA49C2C925CA178E00B7D627 /* lv */,
 				FAAE356525CA193F0068AA12 /* si */,
+				FA03D5A6261B8D3D005F2B66 /* ar */,
+				FA03D5AE261B8D73005F2B66 /* th */,
 			);
 			name = Activity.storyboard;
 			path = INaturalistIOS;
@@ -3133,6 +3161,8 @@
 				FA49C2C325CA16FE00B7D627 /* lt */,
 				FA49C2CA25CA178E00B7D627 /* lv */,
 				FAAE356625CA193F0068AA12 /* si */,
+				FA03D5A7261B8D3D005F2B66 /* ar */,
+				FA03D5AF261B8D73005F2B66 /* th */,
 			);
 			name = Guides.storyboard;
 			path = INaturalistIOS;
@@ -3174,6 +3204,8 @@
 				FA8A0E7325E1D9BC006CA8A4 /* ro */,
 				FA8A0E7425E1D9BD006CA8A4 /* uk */,
 				FA8A0E7525E1D9BF006CA8A4 /* tr */,
+				FA03D5AA261B8D3E005F2B66 /* ar */,
+				FA03D5B2261B8D73005F2B66 /* th */,
 			);
 			name = TaxaRanks.strings;
 			sourceTree = "<group>";
@@ -3214,6 +3246,8 @@
 				FA49C2C025CA16FE00B7D627 /* lt */,
 				FA49C2C725CA178D00B7D627 /* lv */,
 				FAAE356325CA193F0068AA12 /* si */,
+				FA03D5A4261B8D3C005F2B66 /* ar */,
+				FA03D5AC261B8D45005F2B66 /* th */,
 			);
 			name = Onboarding.storyboard;
 			path = INaturalistIOS;
