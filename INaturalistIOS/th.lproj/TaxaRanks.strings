@@ -1,32 +1,32 @@
 /* kingdom rank in tree of life */
-"kingdom" = "kingdom";
+"kingdom" = "อาณาจักร";
 /* subkingdom rank in tree of life */
-"subkingdom" = "subkingdom";
+"subkingdom" = "อาณาจักรย่อย";
 
 /* phylum rank in tree of life */
-"phylum" = "phylum";
+"phylum" = "ไฟลัม /ส่วน (Phylum)";
 /* subphylum rank in tree of life */
-"subphylum" = "subphylum";
+"subphylum" = "ไฟลัมย่อย (Subphylum)";
 
 /* superclass rank in tree of life */
-"superclass" = "superclass";
+"superclass" = "ชั้นใหญ่ (Superclass)";
 /* class rank in tree of life */
-"class" = "class";
+"class" = "ชั้น (Class)";
 /* subclass rank in tree of life */
-"subclass" = "subclass";
+"subclass" = "ชั้นย่อย (Subclass)";
 /* infraclass rank in tree of life */
-"infraclass" = "infraclass";
+"infraclass" = "ชั้นใหญ่ (Infraclass)";
 
 /* superorder rank in tree of life */
-"superorder" = "superorder";
+"superorder" = "อันดับใหญ่ (Superorder)";
 /* order rank in tree of life */
-"order" = "order";
+"order" = "อันดับ (Order)";
 /* suborder rank in tree of life */
-"suborder" = "suborder";
+"suborder" = "อันดับย่อย (Suborder)";
 /* infraorder rank in tree of life */
-"infraorder" = "infraorder";
+"infraorder" = "อันดับใหญ่ (Infraorder)";
 /* parvorder rank in tree of life */
-"parvorder" = "parvorder";
+"parvorder" = "อนุอันดับ (Parvorder)";
 
 /* zoosection rank in tree of life */
 "zoosection" = "zoosection";
@@ -34,47 +34,43 @@
 "zoosubsection" = "zoosubsection";
 
 /* superfamily rank in tree of life */
-"superfamily" = "superfamily";
+"superfamily" = "วงศ์ใหญ่ (Superfamily)";
 /* epifamily rank in tree of life */
-"epifamily" = "epifamily";
+"epifamily" = "อันดับระหว่างครอบครัว (Epifamily)";
 /* family rank in tree of life */
-"family" = "family";
+"family" = "วงศ์ (Family)";
 /* subfamily rank in tree of life */
-"subfamily" = "subfamily";
+"subfamily" = "วงศ์ย่อย (Subfamily)";
 
 /* supertribe rank in tree of life */
-"supertribe" = "supertribe";
+"supertribe" = "เผ่าใหญ่ (Supertribe)";
 /* tribe rank in tree of life */
-"tribe" = "tribe";
+"tribe" = "เผ่า (Tribe)";
 /* subtribe rank in tree of life */
-"subtribe" = "subtribe";
+"subtribe" = "เผ่าย่อย (Subtribe)";
 
 /* epifamily rank in tree of life */
-"genus" = "genus";
+"genus" = "สกุล (Genus)";
 /* genushybrid rank in tree of life */
 "genushybrid" = "genushybrid";
 /* subgenus rank in tree of life */
-"subgenus" = "subgenus";
+"subgenus" = "สกุลย่อย (Subgenus)";
 
 /* section rank in tree of life */
-"section" = "section";
+"section" = "หมู่ (Section)";
 /* subsection rank in tree of life */
-"subsection" = "subsection";
+"subsection" = "หมู่ย่อย (Subsection)";
 
 /* species rank in tree of life */
-"species" = "species";
+"species" = "ชนิด (Species)";
 /* hybrid rank in tree of life */
 "hybrid" = "hybrid";
 
 /* subspecies rank in tree of life */
-"subspecies" = "subspecies";
+"subspecies" = "ชนิดย่อย (Subspecies)";
 /* variety rank in tree of life */
-"variety" = "variety";
+"variety" = "สายพันธุ์หรือพันธุ์ (Variety)";
 /* form rank in tree of life */
-"form" = "form";
+"form" = "รูปแบบ";
 /* infrahybrid rank in tree of life */
 "infrahybrid" = "infrahybrid";
-
-
-
-
