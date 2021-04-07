@@ -79,14 +79,6 @@
     }
 }
 
-- (void)registerUserWithIdentifier:(NSString *)userIdentifier {
-    if ([Analytics canTrack] && [FIRApp defaultApp]) {
-        [FIRAnalytics setUserID:userIdentifier];
-        [[FIRCrashlytics crashlytics] setUserID:userIdentifier];
-    }
-}
-
-
 @end
 
 

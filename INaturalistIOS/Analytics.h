@@ -19,7 +19,6 @@
 
 - (void)event:(NSString *)name;
 - (void)event:(NSString *)name withProperties:(NSDictionary *)properties;
-- (void)registerUserWithIdentifier:(NSString *)userIdentifier;
 
 - (void)debugLog:(NSString *)logMessage;
 - (void)debugError:(NSError *)error;

@@ -376,11 +376,7 @@
         });
     } else {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
-            
-            ExploreUserRealm *me = self.loginController.meUserLocal;
-            NSString *identifier = [NSString stringWithFormat:@"%ld", (long)me.userId];
-            [[Analytics sharedClient] registerUserWithIdentifier:identifier];
+            [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];            
         });
     }
 }
