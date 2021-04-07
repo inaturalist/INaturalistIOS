@@ -369,6 +369,8 @@
         if (indexPath.item == 0) {
             // do nothing
         } else if (indexPath.item == 1) {
+            if (self.observation.observationMedia.count == 0) { return; }
+            
             // tapped media
             id media = self.observation.observationMedia[self.viewingMedia];
             if ([media conformsToProtocol:@protocol(INatPhoto)]) {
