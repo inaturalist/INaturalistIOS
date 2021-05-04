@@ -108,7 +108,7 @@ extension MediaPickerViewController: UICollectionViewDataSource {
     
     func photoLibraryCellForItemAt(indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MediaPickerCell", for: indexPath) as! MediaPickerCell
-        cell.titleLabel.text = NSLocalizedString("Camera Roll", comment: "Title for Camera Roll button in media picker")
+        cell.titleLabel.text = NSLocalizedString("Photo Library", comment: "Title for Photo Library button in media picker")
         
         if let imagesIcon = FAKIonIcons.imagesIcon(withSize: 50),
             let circleOutline = FAKIonIcons.iosCircleOutlineIcon(withSize: 80)
