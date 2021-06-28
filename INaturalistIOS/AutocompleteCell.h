@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+#import "AutocompleteSearchItem.h"
+
 @interface AutocompleteCell : UITableViewCell
 
-@property NSString *predicate;
+@property AutocompletePredicate predicate;
 @property NSString *searchText;
 
 @end

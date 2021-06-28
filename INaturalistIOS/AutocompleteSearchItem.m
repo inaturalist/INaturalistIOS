@@ -10,7 +10,7 @@
 
 @implementation AutocompleteSearchItem
 
-+ (instancetype)itemWithPredicate:(NSString *)predicate action:(SearchAction)action {
++ (instancetype)itemWithPredicate:(AutocompletePredicate)predicate action:(SearchAction)action {
     AutocompleteSearchItem *item = [[AutocompleteSearchItem alloc] init];
     item.predicate = predicate;
     item.action = action;

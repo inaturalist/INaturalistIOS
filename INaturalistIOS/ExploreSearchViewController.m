@@ -134,28 +134,28 @@
         
         __weak typeof(self) weakSelf = self;
         // autocomplete items
-        AutocompleteSearchItem *critters = [AutocompleteSearchItem itemWithPredicate:NSLocalizedString(@"organisms", nil)
+        AutocompleteSearchItem *critters = [AutocompleteSearchItem itemWithPredicate:AutocompletePredicateOrganisms
                                                                               action:^(NSString *searchText) {
                                                                                   [weakSelf searchForTaxon:searchText];
                                                                                   [searchMenu hideOptionSearch];
                                                                                   if (observationsController.activeSearchPredicates.count > 0)
                                                                                       [weakSelf showActiveSearch];
                                                                               }];
-        AutocompleteSearchItem *people = [AutocompleteSearchItem itemWithPredicate:NSLocalizedString(@"people", nil)
+        AutocompleteSearchItem *people = [AutocompleteSearchItem itemWithPredicate:AutocompletePredicatePeople
                                                                             action:^(NSString *searchText) {
                                                                                 [weakSelf searchForPerson:searchText];
                                                                                 [searchMenu hideOptionSearch];
                                                                                 if (observationsController.activeSearchPredicates.count > 0)
                                                                                     [weakSelf showActiveSearch];
                                                                             }];
-        AutocompleteSearchItem *locations = [AutocompleteSearchItem itemWithPredicate:NSLocalizedString(@"locations", nil)
+        AutocompleteSearchItem *locations = [AutocompleteSearchItem itemWithPredicate:AutocompletePredicateLocations
                                                                                action:^(NSString *searchText) {
                                                                                    [weakSelf searchForLocation:searchText];
                                                                                    [searchMenu hideOptionSearch];
                                                                                    if (observationsController.activeSearchPredicates.count > 0)
                                                                                        [weakSelf showActiveSearch];
                                                                                }];
-        AutocompleteSearchItem *projects = [AutocompleteSearchItem itemWithPredicate:NSLocalizedString(@"projects", nil)
+        AutocompleteSearchItem *projects = [AutocompleteSearchItem itemWithPredicate:AutocompletePredicateProjects
                                                                               action:^(NSString *searchText) {
                                                                                   [weakSelf searchForProject:searchText];
                                                                                   [searchMenu hideOptionSearch];

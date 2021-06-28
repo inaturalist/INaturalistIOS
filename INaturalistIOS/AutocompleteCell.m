@@ -33,21 +33,27 @@
 
 - (void)setSearchText:(NSString *)searchText {
     _searchText = [searchText copy];
-    
-    // use an attributed string to make the text vary
-    NSString *str = [NSString stringWithFormat:NSLocalizedString(@"Find %@ named '", nil), self.predicate];     // un-localizable in this format
-    NSMutableAttributedString *attr = [[NSMutableAttributedString alloc] initWithString:str];
-    [attr addAttributes:@{ NSFontAttributeName: [UIFont boldSystemFontOfSize:14.0f] }
-                  range:[str rangeOfString:self.predicate]];
-    
-    NSAttributedString *attr2 = [[NSAttributedString alloc] initWithString:searchText
-                                                                attributes:@{ NSFontAttributeName: [UIFont italicSystemFontOfSize:14.0f] }];
-    [attr appendAttributedString:attr2];
-    
-    NSAttributedString *attr3 = [[NSAttributedString alloc] initWithString:@"'" attributes:@{}];
-    [attr appendAttributedString:attr3];
-    
-    self.textLabel.attributedText = attr;
+
+    self.textLabel.text = [NSString stringWithFormat:[self activeSearchBaseString], searchText];
+}
+
+- (NSString *)activeSearchBaseString {
+    switch (self.predicate) {
+        case AutocompletePredicateOrganisms:
+            return NSLocalizedString(@"Find organisms named '%@'", nil);
+            break;
+        case AutocompletePredicatePeople:
+            return NSLocalizedString(@"Find people named '%@'", nil);
+            break;
+        case AutocompletePredicateLocations:
+            return NSLocalizedString(@"Find locations named '%@'", nil);
+            break;
+        case AutocompletePredicateProjects:
+            return NSLocalizedString(@"Find projects named '%@'", nil);
+        default:
+            return @"";
+            break;
+    }
 }
 
 @end
