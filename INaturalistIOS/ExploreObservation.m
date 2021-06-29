@@ -304,7 +304,7 @@
         [formatter setDateStyle:NSDateFormatterShortStyle];
         [formatter setTimeStyle:NSDateFormatterNoStyle];
     }
-    return [formatter stringFromDate:self.dateObserved];
+    return [formatter stringFromDate:self.timeObserved];
 }
 
 - (NSInteger)inatRecordId {
