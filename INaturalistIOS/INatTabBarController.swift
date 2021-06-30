@@ -48,14 +48,41 @@ class INatTabBarController: UITabBarController {
    }
    
    func showCamera() {
-      Analytics.sharedClient()?.event(kAnalyticsEventNewObservationCameraStart)
+      var cameraFailTitle = ""
+      var canAccessCamera = true
+
+      let cameraAuthStatus = AVCaptureDevice.authorizationStatus(for: .video)
+      if cameraAuthStatus == .denied {
+         canAccessCamera = false
+         cameraFailTitle = NSLocalizedString("iNaturalist doesn't have permission to access your camera.", comment: "alert title for camera denied")
+      } else if cameraAuthStatus == .restricted {
+         canAccessCamera = false
+         cameraFailTitle = NSLocalizedString("iNaturalist has been restricted from camera access.", comment: "alert title for camera restricted")
+      }
       
-      let camera = UIImagePickerController()
-      camera.delegate = self
-      camera.mediaTypes = ["public.image"]
-      camera.sourceType = .camera
-      
-      self.present(camera, animated: true, completion: nil)
+      if canAccessCamera {
+         Analytics.sharedClient()?.event(kAnalyticsEventNewObservationCameraStart)
+         
+         let camera = UIImagePickerController()
+         camera.delegate = self
+         camera.mediaTypes = ["public.image"]
+         camera.sourceType = .camera
+         
+         self.present(camera, animated: true, completion: nil)
+      } else {
+         let msg = NSLocalizedString("Please update camera permissions to take photos with iNaturalist", comment: "alert msg to change camera permissions")
+         let alert = UIAlertController(title: cameraFailTitle, message: msg, preferredStyle: .alert)
+         alert.addAction(UIAlertAction(title: NSLocalizedString("Open Settings", comment: "open settings button title"), style: .default, handler: { _ in
+            if let settingsUrl = URL(string: UIApplication.openSettingsURLString),
+               UIApplication.shared.canOpenURL(settingsUrl)
+            {
+               UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
+            }
+         }))
+         alert.addAction(UIAlertAction(title: NSLocalizedString("Never mind", comment: "decline to change cemra permissions button title"), style: .cancel, handler: nil))
+         
+         self.present(alert, animated: true, completion: nil)
+      }
    }
    
    func showCameraRoll() {
