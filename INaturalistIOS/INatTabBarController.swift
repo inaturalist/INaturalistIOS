@@ -48,9 +48,6 @@ class INatTabBarController: UITabBarController {
    }
    
    func showCamera() {
-      let cameraAuthStatus = AVCaptureDevice.authorizationStatus(for: .video)
-      print(cameraAuthStatus)
-      
       Analytics.sharedClient()?.event(kAnalyticsEventNewObservationCameraStart)
       
       let camera = UIImagePickerController()
