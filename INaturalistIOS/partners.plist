@@ -283,5 +283,64 @@
 			<string>270</string>
 		</array>
 	</dict>
+    
+    <dict>
+        <key>logoName</key>
+        <string>network_logo_cr</string>
+        <key>countryName</key>
+        <string>Costa Rica</string>
+        <key>identifier</key>
+        <string>17</string>
+        <key>name</key>
+        <string>iNaturalist Costa Rica</string>
+        <key>shortName</key>
+        <string>NaturalistaCR</string>
+        <key>baseUrl</key>
+        <string>https://costarica.inaturalist.org</string>
+        <key>mobileCountryCodes</key>
+        <array>
+            <string>712</string>
+        </array>
+    </dict>
+
+    <dict>
+        <key>logoName</key>
+        <string>network_logo_gt</string>
+        <key>countryName</key>
+        <string>Guatemala</string>
+        <key>identifier</key>
+        <string>24</string>
+        <key>name</key>
+        <string>iNaturalist Guatemala</string>
+        <key>shortName</key>
+        <string>iNaturalistGT</string>
+        <key>baseUrl</key>
+        <string>https://guatemala.inaturalist.org</string>
+        <key>mobileCountryCodes</key>
+        <array>
+            <string>704</string>
+        </array>
+    </dict>
+
+    <dict>
+        <key>logoName</key>
+        <string>network_logo_se</string>
+        <key>countryName</key>
+        <string>Sweden</string>
+        <key>identifier</key>
+        <string>21</string>
+        <key>name</key>
+        <string>iNaturalist Sweden</string>
+        <key>shortName</key>
+        <string>iNaturalist.Se</string>
+        <key>baseUrl</key>
+        <string>https://www.inaturalist.se</string>
+        <key>mobileCountryCodes</key>
+        <array>
+            <string>240</string>
+        </array>
+    </dict>
+
+    
 </array>
 </plist>
