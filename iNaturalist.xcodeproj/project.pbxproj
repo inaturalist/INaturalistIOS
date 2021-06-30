@@ -76,7 +76,6 @@
 		19F62199150ECC1200C58F28 /* Project.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F62198150ECC1200C58F28 /* Project.m */; };
 		19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F6219B150ECC2400C58F28 /* ProjectObservation.m */; };
 		19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F6219E150ECC2E00C58F28 /* ProjectUser.m */; };
-		19F874841522E59000A65F9A /* INatWebController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F874831522E58F00A65F9A /* INatWebController.m */; };
 		19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F87498152679F100A65F9A /* TaxaSearchViewController.m */; };
 		19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */; };
 		19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */; };
@@ -219,6 +218,7 @@
 		FA8EBCE4230DC6E100C1D789 /* UIImage+MapAnnotations.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8EBCE3230DC6E100C1D789 /* UIImage+MapAnnotations.m */; };
 		FA8EBCE7230DE48400C1D789 /* ExploreDeletedRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8EBCE6230DE48400C1D789 /* ExploreDeletedRecord.m */; };
 		FA9249821EF85FD000E0C387 /* ExploreTaxonScore.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9249811EF85FD000E0C387 /* ExploreTaxonScore.m */; };
+		FA930525268CF596004B690E /* ForgotPasswordController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA930524268CF596004B690E /* ForgotPasswordController.swift */; };
 		FA930F6D244FA582001B9D81 /* ExploreProjectObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = FA930F6C244FA582001B9D81 /* ExploreProjectObservation.m */; };
 		FA930F70244FBA37001B9D81 /* ExploreObsFieldValue.m in Sources */ = {isa = PBXBuildFile; fileRef = FA930F6F244FBA37001B9D81 /* ExploreObsFieldValue.m */; };
 		FA9437831C869AA400CB10F3 /* ProjectsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9437821C869AA400CB10F3 /* ProjectsAPI.m */; };
@@ -472,8 +472,6 @@
 		19F6219B150ECC2400C58F28 /* ProjectObservation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectObservation.m; sourceTree = "<group>"; };
 		19F6219D150ECC2E00C58F28 /* ProjectUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectUser.h; sourceTree = "<group>"; };
 		19F6219E150ECC2E00C58F28 /* ProjectUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectUser.m; sourceTree = "<group>"; };
-		19F874821522E58E00A65F9A /* INatWebController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatWebController.h; sourceTree = "<group>"; };
-		19F874831522E58F00A65F9A /* INatWebController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = INatWebController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		19F87497152679F000A65F9A /* TaxaSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxaSearchViewController.h; sourceTree = "<group>"; };
 		19F87498152679F100A65F9A /* TaxaSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxaSearchViewController.m; sourceTree = "<group>"; };
 		19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TaxonOneNameTableViewCell.xib; sourceTree = "<group>"; };
@@ -928,6 +926,7 @@
 		FA91C7E41B4362FE004D4C5B /* UploadManagerNotificationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UploadManagerNotificationDelegate.h; sourceTree = "<group>"; };
 		FA9249801EF85FD000E0C387 /* ExploreTaxonScore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreTaxonScore.h; sourceTree = "<group>"; };
 		FA9249811EF85FD000E0C387 /* ExploreTaxonScore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreTaxonScore.m; sourceTree = "<group>"; };
+		FA930524268CF596004B690E /* ForgotPasswordController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordController.swift; sourceTree = "<group>"; };
 		FA930F6B244FA582001B9D81 /* ExploreProjectObservation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreProjectObservation.h; sourceTree = "<group>"; };
 		FA930F6C244FA582001B9D81 /* ExploreProjectObservation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreProjectObservation.m; sourceTree = "<group>"; };
 		FA930F6E244FBA37001B9D81 /* ExploreObsFieldValue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreObsFieldValue.h; sourceTree = "<group>"; };
@@ -1439,8 +1438,7 @@
 				19570CC217EB92D8000C800A /* GuideViewController.h */,
 				19570CC317EB92D8000C800A /* GuideViewController.m */,
 				FA3759CF23EB467E0053F783 /* INatTabBarController.swift */,
-				19F874821522E58E00A65F9A /* INatWebController.h */,
-				19F874831522E58F00A65F9A /* INatWebController.m */,
+				FA930524268CF596004B690E /* ForgotPasswordController.swift */,
 				FAC59EE825E5896A00DF23FD /* LocationSearchViewController.swift */,
 				FA9EE9F91C20BA6900CACF70 /* LocationViewController.h */,
 				FA9EE9FA1C20BA6900CACF70 /* LocationViewController.m */,
@@ -2774,7 +2772,6 @@
 				FAFED1F31DB595C10015CCBA /* ExploreUpdate.m in Sources */,
 				190687C7151BF71F00D5B6E4 /* DeletedRecord.m in Sources */,
 				190687CA151D1EC400D5B6E4 /* TaxonDetailViewController.m in Sources */,
-				19F874841522E59000A65F9A /* INatWebController.m in Sources */,
 				FACCEB441ED4E5D0009C9A19 /* TaxonPhotoViewController.m in Sources */,
 				FA7BC8CB1C59D2460032E709 /* NewsItem.m in Sources */,
 				FA8EBCE7230DE48400C1D789 /* ExploreDeletedRecord.m in Sources */,
@@ -2902,6 +2899,7 @@
 				FACACA1E1BFD0CF7002223D7 /* PhotosPageControlCell.m in Sources */,
 				FAA6EB171C90C15400F43552 /* TaxonPhotoCell.m in Sources */,
 				197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */,
+				FA930525268CF596004B690E /* ForgotPasswordController.swift in Sources */,
 				FA55648D1BD9BC3C0049803B /* AddChicletCell.m in Sources */,
 				FA9437861C869B7300CB10F3 /* ObservationAPI.m in Sources */,
 				FA0F1B051BBB561600533ED5 /* ObservationViewCell.m in Sources */,

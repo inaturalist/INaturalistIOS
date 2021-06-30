@@ -25,7 +25,6 @@
 #import "Analytics.h"
 #import "MeHeaderView.h"
 #import "AnonHeaderView.h"
-#import "INatWebController.h"
 #import "INaturalistAppDelegate.h"
 #import "UploadManagerNotificationDelegate.h"
 #import "ObservationViewNormalCell.h"

@@ -29,11 +29,11 @@
 #import "Analytics.h"
 #import "PartnerController.h"
 #import "Partner.h"
-#import "INatWebController.h"
 #import "INatReachability.h"
 #import "LoginSwitchContextButton.h"
+#import "iNaturalist-Swift.h"
 
-@interface OnboardingLoginViewController () <UITextFieldDelegate, INatWebControllerDelegate, INatAuthenticationDelegate, GIDSignInUIDelegate, ASAuthorizationControllerPresentationContextProviding, ASAuthorizationControllerDelegate>
+@interface OnboardingLoginViewController () <UITextFieldDelegate, ForgotPasswordDelegate, INatAuthenticationDelegate, GIDSignInUIDelegate, ASAuthorizationControllerPresentationContextProviding, ASAuthorizationControllerDelegate>
 
 @property IBOutlet UILabel *titleLabel;
 
@@ -374,17 +374,16 @@
         return;
     }
     
-    INatWebController *webController = [[INatWebController alloc] init];
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/forgot_password.mobile", INatWebBaseURL]];
-    [webController setUrl:url];
-    webController.delegate = self;
+    ForgotPasswordController *forgot = [[ForgotPasswordController alloc] init];
+    forgot.delegate = self;
+    
     UIBarButtonItem *cancel = [[UIBarButtonItem alloc] bk_initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                               handler:^(id sender) {
                                                                                   [self dismissViewControllerAnimated:YES
                                                                                                                  completion:nil];
                                                                               }];
-    webController.navigationItem.leftBarButtonItem = cancel;
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:webController];
+    forgot.navigationItem.leftBarButtonItem = cancel;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:forgot];
     [self presentViewController:nav animated:YES completion:nil];
 }
 
@@ -673,40 +672,25 @@
 }
 
 #pragma mark WebViewDelegate
-- (BOOL)webView:(UIWebView *)webView shouldLoadRequest:(NSURLRequest *)request {
-    if ([request.URL.path hasPrefix:@"/forgot_password"]) {
-        return YES;
-    }
-    
+
+- (void)finishedWithForgotPasswordController:(ForgotPasswordController *)forgotPasswordController {
     [self dismissViewControllerAnimated:YES completion:nil];
     
-    // webviews may trigger their delegate methods more than once
-    static UIAlertController *alert;
-    if (alert) {
-        [alert dismissViewControllerAnimated:YES completion:^{
-            [self dismissViewControllerAnimated:YES completion:nil];
-        }];
-        alert = nil;
-    } else {
-        
-        NSString *alertTitle = NSLocalizedString(@"Check your email",
-                                                 @"title of alert after you reset your password");
-        NSString *alertMsg = NSLocalizedString(@"If the email address you entered is associated with an iNaturalist account, you should receive an email at that address with a link to reset your password.",
-                                               @"body of alert after you reset your password");
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
-                                                                       message:alertMsg
-                                                                preferredStyle:UIAlertControllerStyleAlert];
-        
-        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                  style:UIAlertActionStyleCancel
-                                                handler:^(UIAlertAction * _Nonnull action) {
-                                                    [self dismissViewControllerAnimated:YES completion:nil];
-                                                }]];
-
-
-    }
+    NSString *alertTitle = NSLocalizedString(@"Check your email",
+                                             @"title of alert after you reset your password");
+    NSString *alertMsg = NSLocalizedString(@"If the email address you entered is associated with an iNaturalist account, you should receive an email at that address with a link to reset your password.",
+                                           @"body of alert after you reset your password");
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                   message:alertMsg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
     
-    return YES;
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:^(UIAlertAction * _Nonnull action) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }]];
+    
+    [self presentViewController:alert animated:true completion:nil];
 }
 
 #pragma mark - INatAuthenticationDelegate
