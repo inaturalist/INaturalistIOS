@@ -478,12 +478,17 @@ didSignInForUser:(GIDGoogleUser *)user
                 [[NSUserDefaults standardUserDefaults] synchronize];
             }
             
+            // stash the already joined projects so we can add them to the fetched user
+            ExploreUserRealm *localMe = [self meUserLocal];
+            RLMArray<ExploreProjectRealm> *joinedProjects = localMe.joinedProjects;
             
             RLMRealm *realm = [RLMRealm defaultRealm];
             [realm beginWriteTransaction];
             ExploreUserRealm *me = nil;
             for (ExploreUser *user in results) {
-                me = [[ExploreUserRealm alloc] initWithMantleModel:user];
+                NSDictionary *value = [ExploreUserRealm valueForMantleModel:user];
+                me = [[ExploreUserRealm alloc] initWithValue:value];
+                me.joinedProjects = joinedProjects;
                 [realm addOrUpdateObject:me];
             }
             [realm commitWriteTransaction];
