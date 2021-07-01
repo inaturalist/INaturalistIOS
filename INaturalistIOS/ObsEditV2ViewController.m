@@ -1000,9 +1000,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self stopUpdatingLocation];
     
     // clear upload validation error message
-    [[RLMRealm defaultRealm] transactionWithBlock:^{
-        self.standaloneObservation.validationErrorMsg = nil;
-    }];
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    self.standaloneObservation.validationErrorMsg = nil;
+    [realm commitWriteTransaction];
     
     if (self.isMakingNewObservation) {
         // insert new standalone observation into realm
