@@ -1174,7 +1174,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 return 44;
             } else if (indexPath.item == 2) {
                 // location
-                return CLLocationCoordinate2DIsValid(self.standaloneObservation.location) ? 66 : 44;
+                return CLLocationCoordinate2DIsValid(self.standaloneObservation.visibleLocation) ? 66 : 44;
             } else if (indexPath.item == 3) {
                 return [DisclosureCell heightForRowWithTitle:[self geoPrivacyTitle]
                                                  inTableView:tableView];
@@ -1361,10 +1361,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                 EditLocationViewController *map = [storyboard instantiateViewControllerWithIdentifier:@"EditLocationViewController"];
                 map.delegate = self;
                 
-                if (CLLocationCoordinate2DIsValid(self.standaloneObservation.location)) {
-                    INatLocation *loc = [[INatLocation alloc] initWithLatitude:@(self.standaloneObservation.latitude)
-                                                                     longitude:@(self.standaloneObservation.longitude)
-                                                                      accuracy:@(self.standaloneObservation.positionalAccuracy)];
+                if (CLLocationCoordinate2DIsValid(self.standaloneObservation.visibleLocation)) {
+                    INatLocation *loc = [[INatLocation alloc] initWithLatitude:@(self.standaloneObservation.visibleLocation.latitude)
+                                                                     longitude:@(self.standaloneObservation.visibleLocation.longitude)
+                                                                      accuracy:@(self.standaloneObservation.visiblePositionalAccuracy)];
                     // TODO: support positioning method?
                     //loc.positioningMethod = self.observation.positioningMethod;
                     [map setCurrentLocation:loc];
@@ -1632,8 +1632,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     
     CLLocationCoordinate2D coords = kCLLocationCoordinate2DInvalid;
     
-    if (CLLocationCoordinate2DIsValid(self.standaloneObservation.location)) {
-        coords = self.standaloneObservation.location;
+    if (CLLocationCoordinate2DIsValid(self.standaloneObservation.visibleLocation)) {
+        coords = self.standaloneObservation.visibleLocation;
     }
     
     if (CLLocationCoordinate2DIsValid(coords)) {
