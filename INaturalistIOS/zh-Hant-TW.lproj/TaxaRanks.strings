@@ -29,9 +29,9 @@
 "parvorder" = "小目";
 
 /* zoosection rank in tree of life */
-"zoosection" = "zoosection";
+"zoosection" = "派";
 /* zoosubsection rank in tree of life */
-"zoosubsection" = "zoosubsection";
+"zoosubsection" = "亞派";
 
 /* superfamily rank in tree of life */
 "superfamily" = "總科";

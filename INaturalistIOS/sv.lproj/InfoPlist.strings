@@ -1,5 +1,5 @@
 /* Localized versions of Info.plist keys */
 // TODO figure out how to use ${PRODUCT_NAME} here
 
-"NSLocationWhenInUseUsageDescription" = "Lägg GPS-koordinater till observationer, visa din plats på kartor med mera.";
+"NSLocationWhenInUseUsageDescription" = "Lägg GPS-koordinater till fynd, visa din plats på kartor med mera.";
 "NSPhotoLibraryUsageDescription" = "Exportera och importera iNaturalist-bilder till och från ditt bibliotek.";

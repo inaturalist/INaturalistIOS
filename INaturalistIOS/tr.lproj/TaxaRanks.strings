@@ -9,13 +9,13 @@
 "subphylum" = "alt şube";
 
 /* superclass rank in tree of life */
-"superclass" = "superclass";
+"superclass" = "üst sınıf";
 /* class rank in tree of life */
 "class" = "sınıf";
 /* subclass rank in tree of life */
 "subclass" = "alt sınıf";
 /* infraclass rank in tree of life */
-"infraclass" = "infraclass";
+"infraclass" = "ara sınıf";
 
 /* superorder rank in tree of life */
 "superorder" = "üst takım";
@@ -24,19 +24,19 @@
 /* suborder rank in tree of life */
 "suborder" = "alt takım";
 /* infraorder rank in tree of life */
-"infraorder" = "infraorder";
+"infraorder" = "ara takım";
 /* parvorder rank in tree of life */
-"parvorder" = "parvorder";
+"parvorder" = "geçiş takımı";
 
 /* zoosection rank in tree of life */
-"zoosection" = "zoosection";
+"zoosection" = "zoobölüm";
 /* zoosubsection rank in tree of life */
-"zoosubsection" = "zoosubsection";
+"zoosubsection" = "zooaltbölüm";
 
 /* superfamily rank in tree of life */
 "superfamily" = "üst aile";
 /* epifamily rank in tree of life */
-"epifamily" = "epifamily";
+"epifamily" = "epi familya";
 /* family rank in tree of life */
 "family" = "aile";
 /* subfamily rank in tree of life */
@@ -52,14 +52,14 @@
 /* epifamily rank in tree of life */
 "genus" = "cins";
 /* genushybrid rank in tree of life */
-"genushybrid" = "genushybrid";
+"genushybrid" = "melez cins";
 /* subgenus rank in tree of life */
 "subgenus" = "alt cins";
 
 /* section rank in tree of life */
-"section" = "section";
+"section" = "seksiyon";
 /* subsection rank in tree of life */
-"subsection" = "subsection";
+"subsection" = "alt seksiyon";
 
 /* species rank in tree of life */
 "species" = "tür";
@@ -69,8 +69,8 @@
 /* subspecies rank in tree of life */
 "subspecies" = "alt tür";
 /* variety rank in tree of life */
-"variety" = "variety";
+"variety" = "varyasyon";
 /* form rank in tree of life */
 "form" = "form";
 /* infrahybrid rank in tree of life */
-"infrahybrid" = "infrahybrid";
+"infrahybrid" = "ara melez";

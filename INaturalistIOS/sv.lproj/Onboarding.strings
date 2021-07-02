@@ -41,10 +41,10 @@
 "dSw-gs-zGG.placeholder" = "Användarnamn";
 
 /* Class = "UILabel"; text = "Share your observation with the community to discuss and confirm your findings."; ObjectID = "ixn-0U-lJ7"; */
-"ixn-0U-lJ7.text" = "Dela din observation med andra medlemmar för att diskutera och bekräfta dina fynd.";
+"ixn-0U-lJ7.text" = "Dela ditt fynd med andra medlemmar för att diskutera och bekräfta dina fynd.";
 
 /* Class = "UILabel"; text = "Your observation may be vetted as Research Grade and shared with scientists working to better understand and protect nature. "; ObjectID = "oro-uB-RY1"; */
-"oro-uB-RY1.text" = "Din observation kan bli markerad som forskningsgrad och delas med forskare som arbetar för att bättre förstå och skydda naturen. ";
+"oro-uB-RY1.text" = "Ditt fynd kan bli markerat som forskningsklass och delas med forskare som arbetar för att bättre förstå och skydda naturen. ";
 
 /* Class = "UILabel"; text = "Sign Up"; ObjectID = "pbQ-o3-5Xy"; */
 "pbQ-o3-5Xy.text" = "Gå med";

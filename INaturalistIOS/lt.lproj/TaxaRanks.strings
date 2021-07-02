@@ -1,30 +1,30 @@
 /* kingdom rank in tree of life */
-"kingdom" = "kingdom";
+"kingdom" = "karalystė";
 /* subkingdom rank in tree of life */
-"subkingdom" = "subkingdom";
+"subkingdom" = "pokaralystė";
 
 /* phylum rank in tree of life */
-"phylum" = "phylum";
+"phylum" = "tipas";
 /* subphylum rank in tree of life */
-"subphylum" = "subphylum";
+"subphylum" = "potipis";
 
 /* superclass rank in tree of life */
-"superclass" = "superclass";
+"superclass" = "antklasis";
 /* class rank in tree of life */
-"class" = "class";
+"class" = "klasė";
 /* subclass rank in tree of life */
-"subclass" = "subclass";
+"subclass" = "poklasis";
 /* infraclass rank in tree of life */
-"infraclass" = "infraclass";
+"infraclass" = "infraklasė";
 
 /* superorder rank in tree of life */
-"superorder" = "superorder";
+"superorder" = "antbūris";
 /* order rank in tree of life */
-"order" = "order";
+"order" = "būrys";
 /* suborder rank in tree of life */
-"suborder" = "suborder";
+"suborder" = "pobūris";
 /* infraorder rank in tree of life */
-"infraorder" = "infraorder";
+"infraorder" = "infrabūrys";
 /* parvorder rank in tree of life */
 "parvorder" = "parvorder";
 
@@ -34,27 +34,27 @@
 "zoosubsection" = "zoosubsection";
 
 /* superfamily rank in tree of life */
-"superfamily" = "superfamily";
+"superfamily" = "antšeimis";
 /* epifamily rank in tree of life */
 "epifamily" = "epifamily";
 /* family rank in tree of life */
-"family" = "family";
+"family" = "šeima";
 /* subfamily rank in tree of life */
-"subfamily" = "subfamily";
+"subfamily" = "pošeimis";
 
 /* supertribe rank in tree of life */
 "supertribe" = "supertribe";
 /* tribe rank in tree of life */
-"tribe" = "tribe";
+"tribe" = "triba";
 /* subtribe rank in tree of life */
 "subtribe" = "subtribe";
 
 /* epifamily rank in tree of life */
-"genus" = "genus";
+"genus" = "gentis";
 /* genushybrid rank in tree of life */
 "genushybrid" = "genushybrid";
 /* subgenus rank in tree of life */
-"subgenus" = "subgenus";
+"subgenus" = "pogentis";
 
 /* section rank in tree of life */
 "section" = "section";
@@ -62,15 +62,15 @@
 "subsection" = "subsection";
 
 /* species rank in tree of life */
-"species" = "species";
+"species" = "rūšis";
 /* hybrid rank in tree of life */
-"hybrid" = "hybrid";
+"hybrid" = "hibridas";
 
 /* subspecies rank in tree of life */
-"subspecies" = "subspecies";
+"subspecies" = "porūšis";
 /* variety rank in tree of life */
-"variety" = "variety";
+"variety" = "varietetas";
 /* form rank in tree of life */
-"form" = "form";
+"form" = "forma";
 /* infrahybrid rank in tree of life */
 "infrahybrid" = "infrahybrid";

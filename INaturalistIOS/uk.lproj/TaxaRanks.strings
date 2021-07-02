@@ -69,8 +69,8 @@
 /* subspecies rank in tree of life */
 "subspecies" = "subspecies";
 /* variety rank in tree of life */
-"variety" = "variety";
+"variety" = "різновид";
 /* form rank in tree of life */
-"form" = "form";
+"form" = "форма";
 /* infrahybrid rank in tree of life */
-"infrahybrid" = "infrahybrid";
+"infrahybrid" = "Інфрагібрид";

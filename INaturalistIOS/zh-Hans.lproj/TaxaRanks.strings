@@ -1,76 +1,76 @@
 /* kingdom rank in tree of life */
-"kingdom" = "kingdom";
+"kingdom" = "界";
 /* subkingdom rank in tree of life */
-"subkingdom" = "subkingdom";
+"subkingdom" = "亚界";
 
 /* phylum rank in tree of life */
-"phylum" = "phylum";
+"phylum" = "门";
 /* subphylum rank in tree of life */
-"subphylum" = "subphylum";
+"subphylum" = "亚门";
 
 /* superclass rank in tree of life */
-"superclass" = "superclass";
+"superclass" = "总纲";
 /* class rank in tree of life */
-"class" = "class";
+"class" = "纲";
 /* subclass rank in tree of life */
-"subclass" = "subclass";
+"subclass" = "亚纲";
 /* infraclass rank in tree of life */
-"infraclass" = "infraclass";
+"infraclass" = "下纲";
 
 /* superorder rank in tree of life */
-"superorder" = "superorder";
+"superorder" = "总目";
 /* order rank in tree of life */
-"order" = "order";
+"order" = "目";
 /* suborder rank in tree of life */
-"suborder" = "suborder";
+"suborder" = "亚目";
 /* infraorder rank in tree of life */
-"infraorder" = "infraorder";
+"infraorder" = "下目";
 /* parvorder rank in tree of life */
-"parvorder" = "parvorder";
+"parvorder" = "小目";
 
 /* zoosection rank in tree of life */
-"zoosection" = "zoosection";
+"zoosection" = "派";
 /* zoosubsection rank in tree of life */
-"zoosubsection" = "zoosubsection";
+"zoosubsection" = "亚派";
 
 /* superfamily rank in tree of life */
-"superfamily" = "superfamily";
+"superfamily" = "总科";
 /* epifamily rank in tree of life */
-"epifamily" = "epifamily";
+"epifamily" = "领科";
 /* family rank in tree of life */
-"family" = "family";
+"family" = "科";
 /* subfamily rank in tree of life */
-"subfamily" = "subfamily";
+"subfamily" = "亚科";
 
 /* supertribe rank in tree of life */
-"supertribe" = "supertribe";
+"supertribe" = "总族";
 /* tribe rank in tree of life */
-"tribe" = "tribe";
+"tribe" = "族";
 /* subtribe rank in tree of life */
-"subtribe" = "subtribe";
+"subtribe" = "亚族";
 
 /* epifamily rank in tree of life */
-"genus" = "genus";
+"genus" = "属";
 /* genushybrid rank in tree of life */
-"genushybrid" = "genushybrid";
+"genushybrid" = "属间杂种";
 /* subgenus rank in tree of life */
-"subgenus" = "subgenus";
+"subgenus" = "亚属";
 
 /* section rank in tree of life */
-"section" = "section";
+"section" = "组";
 /* subsection rank in tree of life */
-"subsection" = "subsection";
+"subsection" = "亚组";
 
 /* species rank in tree of life */
-"species" = "species";
+"species" = "物种";
 /* hybrid rank in tree of life */
-"hybrid" = "hybrid";
+"hybrid" = "杂交种";
 
 /* subspecies rank in tree of life */
-"subspecies" = "subspecies";
+"subspecies" = "亚种";
 /* variety rank in tree of life */
-"variety" = "variety";
+"variety" = "变种";
 /* form rank in tree of life */
-"form" = "form";
+"form" = "型";
 /* infrahybrid rank in tree of life */
-"infrahybrid" = "infrahybrid";
+"infrahybrid" = "种内杂种";
