@@ -969,7 +969,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         NSString *title = NSLocalizedString(@"Missing Date", nil);
         NSString *msg = NSLocalizedString(@"Without a date, this observation may be very hard for others to identify accurately, and will never attain research grade.", nil);
         alert = [UIAlertController alertControllerWithTitle:title message:msg preferredStyle:UIAlertControllerStyleAlert];
-    } else if (!CLLocationCoordinate2DIsValid(self.standaloneObservation.location)) {
+    } else if (!CLLocationCoordinate2DIsValid(self.standaloneObservation.visibleLocation)) {
         // alert about no location
         NSString *title = NSLocalizedString(@"Missing Location", nil);
         NSString *msg = NSLocalizedString(@"Without a location, this observation will be very hard for others to identify and will never attain research grade.", nil);
