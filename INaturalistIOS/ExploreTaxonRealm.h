@@ -33,6 +33,7 @@
 @property NSString *searchableLastMatchedTerm;
 @property NSInteger observationCount;
 @property NSString *wikipediaUrlString;
+@property BOOL isActive;
 @property (readonly) NSURL *wikipediaUrl;
 
 // to-many relationships

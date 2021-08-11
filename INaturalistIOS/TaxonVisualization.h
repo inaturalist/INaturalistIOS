@@ -27,5 +27,6 @@
 
 - (NSURL *)wikipediaUrl;
 - (NSString *)wikipediaArticleName;
+- (BOOL)isActive;
 
 @end

@@ -26,6 +26,7 @@
 @property (nonatomic, assign) NSInteger observationCount;
 @property (nonatomic, copy) NSArray *taxonPhotos;
 @property (nonatomic, copy) NSURL *wikipediaUrl;
+@property (nonatomic, assign) BOOL isActive;
 
 @property (readonly) NSString *wikipediaArticleName;
 

@@ -25,6 +25,7 @@
 		@"observationCount": @"observations_count",
         @"taxonPhotos": @"taxon_photos",
         @"wikipediaUrl": @"wikipedia_url",
+        @"isActive": @"is_active",
 	};
 }
 
@@ -49,6 +50,8 @@
         self.rankLevel = 0;
     } else if ([key isEqualToString:@"observationCount"]) {
     	self.observationCount = 0;
+    } else if ([key isEqualToString:@"isActive"]) {
+        self.isActive = YES;
     } else {
         [super setNilValueForKey:key];
     }

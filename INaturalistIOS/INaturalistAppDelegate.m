@@ -200,7 +200,7 @@
 
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
     NSLog(@"config file URL %@", config.fileURL);
-    config.schemaVersion = 23;
+    config.schemaVersion = 24;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
         if (oldSchemaVersion < 1) {
             // add searchable (ie diacritic-less) taxon names
@@ -361,8 +361,15 @@
                                   block:^(RLMObject *oldObject, RLMObject *newObject) {
                 newObject[@"coordinatesObscured"] = oldObject[@"coordinatesObscuredToUser"];
             }];
-
         }
+        if (oldSchemaVersion < 24) {
+            // added isActive to taxon object, default to true
+            [migration enumerateObjects:ExploreTaxonRealm.className
+                                  block:^(RLMObject * oldObject, RLMObject *newObject) {
+                newObject[@"isActive"] = @(YES);
+            }];
+        }
+
     };
     
     [RLMRealmConfiguration setDefaultConfiguration:config];

@@ -29,6 +29,7 @@
         self.searchableLastMatchedTerm = [taxon.matchedTerm stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
                                                                           		locale:[NSLocale currentLocale]];
         self.observationCount = taxon.observationCount;
+        self.isActive = taxon.isActive;
         
         for (ExploreTaxonPhoto *etp in [taxon taxonPhotos]) {
             ExploreTaxonPhotoRealm *etpr = [[ExploreTaxonPhotoRealm alloc] initWithMantleModel:etp];
@@ -59,6 +60,7 @@
     value[@"searchableLastMatchedTerm"] = [model.matchedTerm stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
                                                                                  locale:[NSLocale currentLocale]];
     value[@"observationCount"] = @(model.observationCount);
+    value[@"isActive"] = @(model.isActive);
     
     if (model.taxonPhotos) {
         NSMutableArray *etprs = [NSMutableArray array];
@@ -103,6 +105,10 @@
     // for sorting and will be refreshed from the server anyways.
     // for some reason, it wasn't migrating correctly sometimes.
     value[@"observationCount"] = @(0);
+    
+    // migrate with isActive true, since it should be refreshed
+    // by the server.
+    value[@"isActive"] = @(YES);
     
     if ([cdModel valueForKey:@"defaultName"]) {
         value[@"commonName"] = [cdModel valueForKey:@"defaultName"];

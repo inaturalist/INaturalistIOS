@@ -173,14 +173,17 @@
                                      locale:[NSLocale currentLocale]];
     // query realm
     RLMResults *results = [ExploreTaxonRealm objectsWhere:@"searchableCommonName contains[c] %@ OR searchableScientificName contains[c] %@ OR searchableLastMatchedTerm contains[c] %@", term, term, term];
-
+    
+    // filter out inactive taxa
+    results = [results objectsWhere:@"isActive = TRUE"];
+    
     NSArray *sorts = @[
                        [RLMSortDescriptor sortDescriptorWithKeyPath:@"rankLevel"
                                                           ascending:NO],
                        [RLMSortDescriptor sortDescriptorWithKeyPath:@"observationCount"
                                                           ascending:NO]
                        ];
-
+    
     self.searchResults = [results sortedResultsUsingDescriptors:sorts];
 
     // invalidate & re-create the update token for the new search results
