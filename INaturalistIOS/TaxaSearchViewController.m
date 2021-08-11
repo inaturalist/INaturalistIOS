@@ -469,6 +469,7 @@
                                                                  forIndexPath:indexPath];
 
             cell.switchLabel.text = NSLocalizedString(@"Show nearby suggestions only", nil);
+            cell.switchLabel.numberOfLines = 0;
             cell.switcher.on = self.showingNearbySuggestionsOnly;
             [cell.switcher addTarget:self
                               action:@selector(changeSuggestionsFilter)
@@ -650,7 +651,8 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([self showingSuggestions]) {
         if ((self.commonAncestor && indexPath.section == 2) || (!self.commonAncestor && indexPath.section == 1)) {
-            return 60;
+            // nearby switch, 80 pts for second row
+            return 80;
         } else {
             return 80;
         }
