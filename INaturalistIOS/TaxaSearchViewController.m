@@ -673,7 +673,7 @@
             return 1;
         }
     } else {
-        return 0;
+        return 1;
     }
 }
 
@@ -693,6 +693,8 @@
                 }
             } else if (self.scores.count > 0) {
                 return NSLocalizedString(@"We're not confident enough to make a recommendation, but here are our top suggestions.", nil);
+            } else {
+                return NSLocalizedString(@"We're not confident enough to make a recommendation.", nil);
             }
         }
     } else {
