@@ -1,76 +1,76 @@
 /* kingdom rank in tree of life */
-"kingdom" = "kingdom";
+"kingdom" = "valsts";
 /* subkingdom rank in tree of life */
-"subkingdom" = "subkingdom";
+"subkingdom" = "apakšvalsts";
 
 /* phylum rank in tree of life */
-"phylum" = "phylum";
+"phylum" = "tips";
 /* subphylum rank in tree of life */
-"subphylum" = "subphylum";
+"subphylum" = "apakštips";
 
 /* superclass rank in tree of life */
-"superclass" = "superclass";
+"superclass" = "virsklase";
 /* class rank in tree of life */
-"class" = "class";
+"class" = "klase";
 /* subclass rank in tree of life */
-"subclass" = "subclass";
+"subclass" = "apakšklase";
 /* infraclass rank in tree of life */
-"infraclass" = "infraclass";
+"infraclass" = "infraklase";
 
 /* superorder rank in tree of life */
-"superorder" = "superorder";
+"superorder" = "augstākā kārta";
 /* order rank in tree of life */
-"order" = "order";
+"order" = "kārta";
 /* suborder rank in tree of life */
-"suborder" = "suborder";
+"suborder" = "apakškārta";
 /* infraorder rank in tree of life */
-"infraorder" = "infraorder";
+"infraorder" = "infrakārta";
 /* parvorder rank in tree of life */
-"parvorder" = "parvorder";
+"parvorder" = "sīkkārta";
 
 /* zoosection rank in tree of life */
-"zoosection" = "zoosection";
+"zoosection" = "sekcija";
 /* zoosubsection rank in tree of life */
-"zoosubsection" = "zoosubsection";
+"zoosubsection" = "apakšsekcija";
 
 /* superfamily rank in tree of life */
-"superfamily" = "superfamily";
+"superfamily" = "virsdzimta";
 /* epifamily rank in tree of life */
-"epifamily" = "epifamily";
+"epifamily" = "\"Epifamily\" dzimta";
 /* family rank in tree of life */
-"family" = "family";
+"family" = "dzimta";
 /* subfamily rank in tree of life */
-"subfamily" = "subfamily";
+"subfamily" = "apakšdzimta";
 
 /* supertribe rank in tree of life */
-"supertribe" = "supertribe";
+"supertribe" = "virscilts";
 /* tribe rank in tree of life */
-"tribe" = "tribe";
+"tribe" = "cilts";
 /* subtribe rank in tree of life */
-"subtribe" = "subtribe";
+"subtribe" = "apakšcilts";
 
 /* epifamily rank in tree of life */
-"genus" = "genus";
+"genus" = "ģints";
 /* genushybrid rank in tree of life */
-"genushybrid" = "genushybrid";
+"genushybrid" = "ģints hibrīds";
 /* subgenus rank in tree of life */
-"subgenus" = "subgenus";
+"subgenus" = "apakšģints";
 
 /* section rank in tree of life */
-"section" = "section";
+"section" = "sekcija";
 /* subsection rank in tree of life */
-"subsection" = "subsection";
+"subsection" = "apakšsekcija";
 
 /* species rank in tree of life */
-"species" = "species";
+"species" = "suga";
 /* hybrid rank in tree of life */
-"hybrid" = "hybrid";
+"hybrid" = "hibrīds";
 
 /* subspecies rank in tree of life */
-"subspecies" = "subspecies";
+"subspecies" = "apakšsuga";
 /* variety rank in tree of life */
-"variety" = "variety";
+"variety" = "šķirne";
 /* form rank in tree of life */
-"form" = "form";
+"form" = "kultūrforma";
 /* infrahybrid rank in tree of life */
-"infrahybrid" = "infrahybrid";
+"infrahybrid" = "infrahibrīds";
