@@ -42,14 +42,14 @@
 
 - (void)projectsNearLocation:(CLLocationCoordinate2D)coordinate handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch nearby projects from node"];
-    NSString *path =[NSString stringWithFormat:@"projects?per_page=%ld&lat=%f&lng=%f&order_by=distance",
+    NSString *path =[NSString stringWithFormat:@"projects?per_page=%ld&lat=%f&lng=%f&order_by=distance&spam=false",
                      (long)self.projectsPerPage, coordinate.latitude, coordinate.longitude];
     [self fetch:path classMapping:ExploreProject.class handler:done];
 }
 
 - (void)projectsMatching:(NSString *)searchTerm handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - search for projects from node"];
-    NSString *path =[NSString stringWithFormat:@"projects?per_page=%ld&q=%@",
+    NSString *path =[NSString stringWithFormat:@"projects?per_page=%ld&q=%@&spam=false",
                      (long)self.projectsPerPage, searchTerm];
     [self fetch:path classMapping:ExploreProject.class handler:done];
 }
