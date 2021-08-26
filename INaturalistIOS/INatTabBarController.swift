@@ -545,6 +545,8 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
             result.itemProvider.loadFileRepresentation(forTypeIdentifier: "public.jpeg", completionHandler: loadCallback)
          } else if (result.itemProvider.hasItemConformingToTypeIdentifier("public.png")) {
             result.itemProvider.loadFileRepresentation(forTypeIdentifier: "public.png", completionHandler: loadCallback)
+         } else if (result.itemProvider.hasItemConformingToTypeIdentifier("com.adobe.raw-image")) {
+            result.itemProvider.loadFileRepresentation(forTypeIdentifier: "com.adobe.raw-image", completionHandler: loadCallback)
          }
       }
    }
