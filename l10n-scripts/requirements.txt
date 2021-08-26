@@ -1,0 +1,2 @@
+chardet==4.0.0
+localizable @ git+git://github.com/chrisballinger/python-localizable@15d3bf2466d0de1a826d3f0ff1f365b0c1910f56
