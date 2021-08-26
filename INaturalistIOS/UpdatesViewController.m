@@ -220,7 +220,6 @@
         cell.observationImageView.image = [UIImage imageForIconicTaxon:iconicTaxonName];
     }
     
-    
     cell.updateDateTextLabel.text = [eur.createdAt inat_shortRelativeDateString];
     
     if (!eur.viewedLocally) {
@@ -235,9 +234,10 @@
         }
         NSString *base = NSLocalizedString(@"%1$@ suggested an ID: %2$@",
                                            @"update notice when someone suggests an ID. %1$@ is the username, %2$@ is the species.");
+
         cell.updateTextLabel.text = [NSString stringWithFormat:base,
                                      eur.identification.identifier.login ?: @"",
-                                     eur.identification.taxon.commonName ?: eur.identification.taxon.scientificName
+                                     eur.identification.taxon.displayFirstName
                                      ];
     } else if (eur.comment) {
         if (eur.comment.commenter.userIcon) {
