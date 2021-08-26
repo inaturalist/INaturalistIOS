@@ -58,7 +58,7 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
                                                                      metrics:0
                                                                        views:views]];
         
-        FAKIcon *check = [FAKIonIcons iosCheckmarkOutlineIconWithSize:13];
+        FAKIcon *check = [FAKIonIcons iosCheckmarkOutlineIconWithSize:18];
         NSMutableAttributedString *defaultPhotoMutable = [[NSMutableAttributedString alloc] initWithAttributedString:check.attributedString];
         [defaultPhotoMutable appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
         [defaultPhotoMutable appendAttributedString:[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Default", nil)
@@ -67,7 +67,7 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
                                                                                                  }]];
         self.defaultPhotoStr = [[NSAttributedString alloc] initWithAttributedString:defaultPhotoMutable];
         
-        FAKIcon *circle = [FAKIonIcons iosCircleOutlineIconWithSize:13];
+        FAKIcon *circle = [FAKIonIcons iosCircleOutlineIconWithSize:18];
         self.nonDefaultPhotoStr = [circle attributedString];
     }
     
