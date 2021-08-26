@@ -257,7 +257,7 @@
 }
 
 - (NSString *)displayScientificName {
-    if (self.rankLevel > 20) {
+    if (self.rankLevel > 10) {
         NSString *localizedRankName = NSLocalizedStringFromTable(self.rankName, @"TaxaRanks", nil);
         return [NSString stringWithFormat:@"%@ %@", [localizedRankName localizedCapitalizedString], self.scientificName];
     } else {
