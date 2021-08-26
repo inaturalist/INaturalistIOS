@@ -441,10 +441,14 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         customization.hideShare = YES;
         customization.useCustomBackButtonImageOnImageViewer = NO;
         
+        MHTransitionCustomization *transitionCustomization = [[MHTransitionCustomization alloc] init];
+        transitionCustomization.interactiveDismiss = false;
+        
         MHGalleryController *gallery = [MHGalleryController galleryWithPresentationStyle:MHGalleryViewModeImageViewerNavigationBarShown];
         gallery.galleryItems = galleryData;
         gallery.presentationIndex = idx;
         gallery.UICustomization = customization;
+        gallery.transitionCustomization = transitionCustomization;
         gallery.presentingFromImageView = [psv imageViewForIndex:idx];
         
         __weak MHGalleryController *blockGallery = gallery;
