@@ -194,7 +194,7 @@
 
 }
 
-- (void)suggestionsForImage:(UIImage *)image location:(CLLocationCoordinate2D)coordinate date:(NSDate *)observedOn handler:(INatAPISuggestionsCompletionHandler)done {
+- (void)suggestionsForImage:(UIImage *)image location:(CLLocationCoordinate2D)coordinate date:(NSDate *)observedOn jwt:(NSString *)jwtToken handler:(INatAPISuggestionsCompletionHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch suggestions by image"];
     NSString *path = @"computervision/score_image";
     
@@ -221,8 +221,7 @@
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:self.apiBaseUrl]];
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = appDelegate.loginController;
-    // only using the anonymous JWT for the suggestions API right now
-    [manager.requestSerializer setValue:[login anonymousJWT] forHTTPHeaderField:@"Authorization"];
+    [manager.requestSerializer setValue:jwtToken forHTTPHeaderField:@"Authorization"];
     
     [manager POST:path parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         [formData appendPartWithFileData:imageData
@@ -239,6 +238,30 @@
                   done(nil, nil, error);
               });
           }];
+}
+
+- (void)suggestionsForImage:(UIImage *)image location:(CLLocationCoordinate2D)coordinate date:(NSDate *)observedOn handler:(INatAPISuggestionsCompletionHandler)done {
+
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    LoginController *login = appDelegate.loginController;
+    if (login.isLoggedIn) {
+        [login getJWTTokenSuccess:^(NSDictionary *info) {
+            [self suggestionsForImage:image
+                             location:coordinate
+                                 date:observedOn
+                                  jwt:info[@"token"]
+                              handler:done];
+
+        } failure:^(NSError *error) {
+            done(nil, nil, error);
+        }];
+    } else {
+        [self suggestionsForImage:image
+                         location:coordinate
+                             date:observedOn
+                              jwt:[login anonymousJWT]
+                          handler:done];
+    }
 }
 
 @end
