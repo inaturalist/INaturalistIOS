@@ -12,6 +12,8 @@
 #import "NSURL+INaturalist.h"
 #import "ExploreUser.h"
 #import "Analytics.h"
+#import "INaturalistAppDelegate.h"
+#import "LoginController.h"
 
 @implementation PeopleAPI
 
@@ -51,6 +53,10 @@
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.HTTPMethod = @"POST";
     
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    LoginController *loginController = appDelegate.loginController;
+    [request addValue:[loginController anonymousJWT] forHTTPHeaderField:@"Authorization"];
+
     NSError *error = nil;
     NSData *JSONData = [NSJSONSerialization dataWithJSONObject:newUserDict options:0 error:nil];
     if (error) {
