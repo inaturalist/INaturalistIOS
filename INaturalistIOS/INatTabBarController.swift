@@ -364,8 +364,13 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
          // user cancelled
          return
       }
-
-      var photoKeys = [String]()
+      
+      // for sorting since the fetch can come back out of order
+      var resultsToPhotoKeys = [PHPickerResult: String]()
+      for result in results {
+         resultsToPhotoKeys[result] = ImageStore.shared().createKey()
+      }
+      var numLoaded = 0
       
       var takenDateForObs: Date? = nil
       var takenLatitudeForObs: Double? = nil
@@ -422,10 +427,10 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                   return
                }
                
-               let photoKey = imageStore.createKey()
+               let photoKey = resultsToPhotoKeys[result]
                do {
                   try imageStore.store(image, forKey:photoKey)
-                  photoKeys.append(photoKey!)
+                  numLoaded += 1
                } catch {
                   DispatchQueue.main.async {
                      MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
@@ -439,7 +444,7 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                   
                   return
                }
-                           
+               
                if let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) {
                   let imageProperties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil)
                   if let dict = imageProperties as? [String: Any] {
@@ -485,7 +490,7 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                   }
                }
                
-               if photoKeys.count == results.count {
+               if numLoaded == results.count {
                   // we've saved all the results to our photo library
                   // and can safely make our observation and move on
                   
@@ -508,14 +513,17 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                      if let date = takenDateForObs {
                         o.timeObserved = date
                      }
-
-                     for i in 0..<photoKeys.count {
+                     
+                     var position = 0
+                     for result in results {
+                        let photoKey = resultsToPhotoKeys[result]
+                        
                         let op = ExploreObservationPhotoRealm()
                         op.uuid = UUID().uuidString.lowercased()
                         op.timeCreated = Date()
                         op.timeUpdatedLocally = Date()
-                        op.position = i
-                        op.photoKey = photoKeys[i]
+                        op.position = position
+                        op.photoKey = photoKey
                         
                         o.observationPhotos.add(op)
                      }
