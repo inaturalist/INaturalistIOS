@@ -24,7 +24,6 @@
         @"parentId": @"parent.id",
         @"parentSiteName": @"parent.name",
         @"parentProjectTitle": @"parent.title",
-        @"parentSiteShortName": @"parent.site_name_short",
         @"parentIconUrl": @"parent.icon_url",
         @"parentType": @"parent_type",
         
@@ -70,7 +69,7 @@
             return self.parentProjectTitle;
             break;
         case PostParentTypeSite:
-            return [NSString stringWithFormat:NSLocalizedString(@"%@ News", @"site news"), self.parentSiteShortName];
+            return [NSString stringWithFormat:NSLocalizedString(@"%@ News", @"site news"), self.parentSiteName];
             break;
         default:
             return @"";
