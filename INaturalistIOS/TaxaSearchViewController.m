@@ -663,7 +663,11 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     if ([self showingSuggestions]) {
-        return self.commonAncestor ? 3 : 2;
+        if (self.scores && self.scores.count > 0) {
+            return self.commonAncestor ? 3 : 2;
+        } else {
+            return 1;
+        }
     } else if ([self shouldQueryAPI]) {
         return self.allowsFreeTextSelection ? 2 : 1;
     } else if (self.scores.count > 0) {
@@ -718,7 +722,7 @@
     if ([self showingSuggestions]) {
         if ((self.commonAncestor && section == 2) || (!self.commonAncestor && section == 1)) {
             // don't show the switcher until we've had a chance to load the suggestions
-            if (self.scores) {
+            if (self.scores && self.scores.count > 0) {
                 return 1;
             } else {
                 return 0;
