@@ -769,9 +769,7 @@
 
 -(NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     if ([self showingSuggestions] && self.scores.count > 0) {
-        if (self.commonAncestor && section == 0) {
-            return nil;
-        } else {
+        if ((self.commonAncestor && section == 1) || section == 0) {
             if (self.creditNames && self.creditNames.count == 3) {
                 NSString *base = NSLocalizedString(@"Suggestions based on observations and identifications provided by the iNaturalist community, including %@, %@, %@, and many others.", nil);
                 return [NSString stringWithFormat:base, self.creditNames[0], self.creditNames[1], self.creditNames[2]];
