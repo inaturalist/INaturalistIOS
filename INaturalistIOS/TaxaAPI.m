@@ -219,8 +219,6 @@
     
     // use afnetworking to deal with icky multi-part forms
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:self.apiBaseUrl]];
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    LoginController *login = appDelegate.loginController;
     [manager.requestSerializer setValue:jwtToken forHTTPHeaderField:@"Authorization"];
     
     [manager POST:path parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
