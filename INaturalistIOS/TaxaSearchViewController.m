@@ -63,7 +63,7 @@
 - (void)willPresentSearchController:(UISearchController *)searchController {
     self.headerHeightConstraint.constant = 0.0f;
     [self.view setNeedsLayout];
-
+    
     self.showingSuggestions = NO;
     [self.tableView reloadData];
 }
@@ -83,7 +83,7 @@
         // switch back to suggestions mode
         self.headerHeightConstraint.constant = 132.0f;
         [self.view setNeedsLayout];
-
+        
         self.showingSuggestions = YES;
         [self.tableView reloadData];
         if (self.scores.count == 0 && !self.commonAncestor) {
@@ -131,25 +131,25 @@
     if (self.showingSuggestions) {
         return;
     }
-
+    
     self.tableView.backgroundView.hidden = TRUE;
-
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.tableView reloadData];
     });
-
+    
     // don't bother querying api until the user has entered a reasonable amount of text
     if (![self shouldQueryAPI]) {
         self.searchResults = nil;
         [self.tableView reloadData];
         return;
     }
-
+    
     // update the local results
-
+    
     [self searchLocal:searchController.searchBar.text];
-
-
+    
+    
     // query node, put into realm, update UI
     [self.api taxaMatching:searchController.searchBar.text handler:^(NSArray *results, NSInteger count, NSError *error) {
         // put the results into realm
@@ -160,7 +160,7 @@
             [realm addOrUpdateObject:etr];
         }
         [realm commitWriteTransaction];
-
+        
         // update the UI
         dispatch_async(dispatch_get_main_queue(), ^{
             [self searchLocal:searchController.searchBar.text];
@@ -178,26 +178,26 @@
     results = [results objectsWhere:@"isActive = TRUE"];
     
     NSArray *sorts = @[
-                       [RLMSortDescriptor sortDescriptorWithKeyPath:@"rankLevel"
-                                                          ascending:NO],
-                       [RLMSortDescriptor sortDescriptorWithKeyPath:@"observationCount"
-                                                          ascending:NO]
-                       ];
+        [RLMSortDescriptor sortDescriptorWithKeyPath:@"rankLevel"
+                                           ascending:NO],
+        [RLMSortDescriptor sortDescriptorWithKeyPath:@"observationCount"
+                                           ascending:NO]
+    ];
     
     self.searchResults = [results sortedResultsUsingDescriptors:sorts];
-
+    
     // invalidate & re-create the update token for the new search results
     if (self.searchResultsToken) {
         [self.searchResultsToken invalidate];
     }
-
+    
     __weak typeof(self)weakSelf = self;
     self.searchResultsToken = [self.searchResults addNotificationBlock:^(RLMResults * _Nullable results, RLMCollectionChange * _Nullable change, NSError * _Nullable error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf.tableView reloadData];
         });
     }];
-
+    
     [self.tableView reloadData];
 }
 
@@ -210,7 +210,7 @@
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
         self.coordinate = kCLLocationCoordinate2DInvalid;
-
+        
         // default to only showing nearby suggestions
         self.showingNearbySuggestionsOnly = YES;
     }
@@ -222,13 +222,13 @@
 }
 
 - (void)viewDidLoad {
-	[super viewDidLoad];
-
+    [super viewDidLoad];
+    
     UISwitch *switcher = [[UISwitch alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     self.nearbySwitchButton = [[UIBarButtonItem alloc] initWithCustomView:switcher];
     self.nearbySwitchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:nil];
     self.navigationItem.rightBarButtonItem = self.nearbySwitchButton;
-
+    
     // setup the search controller
     self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
     self.searchController.searchResultsUpdater = self;
@@ -245,7 +245,7 @@
         [self.searchController.searchBar setAutocorrectionType:UITextAutocorrectionTypeNo];
         [self.searchController.searchBar setSpellCheckingType:UITextSpellCheckingTypeNo];
     }
-
+    
     // setup the table view
     self.tableView.tableHeaderView = self.searchController.searchBar;
     self.tableView.delegate = self;
@@ -254,31 +254,31 @@
          forCellReuseIdentifier:@"TaxonCell"];
     // don't show the extra lines when no tv rows
     self.tableView.tableFooterView = [UIView new];
-
+    
     // design tweaks for suggestions header
     self.suggestionHeaderView.layer.borderWidth = 0.5f;
     self.suggestionHeaderView.layer.borderColor = [UIColor lightGrayColor].CGColor;
     self.headerImageView.layer.cornerRadius = 1.0f;
     self.headerImageView.layer.borderWidth = 1.0f;
     self.headerImageView.layer.borderColor = [UIColor lightGrayColor].CGColor;
-
+    
     // we're shrinking a decently sized image down to a small square,
     // so provide a minification filter that's easier on the eyes and
     // produces fewer resizing artifacts
     self.headerImageView.layer.minificationFilter = kCAFilterTrilinear;
     self.headerImageView.layer.minificationFilterBias = 0.1;
-
-
+    
+    
     NSDate *beforeSuggestions = [NSDate date];
-
+    
     // this is the callback for our suggestions api call
     INatAPISuggestionsCompletionHandler done = ^(NSArray *suggestions, ExploreTaxon *parent, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (error) {
                 [[Analytics sharedClient] event:kAnalyticsEventSuggestionsFailed
                                  withProperties:@{
-                                                  @"error": error.localizedDescription,
-                                                  }];
+                                     @"error": error.localizedDescription,
+                                 }];
                 self.tableView.backgroundView = self.loadingView;
                 self.loadingSpinner.hidden = YES;
                 self.statusLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Cannot load suggestions: %@",
@@ -292,7 +292,7 @@
                     [[Analytics sharedClient] logMetric:kAnalyticsEventSuggestionsObservationGauge
                                                   value:@(fabs([beforeSuggestions timeIntervalSinceNow]))];
                 }
-
+                
                 RLMRealm *realm = [RLMRealm defaultRealm];
                 [realm beginWriteTransaction];
                 if (parent) {
@@ -300,30 +300,30 @@
                     [realm addOrUpdateObject:etr];
                     self.commonAncestor = etr;
                 }
-
+                
                 for (ExploreTaxonScore *ets in suggestions) {
                     ExploreTaxonRealm *etr = [[ExploreTaxonRealm alloc] initWithMantleModel:ets.exploreTaxon];
                     [realm addOrUpdateObject:etr];
                 }
-
+                
                 [realm commitWriteTransaction];
-
+                
                 self.scores = suggestions;
-
+                
                 [[Analytics sharedClient] event:kAnalyticsEventSuggestionsLoaded
                                  withProperties:@{
-                                                  @"WithAncestor": self.commonAncestor ? @"Yes": @"No",
-                                                  @"Ancestor": self.commonAncestor ? self.commonAncestor.scientificName : @"None",
-                                                  @"AncestorRank": self.commonAncestor ? self.commonAncestor.rankName : @"None",
-                                                  @"TopTaxon": self.scores.firstObject.exploreTaxon.scientificName ?: @"Unknown",
-                                                  @"TopTaxonScore": @(self.scores.firstObject.combinedScore ?: 0),
-                                                  }];
-
-
+                                     @"WithAncestor": self.commonAncestor ? @"Yes": @"No",
+                                     @"Ancestor": self.commonAncestor ? self.commonAncestor.scientificName : @"None",
+                                     @"AncestorRank": self.commonAncestor ? self.commonAncestor.rankName : @"None",
+                                     @"TopTaxon": self.scores.firstObject.exploreTaxon.scientificName ?: @"Unknown",
+                                     @"TopTaxonScore": @(self.scores.firstObject.combinedScore ?: 0),
+                                 }];
+                
+                
                 // remove the loading view
                 self.tableView.backgroundView = nil;
                 [self.tableView reloadData];
-
+                
                 NSMutableArray *taxaIds = [NSMutableArray array];
                 if (self.commonAncestor) {
                     [taxaIds addObject:@(self.commonAncestor.taxonId)];
@@ -331,7 +331,7 @@
                 for (ExploreTaxonScore *ets in self.scores) {
                     [taxaIds addObject:@(ets.exploreTaxon.taxonId)];
                 }
-
+                
                 if (arc4random_uniform(2) == 1) {
                     // load observers
                     [[self obsApi] topObserversForTaxaIds:taxaIds handler:^(NSArray *results, NSInteger count, NSError *error) {
@@ -359,57 +359,57 @@
                         self.creditNames = [NSArray arrayWithArray:credits];
                         [self.tableView reloadData];
                     }];
-
+                    
                 }
-
+                
             }
         });
     };
-
+    
     if (self.hidesDoneButton) {
         self.navigationItem.rightBarButtonItem = nil;
     }
-
+    
     if (![[NSUserDefaults standardUserDefaults] boolForKey:kINatSuggestionsPrefKey]) {
         // no suggestions without permission
         [[Analytics sharedClient] event:kAnalyticsEventLoadTaxaSearch
                          withProperties:@{
-                                          @"Suggestions": @"No",
-                                          @"Reason": @"No Permissions",
-                                          }];
+                             @"Suggestions": @"No",
+                             @"Reason": @"No Permissions",
+                         }];
         [self showNoSuggestions];
     } else if (self.imageToClassify) {
         [[Analytics sharedClient] event:kAnalyticsEventLoadTaxaSearch
                          withProperties:@{
-                                          @"Suggestions": @"Yes",
-                                          @"Source": @"Local Image",
-                                          @"Coordinate": CLLocationCoordinate2DIsValid(self.coordinate) ? @"Yes" : @"No",
-                                          @"Date": self.observedOn ? @"Yes" : @"No",
-                                          }];
+                             @"Suggestions": @"Yes",
+                             @"Source": @"Local Image",
+                             @"Coordinate": CLLocationCoordinate2DIsValid(self.coordinate) ? @"Yes" : @"No",
+                             @"Date": self.observedOn ? @"Yes" : @"No",
+                         }];
         [self loadAndShowImageSuggestionsWithCompletion:done];
     } else if (self.observationToClassify && self.observationToClassify.sortedObservationPhotos.count > 0) {
         [[Analytics sharedClient] event:kAnalyticsEventLoadTaxaSearch
                          withProperties:@{
-                                          @"Suggestions": @"Yes",
-                                          @"Source": @"Observation",
-                                          @"Coordinate": CLLocationCoordinate2DIsValid(self.coordinate) ? @"Yes" : @"No",
-                                          @"Date": self.observedOn ? @"Yes" : @"No",
-                                          }];
+                             @"Suggestions": @"Yes",
+                             @"Source": @"Observation",
+                             @"Coordinate": CLLocationCoordinate2DIsValid(self.coordinate) ? @"Yes" : @"No",
+                             @"Date": self.observedOn ? @"Yes" : @"No",
+                         }];
         [self loadAndShowObservationSuggestionsWithCompletion:done];
     } else {
         // no suggestions without a photo
         [[Analytics sharedClient] event:kAnalyticsEventLoadTaxaSearch
                          withProperties:@{
-                                          @"Suggestions": @"No",
-                                          @"Reason": @"No Photo",
-                                          }];
+                             @"Suggestions": @"No",
+                             @"Reason": @"No Photo",
+                         }];
         [self showNoSuggestions];
     }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
+    
     // start the taxon search ui right away if we're not loading
     // suggestions
     if (!self.showingSuggestions) {
@@ -430,7 +430,7 @@
                            location:self.coordinate
                                date:self.observedOn
                             handler:done];
-
+    
 }
 
 - (void)loadAndShowObservationSuggestionsWithCompletion:(INatAPISuggestionsCompletionHandler)done {
@@ -462,25 +462,25 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([self showingSuggestions]) {
-
+        
         // switcher cell is the last TV section
         if ((self.commonAncestor && indexPath.section == 2) || (!self.commonAncestor && indexPath.section == 1)) {
             SwitcherCell *cell = [tableView dequeueReusableCellWithIdentifier:@"switcher"
                                                                  forIndexPath:indexPath];
-
+            
             cell.switchLabel.text = NSLocalizedString(@"Show nearby suggestions only", nil);
             cell.switchLabel.numberOfLines = 0;
             cell.switcher.on = self.showingNearbySuggestionsOnly;
             [cell.switcher addTarget:self
                               action:@selector(changeSuggestionsFilter)
                     forControlEvents:UIControlEventValueChanged];
-
+            
             return cell;
         }
-
+        
         TaxonSuggestionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"suggestion"
                                                                     forIndexPath:indexPath];
-
+        
         ExploreTaxonScore *ts = nil;
         id <TaxonVisualization> taxon = nil;
         if (indexPath.section == 0 && self.commonAncestor) {
@@ -493,7 +493,7 @@
             }
             taxon = [ts exploreTaxon];
         }
-
+        
         if (ts) {
             NSString *reason = @"";
             if (ts.visionScore > 0 && ts.frequencyScore > 0) {
@@ -507,7 +507,7 @@
         } else {
             cell.comment.text = nil;
         }
-
+        
         UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
         if (taxon.photoUrl) {
             [cell.image setImageWithURL:taxon.photoUrl
@@ -515,22 +515,22 @@
         } else {
             [cell.image setImage:iconicTaxonImage];
         }
-
+        
         cell.primaryName.text = taxon.displayFirstName;
         if (taxon.displayFirstNameIsItalicized) {
             cell.primaryName.font = [UIFont italicSystemFontOfSize:cell.primaryName.font.pointSize];
         }
-
+        
         cell.secondaryName.text = taxon.displaySecondName;
         if (taxon.displaySecondNameIsItalicized) {
             cell.secondaryName.font = [UIFont italicSystemFontOfSize:cell.secondaryName.font.pointSize];
         } else {
             cell.secondaryName.font = [UIFont systemFontOfSize:cell.secondaryName.font.pointSize];
         }
-
+        
         return cell;
     }
-
+    
     if (self.allowsFreeTextSelection && indexPath.section == 1) {
         return [self cellForUnknownTaxonInTableView:tableView];
     } else {
@@ -547,9 +547,9 @@
         } else if (indexPath.section == 0 && self.commonAncestor) {
             [[Analytics sharedClient] event:kAnalyticsEventShowTaxonDetails
                              withProperties:@{
-                                              @"Suggestions": @"Yes",
-                                              @"Common Ancestor": @"Yes",
-                                              }];
+                                 @"Suggestions": @"Yes",
+                                 @"Common Ancestor": @"Yes",
+                             }];
             [self showTaxonId:self.commonAncestor.taxonId];
         } else {
             ExploreTaxonScore *ets = nil;
@@ -558,24 +558,24 @@
             } else {
                 ets = [self.scores objectAtIndex:indexPath.item];
             }
-
+            
             ExploreTaxon *taxon = ets.exploreTaxon;
-
+            
             [[Analytics sharedClient] event:kAnalyticsEventShowTaxonDetails
                              withProperties:@{
-                                              @"Suggestions": @"Yes",
-                                              @"Common Ancestor": @"No",
-                                              }];
+                                 @"Suggestions": @"Yes",
+                                 @"Common Ancestor": @"No",
+                             }];
             [self showTaxonId:taxon.taxonId];
         }
     } else {
         if (self.searchResults.count > 0 && indexPath.section == 0) {
-
+            
             ExploreTaxonRealm *taxon = [self.searchResults objectAtIndex:indexPath.item];
             [[Analytics sharedClient] event:kAnalyticsEventShowTaxonDetails
                              withProperties:@{
-                                              @"Suggestions": @"No",
-                                              }];
+                                 @"Suggestions": @"No",
+                             }];
             [self showTaxonId:taxon.taxonId];
         } else {
             // do nothing
@@ -591,32 +591,32 @@
         } else if (indexPath.section == 0 && self.commonAncestor) {
             [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
                              withProperties:@{
-                                              @"IsTaxon": @"Yes",
-                                              @"Suggestions": @"Yes",
-                                              @"Common Ancestor": @"Yes",
-                                              @"Via": @"List",
-                                              }];
+                                 @"IsTaxon": @"Yes",
+                                 @"Suggestions": @"Yes",
+                                 @"Common Ancestor": @"Yes",
+                                 @"Via": @"List",
+                             }];
             [self.delegate taxaSearchViewControllerChoseTaxon:self.commonAncestor
                                               chosenViaVision:YES];
         } else {
             [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
                              withProperties:@{
-                                              @"IsTaxon": @"Yes",
-                                              @"Suggestions": @"Yes",
-                                              @"Common Ancestor": @"No",
-                                              @"Suggestion Rank": @(indexPath.item+1),
-                                              @"Via": @"List",
-                                              }];
-
+                                 @"IsTaxon": @"Yes",
+                                 @"Suggestions": @"Yes",
+                                 @"Common Ancestor": @"No",
+                                 @"Suggestion Rank": @(indexPath.item+1),
+                                 @"Via": @"List",
+                             }];
+            
             ExploreTaxonScore *ets = nil;
             if (self.showingNearbySuggestionsOnly) {
                 ets = [[self nearbyScores] objectAtIndex:indexPath.item];
             } else {
                 ets = [self.scores objectAtIndex:indexPath.item];
             }
-
+            
             ExploreTaxon *taxon = ets.exploreTaxon;
-
+            
             [self.delegate taxaSearchViewControllerChoseTaxon:taxon
                                               chosenViaVision:YES];
         }
@@ -624,11 +624,11 @@
         if (indexPath.section == 1) {
             [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
                              withProperties:@{
-                                              @"IsTaxon": @"No",
-                                              @"Suggestions": @"No",
-                                              @"Common Ancestor": @"No",
-                                              @"Via": @"List",
-                                              }];
+                                 @"IsTaxon": @"No",
+                                 @"Suggestions": @"No",
+                                 @"Common Ancestor": @"No",
+                                 @"Via": @"List",
+                             }];
             [self.delegate taxaSearchViewControllerChoseSpeciesGuess:self.searchController.searchBar.text];
         } else if (self.searchResults.count > 0) {
             ExploreTaxonRealm *etr = [self.searchResults objectAtIndex:indexPath.item];
@@ -636,11 +636,11 @@
                                               chosenViaVision:NO];
             [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
                              withProperties:@{
-                                              @"IsTaxon": @"Yes",
-                                              @"Suggestions": @"No",
-                                              @"Common Ancestor": @"No",
-                                              @"Via": @"List",
-                                              }];
+                                 @"IsTaxon": @"Yes",
+                                 @"Suggestions": @"No",
+                                 @"Common Ancestor": @"No",
+                                 @"Via": @"List",
+                             }];
         } else {
             // shouldn't happen, do nothing
         }
@@ -714,7 +714,7 @@
             }
         }
     }
-
+    
     return nil;
 }
 
@@ -779,23 +779,23 @@
                 return NSLocalizedString(@"Suggestions based on observations and identifications provided by the iNaturalist community.", nil);
             }
         }
-    } else {
-        return nil;
     }
+    
+    return nil;
 }
 
 #pragma mark - TaxonDetailViewControllerDelegate
 
 - (void)taxonDetailViewControllerClickedActionForTaxonId:(NSInteger)taxonId {
-
+    
     [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
                      withProperties:@{
-                                      @"IsTaxon": @"Yes",
-                                      @"Suggestions": [self showingSuggestions] ? @"Yes" : @"No",
-                                      @"Common Ancestor": ([self showingSuggestions] && taxonId == self.commonAncestor.taxonId) ? @"Yes" : @"No",
-                                      @"Via": @"Details",
-                                      }];
-
+                         @"IsTaxon": @"Yes",
+                         @"Suggestions": [self showingSuggestions] ? @"Yes" : @"No",
+                         @"Common Ancestor": ([self showingSuggestions] && taxonId == self.commonAncestor.taxonId) ? @"Yes" : @"No",
+                         @"Via": @"Details",
+                     }];
+    
     ExploreTaxonRealm *etr = [ExploreTaxonRealm objectForPrimaryKey:@(taxonId)];
     [self.delegate taxaSearchViewControllerChoseTaxon:etr
                                       chosenViaVision:[self showingSuggestions]];
@@ -820,32 +820,32 @@
 }
 
 - (UITableViewCell *)cellForUnknownTaxonInTableView:(UITableView *)tableView {
-	ObsDetailTaxonCell *cell = (ObsDetailTaxonCell *)[tableView dequeueReusableCellWithIdentifier:@"TaxonCell"];
-
-	FAKIcon *unknown = [FAKINaturalist speciesUnknownIconWithSize:44.0f];
-	[unknown addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+    ObsDetailTaxonCell *cell = (ObsDetailTaxonCell *)[tableView dequeueReusableCellWithIdentifier:@"TaxonCell"];
+    
+    FAKIcon *unknown = [FAKINaturalist speciesUnknownIconWithSize:44.0f];
+    [unknown addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
     [cell.taxonImageView cancelImageDownloadTask];
-	[cell.taxonImageView setImage:[unknown imageWithSize:CGSizeMake(44, 44)]];
-	cell.taxonImageView.layer.borderWidth = 0.0f;
-
-	cell.taxonNameLabel.text = self.searchController.searchBar.text;
-	cell.taxonNameLabel.textColor = [UIColor blackColor];
-	cell.taxonNameLabel.font = [UIFont systemFontOfSize:cell.taxonNameLabel.font.pointSize];
-	cell.taxonSecondaryNameLabel.text = @"";
-
-	cell.accessoryType = UITableViewCellAccessoryNone;
-
-	return cell;
+    [cell.taxonImageView setImage:[unknown imageWithSize:CGSizeMake(44, 44)]];
+    cell.taxonImageView.layer.borderWidth = 0.0f;
+    
+    cell.taxonNameLabel.text = self.searchController.searchBar.text;
+    cell.taxonNameLabel.textColor = [UIColor blackColor];
+    cell.taxonNameLabel.font = [UIFont systemFontOfSize:cell.taxonNameLabel.font.pointSize];
+    cell.taxonSecondaryNameLabel.text = @"";
+    
+    cell.accessoryType = UITableViewCellAccessoryNone;
+    
+    return cell;
 }
 
 - (UITableViewCell *)cellForTaxon:(ExploreTaxonRealm *)etr inTableView:(UITableView *)tableView {
     if (!etr) {
         return [self cellForUnknownTaxonInTableView:tableView];
     }
-
+    
     ObsDetailTaxonCell *cell = (ObsDetailTaxonCell *)[tableView dequeueReusableCellWithIdentifier:@"TaxonCell"];
-
-
+    
+    
     UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:etr.iconicTaxonName];
     if (etr.photoUrl) {
         [cell.taxonImageView setImageWithURL:etr.photoUrl
@@ -854,31 +854,31 @@
         [cell.taxonImageView setImage:iconicTaxonImage];
     }
     cell.taxonImageView.layer.borderWidth = 1.0f;
-
+    
     cell.taxonNameLabel.text = etr.displayFirstName;
     if (etr.displayFirstNameIsItalicized) {
         cell.taxonNameLabel.font = [UIFont italicSystemFontOfSize:cell.taxonNameLabel.font.pointSize];
     }
-
+    
     cell.taxonSecondaryNameLabel.text = etr.displaySecondName;
     if (etr.displaySecondNameIsItalicized) {
         cell.taxonSecondaryNameLabel.font = [UIFont italicSystemFontOfSize:cell.taxonSecondaryNameLabel.font.pointSize];
     }
-
+    
     cell.accessoryType = UITableViewCellAccessoryDetailButton;
-
+    
     return cell;
 }
 
 - (NSArray *)nearbyScores {
     static NSPredicate *nearbyPredicate = nil;
-
+    
     if (!nearbyPredicate) {
         nearbyPredicate = [NSPredicate predicateWithBlock:^BOOL(ExploreTaxonScore *score, NSDictionary *bindings) {
             return score.frequencyScore > 0;
         }];
     }
-
+    
     return [self.scores filteredArrayUsingPredicate:nearbyPredicate];
 }
 
