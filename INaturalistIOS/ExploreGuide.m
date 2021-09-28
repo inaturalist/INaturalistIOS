@@ -36,14 +36,26 @@
 
 
 + (NSValueTransformer *)createdAtJSONTransformer {
+    static NSISO8601DateFormatter *_dateFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateFormatter = [[NSISO8601DateFormatter alloc] init];
+    });
+
     return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
-        return [[ExploreGuide iNatAPIDateFormatter] dateFromString:dateString];
+        return [_dateFormatter dateFromString:dateString];
     }];
 }
 
 + (NSValueTransformer *)updatedAtJSONTransformer {
+    static NSISO8601DateFormatter *_dateFormatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _dateFormatter = [[NSISO8601DateFormatter alloc] init];
+    });
+
     return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
-        return [[ExploreGuide iNatAPIDateFormatter] dateFromString:dateString];
+        return [_dateFormatter dateFromString:dateString];
     }];
 }
 
