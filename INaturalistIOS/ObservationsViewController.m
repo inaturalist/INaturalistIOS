@@ -1448,7 +1448,24 @@
                                                                          target:self
                                                                          action:@selector(settings)];
     settingsBarButton.accessibilityLabel = NSLocalizedString(@"Settings", @"accessibility label for settings button");
-    self.navigationItem.rightBarButtonItem = settingsBarButton;
+    
+    FAKIcon *book = [FAKIonIcons iosBookOutlineIconWithSize:30];
+    UIImage *bookImage = [book imageWithSize:CGSizeMake(30, 30)];
+    book.iconFontSize = 20;
+    UIImage *bookLandscapeImage = [book imageWithSize:CGSizeMake(20, 20)];
+    
+    UIBarButtonItem *guidesBarButton = [[UIBarButtonItem alloc] initWithImage:bookImage
+                                                          landscapeImagePhone:bookLandscapeImage
+                                                                        style:UIBarButtonItemStylePlain
+                                                                       target:self
+                                                                       action:@selector(guides)];
+    guidesBarButton.accessibilityLabel = NSLocalizedString(@"Guides", @"accessibility label for guides button");
+    
+    self.navigationItem.rightBarButtonItems = @[
+        settingsBarButton,
+        guidesBarButton,
+    ];
+    //self.navigationItem.rightBarButtonItem = settingsBarButton;
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.loginController.uploadManager setDelegate:self];
@@ -1485,6 +1502,11 @@
     [self.navigationController pushViewController:vc animated:YES];
 }
 
+- (void)guides {
+    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"Guides" bundle:nil];
+    UIViewController *vc = [storyBoard instantiateViewControllerWithIdentifier:@"GuidesViewController"];
+    [self.navigationController pushViewController:vc animated:YES];
+}
 
 - (void)viewWillAppear:(BOOL)animated
 {
