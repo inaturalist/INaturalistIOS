@@ -252,6 +252,15 @@
                                                                       options:0
                                                                       metrics:0
                                                                         views:views]];
+    
+    // ios 15 nav bar appearance
+    if (@available(iOS 13.0, *)) {
+        UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
+        [appearance configureWithOpaqueBackground];
+        appearance.backgroundColor = [UIColor whiteColor];
+        self.navigationController.navigationBar.standardAppearance = appearance;
+        self.navigationController.navigationBar.scrollEdgeAppearance = appearance;
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {

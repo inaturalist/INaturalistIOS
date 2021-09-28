@@ -1461,6 +1461,14 @@
                                      action:@selector(signup)
                            forControlEvents:UIControlEventTouchUpInside];
     
+    // ios 15 nav bar appearance
+    if (@available(iOS 13.0, *)) {
+        UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
+        [appearance configureWithOpaqueBackground];
+        appearance.backgroundColor = [UIColor whiteColor];
+        self.navigationController.navigationBar.standardAppearance = appearance;
+        self.navigationController.navigationBar.scrollEdgeAppearance = appearance;
+    }
 }
 
 - (void)login {
