@@ -249,7 +249,7 @@
 }
 
 - (BOOL)nameIsItalicized:(NSString *)name {
-    if ([name isEqualToString:self.scientificName] && self.rankLevel > 0 && self.rankLevel <= 20) {
+    if ([name containsString:self.scientificName] && self.rankLevel > 0 && self.rankLevel <= 20) {
         return YES;
     } else {
         return NO;

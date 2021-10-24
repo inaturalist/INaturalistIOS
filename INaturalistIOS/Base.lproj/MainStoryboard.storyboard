@@ -1120,7 +1120,7 @@
                             </connections>
                         </containerView>
                         <view key="tableFooterView" contentMode="scaleToFill" id="f67-4z-7Ei">
-                            <rect key="frame" x="0.0" y="679.00000000000011" width="414" height="65"/>
+                            <rect key="frame" x="0.0" y="679" width="414" height="65"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xXw-vv-sTU">
