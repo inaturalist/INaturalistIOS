@@ -23,7 +23,7 @@ target :iNaturalist do
   pod 'GoogleSignIn', '4.4.0'
   pod 'SSZipArchive', '0.3.2'
   pod 'ActionSheetPicker-3.0', '1.3.12'
-  pod 'NXOAuth2Client', '1.2.8'
+  pod 'NXOAuth2Client', :git => 'https://github.com/inaturalist/OAuth2Client', :branch => 'iNat'
   pod 'RaptureXML', '1.0.1'
   pod 'DCRoundSwitch', '0.0.1'
   pod 'VTAcknowledgementsViewController', '0.15'
