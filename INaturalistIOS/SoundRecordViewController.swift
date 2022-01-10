@@ -307,11 +307,7 @@ class SoundRecordViewController: UIViewController {
 
 extension SoundRecordViewController: AVAudioRecorderDelegate {
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        if flag {
-            self.recorderDelegate?.recordedSound(recorder: self, uuidString: self.soundUUIDString)
-        } else {
-            finishRecording(success: false, error: nil)
-        }
+        finishRecording(success: flag, error: nil)
     }
     
     func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
