@@ -39,6 +39,7 @@
              @"inatDescription": @"description",
              @"speciesGuess": @"species_guess",
              @"timeObserved": @"time_observed_at",
+             @"observedTimeZone": @"observed_time_zone",
              @"dateObserved": @"observed_on",
              @"timeCreated": @"created_at",
              @"identificationsCount": @"identifications_count",

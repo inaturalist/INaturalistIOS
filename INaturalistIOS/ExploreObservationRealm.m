@@ -27,9 +27,11 @@
     if (mtlModel.inatDescription) { value[@"inatDescription"] = mtlModel.inatDescription; }
     if (mtlModel.timeObserved) { value[@"timeObserved"] = mtlModel.timeObserved; }
     if (mtlModel.timeCreated) { value[@"timeCreated"] = mtlModel.timeCreated; }
-
-    value[@"dataQuality"] = @(mtlModel.dataQuality);
+    if (mtlModel.observedTimeZone) {
+        value[@"observedTimeZone"] = mtlModel.observedTimeZone;
+    }
     
+    value[@"dataQuality"] = @(mtlModel.dataQuality);
     value[@"latitude"] = @(mtlModel.latitude);
     value[@"longitude"] = @(mtlModel.longitude);
     value[@"privateLatitude"] = @(mtlModel.privateLocation.latitude);
@@ -444,6 +446,18 @@
         [formatter setDateStyle:NSDateFormatterShortStyle];
         [formatter setTimeStyle:NSDateFormatterShortStyle];
     }
+    
+    if (self.observedTimeZone) {
+        NSTimeZone *tz = [NSTimeZone timeZoneWithName:self.observedTimeZone];
+        if (tz) {
+            formatter.timeZone = tz;
+        } else {
+            formatter.timeZone = NSTimeZone.localTimeZone;
+        }
+    } else {
+        formatter.timeZone = NSTimeZone.localTimeZone;
+    }
+
     return [formatter stringFromDate:self.timeObserved];
 }
 
@@ -489,15 +503,26 @@
 }
 
 - (NSString *)observedOnStringForUploading {
-    static NSDateFormatter *formatter = nil;
+    static NSISO8601DateFormatter *formatter = nil;
     if (!formatter) {
-        formatter = [[NSDateFormatter alloc] init];
-        [formatter setTimeZone:[NSTimeZone localTimeZone]];
-        [formatter setDateFormat:@"EEE MMM dd yyyy HH:mm:ss 'GMT'Z (zzz)"];
+        formatter = [[NSISO8601DateFormatter alloc] init];
+        
+        //[formatter setDateFormat:@"EEE MMM dd yyyy HH:mm:ss 'GMT'Z (zzz)"];
         
         // per #128 and https://groups.google.com/d/topic/inaturalist/8tE0QTT_kzc/discussion
         // the server doesn't want the observed_on field to be localized
-        [formatter setLocale:[NSLocale localeWithLocaleIdentifier:@"en-US"]];
+        //[formatter setLocale:[NSLocale localeWithLocaleIdentifier:@"en-US"]];
+    }
+    
+    if (self.observedTimeZone) {
+        NSTimeZone *tz = [NSTimeZone timeZoneWithName:self.observedTimeZone];
+        if (tz) {
+            formatter.timeZone = tz;
+        } else {
+            formatter.timeZone = NSTimeZone.localTimeZone;
+        }
+    } else {
+        formatter.timeZone = NSTimeZone.localTimeZone;
     }
 
     return [formatter stringFromDate:self.timeObserved];

@@ -200,7 +200,7 @@
 
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
     NSLog(@"config file URL %@", config.fileURL);
-    config.schemaVersion = 24;
+    config.schemaVersion = 25;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
         if (oldSchemaVersion < 1) {
             // add searchable (ie diacritic-less) taxon names
@@ -369,6 +369,14 @@
                 newObject[@"isActive"] = @(YES);
             }];
         }
+        if (oldSchemaVersion < 25) {
+            // added timezone to observation, default to ""
+            [migration enumerateObjects:ExploreObservationRealm.className
+                                  block:^(RLMObject * oldObject, RLMObject *newObject) {
+                newObject[@"observedTimeZone"] = nil;
+            }];
+        }
+
 
     };
     

@@ -1612,6 +1612,18 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
     cell.titleLabel.text = [self.standaloneObservation observedOnShortString];
+    
+    NSDateFormatter *tzFormat = [[NSDateFormatter alloc] init];
+    tzFormat.dateFormat = @"ZZZZZ";
+    if (self.standaloneObservation.observedTimeZone) {
+        NSTimeZone *tz = [NSTimeZone timeZoneWithName:self.standaloneObservation.observedTimeZone];
+        if (tz) {
+            tzFormat.timeZone = tz;
+        }
+    }
+    NSString *tzString = [tzFormat stringFromDate:self.standaloneObservation.observedOn];
+    cell.titleLabel.text = [NSString stringWithFormat:@"%@ %@", cell.titleLabel.text, tzString];
+    
     FAKIcon *calendar = [FAKINaturalist iosCalendarOutlineIconWithSize:44];
     [calendar addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
     cell.cellImageView.image = [calendar imageWithSize:CGSizeMake(44, 44)];

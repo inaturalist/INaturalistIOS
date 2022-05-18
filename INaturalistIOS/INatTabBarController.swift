@@ -126,6 +126,7 @@ class INatTabBarController: UITabBarController {
       o.timeUpdatedLocally = Date()
       // photoless observation defaults to now
       o.timeObserved = Date()
+      o.observedTimeZone = TimeZone.current.identifier;
       
       if let taxonId = self.observingTaxonId,
          let taxon = ExploreTaxonRealm.object(forPrimaryKey: NSNumber(value: taxonId))
@@ -289,6 +290,7 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
       
       // photo was taken now
       o.timeObserved = Date()
+      o.observedTimeZone = TimeZone.current.identifier;
       
       let op = ExploreObservationPhotoRealm()
       op.uuid = UUID().uuidString.lowercased()
@@ -373,6 +375,7 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
       var numLoaded = 0
       
       var takenDateForObs: Date? = nil
+      var takenTimezoneForObs: TimeZone? = nil
       var takenLatitudeForObs: Double? = nil
       var takenLongitudeForObs: Double? = nil
       var takenGeoAccuracyForObs: Double? = nil
@@ -456,10 +459,43 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                            df.calendar = Calendar(identifier: .gregorian)
                            df.dateFormat = "yyyy:MM:dd HH:mm:ss"
                            
+                           // sometimes different fields are populated, based on how & where the
+                           // photo was digitized.
+                           var tzOffset: String? = nil
+                           if let tzOffsetExif = exif["OffsetTimeDigitized"] as? String {
+                              tzOffset = tzOffsetExif
+                           } else if let tzOffsetExif = exif["OffsetTime"] as? String {
+                              tzOffset = tzOffsetExif
+                           } else if let tzOffsetExif = exif["OffsetTimeOriginal"] as? String {
+                              tzOffset = tzOffsetExif
+                           }
+                           
+                           if let tzOffset = tzOffset {
+                              let tzDateFormatter = DateFormatter()
+                              tzDateFormatter.dateFormat = "ZZZZZ"
+                              
+                              if let tzDate = tzDateFormatter.date(from: tzOffset),
+                                 let gmtDate = tzDateFormatter.date(from: "+00:00")
+                              {
+                                 var timeDiff: Double = 0
+                                 if tzOffset.hasPrefix("-") {
+                                    timeDiff = tzDate.timeIntervalSince(gmtDate) * -1
+                                 } else {
+                                    timeDiff = gmtDate.timeIntervalSince(tzDate)
+                                 }
+                                 
+                                 if let tz = TimeZone(secondsFromGMT: Int(timeDiff)) {
+                                    takenTimezoneForObs = tz
+                                    df.timeZone = tz
+                                 }
+                              }
+                           }
 
+                           
                            if let takenDateExif = exif["DateTimeOriginal"] as? String,
-                              let takenDate = df.date(from: takenDateExif) {
-                              takenDateForObs = takenDate
+                              let takenDate = df.date(from: takenDateExif)
+                           {
+                                 takenDateForObs = takenDate
                            }
                         }
                      }
@@ -512,6 +548,9 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                      }
                      if let date = takenDateForObs {
                         o.timeObserved = date
+                     }
+                     if let tz = takenTimezoneForObs {
+                        o.observedTimeZone = tz.identifier
                      }
                      
                      var position = 0

@@ -34,6 +34,7 @@
 @property NSDate *timeCreated;
 @property NSDate *timeSynced;
 @property NSDate *timeUpdatedLocally;
+@property NSString *observedTimeZone;
 
 @property ObsDataQuality dataQuality;
 
