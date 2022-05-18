@@ -357,7 +357,14 @@
                 }
             }];
             
-            // also request the original exif date
+            // also check for the original exif date.
+            // if there's a date in exif, then we'll just use the asset
+            // date and assume that apple has parsed it correctly
+            // this steps around issues where we struggle to extract
+            // the TZ embedded in exif due to format issues.
+            // basically, it's unsafe to use the asset date if there's no
+            // date in exif, since that would mean that the asset date
+            // was set to the time of library import, not capture.
             PHContentEditingInputRequestOptions *editOptions = [[PHContentEditingInputRequestOptions alloc] init];
             editOptions.networkAccessAllowed = YES;
 
@@ -368,8 +375,11 @@
                 if (exif) {
                     NSString *exifOriginalDateTimeString = [exif valueForKey:@"DateTimeOriginal"];
                     NSDate *exifOriginalDateTime = [[self exifDateFormatter] dateFromString:exifOriginalDateTimeString];
+                    
                     if (!self.obsDate && exifOriginalDateTime) {
-                        self.obsDate = exifOriginalDateTime;
+                        // since there is a date in exif,
+                        // then it's safe to use the asset creation date
+                        self.obsDate = asset.creationDate;
                     }
                 }
             }];
