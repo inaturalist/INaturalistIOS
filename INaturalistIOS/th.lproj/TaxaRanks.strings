@@ -4,73 +4,73 @@
 "subkingdom" = "อาณาจักรย่อย";
 
 /* phylum rank in tree of life */
-"phylum" = "ไฟลัม /ส่วน (Phylum)";
+"phylum" = "ไฟลัม";
 /* subphylum rank in tree of life */
-"subphylum" = "ไฟลัมย่อย (Subphylum)";
+"subphylum" = "ไฟลัมย่อย";
 
 /* superclass rank in tree of life */
-"superclass" = "ชั้นใหญ่ (Superclass)";
+"superclass" = "ชั้นใหญ่";
 /* class rank in tree of life */
-"class" = "ชั้น (Class)";
+"class" = "ชั้น";
 /* subclass rank in tree of life */
-"subclass" = "ชั้นย่อย (Subclass)";
+"subclass" = "ชั้นย่อย";
 /* infraclass rank in tree of life */
-"infraclass" = "ชั้นใหญ่ (Infraclass)";
+"infraclass" = "ชั้นฐาน";
 
 /* superorder rank in tree of life */
 "superorder" = "อันดับใหญ่ (Superorder)";
 /* order rank in tree of life */
-"order" = "อันดับ (Order)";
+"order" = "อันดับ";
 /* suborder rank in tree of life */
-"suborder" = "อันดับย่อย (Suborder)";
+"suborder" = "อันดับย่อย";
 /* infraorder rank in tree of life */
-"infraorder" = "อันดับใหญ่ (Infraorder)";
+"infraorder" = "อันดับฐาน";
 /* parvorder rank in tree of life */
-"parvorder" = "อนุอันดับ (Parvorder)";
+"parvorder" = "อนุอันดับ";
 
 /* zoosection rank in tree of life */
-"zoosection" = "zoosection";
+"zoosection" = "หมู่สัตว์";
 /* zoosubsection rank in tree of life */
-"zoosubsection" = "zoosubsection";
+"zoosubsection" = "หมู่ย่อยสัตว์";
 
 /* superfamily rank in tree of life */
-"superfamily" = "วงศ์ใหญ่ (Superfamily)";
+"superfamily" = "วงศ์ใหญ่";
 /* epifamily rank in tree of life */
 "epifamily" = "อันดับระหว่างครอบครัว (Epifamily)";
 /* family rank in tree of life */
-"family" = "วงศ์ (Family)";
+"family" = "วงศ์";
 /* subfamily rank in tree of life */
-"subfamily" = "วงศ์ย่อย (Subfamily)";
+"subfamily" = "วงศ์ย่อย";
 
 /* supertribe rank in tree of life */
-"supertribe" = "เผ่าใหญ่ (Supertribe)";
+"supertribe" = "เผ่าใหญ่";
 /* tribe rank in tree of life */
-"tribe" = "เผ่า (Tribe)";
+"tribe" = "เผ่า";
 /* subtribe rank in tree of life */
-"subtribe" = "เผ่าย่อย (Subtribe)";
+"subtribe" = "เผ่าย่อย";
 
 /* epifamily rank in tree of life */
-"genus" = "สกุล (Genus)";
+"genus" = "สกุล";
 /* genushybrid rank in tree of life */
-"genushybrid" = "genushybrid";
+"genushybrid" = "สกุลผสม";
 /* subgenus rank in tree of life */
-"subgenus" = "สกุลย่อย (Subgenus)";
+"subgenus" = "สกุลย่อย";
 
 /* section rank in tree of life */
-"section" = "หมู่ (Section)";
+"section" = "หมู่";
 /* subsection rank in tree of life */
-"subsection" = "หมู่ย่อย (Subsection)";
+"subsection" = "หมู่ย่อย";
 
 /* species rank in tree of life */
-"species" = "ชนิด (Species)";
+"species" = "ชนิด";
 /* hybrid rank in tree of life */
-"hybrid" = "hybrid";
+"hybrid" = "ลูกผสม";
 
 /* subspecies rank in tree of life */
-"subspecies" = "ชนิดย่อย (Subspecies)";
+"subspecies" = "ชนิดย่อย";
 /* variety rank in tree of life */
-"variety" = "สายพันธุ์หรือพันธุ์ (Variety)";
+"variety" = "พันธุ์";
 /* form rank in tree of life */
-"form" = "รูปแบบ";
+"form" = "แบบ";
 /* infrahybrid rank in tree of life */
-"infrahybrid" = "infrahybrid";
+"infrahybrid" = "ลูกผสมฐาน";

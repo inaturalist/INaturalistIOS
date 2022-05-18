@@ -1,73 +1,73 @@
 /* kingdom rank in tree of life */
-"kingdom" = "kingdom";
+"kingdom" = "царство";
 /* subkingdom rank in tree of life */
-"subkingdom" = "subkingdom";
+"subkingdom" = "підцарство";
 
 /* phylum rank in tree of life */
-"phylum" = "phylum";
+"phylum" = "тип/відділ";
 /* subphylum rank in tree of life */
-"subphylum" = "subphylum";
+"subphylum" = "підтип/підвідділ";
 
 /* superclass rank in tree of life */
-"superclass" = "superclass";
+"superclass" = "надклас";
 /* class rank in tree of life */
-"class" = "class";
+"class" = "клас";
 /* subclass rank in tree of life */
-"subclass" = "subclass";
+"subclass" = "підклас";
 /* infraclass rank in tree of life */
-"infraclass" = "infraclass";
+"infraclass" = "інфраклас";
 
 /* superorder rank in tree of life */
-"superorder" = "superorder";
+"superorder" = "надряд/надпорядок";
 /* order rank in tree of life */
-"order" = "order";
+"order" = "ряд/порядок";
 /* suborder rank in tree of life */
-"suborder" = "suborder";
+"suborder" = "підряд/підпорядок";
 /* infraorder rank in tree of life */
-"infraorder" = "infraorder";
+"infraorder" = "інфраряд/інфрапорядок";
 /* parvorder rank in tree of life */
-"parvorder" = "parvorder";
+"parvorder" = "парворяд";
 
 /* zoosection rank in tree of life */
-"zoosection" = "zoosection";
+"zoosection" = "секція";
 /* zoosubsection rank in tree of life */
-"zoosubsection" = "zoosubsection";
+"zoosubsection" = "підсекція";
 
 /* superfamily rank in tree of life */
-"superfamily" = "superfamily";
+"superfamily" = "надродина";
 /* epifamily rank in tree of life */
-"epifamily" = "epifamily";
+"epifamily" = "епіродина";
 /* family rank in tree of life */
-"family" = "family";
+"family" = "родина";
 /* subfamily rank in tree of life */
-"subfamily" = "subfamily";
+"subfamily" = "підродина";
 
 /* supertribe rank in tree of life */
-"supertribe" = "supertribe";
+"supertribe" = "надтриба";
 /* tribe rank in tree of life */
-"tribe" = "tribe";
+"tribe" = "триба";
 /* subtribe rank in tree of life */
-"subtribe" = "subtribe";
+"subtribe" = "підтриба";
 
 /* epifamily rank in tree of life */
-"genus" = "genus";
+"genus" = "рід";
 /* genushybrid rank in tree of life */
-"genushybrid" = "genushybrid";
+"genushybrid" = "міжродовий гібрид";
 /* subgenus rank in tree of life */
-"subgenus" = "subgenus";
+"subgenus" = "підрід";
 
 /* section rank in tree of life */
-"section" = "section";
+"section" = "секція";
 /* subsection rank in tree of life */
-"subsection" = "subsection";
+"subsection" = "підсекція";
 
 /* species rank in tree of life */
-"species" = "species";
+"species" = "вид";
 /* hybrid rank in tree of life */
-"hybrid" = "hybrid";
+"hybrid" = "гібрид";
 
 /* subspecies rank in tree of life */
-"subspecies" = "subspecies";
+"subspecies" = "підвид";
 /* variety rank in tree of life */
 "variety" = "різновид";
 /* form rank in tree of life */

@@ -29,9 +29,9 @@
 "parvorder" = "parvordem";
 
 /* zoosection rank in tree of life */
-"zoosection" = "zoosection";
+"zoosection" = "seção zoológica";
 /* zoosubsection rank in tree of life */
-"zoosubsection" = "zoosubsection";
+"zoosubsection" = "subseção zoológica";
 
 /* superfamily rank in tree of life */
 "superfamily" = "superfamília";
@@ -52,7 +52,7 @@
 /* epifamily rank in tree of life */
 "genus" = "gênero";
 /* genushybrid rank in tree of life */
-"genushybrid" = "genushybrid";
+"genushybrid" = "gênero híbrido";
 /* subgenus rank in tree of life */
 "subgenus" = "subgênero";
 
@@ -73,4 +73,4 @@
 /* form rank in tree of life */
 "form" = "forma";
 /* infrahybrid rank in tree of life */
-"infrahybrid" = "infrahybrid";
+"infrahybrid" = "infra-híbrido";

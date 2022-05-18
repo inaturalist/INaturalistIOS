@@ -2,7 +2,7 @@
 "0HC-89-zFL.text" = "Pievienot novērojumu";
 
 /* Class = "UITextField"; placeholder = "Email"; ObjectID = "2e2-wM-KPk"; */
-"2e2-wM-KPk.placeholder" = "E-pasts";
+"2e2-wM-KPk.placeholder" = "e-pastu";
 
 /* Class = "UILabel"; text = "Discuss"; ObjectID = "2hB-WM-pN1"; */
 "2hB-WM-pN1.text" = "Diskutēt";
