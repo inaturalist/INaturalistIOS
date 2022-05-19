@@ -297,6 +297,7 @@
 		FACEEB281D1C607600B2EC62 /* ExploreUser.m in Sources */ = {isa = PBXBuildFile; fileRef = FACEEB271D1C607600B2EC62 /* ExploreUser.m */; };
 		FAD05EA41B9A911400C14085 /* TextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD05EA31B9A911400C14085 /* TextViewCell.m */; };
 		FAD0890A23E4AD4F002D9F3C /* ExploreObservationRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD0890923E4AD4F002D9F3C /* ExploreObservationRealm.m */; };
+		FAD0DE24283551C100CD51F1 /* OnboardingSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAD0DE23283551C100CD51F1 /* OnboardingSettingView.swift */; };
 		FAD125442296060C006E70FC /* InsetLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD125432296060C006E70FC /* InsetLabel.m */; };
 		FAD44AE72456635000E9DA38 /* ExploreObsFieldValueRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD44AE62456635000E9DA38 /* ExploreObsFieldValueRealm.m */; };
 		FAD44AEA24576E2800E9DA38 /* ExploreProjectObservationRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FAD44AE924576E2800E9DA38 /* ExploreProjectObservationRealm.m */; };
@@ -1122,6 +1123,7 @@
 		FAD05EA31B9A911400C14085 /* TextViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextViewCell.m; sourceTree = "<group>"; };
 		FAD0890823E4AD4F002D9F3C /* ExploreObservationRealm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreObservationRealm.h; sourceTree = "<group>"; };
 		FAD0890923E4AD4F002D9F3C /* ExploreObservationRealm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationRealm.m; sourceTree = "<group>"; };
+		FAD0DE23283551C100CD51F1 /* OnboardingSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSettingView.swift; sourceTree = "<group>"; };
 		FAD125422296060C006E70FC /* InsetLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InsetLabel.h; sourceTree = "<group>"; };
 		FAD125432296060C006E70FC /* InsetLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InsetLabel.m; sourceTree = "<group>"; };
 		FAD35175225A7D9300E0BE6C /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ca-ES"; path = "ca-ES.lproj/MainStoryboard.strings"; sourceTree = "<group>"; };
@@ -1905,6 +1907,7 @@
 				FA711AAA1D53D71500C4FFDB /* OnboardingPageViewController.m */,
 				FA711AAC1D53E52600C4FFDB /* OnboardingLoginViewController.h */,
 				FA711AAD1D53E52600C4FFDB /* OnboardingLoginViewController.m */,
+				FAD0DE23283551C100CD51F1 /* OnboardingSettingView.swift */,
 			);
 			name = Onboarding;
 			sourceTree = "<group>";
@@ -2869,6 +2872,7 @@
 				FA3F20311A141AEE00928102 /* ShortcutSearchItem.m in Sources */,
 				FA78DFBD1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m in Sources */,
 				FA8B8DD823CE7279007FBA63 /* ExploreProjectObsFieldRealm.m in Sources */,
+				FAD0DE24283551C100CD51F1 /* OnboardingSettingView.swift in Sources */,
 				FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */,
 				FA3F1F8D1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m in Sources */,
 				196E4E1F18D23C22009CE429 /* UIColor+INaturalist.m in Sources */,

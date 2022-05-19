@@ -30,12 +30,11 @@
 #import "PartnerController.h"
 #import "Partner.h"
 #import "INatReachability.h"
-#import "LoginSwitchContextButton.h"
 #import "iNaturalist-Swift.h"
 
 @interface OnboardingLoginViewController () <UITextFieldDelegate, ForgotPasswordDelegate, INatAuthenticationDelegate, GIDSignInUIDelegate, ASAuthorizationControllerPresentationContextProviding, ASAuthorizationControllerDelegate>
 
-@property IBOutlet UILabel *titleLabel;
+@property IBOutlet UISegmentedControl *switchContextControl;
 
 @property IBOutlet UIStackView *iNatAuthStackView;
 
@@ -48,11 +47,7 @@
 
 @property IBOutlet UIButton *forgotButton;
 
-@property IBOutlet UIStackView *licenseStackView;
-@property IBOutlet UIButton *licenseMyDataButton;
-
 @property IBOutlet UIButton *actionButton;
-@property IBOutlet LoginSwitchContextButton *switchContextButton;
 
 @property IBOutlet UIButton *skipButton;
 @property IBOutlet UIButton *closeButton;
@@ -64,9 +59,12 @@
 @property IBOutlet GIDSignInButton *googleButton;
 
 @property IBOutlet UILabel *termsLabel;
-@property IBOutlet UILabel *licenseMyDataLabel;
 
-@property BOOL licenseMyData;
+@property ConsentView *licenseDataConsentView;
+@property ConsentView *personalInfoConsentView;
+@property ConsentView *dataTransferConsentView;
+
+@property ASAuthorizationAppleIDButton *signinWithAppleButton;
 
 @property NSArray <FAKIcon *> *leftViewIcons;
 
@@ -134,11 +132,6 @@
         field.leftViewMode = UITextFieldViewModeAlways;
     }];
     
-    FAKIcon *check = [FAKIonIcons iosCheckmarkOutlineIconWithSize:30];
-    [self.licenseMyDataButton setAttributedTitle:check.attributedString
-                                        forState:UIControlStateNormal];
-    self.licenseMyData = YES;
-    
     self.forgotButton.titleLabel.font = [UIFont systemFontOfSize:15.0f];
     self.forgotButton.tintColor = [UIColor colorWithHexString:@"#4a4a4a"];
     [self.forgotButton setTitle:NSLocalizedString(@"Forgot password?", @"Title for forgot password button.")
@@ -165,6 +158,7 @@
                                 forState:UIControlStateNormal];
     
     self.closeButton.hidden = self.skippable;
+    
     self.reasonLabel.text = self.reason;
     
     // terms label
@@ -204,39 +198,124 @@
     self.termsLabel.userInteractionEnabled = YES;
     [self.termsLabel addGestureRecognizer:tap];
     
+    NSString *viewPrivacyPolicy = NSLocalizedString(@"View Privacy Policy", @"button to view privacy policy");
+    NSString *viewTermsOfUse = NSLocalizedString(@"View Terms of Use", @"button to view terms of use");
     
-    // license my content label
-    base = NSLocalizedString(@"Yes, license my content so scientists can use my data. Learn More", @"Base text for the license my content checkbox during account creation");
-    NSString *emphasis = NSLocalizedString(@"Learn More", @"Emphasis text for the license my content checkbox. Must be a substring of the base string.");
-    
-    attr = [[NSMutableAttributedString alloc] initWithString:base
-                                                  attributes:@{
-                                                               NSFontAttributeName: [UIFont systemFontOfSize:13]
-                                                               }];
-    NSRange emphasisRange = [base rangeOfString:emphasis];
-    if (emphasisRange.location != NSNotFound) {
-        [attr addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:13] range:emphasisRange];
+    NSString *licenseConsentLabelText = NSLocalizedString(@"Yes, license my content so scientists can use my data. Learn More", @"cc licensing consent checkbox label");
+
+    self.licenseDataConsentView = [[ConsentView alloc] initWithLabelText:licenseConsentLabelText
+                                                             userConsent:true
+                                                             labelAction:^{
         
-        UIGestureRecognizer *tap = [[UITapGestureRecognizer alloc] bk_initWithHandler:^(UIGestureRecognizer *sender,
-                                                                                        UIGestureRecognizerState state,
-                                                                                        CGPoint location) {
-            
-            NSString *alertTitle = NSLocalizedString(@"Content Licensing", @"Title for About Content Licensing notice during signup");
-            NSString *creativeCommons = NSLocalizedString(@"Check this box if you want to apply a Creative Commons Attribution-NonCommercial license to your photos. You can choose a different license or remove the license later, but this is the best license for sharing with researchers.", @"Alert text for the license content checkbox during create account.");
-            
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
-                                                                           message:creativeCommons
-                                                                    preferredStyle:UIAlertControllerStyleAlert];
-            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                      style:UIAlertActionStyleCancel
-                                                    handler:nil]];
-            [self presentViewController:alert animated:YES completion:nil];            
-        }];
+        NSString *alertTitle = NSLocalizedString(@"Content Licensing", @"Title for About Content Licensing notice during signup");
+        NSString *creativeCommons = NSLocalizedString(@"Check this box if you want to apply a Creative Commons Attribution-NonCommercial license to your photos. You can choose a different license or remove the license later, but this is the best license for sharing with researchers.", @"Alert text for the license content checkbox during create account.");
+
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                       message:creativeCommons
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
         
-        self.licenseMyDataLabel.userInteractionEnabled = YES;
-        [self.licenseMyDataLabel addGestureRecognizer:tap];
     }
-    self.licenseMyDataLabel.attributedText = attr;
+                                                     consentChangeAction:^{ }];
+    
+    NSString *piConsentLabelText = NSLocalizedString(@"I consent to allow iNaturalist to store and process limited kinds of personal information about me in order to manage my account. Learn More", @"personal info consent checkbox label");
+    self.personalInfoConsentView = [[ConsentView alloc] initWithLabelText:piConsentLabelText
+                                                              userConsent:false
+                                                              labelAction:^{
+        
+        NSString *alertTitle = NSLocalizedString(@"Personal Information", @"Title for About Personal Information notice during signup");
+        NSString *creativeCommons = NSLocalizedString(@"We store personal information like usernames and email addresses in order to manage accounts on this site, and to comply with privacy laws, we need you to check this box to indicate that you consent to this use of personal information. To learn more about what information we collect and how we use it, please see our Privacy Policy and our Terms of Use. There is no way to have an iNaturalist account without storing personal information, so the only way to revoke this consent is to delete your account.", @"Alert text for the personal information checkbox during create account.");
+
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                       message:creativeCommons
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:viewPrivacyPolicy style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+            NSURL *privacyURL = [NSURL URLWithString:@"https://www.inaturalist.org/pages/privacy"];
+            [[UIApplication sharedApplication] openURL:privacyURL];
+
+        }]];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:viewTermsOfUse style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+            NSURL *termsURL = [NSURL URLWithString:@"https://www.inaturalist.org/pages/terms"];
+            [[UIApplication sharedApplication] openURL:termsURL];
+            
+        }]];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
+    }
+                                                      consentChangeAction:^{
+        if (self.personalInfoConsentView.userConsent && self.dataTransferConsentView.userConsent) {
+            // activate social login
+            self.facebookButton.enabled = YES;
+            self.googleButton.enabled = YES;
+            self.signinWithAppleButton.enabled = YES;
+        } else {
+            // disable social login
+            self.facebookButton.enabled = NO;
+            self.googleButton.enabled = NO;
+            self.signinWithAppleButton.enabled = NO;
+        }
+    }];
+    
+    NSString *dtConsentLabelText = NSLocalizedString(@"I consent to allow my personal information to be transferred to the United States of America. Learn More", @"data transfer consent checkbox label");
+    self.dataTransferConsentView = [[ConsentView alloc] initWithLabelText:dtConsentLabelText
+                                                              userConsent:false
+                                                              labelAction:^{
+        
+        NSString *alertTitle = NSLocalizedString(@"Data Transfer", @"Title for About Data Transfer notice during signup");
+        NSString *creativeCommons = NSLocalizedString(@"Some data privacy laws, like the European Union's General Data Protection Regulation (GDPR), require explicit consent to transfer personal information from their jurisdictions to other jurisdictions where the legal protection of this information is not considered adequate. As of 2020, the European Union no longer considers the United States to be a jurisdiction that provides adequate legal protection of personal information, specifically because of the possibility of the US government surveilling data entering the US. It is possible other jurisdictions may have the same opinion. Using iNaturalist requires the storage of personal information like your email address, all iNaturalist data is stored in the United States, and we cannot be sure what legal jurisdiction you are in when you are using iNaturalist, so in order to comply with privacy laws like the GDPR, you must acknowledge that you understand and accept this risk and consent to transferring your personal information to iNaturalist's servers in the US. To learn more about what information we collect and how we use it, please see our Privacy Policy and our Terms of Use. There is no way to have an iNaturalist account without storing personal information, so the only way to revoke this consent is to delete your account.", @"Alert text for the data transfer consent checkbox during create account.");
+
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                       message:creativeCommons
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:viewPrivacyPolicy style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+            NSURL *privacyURL = [NSURL URLWithString:@"https://www.inaturalist.org/pages/privacy"];
+            [[UIApplication sharedApplication] openURL:privacyURL];
+
+        }]];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:viewTermsOfUse style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            
+            NSURL *termsURL = [NSURL URLWithString:@"https://www.inaturalist.org/pages/terms"];
+            [[UIApplication sharedApplication] openURL:termsURL];
+            
+        }]];
+        
+        [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+        
+    }
+                                                      consentChangeAction:^{
+        if (self.personalInfoConsentView.userConsent && self.dataTransferConsentView.userConsent) {
+            // activate social login
+            self.facebookButton.enabled = YES;
+            self.googleButton.enabled = YES;
+            self.signinWithAppleButton.enabled = YES;
+        } else {
+            // disable social login
+            self.facebookButton.enabled = NO;
+            self.googleButton.enabled = NO;
+            self.signinWithAppleButton.enabled = NO;
+        }
+    }];
+    
+    [self.iNatAuthStackView insertArrangedSubview:self.licenseDataConsentView atIndex:4];
+    [self.iNatAuthStackView insertArrangedSubview:self.personalInfoConsentView atIndex:5];
+    [self.iNatAuthStackView insertArrangedSubview:self.dataTransferConsentView atIndex:6];
+
+    [self.licenseDataConsentView.widthAnchor constraintEqualToAnchor:self.iNatAuthStackView.widthAnchor].active = YES;
+    [self.personalInfoConsentView.widthAnchor constraintEqualToAnchor:self.iNatAuthStackView.widthAnchor].active = YES;
+    [self.dataTransferConsentView.widthAnchor constraintEqualToAnchor:self.iNatAuthStackView.widthAnchor].active = YES;
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     appDelegate.loginController.delegate = self;
@@ -254,22 +333,27 @@
         [[GIDSignIn sharedInstance] signOut];
     }
     
+    
     if (@available(iOS 13.0, *)) {
         // make some room for the apple button
         [self.googleButton setStyle:kGIDSignInButtonStyleIconOnly];
         
         // add the apple button
-        ASAuthorizationAppleIDButton *signinWithAppleButton = [[ASAuthorizationAppleIDButton alloc] init];
-        [signinWithAppleButton addTarget:self
+        self.signinWithAppleButton = [[ASAuthorizationAppleIDButton alloc] init];
+        [self.signinWithAppleButton addTarget:self
                                   action:@selector(handleAuthorizationAppleIDButtonPress)
                         forControlEvents:UIControlEventTouchUpInside];
-        [self.externalLoginStackView insertArrangedSubview:signinWithAppleButton atIndex:0];
+        [self.externalLoginStackView insertArrangedSubview:self.signinWithAppleButton atIndex:0];
         
         // setup the height anchors, even though facebook for some bizarre reason
-        [signinWithAppleButton.heightAnchor constraintEqualToConstant:44].active = YES;
+        [self.signinWithAppleButton.heightAnchor constraintEqualToConstant:44].active = YES;
         [self.googleButton.heightAnchor constraintEqualToConstant:44].active = YES;
         [self.facebookButton.heightAnchor constraintEqualToConstant:44].active = YES;
     }
+    
+    self.googleButton.enabled = NO;
+    self.facebookButton.enabled = NO;
+    self.signinWithAppleButton.enabled = NO;
     
     self.signupUsernameField.placeholder = NSLocalizedString(@"Username", @"The desired username during signup.");
     self.loginUsernameField.placeholder = NSLocalizedString(@"Username or email", @"users can login with their username or their email address.");
@@ -282,6 +366,7 @@
     [super viewWillAppear:animated];
     
     if (self.startsInLoginMode) {
+        self.switchContextControl.selectedSegmentIndex = 1;
         [self setLoginContext];
     } else {
         [self setSignupContext];
@@ -402,12 +487,8 @@
                                           atIndex:2];
     self.forgotButton.hidden = NO;
     
-    self.titleLabel.text = NSLocalizedString(@"Log In", nil);
     [self.actionButton setTitle:NSLocalizedString(@"Log In", nil)
                        forState:UIControlStateNormal];
-    
-    self.licenseStackView.hidden = YES;
-    [self.switchContextButton setContext:LoginContextLogin];
 }
 
 - (void)setSignupContext {
@@ -421,18 +502,14 @@
         field.hidden = NO;
     }
 
-
     [self.iNatAuthStackView removeArrangedSubview:self.forgotButton];
     self.forgotButton.hidden = YES;
     
-    self.titleLabel.text = NSLocalizedString(@"Sign Up", nil);
     [self.actionButton setTitle:NSLocalizedString(@"Sign Up", nil)
                        forState:UIControlStateNormal];
-    self.licenseStackView.hidden = NO;
-    [self.switchContextButton setContext:LoginContextSignup];
 }
 
-- (IBAction)switchAuthContext:(id)sender {
+- (IBAction)switchAuthContext:(UISegmentedControl *)segmentedControl {
     // clear text fields and resign keyboard
     // when switching context
     NSArray *allFields = @[
@@ -453,23 +530,10 @@
         [field resignFirstResponder];
     }
     
-    if (self.textfieldStackView.arrangedSubviews.count == 3) {
-        [self setLoginContext];
-    } else {
+    if (segmentedControl.selectedSegmentIndex == 0) {
         [self setSignupContext];
-    }
-}
-
-- (IBAction)licenseTogglePressed:(id)sender {
-    self.licenseMyData = !self.licenseMyData;
-    if (self.licenseMyData) {
-        FAKIcon *check = [FAKIonIcons iosCheckmarkOutlineIconWithSize:30];
-        [self.licenseMyDataButton setAttributedTitle:check.attributedString
-                                            forState:UIControlStateNormal];
     } else {
-        FAKIcon *circle = [FAKIonIcons iosCircleOutlineIconWithSize:30];
-        [self.licenseMyDataButton setAttributedTitle:circle.attributedString
-                                            forState:UIControlStateNormal];
+        [self setLoginContext];
     }
 }
 
@@ -532,7 +596,13 @@
                                      @"Error for bad password when making account");
     } else if (!self.signupUsernameField.text) {
         isValid = NO;
-        alertMsg = NSLocalizedString(@"Invalid Username", @"Error for bad username hwne making account.");
+        alertMsg = NSLocalizedString(@"Invalid Username", @"Error for bad username when making account.");
+    } else if (!self.personalInfoConsentView.userConsent) {
+        isValid = NO;
+        alertMsg = NSLocalizedString(@"There is no way to have an iNaturalist account without storing personal information.", @"Error for no personal info consent when making account.");
+    } else if (!self.dataTransferConsentView.userConsent) {
+        isValid = NO;
+        alertMsg = NSLocalizedString(@"There is no way to have an iNaturalist account without storing personal information in the United States.", @"Error for no data transfer consent consent when making account.");
     }
     
     if (!isValid) {
@@ -552,7 +622,7 @@
     [[Analytics sharedClient] event:kAnalyticsEventOnboardingLoginPressed
                      withProperties:@{ @"mode": @"signup" }];
     
-    NSString *license = self.licenseMyData ? @"CC-BY-NC" : @"";
+    NSString *license = self.licenseDataConsentView.userConsent ? @"CC-BY-NC" : @"";
     NSInteger selectedPartnerId = self.selectedPartner ? self.selectedPartner.identifier : 1;
         
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;

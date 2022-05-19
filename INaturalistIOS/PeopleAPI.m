@@ -42,6 +42,8 @@
                 @"password_confirmation": password,
                 @"site_id": @(siteId),
                 @"preferred_observation_license": license,
+                @"data_transfer_consent": @"true",
+                @"pi_consent": @"true",
                 @"preferred_photo_license": license,
                 @"preferred_sound_license": license,
                 @"locale": localeStr,
