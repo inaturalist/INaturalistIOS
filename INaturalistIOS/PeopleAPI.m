@@ -132,6 +132,17 @@
                                 done(nil, 0, error);
                             });
                         }
+                    } else if ([json valueForKey:@"message"]) {
+                        NSArray *message = [json valueForKey:@"message"];
+                        NSDictionary *userInfo = @{
+                                                   NSLocalizedDescriptionKey: message,
+                                                   };
+                        NSError *error = [NSError errorWithDomain:@"org.inaturalist.api.http"
+                                                             code:httpResponse.statusCode
+                                                         userInfo:userInfo];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            done(nil, 0, error);
+                        });
                     } else {
                         // no error array, but not 200, so we can't say we succeeded
                         NSError *error = [NSError errorWithDomain:@"org.inaturalist.api.http"
