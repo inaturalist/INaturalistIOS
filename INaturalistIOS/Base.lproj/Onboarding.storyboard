@@ -565,6 +565,7 @@
                         <outlet property="actionButton" destination="LVz-7N-QYA" id="emB-d1-z8l"/>
                         <outlet property="closeButton" destination="MC0-kW-bph" id="hFk-nF-RRT"/>
                         <outlet property="externalLoginStackView" destination="dfE-eN-x9k" id="OZD-of-e4h"/>
+                        <outlet property="extraLoginInfoStackView" destination="LMC-dJ-pka" id="gnX-nz-X8o"/>
                         <outlet property="facebookButton" destination="u2t-rU-mF6" id="Ze9-Lz-HUy"/>
                         <outlet property="forgotButton" destination="sZe-lG-yg8" id="jPp-SK-2N8"/>
                         <outlet property="googleButton" destination="JNh-8M-Acy" id="Zq5-Ly-3Gw"/>

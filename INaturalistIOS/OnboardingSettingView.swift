@@ -11,16 +11,17 @@ import UIKit
 class ConsentView: UIView {
     @objc public var userConsent: Bool
     var labelText: String
-    var labelAction: () -> ()
+    var learnMoreText: String
+    var learnMoreAction: () -> ()
     var consentChangeAction: () -> ()
-
     
     var switcher: UISwitch!
             
-    @objc init(labelText: String, userConsent: Bool, labelAction: @escaping () -> (), consentChangeAction: @escaping () -> ()) {
+    @objc init(labelText: String, learnMoreText: String, userConsent: Bool, learnMoreAction: @escaping () -> (), consentChangeAction: @escaping () -> ()) {
         self.labelText = labelText
+        self.learnMoreText = learnMoreText
         self.userConsent = userConsent
-        self.labelAction = labelAction
+        self.learnMoreAction = learnMoreAction
         self.consentChangeAction = consentChangeAction
         
         super.init(frame: .zero)
@@ -32,19 +33,30 @@ class ConsentView: UIView {
         self.switcher.addTarget(self, action: #selector(switched), for: .valueChanged)
         
         let label = UILabel(frame: .zero)
+        label.translatesAutoresizingMaskIntoConstraints = false
         label.text = labelText
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 13)
-                
-        let tap = UITapGestureRecognizer(target: self, action: #selector(tapped))
-        label.addGestureRecognizer(tap)
-        label.isUserInteractionEnabled = true
         
-        let hstack = UIStackView(arrangedSubviews: [switcher, label])
+        let button = UIButton(type: .custom)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle(self.learnMoreText, for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 13)
+        button.addTarget(self, action: #selector(tappedLearnMore), for: .touchUpInside)
+        button.titleLabel?.textColor = .black
+        button.setTitleColor(.black, for: .normal)
+        
+        let vstack = UIStackView(arrangedSubviews: [label, button])
+        vstack.axis = .vertical
+        vstack.alignment = .leading
+        vstack.translatesAutoresizingMaskIntoConstraints = false
+        
+        let hstack = UIStackView(arrangedSubviews: [switcher, vstack])
         hstack.translatesAutoresizingMaskIntoConstraints = false
         hstack.distribution = .fill
         hstack.spacing = 20
         hstack.alignment = .top
+        hstack.axis = .horizontal
         
         self.addSubview(hstack)
         hstack.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
@@ -61,8 +73,8 @@ class ConsentView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc func tapped(recognizer: UITapGestureRecognizer) {
-        self.labelAction()
+    @objc func tappedLearnMore(button: UIButton) {
+        self.learnMoreAction()
     }
     
     @objc func switched(sender: UISwitch) {

@@ -52,6 +52,7 @@
 @property IBOutlet UIButton *skipButton;
 @property IBOutlet UIButton *closeButton;
 
+@property IBOutlet UIStackView *extraLoginInfoStackView;
 @property IBOutlet UILabel *reasonLabel;
 @property IBOutlet UILabel *orLabel;
 @property IBOutlet UIStackView *externalLoginStackView;
@@ -198,14 +199,16 @@
     self.termsLabel.userInteractionEnabled = YES;
     [self.termsLabel addGestureRecognizer:tap];
     
+    NSString *learnMore = NSLocalizedString(@"Learn More", @"button to learn more about inat account policies");
     NSString *viewPrivacyPolicy = NSLocalizedString(@"View Privacy Policy", @"button to view privacy policy");
     NSString *viewTermsOfUse = NSLocalizedString(@"View Terms of Use", @"button to view terms of use");
     
-    NSString *licenseConsentLabelText = NSLocalizedString(@"Yes, license my content so scientists can use my data. Learn More", @"cc licensing consent checkbox label");
-
+    NSString *licenseConsentLabelText = NSLocalizedString(@"Yes, license my content so scientists can use my data.", @"cc licensing consent checkbox label");
+    
     self.licenseDataConsentView = [[ConsentView alloc] initWithLabelText:licenseConsentLabelText
+                                                           learnMoreText:learnMore
                                                              userConsent:true
-                                                             labelAction:^{
+                                                         learnMoreAction:^{
         
         NSString *alertTitle = NSLocalizedString(@"Content Licensing", @"Title for About Content Licensing notice during signup");
         NSString *creativeCommons = NSLocalizedString(@"Check this box if you want to apply a Creative Commons Attribution-NonCommercial license to your photos. You can choose a different license or remove the license later, but this is the best license for sharing with researchers.", @"Alert text for the license content checkbox during create account.");
@@ -219,10 +222,11 @@
     }
                                                      consentChangeAction:^{ }];
     
-    NSString *piConsentLabelText = NSLocalizedString(@"I consent to allow iNaturalist to store and process limited kinds of personal information about me in order to manage my account. Learn More", @"personal info consent checkbox label");
+    NSString *piConsentLabelText = NSLocalizedString(@"I consent to allow iNaturalist to store and process limited kinds of personal information about me in order to manage my account.", @"personal info consent checkbox label");
     self.personalInfoConsentView = [[ConsentView alloc] initWithLabelText:piConsentLabelText
+                                                            learnMoreText:learnMore
                                                               userConsent:false
-                                                              labelAction:^{
+                                                          learnMoreAction:^{
         
         NSString *alertTitle = NSLocalizedString(@"Personal Information", @"Title for About Personal Information notice during signup");
         NSString *creativeCommons = NSLocalizedString(@"We store personal information like usernames and email addresses in order to manage accounts on this site, and to comply with privacy laws, we need you to check this box to indicate that you consent to this use of personal information. To learn more about what information we collect and how we use it, please see our Privacy Policy and our Terms of Use. There is no way to have an iNaturalist account without storing personal information, so the only way to revoke this consent is to delete your account.", @"Alert text for the personal information checkbox during create account.");
@@ -264,10 +268,11 @@
         }
     }];
     
-    NSString *dtConsentLabelText = NSLocalizedString(@"I consent to allow my personal information to be transferred to the United States of America. Learn More", @"data transfer consent checkbox label");
+    NSString *dtConsentLabelText = NSLocalizedString(@"I consent to allow my personal information to be transferred to the United States of America.", @"data transfer consent checkbox label");
     self.dataTransferConsentView = [[ConsentView alloc] initWithLabelText:dtConsentLabelText
+                                                            learnMoreText:learnMore
                                                               userConsent:false
-                                                              labelAction:^{
+                                                          learnMoreAction:^{
         
         NSString *alertTitle = NSLocalizedString(@"Data Transfer", @"Title for About Data Transfer notice during signup");
         NSString *creativeCommons = NSLocalizedString(@"Some data privacy laws, like the European Union's General Data Protection Regulation (GDPR), require explicit consent to transfer personal information from their jurisdictions to other jurisdictions where the legal protection of this information is not considered adequate. As of 2020, the European Union no longer considers the United States to be a jurisdiction that provides adequate legal protection of personal information, specifically because of the possibility of the US government surveilling data entering the US. It is possible other jurisdictions may have the same opinion. Using iNaturalist requires the storage of personal information like your email address, all iNaturalist data is stored in the United States, and we cannot be sure what legal jurisdiction you are in when you are using iNaturalist, so in order to comply with privacy laws like the GDPR, you must acknowledge that you understand and accept this risk and consent to transferring your personal information to iNaturalist's servers in the US. To learn more about what information we collect and how we use it, please see our Privacy Policy and our Terms of Use. There is no way to have an iNaturalist account without storing personal information, so the only way to revoke this consent is to delete your account.", @"Alert text for the data transfer consent checkbox during create account.");
@@ -482,13 +487,25 @@
         [self.textfieldStackView addArrangedSubview:field];
         field.hidden = NO;
     }
-    
+        
     [self.iNatAuthStackView insertArrangedSubview:self.forgotButton
-                                          atIndex:2];
+                                          atIndex:3];
     self.forgotButton.hidden = NO;
     
     [self.actionButton setTitle:NSLocalizedString(@"Log In", nil)
                        forState:UIControlStateNormal];
+    
+    [self.extraLoginInfoStackView insertArrangedSubview:self.orLabel atIndex:1];
+    [self.extraLoginInfoStackView insertArrangedSubview:self.externalLoginStackView atIndex:2];
+    self.orLabel.hidden = NO;
+    self.externalLoginStackView.hidden = NO;
+    
+    [self.iNatAuthStackView removeArrangedSubview:self.licenseDataConsentView];
+    [self.iNatAuthStackView removeArrangedSubview:self.personalInfoConsentView];
+    [self.iNatAuthStackView removeArrangedSubview:self.dataTransferConsentView];
+    self.licenseDataConsentView.hidden = YES;
+    self.personalInfoConsentView.hidden = YES;
+    self.dataTransferConsentView.hidden = YES;
 }
 
 - (void)setSignupContext {
@@ -501,12 +518,24 @@
         [self.textfieldStackView addArrangedSubview:field];
         field.hidden = NO;
     }
-
+    
     [self.iNatAuthStackView removeArrangedSubview:self.forgotButton];
     self.forgotButton.hidden = YES;
     
     [self.actionButton setTitle:NSLocalizedString(@"Sign Up", nil)
                        forState:UIControlStateNormal];
+    
+    [self.extraLoginInfoStackView removeArrangedSubview:self.orLabel];
+    [self.extraLoginInfoStackView removeArrangedSubview:self.externalLoginStackView];
+    self.externalLoginStackView.hidden = YES;
+    self.orLabel.hidden = YES;
+    
+    [self.iNatAuthStackView addArrangedSubview:self.licenseDataConsentView];
+    [self.iNatAuthStackView addArrangedSubview:self.personalInfoConsentView];
+    [self.iNatAuthStackView addArrangedSubview:self.dataTransferConsentView];
+    self.licenseDataConsentView.hidden = NO;
+    self.personalInfoConsentView.hidden = NO;
+    self.dataTransferConsentView.hidden = NO;
 }
 
 - (IBAction)switchAuthContext:(UISegmentedControl *)segmentedControl {
