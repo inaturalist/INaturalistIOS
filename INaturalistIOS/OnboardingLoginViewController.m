@@ -219,8 +219,7 @@
         [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:alert animated:YES completion:nil];
         
-    }
-                                                     consentChangeAction:^{ }];
+    }];
     
     NSString *piConsentLabelText = NSLocalizedString(@"I consent to allow iNaturalist to store and process limited kinds of personal information about me in order to manage my account.", @"personal info consent checkbox label");
     self.personalInfoConsentView = [[ConsentView alloc] initWithLabelText:piConsentLabelText
@@ -248,20 +247,6 @@
         [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
         
         [self presentViewController:alert animated:YES completion:nil];
-        
-    }
-                                                      consentChangeAction:^{
-        if (self.personalInfoConsentView.userConsent && self.dataTransferConsentView.userConsent) {
-            // activate social login
-            self.facebookButton.enabled = YES;
-            self.googleButton.enabled = YES;
-            self.signinWithAppleButton.enabled = YES;
-        } else {
-            // disable social login
-            self.facebookButton.enabled = NO;
-            self.googleButton.enabled = NO;
-            self.signinWithAppleButton.enabled = NO;
-        }
     }];
     
     NSString *dtConsentLabelText = NSLocalizedString(@"I consent to allow my personal information to be transferred to the United States of America.", @"data transfer consent checkbox label");
@@ -290,20 +275,6 @@
         [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
         
         [self presentViewController:alert animated:YES completion:nil];
-        
-    }
-                                                      consentChangeAction:^{
-        if (self.personalInfoConsentView.userConsent && self.dataTransferConsentView.userConsent) {
-            // activate social login
-            self.facebookButton.enabled = YES;
-            self.googleButton.enabled = YES;
-            self.signinWithAppleButton.enabled = YES;
-        } else {
-            // disable social login
-            self.facebookButton.enabled = NO;
-            self.googleButton.enabled = NO;
-            self.signinWithAppleButton.enabled = NO;
-        }
     }];
     
     [self.iNatAuthStackView insertArrangedSubview:self.licenseDataConsentView atIndex:4];
@@ -347,10 +318,6 @@
         [self.googleButton.heightAnchor constraintEqualToConstant:44].active = YES;
         [self.facebookButton.heightAnchor constraintEqualToConstant:44].active = YES;
     }
-    
-    self.googleButton.enabled = NO;
-    self.facebookButton.enabled = NO;
-    self.signinWithAppleButton.enabled = NO;
     
     self.signupUsernameField.placeholder = NSLocalizedString(@"Username", @"The desired username during signup.");
     self.loginUsernameField.placeholder = NSLocalizedString(@"Username or email", @"users can login with their username or their email address.");

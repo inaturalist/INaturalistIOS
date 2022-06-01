@@ -13,16 +13,14 @@ class ConsentView: UIView {
     var labelText: String
     var learnMoreText: String
     var learnMoreAction: () -> ()
-    var consentChangeAction: () -> ()
     
     var switcher: UISwitch!
             
-    @objc init(labelText: String, learnMoreText: String, userConsent: Bool, learnMoreAction: @escaping () -> (), consentChangeAction: @escaping () -> ()) {
+    @objc init(labelText: String, learnMoreText: String, userConsent: Bool, learnMoreAction: @escaping () -> ()) {
         self.labelText = labelText
         self.learnMoreText = learnMoreText
         self.userConsent = userConsent
         self.learnMoreAction = learnMoreAction
-        self.consentChangeAction = consentChangeAction
         
         super.init(frame: .zero)
         
@@ -79,6 +77,5 @@ class ConsentView: UIView {
     
     @objc func switched(sender: UISwitch) {
         self.userConsent = sender.isOn
-        self.consentChangeAction()
     }
 }
