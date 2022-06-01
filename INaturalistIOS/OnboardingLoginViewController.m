@@ -236,19 +236,15 @@
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         
         [alert addAction:[UIAlertAction actionWithTitle:viewPrivacyPolicy style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            
             NSURL *privacyURL = [NSURL URLWithString:@"https://www.inaturalist.org/pages/privacy"];
-            [[UIApplication sharedApplication] openURL:privacyURL];
-
+            [[UIApplication sharedApplication] openURL:privacyURL options:@{} completionHandler:nil];
         }]];
         
         [alert addAction:[UIAlertAction actionWithTitle:viewTermsOfUse style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            
             NSURL *termsURL = [NSURL URLWithString:@"https://www.inaturalist.org/pages/terms"];
-            [[UIApplication sharedApplication] openURL:termsURL];
-            
+            [[UIApplication sharedApplication] openURL:termsURL options:@{} completionHandler:nil];
         }]];
-        
+
         [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
         
         [self presentViewController:alert animated:YES completion:nil];
@@ -282,17 +278,13 @@
                                                                 preferredStyle:UIAlertControllerStyleAlert];
         
         [alert addAction:[UIAlertAction actionWithTitle:viewPrivacyPolicy style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            
             NSURL *privacyURL = [NSURL URLWithString:@"https://www.inaturalist.org/pages/privacy"];
-            [[UIApplication sharedApplication] openURL:privacyURL];
-
+            [[UIApplication sharedApplication] openURL:privacyURL options:@{} completionHandler:nil];
         }]];
         
         [alert addAction:[UIAlertAction actionWithTitle:viewTermsOfUse style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            
             NSURL *termsURL = [NSURL URLWithString:@"https://www.inaturalist.org/pages/terms"];
-            [[UIApplication sharedApplication] openURL:termsURL];
-            
+            [[UIApplication sharedApplication] openURL:termsURL options:@{} completionHandler:nil];
         }]];
         
         [alert addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
