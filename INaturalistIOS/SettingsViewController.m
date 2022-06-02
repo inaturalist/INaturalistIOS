@@ -371,13 +371,17 @@ static const int ChangePartnerMinimumInterval = 86400;
     // clear all preferences
     [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:NSBundle.mainBundle.bundleIdentifier];
     
-    // also resets this stuff to defaults (all on)
+    // also resets this stuff to defaults (all on except show scientific names first)
     [[NSUserDefaults standardUserDefaults] setBool:YES
                                             forKey:kINatAutocompleteNamesPrefKey];
     [[NSUserDefaults standardUserDefaults] setBool:YES
                                             forKey:kInatAutouploadPrefKey];
     [[NSUserDefaults standardUserDefaults] setBool:YES
                                             forKey:kINatSuggestionsPrefKey];
+    [[NSUserDefaults standardUserDefaults] setBool:YES
+                                            forKey:kINatShowCommonNamesPrefKey];
+    [[NSUserDefaults standardUserDefaults] setBool:NO
+                                            forKey:kINatShowScientificNamesFirstPrefKey];
 
     [[NSUserDefaults standardUserDefaults] synchronize];
     

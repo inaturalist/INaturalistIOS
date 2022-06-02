@@ -71,10 +71,24 @@ NSInteger INatMinPasswordLength = 6;
 - (void)logout {
     isLoginCompleted = NO;
     self.jwtToken = nil;
+    
+    externalAccessToken = nil;
+    iNatAccessToken = nil;
+    accountType = nil;
+    
     [[A0SimpleKeychain keychain] deleteEntryForKey:INatJWTPrefKey];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kUserLoggedOutNotificationName
                                                         object:nil];
+    
+    // delete some user default objects associated with the logged in user & auth
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kINatUserIdPrefKey];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:INatUsernamePrefKey];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:INatPasswordPrefKey];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:INatTokenPrefKey];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kINatAuthServiceExtToken];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kINatAuthService];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kInatCustomBaseURLStringKey];
 }
 
 #pragma mark - Facebook
