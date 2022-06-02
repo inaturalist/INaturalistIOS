@@ -22,6 +22,8 @@
 @property NSInteger observationsCount;
 @property NSInteger siteId;
 @property NSDate *syncedAt;
+@property BOOL dataTransferConsent;
+@property BOOL piConsent;
 
 @property RLMArray<ExploreProjectRealm *><ExploreProjectRealm> *joinedProjects;
 - (BOOL)hasJoinedProjectWithId:(NSInteger)projectId;

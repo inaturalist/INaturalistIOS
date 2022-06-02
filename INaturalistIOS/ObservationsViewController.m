@@ -47,6 +47,7 @@
 #import "ObservationAPI.h"
 #import "InaturalistRealmMigration.h"
 #import "NSDate+INaturalist.h"
+#import "iNaturalist-Swift.h"
 
 @interface ObservationsViewController () <UploadManagerNotificationDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, MFMailComposeViewControllerDelegate>
 
@@ -1323,6 +1324,7 @@
     static NSString *SeenV27Key = @"seenVersion27";
     static NSString *RanMigrationToRealmKey = @"ranMigrationToRealmKey7";
     static NSString *SeenV32Key = @"seenVersion32";     // added some common name prefs
+    static NSString *SeenV326Key = @"seenVersion3_2_6";   // added consent popups
     
     // re-using 'firstSignInSeen' BOOL, which used to be set during the initial launch
     // when the user saw the login prompt for the first time.
@@ -1422,6 +1424,30 @@
         [[NSUserDefaults standardUserDefaults] setBool:YES
                                                 forKey:SeenV32Key];
         [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:SeenV326Key]) {
+        // only run this consent flow once, for now
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        LoginController *login = appDelegate.loginController;
+        if (login.isLoggedIn) {
+            // mark the local me user as "dirty" to force it to be re-fetched
+            // so we have the best chance of getting the real pi and data transfer
+            // consent status for this user
+            [login dirtyLocalMeUser];
+            
+            // re-fetch the me user and check for pi & da consent
+            [login meUserRemoteCompletion:^(ExploreUserRealm *me) {
+                if (!me.dataTransferConsent || !me.piConsent) {
+                    ConsentViewController *vc = [[ConsentViewController alloc] init];
+                    vc.user = me;
+                    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+                    [self presentViewController:nav animated:YES completion:nil];
+                }
+            }];
+        }
+        
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:SeenV326Key];
     }
     
     

@@ -200,7 +200,7 @@
 
 	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
     NSLog(@"config file URL %@", config.fileURL);
-    config.schemaVersion = 25;
+    config.schemaVersion = 26;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
         if (oldSchemaVersion < 1) {
             // add searchable (ie diacritic-less) taxon names
@@ -376,7 +376,16 @@
                 newObject[@"observedTimeZone"] = nil;
             }];
         }
-
+        if (oldSchemaVersion < 26) {
+            // added dataTransferConsent & piConsent to user object
+            // we've never implemented these consent flags in iOS so assume they'e negative
+            // until shown otherwise
+            [migration enumerateObjects:ExploreUserRealm.className
+                                  block:^(RLMObject * oldObject, RLMObject *newObject) {
+                newObject[@"piConsent"] = @(NO);
+                newObject[@"dataTransferConsent"] = @(NO);
+            }];
+        }
 
     };
     

@@ -25,7 +25,8 @@
 @property (assign) BOOL prefersNoTracking;
 @property (assign) BOOL showCommonNames;
 @property (assign) BOOL showScientificNamesFirst;
-
+@property (assign) BOOL dataTransferConsent;
+@property (assign) BOOL piConsent;
 
 @property (readonly) NSURL *userIconMedium;
 

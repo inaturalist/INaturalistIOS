@@ -320,5 +320,17 @@
     [self put:path params:params classMapping:nil handler:done];
 }
 
+- (void)setPiConsent:(BOOL)piConsent dtConsent:(BOOL)dtConsent forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
+    [[Analytics sharedClient] debugLog:@"Network - set pi & dt consent via node"];
+    NSDictionary *params = @{
+        @"user": @{
+            @"pi_consent": piConsent ? @"true" : @"false",
+            @"data_transfer_consent": dtConsent ? @"true" : @"false",
+        }
+    };
+    NSString *path = [NSString stringWithFormat:@"users/%ld", (long)userId];
+    [self put:path params:params classMapping:nil handler:done];
+}
+
 
 @end

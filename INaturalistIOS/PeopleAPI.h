@@ -22,6 +22,7 @@
 - (void)setPrefersNoTracking:(BOOL)preference forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)setPrefersShowCommonNames:(BOOL)preference forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)setPrefersShowScientificNamesFirst:(BOOL)preference forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)setPiConsent:(BOOL)piConsent dtConsent:(BOOL)dtConsent forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done;
 
 - (void)createUserEmail:(NSString *)email
                   login:(NSString *)login

@@ -13,4 +13,5 @@
 #import "UIImage+INaturalist.h"
 #import "ExploreLocation.h"
 #import "PlaceAPI.h"
+#import "PeopleAPI.h"
 #import "CLPlacemark+INat.h"

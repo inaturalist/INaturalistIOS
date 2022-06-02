@@ -20,6 +20,8 @@
         self.observationsCount = model.observationsCount;
         self.siteId = model.siteId;
         self.syncedAt = [NSDate date];
+        self.dataTransferConsent = model.dataTransferConsent;
+        self.piConsent = model.piConsent;
     }
     return self;
 }
@@ -35,6 +37,8 @@
     value[@"observationsCount"] = @(model.observationsCount);
     value[@"siteId"] = @(model.siteId);
     value[@"syncedAt"] = [NSDate date];
+    value[@"piConsent"] = @(model.piConsent);
+    value[@"dataTransferConsent"] = @(model.dataTransferConsent);
         
     return [NSDictionary dictionaryWithDictionary:value];
 }
@@ -80,7 +84,12 @@
     if ([cdModel valueForKey:@"syncedAt"]) {
         value[@"syncedAt"] = [cdModel valueForKey:@"syncedAt"];
     }
-        
+    
+    // nobody migrating from core data at this point will have consented to
+    // pi or data transfer in a way that core data knew about it
+    value[@"piConsent"] = @(FALSE);
+    value[@"dataTransferConsent"] = @(FALSE);
+    
     return [NSDictionary dictionaryWithDictionary:value];
 }
 

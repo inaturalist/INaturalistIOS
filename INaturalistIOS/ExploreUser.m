@@ -22,6 +22,8 @@
              @"prefersNoTracking": @"prefers_no_tracking",
              @"showCommonNames": @"prefers_common_names",
              @"showScientificNamesFirst": @"prefers_scientific_name_first",
+             @"piConsent": @"pi_consent",
+             @"dataTransferConsent": @"data_transfer_consent",
              };
 }
 
@@ -46,6 +48,10 @@
         self.showCommonNames = FALSE;
     } else if ([key isEqualToString:@"showScientificNamesFirst"]) {
         self.showScientificNamesFirst = FALSE;
+    } else if ([key isEqualToString:@"piConsent"]) {
+        self.piConsent = FALSE;
+    } else if ([key isEqualToString:@"dataTransferConsent"]) {
+        self.dataTransferConsent = FALSE;
     } else {
         [super setNilValueForKey:key];
     }

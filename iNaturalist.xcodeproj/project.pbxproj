@@ -162,6 +162,7 @@
 		FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5B6D861B4C86E1003FF325 /* NSLocale+INaturalist.m */; };
 		FA5BC6F61C3C7FD0008FCD43 /* NSFileManager+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5BC6F51C3C7FD0008FCD43 /* NSFileManager+INaturalist.m */; };
 		FA5BC6FB1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5BC6FA1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m */; };
+		FA5DF20B28483E9400F2B014 /* ConsentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5DF20A28483E9400F2B014 /* ConsentViewController.swift */; };
 		FA60A4461B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */; };
 		FA60EA1123EA3F7F0026F7A3 /* ExplorePost.m in Sources */ = {isa = PBXBuildFile; fileRef = FA60EA1023EA3F7F0026F7A3 /* ExplorePost.m */; };
 		FA60EA1423EA453D0026F7A3 /* PostsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA60EA1323EA453D0026F7A3 /* PostsAPI.m */; };
@@ -754,6 +755,7 @@
 		FA5BC6F51C3C7FD0008FCD43 /* NSFileManager+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+INaturalist.m"; sourceTree = "<group>"; };
 		FA5BC6F91C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailQualityDetailsFooter.h; sourceTree = "<group>"; };
 		FA5BC6FA1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailQualityDetailsFooter.m; sourceTree = "<group>"; };
+		FA5DF20A28483E9400F2B014 /* ConsentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentViewController.swift; sourceTree = "<group>"; };
 		FA60A4441B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITapGestureRecognizer+InatHelpers.h"; sourceTree = "<group>"; };
 		FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITapGestureRecognizer+InatHelpers.m"; sourceTree = "<group>"; };
 		FA60EA0F23EA3F7F0026F7A3 /* ExplorePost.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExplorePost.h; sourceTree = "<group>"; };
@@ -1451,6 +1453,7 @@
 				FA430BE31CA48E3F00FDC6E4 /* Observation Detail */,
 				1927514C14E9CCC9000ABAC4 /* ObservationsViewController.h */,
 				1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */,
+				FA5DF20A28483E9400F2B014 /* ConsentViewController.swift */,
 				FA711AA81D53D6E600C4FFDB /* Onboarding */,
 				FA430BE21CA48E3A00FDC6E4 /* Project Detail */,
 				FA78DFBB1BC5C0D4002DCCB1 /* ProjectObservationsViewController.h */,
@@ -2790,6 +2793,7 @@
 				FA8EBCE7230DE48400C1D789 /* ExploreDeletedRecord.m in Sources */,
 				FAC24AF02443CE90002FF698 /* InaturalistRealmMigration.m in Sources */,
 				FAEF23451C7D0E0100208F44 /* ProjectObsPhotoCell.m in Sources */,
+				FA5DF20B28483E9400F2B014 /* ConsentViewController.swift in Sources */,
 				FA9437831C869AA400CB10F3 /* ProjectsAPI.m in Sources */,
 				FA9EE9FB1C20BA6900CACF70 /* LocationViewController.m in Sources */,
 				FA1F26291C20E25300CE73A8 /* ObsDetailDataQualityCell.m in Sources */,
