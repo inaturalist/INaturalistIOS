@@ -1111,6 +1111,11 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         // configure the header for this new user
         [self configureHeaderForLoggedInUser];
+        
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        LoginController *login = appDelegate.loginController;
+        RLMSortDescriptor *createdAtSort = [RLMSortDescriptor sortDescriptorWithKeyPath:@"timeCreated" ascending:FALSE];
+        self.myObservations = [[ExploreObservationRealm observationsFor:login.meUserLocal.userId] sortedResultsUsingDescriptors:@[ createdAtSort ]];
 
         // update the UI
         [self.tableView reloadData];
@@ -1125,6 +1130,10 @@
     // update the ui to reflect the logged out state
     dispatch_async(dispatch_get_main_queue(), ^{
         self.navigationItem.title = NSLocalizedString(@"Me", @"Placeholder text for not logged title on me tab.");
+        
+        RLMSortDescriptor *createdAtSort = [RLMSortDescriptor sortDescriptorWithKeyPath:@"timeCreated" ascending:FALSE];
+        self.myObservations = [[ExploreObservationRealm unuploadedObservations] sortedResultsUsingDescriptors:@[ createdAtSort ]];
+
         [self.tableView reloadData];
     });
 }
@@ -1208,13 +1217,17 @@
 {
     [super viewDidLoad];
     
-    RLMRealm *realm = [RLMRealm defaultRealm];
-    NSLog(@"in obs did load, all obs in realm is %ld", [[ExploreObservationRealm allObjectsInRealm:realm] count]);
-
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    LoginController *login = appDelegate.loginController;
     
     RLMSortDescriptor *createdAtSort = [RLMSortDescriptor sortDescriptorWithKeyPath:@"timeCreated" ascending:FALSE];
-    self.myObservations = [[ExploreObservationRealm myObservations] sortedResultsUsingDescriptors:@[ createdAtSort ]];
-    
+
+    if (login.isLoggedIn) {
+        self.myObservations = [[ExploreObservationRealm observationsFor:login.meUserLocal.userId] sortedResultsUsingDescriptors:@[ createdAtSort ]];
+    } else {
+        self.myObservations = [[ExploreObservationRealm unuploadedObservations] sortedResultsUsingDescriptors:@[ createdAtSort ]];
+    }
+        
     __weak typeof(self)weakSelf = self;
     self.myObsNoteToken = [self.myObservations addNotificationBlock:^(RLMResults * _Nullable results, RLMCollectionChange * _Nullable change, NSError * _Nullable error) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -1493,7 +1506,6 @@
     ];
     //self.navigationItem.rightBarButtonItem = settingsBarButton;
     
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     [appDelegate.loginController.uploadManager setDelegate:self];
     
     [self.anonHeader.loginButton addTarget:self

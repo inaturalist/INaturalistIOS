@@ -78,6 +78,8 @@
 @property (readonly) BOOL hasUnviewedActivityBool;
 
 + (RLMResults *)myObservations;
++ (RLMResults *)unuploadedObservations;
++ (RLMResults *)observationsFor:(NSInteger)userId;
 
 - (ExploreObsFieldValueRealm *)valueForObsField:(ExploreObsFieldRealm *)field;
 

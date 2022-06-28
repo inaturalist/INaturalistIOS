@@ -309,6 +309,13 @@
     return [NSDictionary dictionaryWithDictionary:value];
 }
 
++ (RLMResults *)unuploadedObservations {
+    return [[self allObjects] objectsWhere:@"user == nil"];
+}
+
++ (RLMResults *)observationsFor:(NSInteger)userId {
+    return [[self allObjects] objectsWhere:@"(user.userId == %ld) OR (user == nil)", userId];
+}
 
 + (RLMResults *)myObservations {
     // for now, just return everything
