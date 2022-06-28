@@ -71,6 +71,8 @@
 
 @property Partner *selectedPartner;
 
+@property UIToolbar *doneToolbar;
+
 @end
 
 @implementation OnboardingLoginViewController
@@ -83,6 +85,16 @@
         self.orLabel.hidden = YES;
         self.actionButton.hidden = YES;
     }
+    
+    self.doneToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 44)];
+    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                                          target:nil
+                                                                          action:nil];
+    UIBarButtonItem *done = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                          target:self
+                                                                          action:@selector(kbDoneTapped)];
+    self.doneToolbar.items = @[flex, done];
+    
     
     self.leftViewIcons = @[
                            ({
@@ -119,6 +131,8 @@
     
     NSArray *fields = @[ self.signupEmailField, self.signupUsernameField, self.signupPasswordField, self.loginUsernameField, self.loginPasswordField ];
     [fields enumerateObjectsUsingBlock:^(UITextField *field, NSUInteger idx, BOOL * _Nonnull stop) {
+        field.inputAccessoryView = self.doneToolbar;
+        
         field.tag = idx;
         field.leftView = ({
             UILabel *label = [UILabel new];
@@ -402,6 +416,10 @@
 }
 
 #pragma mark - UIControl targets
+
+- (void)kbDoneTapped {
+    [self.view endEditing:YES];
+}
 
 - (IBAction)actionPressed:(id)sender {
     if (self.textfieldStackView.arrangedSubviews.count == 2) {

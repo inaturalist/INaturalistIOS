@@ -53,6 +53,8 @@
 @property IBOutlet UIActivityIndicatorView *loadingSpinner;
 @property IBOutlet UIView *suggestionHeaderView;
 @property UIBarButtonItem *nearbySwitchButton;
+
+@property UIToolbar *doneToolbar;
 @end
 
 @implementation TaxaSearchViewController
@@ -224,6 +226,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.doneToolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, self.view.bounds.size.width, 44)];
+    UIBarButtonItem *flex = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                                                          target:nil
+                                                                          action:nil];
+    UIBarButtonItem *doneBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                                          target:self
+                                                                          action:@selector(kbDoneTapped)];
+    self.doneToolbar.items = @[flex, doneBtn];
+
     UISwitch *switcher = [[UISwitch alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
     self.nearbySwitchButton = [[UIBarButtonItem alloc] initWithCustomView:switcher];
     self.nearbySwitchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:nil];
@@ -235,6 +246,7 @@
     self.searchController.dimsBackgroundDuringPresentation = false;
     self.searchController.searchBar.placeholder = NSLocalizedString(@"Look up a species by name",
                                                                     @"placeholder text for taxon search bar");
+    self.searchController.searchBar.inputAccessoryView = self.doneToolbar;
     self.searchController.delegate = self;
     self.definesPresentationContext = YES;
     // user prefs determine autocorrection/spellcheck behavior of the species guess field
@@ -456,6 +468,12 @@
 - (void)changeSuggestionsFilter {
     self.showingNearbySuggestionsOnly = !self.showingNearbySuggestionsOnly;
     [self.tableView reloadData];
+}
+
+#pragma mark - UIButton targets
+
+- (void)kbDoneTapped {
+    [self.searchController.searchBar endEditing:YES];
 }
 
 #pragma mark - UITableViewDelegate
