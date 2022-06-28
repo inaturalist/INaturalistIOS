@@ -1453,9 +1453,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             } else if (indexPath.item == 5) {
                 INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
                 if (appDelegate.loginController.isLoggedIn) {
-                    ProjectObservationsViewController *projectsVC = [[ProjectObservationsViewController alloc] initWithNibName:nil bundle:nil];
-                    projectsVC.observation = self.standaloneObservation;
-                    [self.navigationController pushViewController:projectsVC animated:YES];
+                    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:[NSBundle mainBundle]];
+                    ProjectObservationsViewController *vc =  [sb instantiateViewControllerWithIdentifier:@"projectObservationsVC"];
+                    vc.observation = self.standaloneObservation;
+                    [self.navigationController pushViewController:vc animated:YES];                    
                 } else {
                     UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"You must be logged in!", nil)
                                                                                    message:NSLocalizedString(@"You must be logged in to access projects.", nil)

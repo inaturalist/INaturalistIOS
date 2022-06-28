@@ -116,7 +116,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
         label;
     });
     [self.tableView.tableHeaderView sizeToFit];
-    
+
     self.navigationItem.leftBarButtonItem = ({
         FAKIcon *backIcon = [FAKIonIcons iosArrowBackIconWithSize:34];
         UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithImage:[backIcon imageWithSize:CGSizeMake(14, 34)]
