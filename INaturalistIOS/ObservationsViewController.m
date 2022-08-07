@@ -198,33 +198,19 @@
     CGPoint translatedCenter = [self.tableView convertPoint:buttonCenter fromView:button.superview];
     NSIndexPath *ip = [self.tableView indexPathForRowAtPoint:translatedCenter];
     
-    id <Uploadable> observation = [self.myObservations objectAtIndex:ip.item];
+    ExploreObservationRealm *observation = [self.myObservations objectAtIndex:ip.item];
     
-    [[Analytics sharedClient] event:kAnalyticsEventSyncObservation
-                     withProperties:@{
-                         @"Via": @"Manual Single Upload",
-                         @"numDeletes": @(0),
-                         @"numUploads": @(1),
-                     }];
-    
-    [self uploadDeletes:@[]
-                uploads:@[ observation ]];
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [appDelegate.loginController.uploadManager uploadObservations:@[ observation ]];
 }
 
 - (IBAction)meTapped:(id)sender {
     if (self.isSyncing) {
         [self stopSyncPressed];
     } else {
-        NSMutableArray *recordsToDelete = [NSMutableArray array];
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         
-        for (NSString *modelName in @[ @"Observation", @"ObservationPhoto", @"ObservationFieldValue", @"ProjectObservation" ]) {
-            for (ExploreDeletedRecord *dr in [ExploreDeletedRecord needingSyncForModelName:modelName]) {
-                [recordsToDelete addObject:dr];
-            }
-        }
-        
-        NSArray *recordsToUpload = [ExploreObservationRealm needingUpload];
-        if (recordsToDelete.count > 0 || recordsToUpload.count > 0) {
+        if (appDelegate.loginController.uploadManager.deletedRecordsNeedingSync.count > 0 || appDelegate.loginController.uploadManager.observationsNeedingUpload.count > 0) {
             [self sync:nil];
         } else {
             NSString *title = NSLocalizedString(@"Change your profile photo?", nil);
@@ -233,7 +219,6 @@
                                                                            message:@" "
                                                                     preferredStyle:UIAlertControllerStyleActionSheet];
             
-            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
             ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
             if (me.userIcon) {
                 [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Remove my profile photo", nil)
@@ -363,34 +348,15 @@
 }
 
 - (IBAction)sync:(id)sender {
-    
     if (self.isSyncing) {
         [self stopSyncPressed];
         return;
     }
     
-    NSMutableArray *recordsToDelete = [NSMutableArray array];
-    for (NSString *modelName in @[ @"Observation", @"ObservationPhoto", @"ObservationFieldValue", @"ProjectObservation" ]) {
-        for (ExploreDeletedRecord *dr in [ExploreDeletedRecord needingSyncForModelName:modelName]) {
-            [recordsToDelete addObject:dr];
-        }
-    }
-    
-    NSArray *recordsToUpload = [ExploreObservationRealm needingUpload];
-    
-    [[Analytics sharedClient] event:kAnalyticsEventSyncObservation
-                     withProperties:@{
-                         @"Via": @"Manual Full Upload",
-                         @"numDeletes": @(recordsToDelete.count),
-                         @"numUploads": @(recordsToUpload.count),
-                     }];
-    
-    
-    [self uploadDeletes:recordsToDelete
-                uploads:recordsToUpload];
+    [self syncDeletesAndUploads];
 }
 
-- (void)uploadDeletes:(NSArray *)recordsToDelete uploads:(NSArray *)observationsToUpload {
+- (void)syncDeletesAndUploads {
     
     if (self.isSyncing) {
         return;
@@ -414,10 +380,7 @@
     }
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    UploadManager *uploader = appDelegate.loginController.uploadManager;
-    
-    [uploader syncDeletedRecords:recordsToDelete
-          thenUploadObservations:observationsToUpload];
+    [appDelegate.loginController.uploadManager syncDeletedRecordsThenUploadObservations];
 }
 
 - (void)stopSyncPressed {
@@ -1771,6 +1734,9 @@
 
 - (void)deleteSessionFailedFor:(ExploreDeletedRecord *)deletedRecord error:(NSError *)error {
     [[Analytics sharedClient] debugLog:[NSString stringWithFormat:@"Upload - Delete Failed: %@", [error localizedDescription]]];
+    
+    NSLog(@"error is %@", error.localizedDescription);
+    NSLog(@"deleted record is %@", deletedRecord);
     
     // dirty the me user to force re-fetching
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];

@@ -32,9 +32,11 @@ typedef NS_ENUM(NSInteger, UploadManagerState) {
 
 @property (nonatomic, weak) id <UploadManagerNotificationDelegate> delegate;
 
-- (void)syncDeletedRecords:(NSArray <ExploreDeletedRecord *> *)deletedRecords thenUploadObservations:(NSArray <ExploreObservationRealm *> *)recordsToUpload;
+- (void)syncDeletedRecordsThenUploadObservations;
 - (void)uploadObservations:(NSArray <ExploreObservationRealm *> *)observations;
 - (void)cancelSyncsAndUploads;
 - (void)autouploadPendingContent;
+- (NSArray *)deletedRecordsNeedingSync;
+- (NSArray *)observationsNeedingUpload;
 
 @end

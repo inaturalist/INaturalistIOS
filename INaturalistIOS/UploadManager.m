@@ -31,7 +31,6 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 @interface UploadManager ()
 
 @property NSMutableArray *observationUUIDsToUpload;
-@property NSMutableArray *recordsToDelete;
 @property AFNetworkReachabilityManager *reachabilityMgr;
 @property NSMutableDictionary *photoUploads;
 @property NSDate *lastNetworkOutageNotificationDate;
@@ -54,11 +53,10 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
 * Public method that serially syncs/uploads a list of deleted records,
 * then uploads a list of new or updated observations.
 */
-- (void)syncDeletedRecords:(NSArray <ExploreDeletedRecord *> *)deletedRecords thenUploadObservations:(NSArray <ExploreObservationRealm *> *)observations {
+- (void)syncDeletedRecordsThenUploadObservations {
     self.cancelled = NO;
-    self.recordsToDelete = [deletedRecords mutableCopy];
     self.observationUUIDsToUpload = [NSMutableArray array];
-    for (ExploreObservationRealm *o in observations) {
+    for (ExploreObservationRealm *o in [self observationsNeedingUpload]) {
         if ([o uuid]) {
             [self.observationUUIDsToUpload addObject:[o uuid]];
         } else {
@@ -70,7 +68,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
         }
     }
 
-    if (self.recordsToDelete.count > 0) {
+    if (self.deletedRecordsNeedingSync.count > 0) {
         [self syncDeletes];
     } else {
         [self syncUploads];
@@ -109,10 +107,9 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
         // set the authorization for the node session manager
         [weakSelf.nodeSessionManager.requestSerializer setValue:appDelegate.loginController.jwtToken
                                              forHTTPHeaderField:@"Authorization"];
-
         
         // add the delete jobs to the queue
-        for (ExploreDeletedRecord *dr in self.recordsToDelete) {
+        for (ExploreDeletedRecord *dr in self.deletedRecordsNeedingSync) {
             DeleteRecordOperation *op = [[DeleteRecordOperation alloc] init];
             
             op.endpointName = dr.endpointName;
@@ -188,7 +185,37 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
     [self autouploadPendingContentExcludeInvalids:NO];
 }
 
+/*
+ Arrange deleted records. We need to delete in a specific order in order to avoid
+ invalidation errors on the server. For example, a project may require certain fields
+ or photos to be a member - deleting the fields or the photos before deleting the
+ project observation will result in a 422 validation error from the server.
+ 
+ This is a public method so that the UI can know if there are records to delete
+ or not.
+ */
+
+- (NSArray *)deletedRecordsNeedingSync {
+    // delete in a specific order
+    NSMutableArray *recordsToDelete = [NSMutableArray array];
+    for (NSString *modelName in @[ @"Observation", @"ProjectObservation", @"ObservationPhoto", @"ObservationFieldValue",  ]) {
+        RLMResults *needingDelete = [ExploreDeletedRecord needingSyncForModelName:modelName];
+        // convert to array and add to our list of all things to delete
+        [recordsToDelete addObjectsFromArray:[needingDelete valueForKey:@"self"]];
+    }
+    return [NSArray arrayWithArray:recordsToDelete];
+}
+
+/*
+ this is a public method so the UI can konw if there are records to upload or not.
+ */
+- (NSArray *)observationsNeedingUpload {
+    return [ExploreObservationRealm needingUpload];
+}
+
 #pragma mark - private methods
+
+
 
 /*
  Upload all pending content. The exclude flag allows us to exclude any pending
@@ -196,14 +223,7 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
  */
 - (void)autouploadPendingContentExcludeInvalids:(BOOL)excludeInvalids {
     if (!self.shouldAutoupload) { return; }
-    
-    NSMutableArray *recordsToDelete = [NSMutableArray array];
-    for (NSString *modelName in @[ @"Observation", @"ObservationPhoto", @"ObservationFieldValue", @"ProjectObservation" ]) {
-        RLMResults *needingDelete = [ExploreDeletedRecord needingSyncForModelName:modelName];
-        // convert to array and add to our list of all things to delete
-        [recordsToDelete addObjectsFromArray:[needingDelete valueForKey:@"self"]];
-    }
-    
+        
     // invalid observations failed validation their last upload
     NSPredicate *noInvalids = [NSPredicate predicateWithBlock:^BOOL(ExploreObservationRealm *observation, NSDictionary *bindings) {
         return !(observation.validationErrorMsg && observation.validationErrorMsg.length > 0);
@@ -214,23 +234,16 @@ static NSString *kQueueOperationCountChanged = @"kQueueOperationCountChanged";
         observationsToUpload = [observationsToUpload filteredArrayUsingPredicate:noInvalids];
     }
     
-    if (recordsToDelete.count > 0 || observationsToUpload.count > 0) {
-        
-        [[Analytics sharedClient] event:kAnalyticsEventSyncObservation
-                         withProperties:@{
-                                          @"Via": @"Automatic Upload",
-                                          @"numDeletes": @(recordsToDelete.count),
-                                          @"numUploads": @(observationsToUpload.count),
-                                          }];
-        
-        [self syncDeletedRecords:recordsToDelete
-          thenUploadObservations:observationsToUpload];
+    if (self.deletedRecordsNeedingSync.count > 0 || self.observationsNeedingUpload.count > 0) {
+        [self syncDeletedRecordsThenUploadObservations];
     }
 }
 
 - (void)stopUploadActivity {
     [self.nodeSessionManager invalidateSessionCancelingTasks:YES];
 }
+
+
 
 #pragma mark - NSObject lifecycle
 
