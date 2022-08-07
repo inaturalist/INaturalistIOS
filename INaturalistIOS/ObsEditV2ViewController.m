@@ -56,7 +56,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionDelete,
 };
 
-@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, MediaScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, TaxaSearchViewControllerDelegate, CLLocationManagerDelegate, GalleryWrapperDelegate, MediaPickerDelegate, PHPickerViewControllerDelegate, SoundRecorderDelegate> {
+@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, MediaScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, TaxaSearchViewControllerDelegate, CLLocationManagerDelegate, GalleryWrapperDelegate, MediaPickerDelegate, PHPickerViewControllerDelegate, SoundRecorderDelegate, ProjectObservationsViewControllerDelegate> {
     
     CLLocationManager *_locationManager;
 }
@@ -1023,17 +1023,16 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         [realm addOrUpdateObject:self.standaloneObservation];
         [realm commitWriteTransaction];
         
+        
         // time to make deleted records for our stuff
         // would be nice to make this an inherited or protocol method
-        for (id <Uploadable> recordToDelete in self.recordsToDelete) {
-            if ([recordToDelete timeSynced]) {
-                // has been synced, need to do a synced delete
-                [[recordToDelete class] syncedDelete:recordToDelete];
-            } else {
-                // hasn't been synced, can be safely locally deleted
-                [[recordToDelete class] deleteWithoutSync:recordToDelete];
-            }
+        
+        [realm beginWriteTransaction];
+        for (RLMObject<Uploadable> *recordToDelete in self.recordsToDelete) {
+                [realm addOrUpdateObject:[recordToDelete deletedRecordForModel]];
+                [realm deleteObject:recordToDelete];
         }
+        [realm commitWriteTransaction];
     }
     
     [self.view.window.rootViewController dismissViewControllerAnimated:YES completion:^{
@@ -1133,6 +1132,28 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 - (void)editLocationViewControllerDidCancel:(EditLocationViewController *)controller {
     [self.navigationController popToViewController:self animated:YES];
 }
+
+#pragma mark - ProjectObservationDelegate
+
+-(void)projectObsDelegateDeletedProjectObservation:(ExploreProjectObservationRealm *)po {
+    NSInteger indexOfProjectObs = [self.standaloneObservation.projectObservations indexOfObject:po];
+
+    if (indexOfProjectObs != NSNotFound) {
+        [self.recordsToDelete addObject:po];
+        [self.standaloneObservation.projectObservations removeObjectAtIndex:indexOfProjectObs];
+    }
+}
+
+- (void)projectObsDelegateDeletedObsFieldValue:(ExploreObsFieldValueRealm *)ofv {
+    NSInteger indexOfObsFieldValue = [self.standaloneObservation.observationFieldValues indexOfObject:ofv];
+    
+    if (indexOfObsFieldValue != NSNotFound) {
+        [self.recordsToDelete addObject:ofv];
+        [self.standaloneObservation.observationFieldValues removeObjectAtIndex:indexOfObsFieldValue];
+    }
+}
+
+
 
 #pragma mark - table view delegate / datasource
 
@@ -1456,6 +1477,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:[NSBundle mainBundle]];
                     ProjectObservationsViewController *vc =  [sb instantiateViewControllerWithIdentifier:@"projectObservationsVC"];
                     vc.observation = self.standaloneObservation;
+                    vc.delegate = self;
                     [self.navigationController pushViewController:vc animated:YES];                    
                 } else {
                     UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"You must be logged in!", nil)

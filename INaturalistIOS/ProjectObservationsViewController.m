@@ -725,35 +725,16 @@ static NSString *LongTextFieldIdentifier = @"longtext";
                 poToDelete = po;
             }
         }
-                
-        // delete the project observation
+        
         if (poToDelete) {
-            NSInteger indexOfPo = [self.observation.projectObservations indexOfObject:poToDelete];
-
-            // delete it from the observation
-            RLMRealm *realm = [RLMRealm defaultRealm];
-            [realm beginWriteTransaction];
-            [self.observation.projectObservations removeObjectAtIndex:indexOfPo];
-            [realm commitWriteTransaction];
-            
-            if ([poToDelete timeSynced]) {
-                [ExploreProjectObservationRealm syncedDelete:poToDelete];
-            } else {
-                [ExploreProjectObservationRealm deleteWithoutSync:poToDelete];
-            }
+            [self.delegate projectObsDelegateDeletedProjectObservation:poToDelete];
         }
         
         // do the ofvs for this project's pofs
         for (ExploreProjectObsFieldRealm *pof in project.projectObsFields) {
             ExploreObsFieldValueRealm *ofvToDelete = [self.observation valueForObsField:pof.obsField];
-            if (!ofvToDelete) { continue; }                 // nothing to do
-            NSInteger indexOfOfv = [self.observation.observationFieldValues indexOfObject:ofvToDelete];
-            if (indexOfOfv == NSNotFound) { continue; }     // nothing to do
-                        
-            if ([ofvToDelete timeSynced]) {
-                [ExploreObsFieldValueRealm syncedDelete:ofvToDelete];
-            } else {
-                [ExploreObsFieldValueRealm deleteWithoutSync:ofvToDelete];
+            if (ofvToDelete) {
+                [self.delegate projectObsDelegateDeletedObsFieldValue:ofvToDelete];
             }
         }
     }

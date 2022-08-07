@@ -11,8 +11,16 @@
 
 #import "ExploreObservationRealm.h"
 
+@protocol ProjectObservationsViewControllerDelegate <NSObject>
+@optional
+- (void)projectObsDelegateDeletedProjectObservation:(ExploreProjectObservationRealm *)po;
+- (void)projectObsDelegateDeletedObsFieldValue:(ExploreObsFieldValueRealm *)ofv;
+@end
+
+
 @interface ProjectObservationsViewController : UITableViewController
 
 @property ExploreObservationRealm *observation;
+@property (weak, nonatomic) id <ProjectObservationsViewControllerDelegate> delegate;
 
 @end
