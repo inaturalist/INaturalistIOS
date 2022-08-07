@@ -31,4 +31,4 @@
 
 @end
 
-RLM_ARRAY_TYPE(ExploreObsFieldValueRealm)
+RLM_COLLECTION_TYPE(ExploreObsFieldValueRealm)
