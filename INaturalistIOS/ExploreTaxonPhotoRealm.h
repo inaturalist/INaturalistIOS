@@ -28,4 +28,4 @@
 @end
 
 
-RLM_ARRAY_TYPE(ExploreTaxonPhotoRealm)
+RLM_COLLECTION_TYPE(ExploreTaxonPhotoRealm)

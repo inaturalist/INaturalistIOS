@@ -28,4 +28,4 @@
 
 @end
 
-RLM_ARRAY_TYPE(ExploreProjectObsFieldRealm)
+RLM_COLLECTION_TYPE(ExploreProjectObsFieldRealm)

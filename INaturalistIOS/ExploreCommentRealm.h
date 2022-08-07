@@ -26,4 +26,4 @@
 
 @end
 
-RLM_ARRAY_TYPE(ExploreCommentRealm)
+RLM_COLLECTION_TYPE(ExploreCommentRealm)

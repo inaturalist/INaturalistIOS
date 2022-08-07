@@ -40,5 +40,5 @@
 
 @end
 
-RLM_ARRAY_TYPE(ExploreProjectRealm)
+RLM_COLLECTION_TYPE(ExploreProjectRealm)
 

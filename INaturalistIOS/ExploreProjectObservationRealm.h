@@ -30,4 +30,4 @@
 
 @end
 
-RLM_ARRAY_TYPE(ExploreProjectObservationRealm)
+RLM_COLLECTION_TYPE(ExploreProjectObservationRealm)

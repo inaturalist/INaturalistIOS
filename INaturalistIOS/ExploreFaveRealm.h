@@ -24,4 +24,4 @@
 
 @end
 
-RLM_ARRAY_TYPE(ExploreFaveRealm)
+RLM_COLLECTION_TYPE(ExploreFaveRealm)

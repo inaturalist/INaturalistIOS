@@ -31,4 +31,4 @@
 
 @end
 
-RLM_ARRAY_TYPE(ExploreObservationPhotoRealm)
+RLM_COLLECTION_TYPE(ExploreObservationPhotoRealm)

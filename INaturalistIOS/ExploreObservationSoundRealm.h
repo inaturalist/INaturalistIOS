@@ -27,5 +27,5 @@
 
 @end
 
-RLM_ARRAY_TYPE(ExploreObservationSoundRealm)
+RLM_COLLECTION_TYPE(ExploreObservationSoundRealm)
 

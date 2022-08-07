@@ -31,4 +31,4 @@
 
 @end
 
-RLM_ARRAY_TYPE(ExploreIdentificationRealm)
+RLM_COLLECTION_TYPE(ExploreIdentificationRealm)
