@@ -439,7 +439,7 @@ static const int ChangePartnerMinimumInterval = 86400;
 - (void)sendSupportEmail {
     // email params
     NSString *supportEmailAddress = @"help@inaturalist.org";
-    NSString *supportTitle = [NSString stringWithFormat:@"iNaturalist iPhone help - version %@",
+    NSString *supportTitle = [NSString stringWithFormat:@"iNaturalist iPhone help - (version %@)",
                               self.versionText];
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
