@@ -873,6 +873,8 @@
 		FA822FD328D81BC0006CA0F6 /* OnboardingReauthenticateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingReauthenticateViewController.swift; sourceTree = "<group>"; };
 		FA822FDC28D84D67006CA0F6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		FA822FDF28D84F93006CA0F6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		FA82300828D85F4E006CA0F6 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		FA82300928D85F72006CA0F6 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		FA8382461E70FD7400F73E90 /* WilletObservationRails.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = WilletObservationRails.json; path = Fixtures/WilletObservationRails.json; sourceTree = "<group>"; };
 		FA86CC361EAAE496004D6482 /* TaxonSuggestionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxonSuggestionCell.h; sourceTree = "<group>"; };
 		FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonSuggestionCell.m; sourceTree = "<group>"; };
@@ -3109,6 +3111,7 @@
 				FAAE356725CA193F0068AA12 /* si */,
 				FA03D5A8261B8D3D005F2B66 /* ar */,
 				FA03D5B0261B8D73005F2B66 /* th */,
+				FA82300828D85F4E006CA0F6 /* pt-BR */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -3149,6 +3152,7 @@
 				FAAE356825CA19400068AA12 /* si */,
 				FA03D5A9261B8D3D005F2B66 /* ar */,
 				FA03D5B1261B8D73005F2B66 /* th */,
+				FA82300928D85F72006CA0F6 /* pt-BR */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
