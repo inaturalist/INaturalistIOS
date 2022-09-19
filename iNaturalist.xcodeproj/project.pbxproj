@@ -1328,15 +1328,15 @@
 			isa = PBXGroup;
 			children = (
 				FA822FE128D850A9006CA0F6 /* Controllers */,
-				FA822FDE28D84E95006CA0F6 /* Extensions */,
 				FA4E72AF19FAC8FD00A9AB5D /* Explore */,
-				19F621A4150ECDC700C58F28 /* Helpers */,
+				FA822FDE28D84E95006CA0F6 /* Extensions */,
+				FA822FF128D853F8006CA0F6 /* Helpers */,
 				1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */,
 				1927514614E9CCC9000ABAC4 /* INaturalistAppDelegate.h */,
 				1927514714E9CCC9000ABAC4 /* INaturalistAppDelegate.m */,
-				FA711AA51D52873600C4FFDB /* User Interface */,
 				19F621A1150ECD0100C58F28 /* Models */,
 				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
+				FA711AA51D52873600C4FFDB /* User Interface */,
 				19F621A3150ECD8000C58F28 /* Views */,
 			);
 			name = INaturalist;
@@ -1452,46 +1452,6 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
-		19F621A4150ECDC700C58F28 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				FA63FA1319E4CE65007306F9 /* Analytics.h */,
-				FA63FA1419E4CE65007306F9 /* Analytics.m */,
-				FAF16A1924733E5C00209D96 /* DownWrapper.swift */,
-				FA6F87681B0E99A20019B157 /* FAKINaturalist.h */,
-				FA6F87691B0E99A20019B157 /* FAKINaturalist.m */,
-				FAE625CE247B08B40000E191 /* GalleryWrapper.swift */,
-				1902812314F308AD005AC8D2 /* ImageStore.h */,
-				1902812414F308AD005AC8D2 /* ImageStore.m */,
-				FA89FF221AFD4A8B00B0611A /* INatPhoto.h */,
-				FAB71E031FDC7D530039C45B /* INatReachability.h */,
-				FAB71E041FDC7D530039C45B /* INatReachability.m */,
-				FAC415F125E25503002814C7 /* INatSound.h */,
-				FA627BA71ACB6A050079534E /* INatTooltipView.h */,
-				FA627BA81ACB6A050079534E /* INatTooltipView.m */,
-				FAC24AEE2443CE90002FF698 /* InaturalistRealmMigration.h */,
-				FAC24AEF2443CE90002FF698 /* InaturalistRealmMigration.m */,
-				FAD125422296060C006E70FC /* InsetLabel.h */,
-				FAD125432296060C006E70FC /* InsetLabel.m */,
-				FA6D69571B06A6CD000983F8 /* LoginController.h */,
-				FA6D69581B06A6CD000983F8 /* LoginController.m */,
-				FAC415F925E2FEF0002814C7 /* MediaStore.swift */,
-				FA4C19621B30EE890066CA22 /* Partner.h */,
-				FA4C19631B30EE890066CA22 /* Partner.m */,
-				FA4C19651B30EEE60066CA22 /* PartnerController.h */,
-				FA4C19661B30EEE60066CA22 /* PartnerController.m */,
-				19AE898618DD0B9600505918 /* RefreshControl.h */,
-				19AE898718DD0B9600505918 /* RefreshControl.m */,
-				19D8340F17E7B746000A5C35 /* RXMLElement+Helpers.h */,
-				19D8341017E7B746000A5C35 /* RXMLElement+Helpers.m */,
-				1958892A1804BB0500294EB3 /* SystemVersionMacros.h */,
-				FA3D929B2294AF55004A1AA1 /* TextViewNoInsets.h */,
-				FA3D929C2294AF55004A1AA1 /* TextViewNoInsets.m */,
-				FAC59DF920DB0880000A6558 /* Uploader */,
-			);
-			name = Helpers;
-			sourceTree = "<group>";
-		};
 		46D00BB8D0373EEFD4C9BE56 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -1514,20 +1474,9 @@
 			name = Leaderboard;
 			sourceTree = "<group>";
 		};
-		FA3F1F741A12ABC400928102 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				FA3F1F881A12ABEF00928102 /* ExploreDisambiguator.h */,
-				FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */,
-				FA3F1F8E1A12B01500928102 /* SearchResultsHelper.h */,
-			);
-			name = Helpers;
-			sourceTree = "<group>";
-		};
 		FA4E72AF19FAC8FD00A9AB5D /* Explore */ = {
 			isa = PBXGroup;
 			children = (
-				FA3F1F741A12ABC400928102 /* Helpers */,
 				FAEF23321C7D007C00208F44 /* iNat Node API */,
 				FA4E72D419FACE3300A9AB5D /* Views */,
 				FA4E72ED19FACEC700A9AB5D /* iNat API */,
@@ -2126,6 +2075,74 @@
 			path = Explore;
 			sourceTree = "<group>";
 		};
+		FA822FF128D853F8006CA0F6 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				FA63FA1319E4CE65007306F9 /* Analytics.h */,
+				FA63FA1419E4CE65007306F9 /* Analytics.m */,
+				FAF16A1924733E5C00209D96 /* DownWrapper.swift */,
+				FA3F1F881A12ABEF00928102 /* ExploreDisambiguator.h */,
+				FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */,
+				FA6F87681B0E99A20019B157 /* FAKINaturalist.h */,
+				FA6F87691B0E99A20019B157 /* FAKINaturalist.m */,
+				FAE625CE247B08B40000E191 /* GalleryWrapper.swift */,
+				1902812314F308AD005AC8D2 /* ImageStore.h */,
+				1902812414F308AD005AC8D2 /* ImageStore.m */,
+				FA89FF221AFD4A8B00B0611A /* INatPhoto.h */,
+				FAB71E031FDC7D530039C45B /* INatReachability.h */,
+				FAB71E041FDC7D530039C45B /* INatReachability.m */,
+				FAC415F125E25503002814C7 /* INatSound.h */,
+				FA627BA71ACB6A050079534E /* INatTooltipView.h */,
+				FA627BA81ACB6A050079534E /* INatTooltipView.m */,
+				FAC24AEE2443CE90002FF698 /* InaturalistRealmMigration.h */,
+				FAC24AEF2443CE90002FF698 /* InaturalistRealmMigration.m */,
+				FAD125422296060C006E70FC /* InsetLabel.h */,
+				FAD125432296060C006E70FC /* InsetLabel.m */,
+				FA6D69571B06A6CD000983F8 /* LoginController.h */,
+				FA6D69581B06A6CD000983F8 /* LoginController.m */,
+				FAC415F925E2FEF0002814C7 /* MediaStore.swift */,
+				FA822FF328D8544B006CA0F6 /* Partners */,
+				19AE898618DD0B9600505918 /* RefreshControl.h */,
+				19AE898718DD0B9600505918 /* RefreshControl.m */,
+				19D8340F17E7B746000A5C35 /* RXMLElement+Helpers.h */,
+				19D8341017E7B746000A5C35 /* RXMLElement+Helpers.m */,
+				FA3F1F8E1A12B01500928102 /* SearchResultsHelper.h */,
+				1958892A1804BB0500294EB3 /* SystemVersionMacros.h */,
+				FA3D929B2294AF55004A1AA1 /* TextViewNoInsets.h */,
+				FA3D929C2294AF55004A1AA1 /* TextViewNoInsets.m */,
+				FA822FF228D8542B006CA0F6 /* Uploader */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		FA822FF228D8542B006CA0F6 /* Uploader */ = {
+			isa = PBXGroup;
+			children = (
+				FAC59DF620D9DF87000A6558 /* DeleteRecordOperation.h */,
+				FAC59DF720D9DF87000A6558 /* DeleteRecordOperation.m */,
+				FAF614CD1B630122008B63B0 /* Uploadable.h */,
+				1997410F15194E89006FBEA0 /* UploadManager.h */,
+				1997411015194E89006FBEA0 /* UploadManager.m */,
+				FA91C7E41B4362FE004D4C5B /* UploadManagerNotificationDelegate.h */,
+				FAC59DF320D9D8C2000A6558 /* UploadObservationOperation.h */,
+				FAC59DF420D9D8C2000A6558 /* UploadObservationOperation.m */,
+				FAC59DFA20DB0890000A6558 /* UploadOperation.h */,
+				FAC59DFB20DB0890000A6558 /* UploadOperation.m */,
+			);
+			path = Uploader;
+			sourceTree = "<group>";
+		};
+		FA822FF328D8544B006CA0F6 /* Partners */ = {
+			isa = PBXGroup;
+			children = (
+				FA4C19621B30EE890066CA22 /* Partner.h */,
+				FA4C19631B30EE890066CA22 /* Partner.m */,
+				FA4C19651B30EEE60066CA22 /* PartnerController.h */,
+				FA4C19661B30EEE60066CA22 /* PartnerController.m */,
+			);
+			path = Partners;
+			sourceTree = "<group>";
+		};
 		FA88726B1A2CFBD900D2168E /* Grid View */ = {
 			isa = PBXGroup;
 			children = (
@@ -2208,23 +2225,6 @@
 				FABCAD1323C6BEA4006479CA /* AnonHeaderView.xib */,
 			);
 			name = "Me Tab Header";
-			sourceTree = "<group>";
-		};
-		FAC59DF920DB0880000A6558 /* Uploader */ = {
-			isa = PBXGroup;
-			children = (
-				FAC59DF620D9DF87000A6558 /* DeleteRecordOperation.h */,
-				FAC59DF720D9DF87000A6558 /* DeleteRecordOperation.m */,
-				FAF614CD1B630122008B63B0 /* Uploadable.h */,
-				1997410F15194E89006FBEA0 /* UploadManager.h */,
-				1997411015194E89006FBEA0 /* UploadManager.m */,
-				FA91C7E41B4362FE004D4C5B /* UploadManagerNotificationDelegate.h */,
-				FAC59DF320D9D8C2000A6558 /* UploadObservationOperation.h */,
-				FAC59DF420D9D8C2000A6558 /* UploadObservationOperation.m */,
-				FAC59DFA20DB0890000A6558 /* UploadOperation.h */,
-				FAC59DFB20DB0890000A6558 /* UploadOperation.m */,
-			);
-			name = Uploader;
 			sourceTree = "<group>";
 		};
 		FADE28B11B02D9AA00CA55FF /* iNaturalistTests */ = {
