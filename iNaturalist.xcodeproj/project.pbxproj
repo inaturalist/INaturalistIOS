@@ -1337,7 +1337,7 @@
 				19F621A1150ECD0100C58F28 /* Models */,
 				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
 				FA711AA51D52873600C4FFDB /* User Interface */,
-				19F621A3150ECD8000C58F28 /* Views */,
+				FA822FF428D854C0006CA0F6 /* Views */,
 			);
 			name = INaturalist;
 			path = INaturalistIOS;
@@ -1375,83 +1375,6 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		19F621A3150ECD8000C58F28 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				191B0B30150015EA00F2508E /* AccuracyCircleView.h */,
-				191B0B31150015EA00F2508E /* AccuracyCircleView.m */,
-				FA55648B1BD9BC3C0049803B /* AddChicletCell.h */,
-				FA55648C1BD9BC3C0049803B /* AddChicletCell.m */,
-				FAA872CE1B1428C200366521 /* CheckboxCell.h */,
-				FAA872CF1B1428C200366521 /* CheckboxCell.m */,
-				1922D99F14FEBF58003778B2 /* CrossHairView.h */,
-				1922D9A014FEBF58003778B2 /* CrossHairView.m */,
-				FA75584A1B9A599800762D7B /* DisclosureCell.h */,
-				FA75584B1B9A599800762D7B /* DisclosureCell.m */,
-				FA6D695D1B06B4B6000983F8 /* EditableTextFieldCell.h */,
-				FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */,
-				191B0B331500A8D900F2508E /* EditLocationAnnoView.h */,
-				191B0B341500A8D900F2508E /* EditLocationAnnoView.m */,
-				FAB6214A1D73830E0026FDC6 /* IconAndTextControl.h */,
-				FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */,
-				FAEB5C102069A1A700BA3132 /* Login Views */,
-				FABCAD1223C6BA34006479CA /* Me Tab Header */,
-				FAC0F17C1A9FDD0D000F20C4 /* MultiImageView.h */,
-				FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */,
-				FAA20BB81C5079830075EF2C /* NewsItemCell.h */,
-				FAA20BB91C5079830075EF2C /* NewsItemCell.m */,
-				FA5BC6F71C3C9DF6008FCD43 /* Obs Detail TableView Cells */,
-				FA88B6781AB8E1660004B4C6 /* ObsCameraOverlay.h */,
-				FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */,
-				19E54CB1160997010036BA3B /* ObservationFieldValueDefaultCell.xib */,
-				19E4CC3116240A5A00694E5D /* ObservationFieldValueStaticCell.xib */,
-				19ADD5AB160A3D50001D886C /* ObservationFieldValueSwitchCell.xib */,
-				FA0F1AF61BBB2E9600533ED5 /* ObservationValidationErrorView.h */,
-				FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */,
-				FA0F1B031BBB561600533ED5 /* ObservationViewCell.h */,
-				FA0F1B041BBB561600533ED5 /* ObservationViewCell.m */,
-				FA0F1AFF1BBB412C00533ED5 /* ObservationViewErrorCell.h */,
-				FA0F1B001BBB412C00533ED5 /* ObservationViewErrorCell.m */,
-				897569FD1B4557B500F0BFAD /* ObservationViewNormalCell.h */,
-				897569FE1B4557B500F0BFAD /* ObservationViewNormalCell.m */,
-				FA0F1AF91BBB410000533ED5 /* ObservationViewUploadingCell.h */,
-				FA0F1AFA1BBB410000533ED5 /* ObservationViewUploadingCell.m */,
-				FA0F1AFC1BBB411300533ED5 /* ObservationViewWaitingUploadCell.h */,
-				FA0F1AFD1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m */,
-				FA6B45041BC73F3700EDDD42 /* ObsFieldLongTextValueCell.h */,
-				FA6B45051BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m */,
-				FA6B45011BC73F1600EDDD42 /* ObsFieldSimpleValueCell.h */,
-				FA6B45021BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m */,
-				FAF47B301BD99FFC007CC407 /* PhotoChicletCell.h */,
-				FAF47B311BD99FFC007CC407 /* PhotoChicletCell.m */,
-				FA5564851BD9A9340049803B /* MediaScrollViewCell.h */,
-				FA5564861BD9A9340049803B /* MediaScrollViewCell.m */,
-				FAEF23421C7D0DD300208F44 /* Project Details */,
-				FA78DFBE1BC5C97B002DCCB1 /* ProjectObservationHeaderView.h */,
-				FA78DFBF1BC5C97B002DCCB1 /* ProjectObservationHeaderView.m */,
-				FA394EB7218909AF004AE0FE /* ProjectObservationHeaderView.xib */,
-				899A00D21B53AADD0079162F /* ProjectTableViewCell.h */,
-				899A00D31B53AADD0079162F /* ProjectTableViewCell.m */,
-				FAA872CB1B13989D00366521 /* RoundedButtonCell.h */,
-				FAA872CC1B13989D00366521 /* RoundedButtonCell.m */,
-				FAA6EB1B1C90E17000F43552 /* RoundedButtonCell.xib */,
-				FA6F87591B0E72C60019B157 /* SplitTextButton.h */,
-				FA6F875A1B0E72C60019B157 /* SplitTextButton.m */,
-				FAFAF7001BA0D64700CCADC2 /* SubtitleDisclosureCell.h */,
-				FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */,
-				FAA6EB121C90C12E00F43552 /* Taxon Details */,
-				19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */,
-				FA86CC361EAAE496004D6482 /* TaxonSuggestionCell.h */,
-				FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */,
-				19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */,
-				FAD05EA21B9A911400C14085 /* TextViewCell.h */,
-				FAD05EA31B9A911400C14085 /* TextViewCell.m */,
-				FA067F5E1DBACF0A00CBA5EF /* UpdatesItemCell.h */,
-				FA067F5F1DBACF0A00CBA5EF /* UpdatesItemCell.m */,
-			);
-			name = Views;
-			sourceTree = "<group>";
-		};
 		46D00BB8D0373EEFD4C9BE56 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -1463,36 +1386,13 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		FA3D90F41A95146D00BAA0EC /* Leaderboard */ = {
-			isa = PBXGroup;
-			children = (
-				FA3D90F51A95148500BAA0EC /* ExploreLeaderboardCell.h */,
-				FA3D90F61A95148500BAA0EC /* ExploreLeaderboardCell.m */,
-				FA7AAF0C1A96949D00188B83 /* ExploreLeaderboardHeader.h */,
-				FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */,
-			);
-			name = Leaderboard;
-			sourceTree = "<group>";
-		};
 		FA4E72AF19FAC8FD00A9AB5D /* Explore */ = {
 			isa = PBXGroup;
 			children = (
 				FAEF23321C7D007C00208F44 /* iNat Node API */,
-				FA4E72D419FACE3300A9AB5D /* Views */,
 				FA4E72ED19FACEC700A9AB5D /* iNat API */,
 			);
 			name = Explore;
-			sourceTree = "<group>";
-		};
-		FA4E72D419FACE3300A9AB5D /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				FA3D90F41A95146D00BAA0EC /* Leaderboard */,
-				FA88726D1A2CFC0400D2168E /* Search View */,
-				FA88726C1A2CFBEA00D2168E /* List View */,
-				FA88726B1A2CFBD900D2168E /* Grid View */,
-			);
-			name = Views;
 			sourceTree = "<group>";
 		};
 		FA4E72ED19FACEC700A9AB5D /* iNat API */ = {
@@ -1509,46 +1409,6 @@
 				FA3F1F991A12DFD200928102 /* ExploreSearchController.m */,
 			);
 			name = "iNat API";
-			sourceTree = "<group>";
-		};
-		FA5BC6F71C3C9DF6008FCD43 /* Obs Detail TableView Cells */ = {
-			isa = PBXGroup;
-			children = (
-				FAC415EA25E2539A002814C7 /* MediaPageControlCell.h */,
-				FAC415EB25E2539A002814C7 /* MediaPageControlCell.m */,
-				FAA8518F1C2368030012C09D /* ObsCenteredLabelCell.h */,
-				FAA851901C2368030012C09D /* ObsCenteredLabelCell.m */,
-				FAB8C4481C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.h */,
-				FAB8C4491C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m */,
-				FAB8C44B1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.h */,
-				FAB8C44C1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m */,
-				FA51BA691C0159C000101807 /* ObsDetailActivityMoreCell.h */,
-				FA51BA6A1C0159C000101807 /* ObsDetailActivityMoreCell.m */,
-				FA4D56BD1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.h */,
-				FA4D56BE1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.m */,
-				FA51BA661C0107EC00101807 /* ObsDetailAddFaveHeader.h */,
-				FA51BA671C0107EC00101807 /* ObsDetailAddFaveHeader.m */,
-				FA1F26271C20E25300CE73A8 /* ObsDetailDataQualityCell.h */,
-				FA1F26281C20E25300CE73A8 /* ObsDetailDataQualityCell.m */,
-				FA426A491C17B6590054563D /* ObsDetailMapCell.h */,
-				FA426A4A1C17B6590054563D /* ObsDetailMapCell.m */,
-				FA2A07971C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.h */,
-				FA2A07981C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m */,
-				FA4D56C01C1A6C7100C5C5AE /* ObsDetailNotesCell.h */,
-				FA4D56C11C1A6C7100C5C5AE /* ObsDetailNotesCell.m */,
-				FA5BC6F91C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.h */,
-				FA5BC6FA1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m */,
-				FA4D56BA1C1A3A2900C5C5AE /* ObsDetailSelectorButton.h */,
-				FA4D56BB1C1A3A2900C5C5AE /* ObsDetailSelectorButton.m */,
-				FA4D56B71C1A37F600C5C5AE /* ObsDetailSelectorHeaderView.h */,
-				FA4D56B81C1A37F600C5C5AE /* ObsDetailSelectorHeaderView.m */,
-				FA50E4211C223FD400718B81 /* ObsDetailTaxonCell.h */,
-				FA50E4221C223FD400718B81 /* ObsDetailTaxonCell.m */,
-				FACACA1C1BFD0CF7002223D7 /* PhotosPageControlCell.h */,
-				FACACA1D1BFD0CF7002223D7 /* PhotosPageControlCell.m */,
-				FACD11EE1C56E9720041E318 /* TaxonCell.xib */,
-			);
-			name = "Obs Detail TableView Cells";
 			sourceTree = "<group>";
 		};
 		FA6513381E04A1CA0059FD70 /* Fixtures */ = {
@@ -2143,29 +2003,200 @@
 			path = Partners;
 			sourceTree = "<group>";
 		};
-		FA88726B1A2CFBD900D2168E /* Grid View */ = {
+		FA822FF428D854C0006CA0F6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				FA4E72DB19FACE6900A9AB5D /* ExploreGridCell.h */,
-				FA4E72DC19FACE6900A9AB5D /* ExploreGridCell.m */,
-				FA8872551A2CFB1B00D2168E /* RestrictedCollectionHeader.h */,
-				FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */,
+				FA822FFA28D85561006CA0F6 /* Explore */,
+				FA822FF928D8553E006CA0F6 /* Login Views */,
+				FA822FF828D85532006CA0F6 /* Me Tab Header */,
+				FA822FF728D8551B006CA0F6 /* Obs Detail TableView Cells */,
+				FA822FF628D8550A006CA0F6 /* Project Details */,
+				FA822FF528D854FC006CA0F6 /* Taxon Details */,
+				191B0B30150015EA00F2508E /* AccuracyCircleView.h */,
+				191B0B31150015EA00F2508E /* AccuracyCircleView.m */,
+				FA55648B1BD9BC3C0049803B /* AddChicletCell.h */,
+				FA55648C1BD9BC3C0049803B /* AddChicletCell.m */,
+				FAA872CE1B1428C200366521 /* CheckboxCell.h */,
+				FAA872CF1B1428C200366521 /* CheckboxCell.m */,
+				1922D99F14FEBF58003778B2 /* CrossHairView.h */,
+				1922D9A014FEBF58003778B2 /* CrossHairView.m */,
+				FA75584A1B9A599800762D7B /* DisclosureCell.h */,
+				FA75584B1B9A599800762D7B /* DisclosureCell.m */,
+				FA6D695D1B06B4B6000983F8 /* EditableTextFieldCell.h */,
+				FA6D695E1B06B4B6000983F8 /* EditableTextFieldCell.m */,
+				191B0B331500A8D900F2508E /* EditLocationAnnoView.h */,
+				191B0B341500A8D900F2508E /* EditLocationAnnoView.m */,
+				FAB6214A1D73830E0026FDC6 /* IconAndTextControl.h */,
+				FAB6214B1D73830E0026FDC6 /* IconAndTextControl.m */,
+				FAC0F17C1A9FDD0D000F20C4 /* MultiImageView.h */,
+				FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */,
+				FAA20BB81C5079830075EF2C /* NewsItemCell.h */,
+				FAA20BB91C5079830075EF2C /* NewsItemCell.m */,
+				FA88B6781AB8E1660004B4C6 /* ObsCameraOverlay.h */,
+				FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */,
+				19E54CB1160997010036BA3B /* ObservationFieldValueDefaultCell.xib */,
+				19E4CC3116240A5A00694E5D /* ObservationFieldValueStaticCell.xib */,
+				19ADD5AB160A3D50001D886C /* ObservationFieldValueSwitchCell.xib */,
+				FA0F1AF61BBB2E9600533ED5 /* ObservationValidationErrorView.h */,
+				FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */,
+				FA0F1B031BBB561600533ED5 /* ObservationViewCell.h */,
+				FA0F1B041BBB561600533ED5 /* ObservationViewCell.m */,
+				FA0F1AFF1BBB412C00533ED5 /* ObservationViewErrorCell.h */,
+				FA0F1B001BBB412C00533ED5 /* ObservationViewErrorCell.m */,
+				897569FD1B4557B500F0BFAD /* ObservationViewNormalCell.h */,
+				897569FE1B4557B500F0BFAD /* ObservationViewNormalCell.m */,
+				FA0F1AF91BBB410000533ED5 /* ObservationViewUploadingCell.h */,
+				FA0F1AFA1BBB410000533ED5 /* ObservationViewUploadingCell.m */,
+				FA0F1AFC1BBB411300533ED5 /* ObservationViewWaitingUploadCell.h */,
+				FA0F1AFD1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m */,
+				FA6B45041BC73F3700EDDD42 /* ObsFieldLongTextValueCell.h */,
+				FA6B45051BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m */,
+				FA6B45011BC73F1600EDDD42 /* ObsFieldSimpleValueCell.h */,
+				FA6B45021BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m */,
+				FAF47B301BD99FFC007CC407 /* PhotoChicletCell.h */,
+				FAF47B311BD99FFC007CC407 /* PhotoChicletCell.m */,
+				FA5564851BD9A9340049803B /* MediaScrollViewCell.h */,
+				FA5564861BD9A9340049803B /* MediaScrollViewCell.m */,
+				FA78DFBE1BC5C97B002DCCB1 /* ProjectObservationHeaderView.h */,
+				FA78DFBF1BC5C97B002DCCB1 /* ProjectObservationHeaderView.m */,
+				FA394EB7218909AF004AE0FE /* ProjectObservationHeaderView.xib */,
+				899A00D21B53AADD0079162F /* ProjectTableViewCell.h */,
+				899A00D31B53AADD0079162F /* ProjectTableViewCell.m */,
+				FAA872CB1B13989D00366521 /* RoundedButtonCell.h */,
+				FAA872CC1B13989D00366521 /* RoundedButtonCell.m */,
+				FAA6EB1B1C90E17000F43552 /* RoundedButtonCell.xib */,
+				FA6F87591B0E72C60019B157 /* SplitTextButton.h */,
+				FA6F875A1B0E72C60019B157 /* SplitTextButton.m */,
+				FAFAF7001BA0D64700CCADC2 /* SubtitleDisclosureCell.h */,
+				FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */,
+				19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */,
+				FA86CC361EAAE496004D6482 /* TaxonSuggestionCell.h */,
+				FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */,
+				19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */,
+				FAD05EA21B9A911400C14085 /* TextViewCell.h */,
+				FAD05EA31B9A911400C14085 /* TextViewCell.m */,
+				FA067F5E1DBACF0A00CBA5EF /* UpdatesItemCell.h */,
+				FA067F5F1DBACF0A00CBA5EF /* UpdatesItemCell.m */,
 			);
-			name = "Grid View";
+			path = Views;
 			sourceTree = "<group>";
 		};
-		FA88726C1A2CFBEA00D2168E /* List View */ = {
+		FA822FF528D854FC006CA0F6 /* Taxon Details */ = {
 			isa = PBXGroup;
 			children = (
-				FA4E72DF19FACE6900A9AB5D /* ExploreListTableViewCell.h */,
-				FA4E72E019FACE6900A9AB5D /* ExploreListTableViewCell.m */,
-				FA88726F1A2D048300D2168E /* RestrictedListHeader.h */,
-				FA8872701A2D048300D2168E /* RestrictedListHeader.m */,
+				FACCEB461ED4F401009C9A19 /* TaxonMapCell.h */,
+				FACCEB471ED4F401009C9A19 /* TaxonMapCell.m */,
+				FAA6EB151C90C15400F43552 /* TaxonPhotoCell.h */,
+				FAA6EB161C90C15400F43552 /* TaxonPhotoCell.m */,
+				FAA6EB181C90C28800F43552 /* TaxonSummaryCell.h */,
+				FAA6EB191C90C28800F43552 /* TaxonSummaryCell.m */,
+				FA4714F61ED7A88F00D57FDE /* TaxonSelectButtonCell.h */,
+				FA4714F71ED7A88F00D57FDE /* TaxonSelectButtonCell.m */,
 			);
-			name = "List View";
+			path = "Taxon Details";
 			sourceTree = "<group>";
 		};
-		FA88726D1A2CFC0400D2168E /* Search View */ = {
+		FA822FF628D8550A006CA0F6 /* Project Details */ = {
+			isa = PBXGroup;
+			children = (
+				FAEF23431C7D0E0100208F44 /* ProjectObsPhotoCell.h */,
+				FAEF23441C7D0E0100208F44 /* ProjectObsPhotoCell.m */,
+				FAEF234C1C7D2B3400208F44 /* SpeciesCountCell.h */,
+				FAEF234D1C7D2B3400208F44 /* SpeciesCountCell.m */,
+				FACADF891CA1A920004B9D4A /* ProjectAboutInfoCell.h */,
+				FACADF8A1CA1A920004B9D4A /* ProjectAboutInfoCell.m */,
+				FA74A6211CB4C4EE002EBD0A /* RankedUserObsSpecies.xib */,
+				FA74A6231CB4C517002EBD0A /* RankedUserObsSpeciesCell.h */,
+				FA74A6241CB4C517002EBD0A /* RankedUserObsSpeciesCell.m */,
+			);
+			path = "Project Details";
+			sourceTree = "<group>";
+		};
+		FA822FF728D8551B006CA0F6 /* Obs Detail TableView Cells */ = {
+			isa = PBXGroup;
+			children = (
+				FAC415EA25E2539A002814C7 /* MediaPageControlCell.h */,
+				FAC415EB25E2539A002814C7 /* MediaPageControlCell.m */,
+				FAA8518F1C2368030012C09D /* ObsCenteredLabelCell.h */,
+				FAA851901C2368030012C09D /* ObsCenteredLabelCell.m */,
+				FAB8C4481C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.h */,
+				FAB8C4491C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m */,
+				FAB8C44B1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.h */,
+				FAB8C44C1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m */,
+				FA51BA691C0159C000101807 /* ObsDetailActivityMoreCell.h */,
+				FA51BA6A1C0159C000101807 /* ObsDetailActivityMoreCell.m */,
+				FA4D56BD1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.h */,
+				FA4D56BE1C1A53DA00C5C5AE /* ObsDetailAddActivityFooter.m */,
+				FA51BA661C0107EC00101807 /* ObsDetailAddFaveHeader.h */,
+				FA51BA671C0107EC00101807 /* ObsDetailAddFaveHeader.m */,
+				FA1F26271C20E25300CE73A8 /* ObsDetailDataQualityCell.h */,
+				FA1F26281C20E25300CE73A8 /* ObsDetailDataQualityCell.m */,
+				FA426A491C17B6590054563D /* ObsDetailMapCell.h */,
+				FA426A4A1C17B6590054563D /* ObsDetailMapCell.m */,
+				FA2A07971C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.h */,
+				FA2A07981C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m */,
+				FA4D56C01C1A6C7100C5C5AE /* ObsDetailNotesCell.h */,
+				FA4D56C11C1A6C7100C5C5AE /* ObsDetailNotesCell.m */,
+				FA5BC6F91C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.h */,
+				FA5BC6FA1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m */,
+				FA4D56BA1C1A3A2900C5C5AE /* ObsDetailSelectorButton.h */,
+				FA4D56BB1C1A3A2900C5C5AE /* ObsDetailSelectorButton.m */,
+				FA4D56B71C1A37F600C5C5AE /* ObsDetailSelectorHeaderView.h */,
+				FA4D56B81C1A37F600C5C5AE /* ObsDetailSelectorHeaderView.m */,
+				FA50E4211C223FD400718B81 /* ObsDetailTaxonCell.h */,
+				FA50E4221C223FD400718B81 /* ObsDetailTaxonCell.m */,
+				FACACA1C1BFD0CF7002223D7 /* PhotosPageControlCell.h */,
+				FACACA1D1BFD0CF7002223D7 /* PhotosPageControlCell.m */,
+				FACD11EE1C56E9720041E318 /* TaxonCell.xib */,
+			);
+			path = "Obs Detail TableView Cells";
+			sourceTree = "<group>";
+		};
+		FA822FF828D85532006CA0F6 /* Me Tab Header */ = {
+			isa = PBXGroup;
+			children = (
+				FA724ADE1AB150BD00D01773 /* MeHeaderView.h */,
+				FA724ADF1AB150BD00D01773 /* MeHeaderView.m */,
+				FABCAD0D23C6B289006479CA /* MeHeaderView.xib */,
+				FABCAD0F23C6BA2C006479CA /* AnonHeaderView.h */,
+				FABCAD1023C6BA2C006479CA /* AnonHeaderView.m */,
+				FABCAD1323C6BEA4006479CA /* AnonHeaderView.xib */,
+			);
+			path = "Me Tab Header";
+			sourceTree = "<group>";
+		};
+		FA822FF928D8553E006CA0F6 /* Login Views */ = {
+			isa = PBXGroup;
+			children = (
+				FAEB5C0D2069A19000BA3132 /* LoginSwitchContextButton.h */,
+				FAEB5C0E2069A19000BA3132 /* LoginSwitchContextButton.m */,
+			);
+			path = "Login Views";
+			sourceTree = "<group>";
+		};
+		FA822FFA28D85561006CA0F6 /* Explore */ = {
+			isa = PBXGroup;
+			children = (
+				FA822FFE28D85576006CA0F6 /* Grid View */,
+				FA822FFD28D85572006CA0F6 /* List View */,
+				FA822FFC28D8556C006CA0F6 /* Search View */,
+				FA822FFB28D85565006CA0F6 /* Leaderboard */,
+			);
+			path = Explore;
+			sourceTree = "<group>";
+		};
+		FA822FFB28D85565006CA0F6 /* Leaderboard */ = {
+			isa = PBXGroup;
+			children = (
+				FA3D90F51A95148500BAA0EC /* ExploreLeaderboardCell.h */,
+				FA3D90F61A95148500BAA0EC /* ExploreLeaderboardCell.m */,
+				FA7AAF0C1A96949D00188B83 /* ExploreLeaderboardHeader.h */,
+				FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */,
+			);
+			path = Leaderboard;
+			sourceTree = "<group>";
+		};
+		FA822FFC28D8556C006CA0F6 /* Search View */ = {
 			isa = PBXGroup;
 			children = (
 				FA4E72D519FACE6900A9AB5D /* ExploreActiveSearchView.h */,
@@ -2181,7 +2212,29 @@
 				FA3F202F1A141AEE00928102 /* ShortcutSearchItem.h */,
 				FA3F20301A141AEE00928102 /* ShortcutSearchItem.m */,
 			);
-			name = "Search View";
+			path = "Search View";
+			sourceTree = "<group>";
+		};
+		FA822FFD28D85572006CA0F6 /* List View */ = {
+			isa = PBXGroup;
+			children = (
+				FA4E72DF19FACE6900A9AB5D /* ExploreListTableViewCell.h */,
+				FA4E72E019FACE6900A9AB5D /* ExploreListTableViewCell.m */,
+				FA88726F1A2D048300D2168E /* RestrictedListHeader.h */,
+				FA8872701A2D048300D2168E /* RestrictedListHeader.m */,
+			);
+			path = "List View";
+			sourceTree = "<group>";
+		};
+		FA822FFE28D85576006CA0F6 /* Grid View */ = {
+			isa = PBXGroup;
+			children = (
+				FA4E72DB19FACE6900A9AB5D /* ExploreGridCell.h */,
+				FA4E72DC19FACE6900A9AB5D /* ExploreGridCell.m */,
+				FA8872551A2CFB1B00D2168E /* RestrictedCollectionHeader.h */,
+				FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */,
+			);
+			path = "Grid View";
 			sourceTree = "<group>";
 		};
 		FA9437871C869F2C00CB10F3 /* ViewProtocols */ = {
@@ -2197,34 +2250,6 @@
 				FA4B096421116F5600E942B3 /* UserVisualization.h */,
 			);
 			path = ViewProtocols;
-			sourceTree = "<group>";
-		};
-		FAA6EB121C90C12E00F43552 /* Taxon Details */ = {
-			isa = PBXGroup;
-			children = (
-				FACCEB461ED4F401009C9A19 /* TaxonMapCell.h */,
-				FACCEB471ED4F401009C9A19 /* TaxonMapCell.m */,
-				FAA6EB151C90C15400F43552 /* TaxonPhotoCell.h */,
-				FAA6EB161C90C15400F43552 /* TaxonPhotoCell.m */,
-				FAA6EB181C90C28800F43552 /* TaxonSummaryCell.h */,
-				FAA6EB191C90C28800F43552 /* TaxonSummaryCell.m */,
-				FA4714F61ED7A88F00D57FDE /* TaxonSelectButtonCell.h */,
-				FA4714F71ED7A88F00D57FDE /* TaxonSelectButtonCell.m */,
-			);
-			name = "Taxon Details";
-			sourceTree = "<group>";
-		};
-		FABCAD1223C6BA34006479CA /* Me Tab Header */ = {
-			isa = PBXGroup;
-			children = (
-				FA724ADE1AB150BD00D01773 /* MeHeaderView.h */,
-				FA724ADF1AB150BD00D01773 /* MeHeaderView.m */,
-				FABCAD0D23C6B289006479CA /* MeHeaderView.xib */,
-				FABCAD0F23C6BA2C006479CA /* AnonHeaderView.h */,
-				FABCAD1023C6BA2C006479CA /* AnonHeaderView.m */,
-				FABCAD1323C6BEA4006479CA /* AnonHeaderView.xib */,
-			);
-			name = "Me Tab Header";
 			sourceTree = "<group>";
 		};
 		FADE28B11B02D9AA00CA55FF /* iNaturalistTests */ = {
@@ -2246,15 +2271,6 @@
 				FADE28B31B02D9AA00CA55FF /* Info.plist */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		FAEB5C102069A1A700BA3132 /* Login Views */ = {
-			isa = PBXGroup;
-			children = (
-				FAEB5C0D2069A19000BA3132 /* LoginSwitchContextButton.h */,
-				FAEB5C0E2069A19000BA3132 /* LoginSwitchContextButton.m */,
-			);
-			name = "Login Views";
 			sourceTree = "<group>";
 		};
 		FAEB5C112069A5A100BA3132 /* Views */ = {
@@ -2296,22 +2312,6 @@
 				FABCAD0923C661CA006479CA /* YearInReviewAPI.m */,
 			);
 			name = "iNat Node API";
-			sourceTree = "<group>";
-		};
-		FAEF23421C7D0DD300208F44 /* Project Details */ = {
-			isa = PBXGroup;
-			children = (
-				FAEF23431C7D0E0100208F44 /* ProjectObsPhotoCell.h */,
-				FAEF23441C7D0E0100208F44 /* ProjectObsPhotoCell.m */,
-				FAEF234C1C7D2B3400208F44 /* SpeciesCountCell.h */,
-				FAEF234D1C7D2B3400208F44 /* SpeciesCountCell.m */,
-				FACADF891CA1A920004B9D4A /* ProjectAboutInfoCell.h */,
-				FACADF8A1CA1A920004B9D4A /* ProjectAboutInfoCell.m */,
-				FA74A6211CB4C4EE002EBD0A /* RankedUserObsSpecies.xib */,
-				FA74A6231CB4C517002EBD0A /* RankedUserObsSpeciesCell.h */,
-				FA74A6241CB4C517002EBD0A /* RankedUserObsSpeciesCell.m */,
-			);
-			name = "Project Details";
 			sourceTree = "<group>";
 		};
 		FAF73BE21E1B245F002456AF /* Misc */ = {
