@@ -43,14 +43,19 @@
 #import "SettingsVersionCell.h"
 #import "ExploreUserRealm.h"
 #import "ExploreObservationRealm.h"
+#import "PeopleRailsAPI.h"
+#import "NSURL+INaturalist.h"
+#import "iNaturalist-Swift.h"
 
 typedef NS_ENUM(NSInteger, SettingsSection) {
     SettingsSectionAccount = 0,
     SettingsSectionApp,
     SettingsSectionHelp,
-    SettingsSectionVersion
+    SettingsSectionVersion,
+    SettingsSectionDanger,
 };
-static const int SettingsSectionCount = 4;
+static const int SettingsLoggedInSectionCount = 5;
+static const int SettingsLoggedOutSectionCount = 4;
 
 typedef NS_ENUM(NSInteger, SettingsHelpCell) {
     SettingsHelpCellTutorial = 0,
@@ -79,9 +84,16 @@ typedef NS_ENUM(NSInteger, SettingsAccountCell) {
     SettingsAccountCellEmail,
     SettingsAccountCellAction
 };
+
+typedef NS_ENUM(NSInteger, SettingsDangerCell) {
+    SettingsDangerCellDeleteAccount
+};
+
+
 static const int SettingsAccountRowCountLoggedIn = 3;
 static const int SettingsAccountRowCountLoggedOut = 1;
 static const int SettingsVersionRowCount = 1;
+static const int SettingsDangerRowCount = 1;
 
 static NSString * const LastChangedPartnerDateKey = @"org.inaturalist.lastChangedPartnerDateKey";
 static const int ChangePartnerMinimumInterval = 86400;
@@ -101,6 +113,16 @@ static const int ChangePartnerMinimumInterval = 86400;
     });
     return _api;
 }
+
+- (PeopleRailsAPI *)peopleRailsApi {
+    static PeopleRailsAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[PeopleRailsAPI alloc] init];
+    });
+    return _api;
+}
+
 
 #pragma mark - UI helpers
 
@@ -238,6 +260,92 @@ static const int ChangePartnerMinimumInterval = 86400;
                                                 }]];
         
         [self presentViewController:alert animated:YES completion:nil];
+    } else {
+        [self networkUnreachableAlert];
+    }
+}
+
+- (void)presentDeleteAccountConfirmation {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
+
+    NSString *title = NSLocalizedString(@"Are you sure?",nil);
+    NSString *msg = [NSString stringWithFormat: NSLocalizedString(@"By deleting your account you will remove all of your observations, all of the identifications that you've added to the observations of others, and all comments that you've made. Furthermore, this action cannot be undone. If you change your mind later, you aren't getting any of that content back. If this site generates too many notifications, consider editing your settings to opt out of certain notifications or stop receiving email from us. If you're having trouble with a specific person on the site, consider muting them instead of deleting your account. If you are deleting your account because you tried to delete some of your content but you could still see it on a map or elsewhere on the Internet, keep in mind that map data may be cached for up to a day even after records are deleted, and that deleting content on this platform may not have any effect on copies that exist on other sites and platforms (like GBIF). If you're still sure you want to delete your account, enter '%@' in the form below and click the button to delete your account and all your data.",  @"delete account confirmation"), me.login];
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:msg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        
+    }];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel",nil)
+                                              style:UIAlertActionStyleCancel
+                                            handler:nil]];
+    [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Delete Account", nil)
+                                              style:UIAlertActionStyleDestructive
+                                            handler:^(UIAlertAction * _Nonnull action) {
+        
+        NSString *confirmationCode = me.login;
+        NSString *confirmation = alert.textFields.firstObject.text;
+        
+        if ([confirmation isEqualToString:confirmationCode]) {
+            [[self peopleRailsApi] deleteAccountForUserId:me.userId
+                                         confirmationCode:confirmationCode
+                                             confirmation:confirmation
+                                                     done:^(NSArray *results, NSInteger count, NSError *error) {
+                if (error) {
+                    NSLog(@"error is %@", error);
+                } else {
+                    [self signOut];
+                }
+            }];
+        } else {
+            NSString *oops = NSLocalizedString(@"Oops",nil);
+            NSString *textNoMatch = NSLocalizedString(@"The entered text doesn't match.", @"error message when user fails to input prompted text correctly");
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:oops
+                                                                           message:textNoMatch
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                      style:UIAlertActionStyleCancel
+                                                    handler:nil]];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+    }]];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)tappedDeleteAccount {
+    if ([[INatReachability sharedClient] isNetworkReachable]) {
+                
+        NSSet *scopes = [NSSet setWithArray:@[ @"login", @"write", @"account_delete" ]];
+        
+        NSURL *authorizationURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@/oauth/authorize?client_id=%@&redirect_uri=urn%%3Aietf%%3Awg%%3Aoauth%%3A2.0%%3Aoob&response_type=code", [NSURL inat_baseURLForAuthentication], INatClientID ]];
+        NSURL *tokenURL = [NSURL URLWithString:@"/oauth/token"
+                                 relativeToURL:[NSURL inat_baseURLForAuthentication]];
+        NSURL *redirectURL = [NSURL URLWithString:@"urn:ietf:wg:oauth:2.0:oob"];
+        
+        [[NXOAuth2AccountStore sharedStore] setClientID:INatClientID
+                                                 secret:INatClientSecret
+                                                  scope:scopes
+                                       authorizationURL:authorizationURL
+                                               tokenURL:tokenURL
+                                            redirectURL:redirectURL
+                                          keyChainGroup:nil
+                                         forAccountType:kINatAuthService];
+        
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
+        OnboardingReauthenticateViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-reauthenticate"];
+        
+        __weak typeof(self) weakSelf = self;
+        vc.loginAction = ^{
+            [weakSelf dismissViewControllerAnimated:YES completion:^{
+                [weakSelf presentDeleteAccountConfirmation];
+            }];
+        };
+        
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+        [self presentViewController:nav animated:YES completion:nil];
     } else {
         [self networkUnreachableAlert];
     }
@@ -776,13 +884,20 @@ static const int ChangePartnerMinimumInterval = 86400;
         return NSLocalizedString(@"Help", @"Title for help section of settings.");
     } else if (section == SettingsSectionVersion) {
         return NSLocalizedString(@"Version", @"Title for version section of settings.");
+    } else if (section == SettingsSectionDanger) {
+        return NSLocalizedString(@"Danger Zone", @"Title for danger zone (account deletion) section of settings.");
     } else {
         return nil;
     }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return SettingsSectionCount;
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (appDelegate.loggedIn) {
+        return SettingsLoggedInSectionCount;
+    } else {
+        return SettingsLoggedOutSectionCount;
+    }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -799,6 +914,8 @@ static const int ChangePartnerMinimumInterval = 86400;
         return SettingsHelpRowCount;
     } else if (section == SettingsSectionVersion) {
         return SettingsVersionRowCount;
+    } else if (section == SettingsSectionDanger) {
+        return SettingsDangerRowCount;
     } else {
         return 0;
     }
@@ -850,8 +967,10 @@ static const int ChangePartnerMinimumInterval = 86400;
         } else {
             return [self tableView:tableView donateCellForIndexPath:indexPath];
         }
-    } else {
+    } else if (indexPath.section == SettingsSectionVersion) {
         return [self tableView:tableView versionCellForIndexPath:indexPath];
+    } else {
+        return [self tableView:tableView deleteAccountCellForIndexPath:indexPath];
     }
 }
 
@@ -930,6 +1049,8 @@ static const int ChangePartnerMinimumInterval = 86400;
                 }
             }
         }
+    } else if (indexPath.section == SettingsSectionDanger) {
+        [self tappedDeleteAccount];
     }
 }
 
@@ -1121,6 +1242,17 @@ static const int ChangePartnerMinimumInterval = 86400;
     cell.versionLabel.textAlignment = NSTextAlignmentNatural;
     return cell;
 }
+
+- (UITableViewCell *)tableView:(UITableView *)tableView deleteAccountCellForIndexPath:(NSIndexPath *)indexPath {
+    SettingsActionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"action"
+                                                               forIndexPath:indexPath];
+    
+    cell.actionLabel.text = NSLocalizedString(@"Delete Account", @"button title to delete account");
+    cell.actionLabel.tintColor = UIColor.systemRedColor;
+
+    return cell;
+}
+
 
 @end
 
