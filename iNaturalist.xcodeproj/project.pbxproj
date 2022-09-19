@@ -1364,52 +1364,9 @@
 		19F621A1150ECD0100C58F28 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				FA51BA631C000A1900101807 /* Activity.h */,
-				FA51BA641C000A1900101807 /* Activity.m */,
-				19AE897118DD08A100505918 /* Comment.h */,
-				19AE897218DD08A100505918 /* Comment.m */,
-				190687C5151BF71F00D5B6E4 /* DeletedRecord.h */,
-				190687C6151BF71F00D5B6E4 /* DeletedRecord.m */,
-				FAFFFBEB1BFFD6B5003B7B7B /* Fave.h */,
-				FAFFFBEC1BFFD6B5003B7B7B /* Fave.m */,
-				191C5C8217D3FACC0086DBEB /* Guide.h */,
-				191C5C8317D3FACC0086DBEB /* Guide.m */,
-				1955FCFB17F102FA004F57F2 /* GuideXML.h */,
-				1955FCFC17F102FA004F57F2 /* GuideXML.m */,
-				197FD41717FD2DAE0099BDE6 /* GuideImageXML.h */,
-				197FD41817FD2DAE0099BDE6 /* GuideImageXML.m */,
-				19AE897418DD08B600505918 /* Identification.h */,
-				19AE897518DD08B600505918 /* Identification.m */,
-				1902812614F315F2005AC8D2 /* INatModel.h */,
-				1902812714F315F2005AC8D2 /* INatModel.m */,
-				FA7BC8C91C59D2460032E709 /* NewsItem.h */,
-				FA7BC8CA1C59D2460032E709 /* NewsItem.m */,
-				1985521C14ECA3CD00DB55C5 /* Observation.h */,
-				1985521D14ECA3CD00DB55C5 /* Observation.m */,
-				191FB4CB16014A6700C1F5DE /* ObservationField.h */,
-				191FB4CC16014A6700C1F5DE /* ObservationField.m */,
-				191FB4CE16014FF400C1F5DE /* ObservationFieldValue.h */,
-				191FB4CF16014FF400C1F5DE /* ObservationFieldValue.m */,
-				1902813B14F36B44005AC8D2 /* ObservationPhoto.h */,
-				1902813C14F36B44005AC8D2 /* ObservationPhoto.m */,
-				19F62197150ECC1200C58F28 /* Project.h */,
-				19F62198150ECC1200C58F28 /* Project.m */,
-				19F6219A150ECC2400C58F28 /* ProjectObservation.h */,
-				19F6219B150ECC2400C58F28 /* ProjectObservation.m */,
-				191FB4D11601501A00C1F5DE /* ProjectObservationField.h */,
-				191FB4D21601501A00C1F5DE /* ProjectObservationField.m */,
-				19F6219D150ECC2E00C58F28 /* ProjectUser.h */,
-				19F6219E150ECC2E00C58F28 /* ProjectUser.m */,
-				195F3246151A8AB60019CB85 /* Taxon.h */,
-				195F3247151A8AB60019CB85 /* Taxon.m */,
-				195F3249151A8AF70019CB85 /* TaxonPhoto.h */,
-				195F324A151A8AF70019CB85 /* TaxonPhoto.m */,
-				19AE897718DD08CC00505918 /* User.h */,
-				19AE897818DD08CC00505918 /* User.m */,
-				197FD41A17FE13CD0099BDE6 /* GuideTaxonXML.h */,
-				197FD41B17FE13CD0099BDE6 /* GuideTaxonXML.m */,
+				FA822FD528D84839006CA0F6 /* CoreData */,
 			);
-			name = Models;
+			path = Models;
 			sourceTree = "<group>";
 		};
 		19F621A2150ECD3000C58F28 /* Controllers */ = {
@@ -1934,6 +1891,57 @@
 				FA7591D920F442930062DE7F /* SettingsVersionCell.m */,
 			);
 			name = "Settings Cells";
+			sourceTree = "<group>";
+		};
+		FA822FD528D84839006CA0F6 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				FA51BA631C000A1900101807 /* Activity.h */,
+				FA51BA641C000A1900101807 /* Activity.m */,
+				19AE897118DD08A100505918 /* Comment.h */,
+				19AE897218DD08A100505918 /* Comment.m */,
+				190687C5151BF71F00D5B6E4 /* DeletedRecord.h */,
+				190687C6151BF71F00D5B6E4 /* DeletedRecord.m */,
+				FAFFFBEB1BFFD6B5003B7B7B /* Fave.h */,
+				FAFFFBEC1BFFD6B5003B7B7B /* Fave.m */,
+				191C5C8217D3FACC0086DBEB /* Guide.h */,
+				191C5C8317D3FACC0086DBEB /* Guide.m */,
+				197FD41717FD2DAE0099BDE6 /* GuideImageXML.h */,
+				197FD41817FD2DAE0099BDE6 /* GuideImageXML.m */,
+				197FD41A17FE13CD0099BDE6 /* GuideTaxonXML.h */,
+				197FD41B17FE13CD0099BDE6 /* GuideTaxonXML.m */,
+				1955FCFB17F102FA004F57F2 /* GuideXML.h */,
+				1955FCFC17F102FA004F57F2 /* GuideXML.m */,
+				19AE897418DD08B600505918 /* Identification.h */,
+				19AE897518DD08B600505918 /* Identification.m */,
+				1902812614F315F2005AC8D2 /* INatModel.h */,
+				1902812714F315F2005AC8D2 /* INatModel.m */,
+				FA7BC8C91C59D2460032E709 /* NewsItem.h */,
+				FA7BC8CA1C59D2460032E709 /* NewsItem.m */,
+				1985521C14ECA3CD00DB55C5 /* Observation.h */,
+				1985521D14ECA3CD00DB55C5 /* Observation.m */,
+				191FB4CB16014A6700C1F5DE /* ObservationField.h */,
+				191FB4CC16014A6700C1F5DE /* ObservationField.m */,
+				191FB4CE16014FF400C1F5DE /* ObservationFieldValue.h */,
+				191FB4CF16014FF400C1F5DE /* ObservationFieldValue.m */,
+				1902813B14F36B44005AC8D2 /* ObservationPhoto.h */,
+				1902813C14F36B44005AC8D2 /* ObservationPhoto.m */,
+				19F62197150ECC1200C58F28 /* Project.h */,
+				19F62198150ECC1200C58F28 /* Project.m */,
+				19F6219A150ECC2400C58F28 /* ProjectObservation.h */,
+				19F6219B150ECC2400C58F28 /* ProjectObservation.m */,
+				191FB4D11601501A00C1F5DE /* ProjectObservationField.h */,
+				191FB4D21601501A00C1F5DE /* ProjectObservationField.m */,
+				19F6219D150ECC2E00C58F28 /* ProjectUser.h */,
+				19F6219E150ECC2E00C58F28 /* ProjectUser.m */,
+				195F3246151A8AB60019CB85 /* Taxon.h */,
+				195F3247151A8AB60019CB85 /* Taxon.m */,
+				195F3249151A8AF70019CB85 /* TaxonPhoto.h */,
+				195F324A151A8AF70019CB85 /* TaxonPhoto.m */,
+				19AE897718DD08CC00505918 /* User.h */,
+				19AE897818DD08CC00505918 /* User.m */,
+			);
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 		FA88726B1A2CFBD900D2168E /* Grid View */ = {
