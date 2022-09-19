@@ -1146,7 +1146,7 @@
 		FAD44AE62456635000E9DA38 /* ExploreObsFieldValueRealm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreObsFieldValueRealm.m; sourceTree = "<group>"; };
 		FAD44AE824576E2800E9DA38 /* ExploreProjectObservationRealm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreProjectObservationRealm.h; sourceTree = "<group>"; };
 		FAD44AE924576E2800E9DA38 /* ExploreProjectObservationRealm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreProjectObservationRealm.m; sourceTree = "<group>"; };
-		FADD57E919FEFF2500E141C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = iNaturalist/Images.xcassets; sourceTree = "<group>"; };
+		FADD57E919FEFF2500E141C9 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		FADD58641A00662200E141C9 /* UIFont+ExploreFonts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIFont+ExploreFonts.h"; sourceTree = "<group>"; };
 		FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIFont+ExploreFonts.m"; sourceTree = "<group>"; };
 		FADDA3BA1DBABA9900FB054F /* NewsPagerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsPagerViewController.h; sourceTree = "<group>"; };
@@ -1327,7 +1327,6 @@
 		1927513D14E9CCC9000ABAC4 /* INaturalist */ = {
 			isa = PBXGroup;
 			children = (
-				FA82300628D85D47006CA0F6 /* User Interface */,
 				FA822FFF28D855C9006CA0F6 /* API Endpoints */,
 				FA822FE128D850A9006CA0F6 /* Controllers */,
 				FA822FDE28D84E95006CA0F6 /* Extensions */,
@@ -1337,7 +1336,7 @@
 				1927514714E9CCC9000ABAC4 /* INaturalistAppDelegate.m */,
 				19F621A1150ECD0100C58F28 /* Models */,
 				1927513E14E9CCC9000ABAC4 /* Supporting Files */,
-				FA711AA51D52873600C4FFDB /* User Interface */,
+				FA82300628D85D47006CA0F6 /* User Interface */,
 				FA822FF428D854C0006CA0F6 /* Views */,
 			);
 			name = INaturalist;
@@ -1429,15 +1428,6 @@
 				FA6F81D61E72459900135C5E /* MantleHelpers.m */,
 			);
 			name = Helpers;
-			sourceTree = "<group>";
-		};
-		FA711AA51D52873600C4FFDB /* User Interface */ = {
-			isa = PBXGroup;
-			children = (
-				FADD57E919FEFF2500E141C9 /* Images.xcassets */,
-			);
-			name = "User Interface";
-			path = ..;
 			sourceTree = "<group>";
 		};
 		FA822FD528D84839006CA0F6 /* CoreData */ = {
@@ -2266,6 +2256,7 @@
 				FA399AAE1DDBDC73007ABD3E /* Activity.storyboard */,
 				FA82300728D85E12006CA0F6 /* fonts */,
 				FA399AC31DDBDC88007ABD3E /* Guides.storyboard */,
+				FADD57E919FEFF2500E141C9 /* Images.xcassets */,
 				60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */,
 				FA753DBD1B7AC40E00EC13B7 /* LaunchScreenRebrand.xib */,
 				60F6CEC016E29AD60031504A /* Localizable.strings */,
