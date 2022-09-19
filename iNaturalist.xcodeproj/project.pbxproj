@@ -1329,7 +1329,6 @@
 			children = (
 				FA822FFF28D855C9006CA0F6 /* API Endpoints */,
 				FA822FE128D850A9006CA0F6 /* Controllers */,
-				FA4E72AF19FAC8FD00A9AB5D /* Explore */,
 				FA822FDE28D84E95006CA0F6 /* Extensions */,
 				FA822FF128D853F8006CA0F6 /* Helpers */,
 				1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */,
@@ -1385,22 +1384,6 @@
 				38D9B4ACB70AA7FFA70A3FDB /* Pods-iNaturalistTests.release.xcconfig */,
 			);
 			path = Pods;
-			sourceTree = "<group>";
-		};
-		FA4E72AF19FAC8FD00A9AB5D /* Explore */ = {
-			isa = PBXGroup;
-			children = (
-				FAEF23321C7D007C00208F44 /* iNat Node API */,
-				FA4E72ED19FACEC700A9AB5D /* iNat API */,
-			);
-			name = Explore;
-			sourceTree = "<group>";
-		};
-		FA4E72ED19FACEC700A9AB5D /* iNat API */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = "iNat API";
 			sourceTree = "<group>";
 		};
 		FA6513381E04A1CA0059FD70 /* Fixtures */ = {
@@ -2337,13 +2320,6 @@
 				FAEB5C122069A5B400BA3132 /* LoginSwitchContextButtonTests.m */,
 			);
 			name = Views;
-			sourceTree = "<group>";
-		};
-		FAEF23321C7D007C00208F44 /* iNat Node API */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = "iNat Node API";
 			sourceTree = "<group>";
 		};
 		FAF73BE21E1B245F002456AF /* Misc */ = {
