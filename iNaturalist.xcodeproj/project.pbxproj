@@ -209,6 +209,7 @@
 		FA822FD428D81BC0006CA0F6 /* OnboardingReauthenticateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA822FD328D81BC0006CA0F6 /* OnboardingReauthenticateViewController.swift */; };
 		FA822FDB28D84D4C006CA0F6 /* ExploreObservationPhoto+BestAvailableURL.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */; };
 		FA822FDD28D84D67006CA0F6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = FA822FDC28D84D67006CA0F6 /* README.md */; };
+		FA822FE028D84F93006CA0F6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = FA822FDF28D84F93006CA0F6 /* README.md */; };
 		FA8382471E70FD7400F73E90 /* WilletObservationRails.json in Resources */ = {isa = PBXBuildFile; fileRef = FA8382461E70FD7400F73E90 /* WilletObservationRails.json */; };
 		FA86CC381EAAE496004D6482 /* TaxonSuggestionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */; };
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
@@ -873,6 +874,7 @@
 		FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailViewModelTests.m; sourceTree = "<group>"; };
 		FA822FD328D81BC0006CA0F6 /* OnboardingReauthenticateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingReauthenticateViewController.swift; sourceTree = "<group>"; };
 		FA822FDC28D84D67006CA0F6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		FA822FDF28D84F93006CA0F6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		FA8382461E70FD7400F73E90 /* WilletObservationRails.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = WilletObservationRails.json; path = Fixtures/WilletObservationRails.json; sourceTree = "<group>"; };
 		FA86CC361EAAE496004D6482 /* TaxonSuggestionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxonSuggestionCell.h; sourceTree = "<group>"; };
 		FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonSuggestionCell.m; sourceTree = "<group>"; };
@@ -1325,6 +1327,7 @@
 		1927513D14E9CCC9000ABAC4 /* INaturalist */ = {
 			isa = PBXGroup;
 			children = (
+				FA822FDE28D84E95006CA0F6 /* Extensions */,
 				19F621A2150ECD3000C58F28 /* Controllers */,
 				FA4E72AF19FAC8FD00A9AB5D /* Explore */,
 				19F621A4150ECDC700C58F28 /* Helpers */,
@@ -1509,10 +1512,6 @@
 			children = (
 				FA63FA1319E4CE65007306F9 /* Analytics.h */,
 				FA63FA1419E4CE65007306F9 /* Analytics.m */,
-				FAA0A1961F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.h */,
-				FAA0A1971F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.m */,
-				FAEA0A4C229224EF004111A1 /* CLPlacemark+INat.h */,
-				FAEA0A4D229224EF004111A1 /* CLPlacemark+INat.m */,
 				FAF16A1924733E5C00209D96 /* DownWrapper.swift */,
 				FA6F87681B0E99A20019B157 /* FAKINaturalist.h */,
 				FA6F87691B0E99A20019B157 /* FAKINaturalist.m */,
@@ -1532,20 +1531,6 @@
 				FA6D69571B06A6CD000983F8 /* LoginController.h */,
 				FA6D69581B06A6CD000983F8 /* LoginController.m */,
 				FAC415F925E2FEF0002814C7 /* MediaStore.swift */,
-				FA6D69531B069031000983F8 /* NSAttributedString+InatHelpers.h */,
-				FA6D69541B069031000983F8 /* NSAttributedString+InatHelpers.m */,
-				FAC9A8511F9EC0F2008E75EC /* NSData+INaturalist.h */,
-				FAC9A8521F9EC0F2008E75EC /* NSData+INaturalist.m */,
-				FA8A0E0A25E1C3F9006CA8A4 /* NSDate+INaturalist.h */,
-				FA8A0E0B25E1C3F9006CA8A4 /* NSDate+INaturalist.m */,
-				FA5BC6F41C3C7FD0008FCD43 /* NSFileManager+INaturalist.h */,
-				FA5BC6F51C3C7FD0008FCD43 /* NSFileManager+INaturalist.m */,
-				FA5B6D851B4C86E1003FF325 /* NSLocale+INaturalist.h */,
-				FA5B6D861B4C86E1003FF325 /* NSLocale+INaturalist.m */,
-				19D04792150FFDAE00BB5DBC /* NSString+Helpers.h */,
-				19D04793150FFDAE00BB5DBC /* NSString+Helpers.m */,
-				FA9BC3751B332BEC003375A2 /* NSURL+INaturalist.h */,
-				FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */,
 				FA4C19621B30EE890066CA22 /* Partner.h */,
 				FA4C19631B30EE890066CA22 /* Partner.m */,
 				FA4C19651B30EEE60066CA22 /* PartnerController.h */,
@@ -1557,20 +1542,6 @@
 				1958892A1804BB0500294EB3 /* SystemVersionMacros.h */,
 				FA3D929B2294AF55004A1AA1 /* TextViewNoInsets.h */,
 				FA3D929C2294AF55004A1AA1 /* TextViewNoInsets.m */,
-				FA7FF8481BAB622200885034 /* UIAlertController+IOS9_Autorotate.h */,
-				FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */,
-				196E4E1D18D23C21009CE429 /* UIColor+INaturalist.h */,
-				196E4E1E18D23C22009CE429 /* UIColor+INaturalist.m */,
-				FA69822B1B2F49C900D9BD0F /* UIImage+INaturalist.h */,
-				FA69822C1B2F49C900D9BD0F /* UIImage+INaturalist.m */,
-				FA8EBCE2230DC6E100C1D789 /* UIImage+MapAnnotations.h */,
-				FA8EBCE3230DC6E100C1D789 /* UIImage+MapAnnotations.m */,
-				FA60A4441B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.h */,
-				FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */,
-				19C26201160CF42B005565F8 /* UIView+UIViewHelpers.h */,
-				19C26202160CF42B005565F8 /* UIView+UIViewHelpers.m */,
-				FAB7028621431BD600462F62 /* UIViewController+INaturalist.h */,
-				FAB7028721431BD600462F62 /* UIViewController+INaturalist.m */,
 				FAC59DF920DB0880000A6558 /* Uploader */,
 			);
 			name = Helpers;
@@ -1657,24 +1628,8 @@
 				FAEF23321C7D007C00208F44 /* iNat Node API */,
 				FA4E72D419FACE3300A9AB5D /* Views */,
 				FA4E72ED19FACEC700A9AB5D /* iNat API */,
-				FA4E72CD19FACDF100A9AB5D /* Extensions */,
 			);
 			name = Explore;
-			sourceTree = "<group>";
-		};
-		FA4E72CD19FACDF100A9AB5D /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				FA4E72CE19FACE0000A9AB5D /* UIColor+ExploreColors.h */,
-				FA4E72CF19FACE0000A9AB5D /* UIColor+ExploreColors.m */,
-				FA4E72D019FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.h */,
-				FA4E72D119FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m */,
-				FADD58641A00662200E141C9 /* UIFont+ExploreFonts.h */,
-				FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */,
-				FA0069211A0C51F600C64F28 /* MKMapView+ZoomLevel.h */,
-				FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */,
-			);
-			name = Extensions;
 			sourceTree = "<group>";
 		};
 		FA4E72D419FACE3300A9AB5D /* Views */ = {
@@ -2025,6 +1980,54 @@
 				FAFED1F81DB5A25C0015CCBA /* ExploreUserRealm.m */,
 			);
 			path = Realm;
+			sourceTree = "<group>";
+		};
+		FA822FDE28D84E95006CA0F6 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				FA822FDF28D84F93006CA0F6 /* README.md */,
+				FAA0A1961F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.h */,
+				FAA0A1971F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.m */,
+				FAEA0A4C229224EF004111A1 /* CLPlacemark+INat.h */,
+				FAEA0A4D229224EF004111A1 /* CLPlacemark+INat.m */,
+				FA0069211A0C51F600C64F28 /* MKMapView+ZoomLevel.h */,
+				FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */,
+				FA6D69531B069031000983F8 /* NSAttributedString+InatHelpers.h */,
+				FA6D69541B069031000983F8 /* NSAttributedString+InatHelpers.m */,
+				FAC9A8511F9EC0F2008E75EC /* NSData+INaturalist.h */,
+				FAC9A8521F9EC0F2008E75EC /* NSData+INaturalist.m */,
+				FA8A0E0A25E1C3F9006CA8A4 /* NSDate+INaturalist.h */,
+				FA8A0E0B25E1C3F9006CA8A4 /* NSDate+INaturalist.m */,
+				FA5BC6F41C3C7FD0008FCD43 /* NSFileManager+INaturalist.h */,
+				FA5BC6F51C3C7FD0008FCD43 /* NSFileManager+INaturalist.m */,
+				FA5B6D851B4C86E1003FF325 /* NSLocale+INaturalist.h */,
+				FA5B6D861B4C86E1003FF325 /* NSLocale+INaturalist.m */,
+				19D04792150FFDAE00BB5DBC /* NSString+Helpers.h */,
+				19D04793150FFDAE00BB5DBC /* NSString+Helpers.m */,
+				FA9BC3751B332BEC003375A2 /* NSURL+INaturalist.h */,
+				FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */,
+				FA7FF8481BAB622200885034 /* UIAlertController+IOS9_Autorotate.h */,
+				FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */,
+				FA4E72CE19FACE0000A9AB5D /* UIColor+ExploreColors.h */,
+				FA4E72CF19FACE0000A9AB5D /* UIColor+ExploreColors.m */,
+				196E4E1D18D23C21009CE429 /* UIColor+INaturalist.h */,
+				196E4E1E18D23C22009CE429 /* UIColor+INaturalist.m */,
+				FADD58641A00662200E141C9 /* UIFont+ExploreFonts.h */,
+				FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */,
+				FA4E72D019FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.h */,
+				FA4E72D119FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m */,
+				FA69822B1B2F49C900D9BD0F /* UIImage+INaturalist.h */,
+				FA69822C1B2F49C900D9BD0F /* UIImage+INaturalist.m */,
+				FA8EBCE2230DC6E100C1D789 /* UIImage+MapAnnotations.h */,
+				FA8EBCE3230DC6E100C1D789 /* UIImage+MapAnnotations.m */,
+				FA60A4441B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.h */,
+				FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */,
+				19C26201160CF42B005565F8 /* UIView+UIViewHelpers.h */,
+				19C26202160CF42B005565F8 /* UIView+UIViewHelpers.m */,
+				FAB7028621431BD600462F62 /* UIViewController+INaturalist.h */,
+				FAB7028721431BD600462F62 /* UIViewController+INaturalist.m */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		FA88726B1A2CFBD900D2168E /* Grid View */ = {
@@ -2414,6 +2417,7 @@
 				FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */,
 				19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */,
 				19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */,
+				FA822FE028D84F93006CA0F6 /* README.md in Resources */,
 				FA97666820D1E3D200D172DC /* AboutHeaderView.xib in Resources */,
 				FACD11EF1C56E9720041E318 /* TaxonCell.xib in Resources */,
 				19E54CB2160997010036BA3B /* ObservationFieldValueDefaultCell.xib in Resources */,
