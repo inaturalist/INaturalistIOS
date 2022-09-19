@@ -32,7 +32,7 @@
         <key>shortName</key>
         <string>iNaturalistTW</string>
         <key>baseUrl</key>
-        <string>https://taiwan.inaturalist.org/string>
+        <string>https://taiwan.inaturalist.org/</string>
         <key>mobileCountryCodes</key>
         <array>
             <string>466</string>
