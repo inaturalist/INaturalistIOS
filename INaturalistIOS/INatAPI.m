@@ -93,7 +93,7 @@
                                 NSString *errorText = [NSString stringWithFormat:baseErrorText, httpResponse.statusCode];
                                 if (data) {
                                     // this seems to be how we get errors back from node
-                                    id json = [NSJSONSerialization JSONObjectWithData:data options:nil error:nil];
+                                    id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
                                     
                                     @try {
                                         id originalErrors = [json valueForKeyPath:@"error.original.errors"];
