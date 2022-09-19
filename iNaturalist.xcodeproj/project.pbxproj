@@ -1327,8 +1327,8 @@
 		1927513D14E9CCC9000ABAC4 /* INaturalist */ = {
 			isa = PBXGroup;
 			children = (
+				FA822FE128D850A9006CA0F6 /* Controllers */,
 				FA822FDE28D84E95006CA0F6 /* Extensions */,
-				19F621A2150ECD3000C58F28 /* Controllers */,
 				FA4E72AF19FAC8FD00A9AB5D /* Explore */,
 				19F621A4150ECDC700C58F28 /* Helpers */,
 				1985521614EC97C200DB55C5 /* INaturalist.xcdatamodeld */,
@@ -1373,61 +1373,6 @@
 				FA9437871C869F2C00CB10F3 /* ViewProtocols */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		19F621A2150ECD3000C58F28 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				19AE897A18DD0AA700505918 /* AddCommentViewController.h */,
-				19AE897B18DD0AA700505918 /* AddCommentViewController.m */,
-				19AE897C18DD0AA700505918 /* AddIdentificationViewController.h */,
-				19AE897D18DD0AA700505918 /* AddIdentificationViewController.m */,
-				FAC0F1671A9EAE3B000F20C4 /* ConfirmPhotoViewController.h */,
-				FAC0F1681A9EAE3B000F20C4 /* ConfirmPhotoViewController.m */,
-				1905715E14FDFF49007FBE30 /* EditLocationViewController.h */,
-				1905715F14FDFF49007FBE30 /* EditLocationViewController.m */,
-				1963DF6317D7E8830073DC68 /* GuideCollectionViewController.h */,
-				1963DF6417D7E8830073DC68 /* GuideCollectionViewController.m */,
-				19570CC517EBB624000C800A /* GuideMenuViewController.h */,
-				19570CC617EBB624000C800A /* GuideMenuViewController.m */,
-				191426E9180DC20F005165D8 /* GuidePageViewController.h */,
-				191426EA180DC20F005165D8 /* GuidePageViewController.m */,
-				191C5C6817D3F5660086DBEB /* GuidesViewController.h */,
-				191C5C6917D3F5660086DBEB /* GuidesViewController.m */,
-				19D8342B17E7BBDC000A5C35 /* GuideTaxonViewController.h */,
-				19D8342C17E7BBDC000A5C35 /* GuideTaxonViewController.m */,
-				19570CC217EB92D8000C800A /* GuideViewController.h */,
-				19570CC317EB92D8000C800A /* GuideViewController.m */,
-				FA3759CF23EB467E0053F783 /* INatTabBarController.swift */,
-				FA930524268CF596004B690E /* ForgotPasswordController.swift */,
-				FAC59EE825E5896A00DF23FD /* LocationSearchViewController.swift */,
-				FA9EE9F91C20BA6900CACF70 /* LocationViewController.h */,
-				FA9EE9FA1C20BA6900CACF70 /* LocationViewController.m */,
-				19640DE41508100A003BF888 /* MapTypeViewController.h */,
-				19640DE51508100A003BF888 /* MapTypeViewController.m */,
-				FAB341F4247B709100992A80 /* MediaPicker */,
-				FADDA3B91DBABA7800FB054F /* News */,
-				FA430BE31CA48E3F00FDC6E4 /* Observation Detail */,
-				1927514C14E9CCC9000ABAC4 /* ObservationsViewController.h */,
-				1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */,
-				FA5DF20A28483E9400F2B014 /* ConsentViewController.swift */,
-				FA711AA81D53D6E600C4FFDB /* Onboarding */,
-				FA430BE21CA48E3A00FDC6E4 /* Project Detail */,
-				FA78DFBB1BC5C0D4002DCCB1 /* ProjectObservationsViewController.h */,
-				FA78DFBC1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m */,
-				FA7C534F1BCD9D3100A0D5AA /* ProjectObsFieldViewController.h */,
-				FA7C53501BCD9D3100A0D5AA /* ProjectObsFieldViewController.m */,
-				19F62186150EC6B700C58F28 /* ProjectsViewController.h */,
-				19F62187150EC6B700C58F28 /* ProjectsViewController.m */,
-				FA97666320D1E26600D172DC /* Settings */,
-				FAC415FF25E31157002814C7 /* SoundRecordViewController.swift */,
-				19F87497152679F000A65F9A /* TaxaSearchViewController.h */,
-				19F87498152679F100A65F9A /* TaxaSearchViewController.m */,
-				FACCEB3D1ED4E590009C9A19 /* Taxon Details */,
-				FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */,
-				FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */,
-			);
-			name = Controllers;
 			sourceTree = "<group>";
 		};
 		19F621A3150ECD8000C58F28 /* Views */ = {
@@ -1575,56 +1520,14 @@
 				FA3F1F881A12ABEF00928102 /* ExploreDisambiguator.h */,
 				FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */,
 				FA3F1F8E1A12B01500928102 /* SearchResultsHelper.h */,
-				FA3F1F8F1A12B42E00928102 /* ExploreTaxon+SearchResultsHelper.h */,
-				FA3F1F901A12B42E00928102 /* ExploreTaxon+SearchResultsHelper.m */,
-				FA3F1F8B1A12AFF500928102 /* ExploreProject+SearchResultsHelper.h */,
-				FA3F1F8C1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m */,
-				FA3F1F921A12CABA00928102 /* ExploreUser+SearchResultsHelper.h */,
-				FA3F1F931A12CABA00928102 /* ExploreUser+SearchResultsHelper.m */,
-				FA3F1F951A12CACF00928102 /* ExploreLocation+SearchResultsHelper.h */,
-				FA3F1F961A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m */,
 			);
 			name = Helpers;
-			sourceTree = "<group>";
-		};
-		FA430BE21CA48E3A00FDC6E4 /* Project Detail */ = {
-			isa = PBXGroup;
-			children = (
-				FAEF232C1C7CD80300208F44 /* ProjectDetailV2ViewController.h */,
-				FAEF232D1C7CD80300208F44 /* ProjectDetailV2ViewController.m */,
-				FAEF232F1C7CF20500208F44 /* ProjectDetailPageViewController.h */,
-				FAEF23301C7CF20500208F44 /* ProjectDetailPageViewController.m */,
-				FAEF23361C7D090900208F44 /* ProjectDetailObservationsViewController.h */,
-				FAEF23371C7D090900208F44 /* ProjectDetailObservationsViewController.m */,
-				FAEF23391C7D091F00208F44 /* ProjectDetailSpeciesViewController.h */,
-				FAEF233A1C7D091F00208F44 /* ProjectDetailSpeciesViewController.m */,
-				FAEF233C1C7D092D00208F44 /* ProjectDetailObserversViewController.h */,
-				FAEF233D1C7D092D00208F44 /* ProjectDetailObserversViewController.m */,
-				FAEF233F1C7D093900208F44 /* ProjectDetailIdentifiersViewController.h */,
-				FAEF23401C7D093900208F44 /* ProjectDetailIdentifiersViewController.m */,
-				FACADF861CA1A731004B9D4A /* ProjectAboutViewController.h */,
-				FACADF871CA1A731004B9D4A /* ProjectAboutViewController.m */,
-			);
-			name = "Project Detail";
-			sourceTree = "<group>";
-		};
-		FA430BE31CA48E3F00FDC6E4 /* Observation Detail */ = {
-			isa = PBXGroup;
-			children = (
-				FACACA101BFBB17D002223D7 /* ObsDetailV2ViewController.h */,
-				FACACA111BFBB17D002223D7 /* ObsDetailV2ViewController.m */,
-				FA5BC6F81C3C9E68008FCD43 /* Obs Detail View Models */,
-				FA7558471B9A4BDF00762D7B /* ObsEditV2ViewController.h */,
-				FA7558481B9A4BDF00762D7B /* ObsEditV2ViewController.m */,
-			);
-			name = "Observation Detail";
 			sourceTree = "<group>";
 		};
 		FA4E72AF19FAC8FD00A9AB5D /* Explore */ = {
 			isa = PBXGroup;
 			children = (
 				FA3F1F741A12ABC400928102 /* Helpers */,
-				FA4E730B19FAD15400A9AB5D /* View Controllers */,
 				FAEF23321C7D007C00208F44 /* iNat Node API */,
 				FA4E72D419FACE3300A9AB5D /* Views */,
 				FA4E72ED19FACEC700A9AB5D /* iNat API */,
@@ -1657,27 +1560,6 @@
 				FA3F1F991A12DFD200928102 /* ExploreSearchController.m */,
 			);
 			name = "iNat API";
-			sourceTree = "<group>";
-		};
-		FA4E730B19FAD15400A9AB5D /* View Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				FA4E72F519FAD14E00A9AB5D /* ExploreContainerViewController.h */,
-				FA4E72F619FAD14E00A9AB5D /* ExploreContainerViewController.m */,
-				FAB95BB41A11502F009976FE /* ExploreSearchViewController.h */,
-				FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */,
-				FA4E72F719FAD14E00A9AB5D /* ExploreGridViewController.h */,
-				FA4E72F819FAD14E00A9AB5D /* ExploreGridViewController.m */,
-				FA4E72F919FAD14E00A9AB5D /* ExploreListViewController.h */,
-				FA4E72FA19FAD14E00A9AB5D /* ExploreListViewController.m */,
-				FA4E72FB19FAD14E00A9AB5D /* ExploreMapViewController.h */,
-				FA4E72FC19FAD14E00A9AB5D /* ExploreMapViewController.m */,
-				FA4E72FF19FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.h */,
-				FA4E730019FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m */,
-				FA3D90DF1A9415B900BAA0EC /* ExploreLeaderboardViewController.h */,
-				FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */,
-			);
-			name = "View Controllers";
 			sourceTree = "<group>";
 		};
 		FA5BC6F71C3C9DF6008FCD43 /* Obs Detail TableView Cells */ = {
@@ -1718,21 +1600,6 @@
 				FACD11EE1C56E9720041E318 /* TaxonCell.xib */,
 			);
 			name = "Obs Detail TableView Cells";
-			sourceTree = "<group>";
-		};
-		FA5BC6F81C3C9E68008FCD43 /* Obs Detail View Models */ = {
-			isa = PBXGroup;
-			children = (
-				FACACA191BFBE0A9002223D7 /* ObsDetailViewModel.h */,
-				FACACA1A1BFBE0A9002223D7 /* ObsDetailViewModel.m */,
-				FACACA1F1BFD278F002223D7 /* ObsDetailInfoViewModel.h */,
-				FACACA201BFD278F002223D7 /* ObsDetailInfoViewModel.m */,
-				FACACA221BFD27D6002223D7 /* ObsDetailActivityViewModel.h */,
-				FACACA231BFD27D6002223D7 /* ObsDetailActivityViewModel.m */,
-				FACACA251BFD27E1002223D7 /* ObsDetailFavesViewModel.h */,
-				FACACA261BFD27E1002223D7 /* ObsDetailFavesViewModel.m */,
-			);
-			name = "Obs Detail View Models";
 			sourceTree = "<group>";
 		};
 		FA6513381E04A1CA0059FD70 /* Fixtures */ = {
@@ -1807,36 +1674,6 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
-		FA711AA81D53D6E600C4FFDB /* Onboarding */ = {
-			isa = PBXGroup;
-			children = (
-				FA3E75E61D73A57D00C459E5 /* OnboardingViewController.h */,
-				FA3E75E71D73A57D00C459E5 /* OnboardingViewController.m */,
-				FA711AA91D53D71500C4FFDB /* OnboardingPageViewController.h */,
-				FA711AAA1D53D71500C4FFDB /* OnboardingPageViewController.m */,
-				FA711AAC1D53E52600C4FFDB /* OnboardingLoginViewController.h */,
-				FA711AAD1D53E52600C4FFDB /* OnboardingLoginViewController.m */,
-				FAD0DE23283551C100CD51F1 /* OnboardingSettingView.swift */,
-				FA822FD328D81BC0006CA0F6 /* OnboardingReauthenticateViewController.swift */,
-			);
-			name = Onboarding;
-			sourceTree = "<group>";
-		};
-		FA7591D120F439F10062DE7F /* Settings Cells */ = {
-			isa = PBXGroup;
-			children = (
-				FA7591D220F43A050062DE7F /* SettingsActionCell.h */,
-				FA7591D320F43A050062DE7F /* SettingsActionCell.m */,
-				FA7591CE20F439ED0062DE7F /* SettingsDetailTextCell.h */,
-				FA7591CF20F439ED0062DE7F /* SettingsDetailTextCell.m */,
-				FA7591D520F43A170062DE7F /* SettingsSwitchCell.h */,
-				FA7591D620F43A170062DE7F /* SettingsSwitchCell.m */,
-				FA7591D820F442930062DE7F /* SettingsVersionCell.h */,
-				FA7591D920F442930062DE7F /* SettingsVersionCell.m */,
-			);
-			name = "Settings Cells";
-			sourceTree = "<group>";
-		};
 		FA822FD528D84839006CA0F6 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
@@ -1901,6 +1738,8 @@
 				FA4E72B319FAC93400A9AB5D /* ExploreIdentification.m */,
 				FA4E72B419FAC93400A9AB5D /* ExploreLocation.h */,
 				FA4E72B519FAC93400A9AB5D /* ExploreLocation.m */,
+				FA3F1F951A12CACF00928102 /* ExploreLocation+SearchResultsHelper.h */,
+				FA3F1F961A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m */,
 				FA4E72B619FAC93400A9AB5D /* ExploreObservation.h */,
 				FA4E72B719FAC93400A9AB5D /* ExploreObservation.m */,
 				FA4E72CA19FACD7700A9AB5D /* ExploreObservationPhoto.h */,
@@ -1917,12 +1756,16 @@
 				FA60EA1023EA3F7F0026F7A3 /* ExplorePost.m */,
 				FA4E72BA19FAC93400A9AB5D /* ExploreProject.h */,
 				FA4E72BB19FAC93400A9AB5D /* ExploreProject.m */,
+				FA3F1F8B1A12AFF500928102 /* ExploreProject+SearchResultsHelper.h */,
+				FA3F1F8C1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m */,
 				FA930F6B244FA582001B9D81 /* ExploreProjectObservation.h */,
 				FA930F6C244FA582001B9D81 /* ExploreProjectObservation.m */,
 				FAA8D25E23CD266400757A1E /* ExploreProjectObsField.h */,
 				FAA8D25F23CD266400757A1E /* ExploreProjectObsField.m */,
 				FA4E72BC19FAC93400A9AB5D /* ExploreTaxon.h */,
 				FA4E72BD19FAC93400A9AB5D /* ExploreTaxon.m */,
+				FA3F1F8F1A12B42E00928102 /* ExploreTaxon+SearchResultsHelper.h */,
+				FA3F1F901A12B42E00928102 /* ExploreTaxon+SearchResultsHelper.m */,
 				FA427EED1ECD087F003B26C3 /* ExploreTaxonPhoto.h */,
 				FA427EEE1ECD087F003B26C3 /* ExploreTaxonPhoto.m */,
 				FA9249801EF85FD000E0C387 /* ExploreTaxonScore.h */,
@@ -1931,6 +1774,8 @@
 				FAFED1F21DB595C10015CCBA /* ExploreUpdate.m */,
 				FACEEB261D1C607600B2EC62 /* ExploreUser.h */,
 				FACEEB271D1C607600B2EC62 /* ExploreUser.m */,
+				FA3F1F921A12CABA00928102 /* ExploreUser+SearchResultsHelper.h */,
+				FA3F1F931A12CABA00928102 /* ExploreUser+SearchResultsHelper.m */,
 				FAEF234F1C7D2DBA00208F44 /* IdentifierCount.h */,
 				FAEF23501C7D2DBA00208F44 /* IdentifierCount.m */,
 				FAEF23521C7D2DC300208F44 /* ObserverCount.h */,
@@ -2030,6 +1875,257 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		FA822FE128D850A9006CA0F6 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FA822FF028D85367006CA0F6 /* Explore */,
+				FA822FEB28D851C0006CA0F6 /* Guides */,
+				FA3759CF23EB467E0053F783 /* INatTabBarController.swift */,
+				FA822FE228D85100006CA0F6 /* Media Picker */,
+				FA822FE328D8510D006CA0F6 /* News */,
+				FA822FED28D85253006CA0F6 /* Observations */,
+				FA822FE628D8513F006CA0F6 /* Onboarding */,
+				FA822FEA28D8519B006CA0F6 /* Projects */,
+				FA822FE728D8514C006CA0F6 /* Settings */,
+				FA822FEF28D8532B006CA0F6 /* Taxa */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		FA822FE228D85100006CA0F6 /* Media Picker */ = {
+			isa = PBXGroup;
+			children = (
+				FAB341F5247B70C300992A80 /* MediaPickerSegue.swift */,
+				FAB341F2247B531800992A80 /* MediaPickerViewController.swift */,
+				FAB341F7247B710B00992A80 /* SlideInPresentationController.swift */,
+				FAB341F9247B714000992A80 /* SlideInPresentationManager.swift */,
+			);
+			path = "Media Picker";
+			sourceTree = "<group>";
+		};
+		FA822FE328D8510D006CA0F6 /* News */ = {
+			isa = PBXGroup;
+			children = (
+				FA6DF0621C498C9400718CF4 /* NewsItemViewController.h */,
+				FA6DF0631C498C9400718CF4 /* NewsItemViewController.m */,
+				FADDA3BA1DBABA9900FB054F /* NewsPagerViewController.h */,
+				FADDA3BB1DBABA9900FB054F /* NewsPagerViewController.m */,
+				FACC30231C47398100234BF3 /* SiteNewsViewController.h */,
+				FACC30241C47398100234BF3 /* SiteNewsViewController.m */,
+				FADDA3BD1DBABAD500FB054F /* UpdatesViewController.h */,
+				FADDA3BE1DBABAD500FB054F /* UpdatesViewController.m */,
+			);
+			path = News;
+			sourceTree = "<group>";
+		};
+		FA822FE428D8511A006CA0F6 /* Observation Details */ = {
+			isa = PBXGroup;
+			children = (
+				1905715E14FDFF49007FBE30 /* EditLocationViewController.h */,
+				1905715F14FDFF49007FBE30 /* EditLocationViewController.m */,
+				FAC59EE825E5896A00DF23FD /* LocationSearchViewController.swift */,
+				FA9EE9F91C20BA6900CACF70 /* LocationViewController.h */,
+				FA9EE9FA1C20BA6900CACF70 /* LocationViewController.m */,
+				19640DE41508100A003BF888 /* MapTypeViewController.h */,
+				19640DE51508100A003BF888 /* MapTypeViewController.m */,
+				FA822FE528D8512D006CA0F6 /* Obs Detail View Models */,
+				FACACA101BFBB17D002223D7 /* ObsDetailV2ViewController.h */,
+				FACACA111BFBB17D002223D7 /* ObsDetailV2ViewController.m */,
+				FA7558471B9A4BDF00762D7B /* ObsEditV2ViewController.h */,
+				FA7558481B9A4BDF00762D7B /* ObsEditV2ViewController.m */,
+			);
+			path = "Observation Details";
+			sourceTree = "<group>";
+		};
+		FA822FE528D8512D006CA0F6 /* Obs Detail View Models */ = {
+			isa = PBXGroup;
+			children = (
+				FACACA221BFD27D6002223D7 /* ObsDetailActivityViewModel.h */,
+				FACACA231BFD27D6002223D7 /* ObsDetailActivityViewModel.m */,
+				FACACA251BFD27E1002223D7 /* ObsDetailFavesViewModel.h */,
+				FACACA261BFD27E1002223D7 /* ObsDetailFavesViewModel.m */,
+				FACACA1F1BFD278F002223D7 /* ObsDetailInfoViewModel.h */,
+				FACACA201BFD278F002223D7 /* ObsDetailInfoViewModel.m */,
+				FACACA191BFBE0A9002223D7 /* ObsDetailViewModel.h */,
+				FACACA1A1BFBE0A9002223D7 /* ObsDetailViewModel.m */,
+			);
+			path = "Obs Detail View Models";
+			sourceTree = "<group>";
+		};
+		FA822FE628D8513F006CA0F6 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				FA5DF20A28483E9400F2B014 /* ConsentViewController.swift */,
+				FA930524268CF596004B690E /* ForgotPasswordController.swift */,
+				FA711AAC1D53E52600C4FFDB /* OnboardingLoginViewController.h */,
+				FA711AAD1D53E52600C4FFDB /* OnboardingLoginViewController.m */,
+				FA711AA91D53D71500C4FFDB /* OnboardingPageViewController.h */,
+				FA711AAA1D53D71500C4FFDB /* OnboardingPageViewController.m */,
+				FA822FD328D81BC0006CA0F6 /* OnboardingReauthenticateViewController.swift */,
+				FAD0DE23283551C100CD51F1 /* OnboardingSettingView.swift */,
+				FA3E75E61D73A57D00C459E5 /* OnboardingViewController.h */,
+				FA3E75E71D73A57D00C459E5 /* OnboardingViewController.m */,
+				FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */,
+				FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		FA822FE728D8514C006CA0F6 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				FA97666920D1E45900D172DC /* AboutHeaderView.h */,
+				FA97666A20D1E45900D172DC /* AboutHeaderView.m */,
+				FA97666720D1E3D200D172DC /* AboutHeaderView.xib */,
+				FA97666420D1E28F00D172DC /* AboutViewController.h */,
+				FA97666520D1E28F00D172DC /* AboutViewController.m */,
+				FA822FE828D8515B006CA0F6 /* Settings Cells */,
+				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
+				190AF2D614FC258F00F73F2B /* SettingsViewController.m */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		FA822FE828D8515B006CA0F6 /* Settings Cells */ = {
+			isa = PBXGroup;
+			children = (
+				FA7591D220F43A050062DE7F /* SettingsActionCell.h */,
+				FA7591D320F43A050062DE7F /* SettingsActionCell.m */,
+				FA7591CE20F439ED0062DE7F /* SettingsDetailTextCell.h */,
+				FA7591CF20F439ED0062DE7F /* SettingsDetailTextCell.m */,
+				FA7591D520F43A170062DE7F /* SettingsSwitchCell.h */,
+				FA7591D620F43A170062DE7F /* SettingsSwitchCell.m */,
+				FA7591D820F442930062DE7F /* SettingsVersionCell.h */,
+				FA7591D920F442930062DE7F /* SettingsVersionCell.m */,
+			);
+			path = "Settings Cells";
+			sourceTree = "<group>";
+		};
+		FA822FE928D8516C006CA0F6 /* Taxon Details */ = {
+			isa = PBXGroup;
+			children = (
+				190687C8151D1EC400D5B6E4 /* TaxonDetailViewController.h */,
+				190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */,
+				FA9EBE4A1ED50767001FE4AD /* TaxonMapViewController.h */,
+				FA9EBE4B1ED50767001FE4AD /* TaxonMapViewController.m */,
+				FACCEB3F1ED4E5B6009C9A19 /* TaxonPhotoPageViewController.h */,
+				FACCEB401ED4E5B6009C9A19 /* TaxonPhotoPageViewController.m */,
+				FACCEB421ED4E5D0009C9A19 /* TaxonPhotoViewController.h */,
+				FACCEB431ED4E5D0009C9A19 /* TaxonPhotoViewController.m */,
+			);
+			path = "Taxon Details";
+			sourceTree = "<group>";
+		};
+		FA822FEA28D8519B006CA0F6 /* Projects */ = {
+			isa = PBXGroup;
+			children = (
+				FA822FEC28D85202006CA0F6 /* Project Details */,
+				FA78DFBB1BC5C0D4002DCCB1 /* ProjectObservationsViewController.h */,
+				FA78DFBC1BC5C0D4002DCCB1 /* ProjectObservationsViewController.m */,
+				FA7C534F1BCD9D3100A0D5AA /* ProjectObsFieldViewController.h */,
+				FA7C53501BCD9D3100A0D5AA /* ProjectObsFieldViewController.m */,
+				19F62186150EC6B700C58F28 /* ProjectsViewController.h */,
+				19F62187150EC6B700C58F28 /* ProjectsViewController.m */,
+			);
+			path = Projects;
+			sourceTree = "<group>";
+		};
+		FA822FEB28D851C0006CA0F6 /* Guides */ = {
+			isa = PBXGroup;
+			children = (
+				1963DF6317D7E8830073DC68 /* GuideCollectionViewController.h */,
+				1963DF6417D7E8830073DC68 /* GuideCollectionViewController.m */,
+				19570CC517EBB624000C800A /* GuideMenuViewController.h */,
+				19570CC617EBB624000C800A /* GuideMenuViewController.m */,
+				191426E9180DC20F005165D8 /* GuidePageViewController.h */,
+				191426EA180DC20F005165D8 /* GuidePageViewController.m */,
+				191C5C6817D3F5660086DBEB /* GuidesViewController.h */,
+				191C5C6917D3F5660086DBEB /* GuidesViewController.m */,
+				19D8342B17E7BBDC000A5C35 /* GuideTaxonViewController.h */,
+				19D8342C17E7BBDC000A5C35 /* GuideTaxonViewController.m */,
+				19570CC217EB92D8000C800A /* GuideViewController.h */,
+				19570CC317EB92D8000C800A /* GuideViewController.m */,
+			);
+			path = Guides;
+			sourceTree = "<group>";
+		};
+		FA822FEC28D85202006CA0F6 /* Project Details */ = {
+			isa = PBXGroup;
+			children = (
+				FACADF861CA1A731004B9D4A /* ProjectAboutViewController.h */,
+				FACADF871CA1A731004B9D4A /* ProjectAboutViewController.m */,
+				FAEF233F1C7D093900208F44 /* ProjectDetailIdentifiersViewController.h */,
+				FAEF23401C7D093900208F44 /* ProjectDetailIdentifiersViewController.m */,
+				FAEF23361C7D090900208F44 /* ProjectDetailObservationsViewController.h */,
+				FAEF23371C7D090900208F44 /* ProjectDetailObservationsViewController.m */,
+				FAEF233C1C7D092D00208F44 /* ProjectDetailObserversViewController.h */,
+				FAEF233D1C7D092D00208F44 /* ProjectDetailObserversViewController.m */,
+				FAEF232F1C7CF20500208F44 /* ProjectDetailPageViewController.h */,
+				FAEF23301C7CF20500208F44 /* ProjectDetailPageViewController.m */,
+				FAEF23391C7D091F00208F44 /* ProjectDetailSpeciesViewController.h */,
+				FAEF233A1C7D091F00208F44 /* ProjectDetailSpeciesViewController.m */,
+				FAEF232C1C7CD80300208F44 /* ProjectDetailV2ViewController.h */,
+				FAEF232D1C7CD80300208F44 /* ProjectDetailV2ViewController.m */,
+			);
+			path = "Project Details";
+			sourceTree = "<group>";
+		};
+		FA822FED28D85253006CA0F6 /* Observations */ = {
+			isa = PBXGroup;
+			children = (
+				FA822FEE28D8527E006CA0F6 /* Content Creation */,
+				FA822FE428D8511A006CA0F6 /* Observation Details */,
+				1927514C14E9CCC9000ABAC4 /* ObservationsViewController.h */,
+				1927514D14E9CCC9000ABAC4 /* ObservationsViewController.m */,
+			);
+			path = Observations;
+			sourceTree = "<group>";
+		};
+		FA822FEE28D8527E006CA0F6 /* Content Creation */ = {
+			isa = PBXGroup;
+			children = (
+				19AE897A18DD0AA700505918 /* AddCommentViewController.h */,
+				19AE897B18DD0AA700505918 /* AddCommentViewController.m */,
+				19AE897C18DD0AA700505918 /* AddIdentificationViewController.h */,
+				19AE897D18DD0AA700505918 /* AddIdentificationViewController.m */,
+				FAC0F1671A9EAE3B000F20C4 /* ConfirmPhotoViewController.h */,
+				FAC0F1681A9EAE3B000F20C4 /* ConfirmPhotoViewController.m */,
+				FAC415FF25E31157002814C7 /* SoundRecordViewController.swift */,
+			);
+			path = "Content Creation";
+			sourceTree = "<group>";
+		};
+		FA822FEF28D8532B006CA0F6 /* Taxa */ = {
+			isa = PBXGroup;
+			children = (
+				19F87497152679F000A65F9A /* TaxaSearchViewController.h */,
+				19F87498152679F100A65F9A /* TaxaSearchViewController.m */,
+				FA822FE928D8516C006CA0F6 /* Taxon Details */,
+			);
+			path = Taxa;
+			sourceTree = "<group>";
+		};
+		FA822FF028D85367006CA0F6 /* Explore */ = {
+			isa = PBXGroup;
+			children = (
+				FA4E72F519FAD14E00A9AB5D /* ExploreContainerViewController.h */,
+				FA4E72F619FAD14E00A9AB5D /* ExploreContainerViewController.m */,
+				FAB95BB41A11502F009976FE /* ExploreSearchViewController.h */,
+				FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */,
+				FA4E72F719FAD14E00A9AB5D /* ExploreGridViewController.h */,
+				FA4E72F819FAD14E00A9AB5D /* ExploreGridViewController.m */,
+				FA4E72F919FAD14E00A9AB5D /* ExploreListViewController.h */,
+				FA4E72FA19FAD14E00A9AB5D /* ExploreListViewController.m */,
+				FA4E72FB19FAD14E00A9AB5D /* ExploreMapViewController.h */,
+				FA4E72FC19FAD14E00A9AB5D /* ExploreMapViewController.m */,
+				FA4E72FF19FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.h */,
+				FA4E730019FAD14E00A9AB5D /* ExploreObservationVisualizerViewController.m */,
+				FA3D90DF1A9415B900BAA0EC /* ExploreLeaderboardViewController.h */,
+				FA3D90E01A9415B900BAA0EC /* ExploreLeaderboardViewController.m */,
+			);
+			path = Explore;
+			sourceTree = "<group>";
+		};
 		FA88726B1A2CFBD900D2168E /* Grid View */ = {
 			isa = PBXGroup;
 			children = (
@@ -2086,21 +2182,6 @@
 			path = ViewProtocols;
 			sourceTree = "<group>";
 		};
-		FA97666320D1E26600D172DC /* Settings */ = {
-			isa = PBXGroup;
-			children = (
-				FA7591D120F439F10062DE7F /* Settings Cells */,
-				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
-				190AF2D614FC258F00F73F2B /* SettingsViewController.m */,
-				FA97666420D1E28F00D172DC /* AboutViewController.h */,
-				FA97666520D1E28F00D172DC /* AboutViewController.m */,
-				FA97666720D1E3D200D172DC /* AboutHeaderView.xib */,
-				FA97666920D1E45900D172DC /* AboutHeaderView.h */,
-				FA97666A20D1E45900D172DC /* AboutHeaderView.m */,
-			);
-			name = Settings;
-			sourceTree = "<group>";
-		};
 		FAA6EB121C90C12E00F43552 /* Taxon Details */ = {
 			isa = PBXGroup;
 			children = (
@@ -2114,17 +2195,6 @@
 				FA4714F71ED7A88F00D57FDE /* TaxonSelectButtonCell.m */,
 			);
 			name = "Taxon Details";
-			sourceTree = "<group>";
-		};
-		FAB341F4247B709100992A80 /* MediaPicker */ = {
-			isa = PBXGroup;
-			children = (
-				FAB341F2247B531800992A80 /* MediaPickerViewController.swift */,
-				FAB341F5247B70C300992A80 /* MediaPickerSegue.swift */,
-				FAB341F7247B710B00992A80 /* SlideInPresentationController.swift */,
-				FAB341F9247B714000992A80 /* SlideInPresentationManager.swift */,
-			);
-			name = MediaPicker;
 			sourceTree = "<group>";
 		};
 		FABCAD1223C6BA34006479CA /* Me Tab Header */ = {
@@ -2155,36 +2225,6 @@
 				FAC59DFB20DB0890000A6558 /* UploadOperation.m */,
 			);
 			name = Uploader;
-			sourceTree = "<group>";
-		};
-		FACCEB3D1ED4E590009C9A19 /* Taxon Details */ = {
-			isa = PBXGroup;
-			children = (
-				190687C8151D1EC400D5B6E4 /* TaxonDetailViewController.h */,
-				190687C9151D1EC400D5B6E4 /* TaxonDetailViewController.m */,
-				FACCEB3F1ED4E5B6009C9A19 /* TaxonPhotoPageViewController.h */,
-				FACCEB401ED4E5B6009C9A19 /* TaxonPhotoPageViewController.m */,
-				FACCEB421ED4E5D0009C9A19 /* TaxonPhotoViewController.h */,
-				FACCEB431ED4E5D0009C9A19 /* TaxonPhotoViewController.m */,
-				FA9EBE4A1ED50767001FE4AD /* TaxonMapViewController.h */,
-				FA9EBE4B1ED50767001FE4AD /* TaxonMapViewController.m */,
-			);
-			name = "Taxon Details";
-			sourceTree = "<group>";
-		};
-		FADDA3B91DBABA7800FB054F /* News */ = {
-			isa = PBXGroup;
-			children = (
-				FADDA3BA1DBABA9900FB054F /* NewsPagerViewController.h */,
-				FADDA3BB1DBABA9900FB054F /* NewsPagerViewController.m */,
-				FACC30231C47398100234BF3 /* SiteNewsViewController.h */,
-				FACC30241C47398100234BF3 /* SiteNewsViewController.m */,
-				FA6DF0621C498C9400718CF4 /* NewsItemViewController.h */,
-				FA6DF0631C498C9400718CF4 /* NewsItemViewController.m */,
-				FADDA3BD1DBABAD500FB054F /* UpdatesViewController.h */,
-				FADDA3BE1DBABAD500FB054F /* UpdatesViewController.m */,
-			);
-			name = News;
 			sourceTree = "<group>";
 		};
 		FADE28B11B02D9AA00CA55FF /* iNaturalistTests */ = {
