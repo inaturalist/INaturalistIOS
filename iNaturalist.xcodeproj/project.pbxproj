@@ -208,8 +208,6 @@
 		FA81DF0E1E6F73A9006E7132 /* ObsDetailViewModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */; };
 		FA822FD428D81BC0006CA0F6 /* OnboardingReauthenticateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA822FD328D81BC0006CA0F6 /* OnboardingReauthenticateViewController.swift */; };
 		FA822FDB28D84D4C006CA0F6 /* ExploreObservationPhoto+BestAvailableURL.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */; };
-		FA822FDD28D84D67006CA0F6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = FA822FDC28D84D67006CA0F6 /* README.md */; };
-		FA822FE028D84F93006CA0F6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = FA822FDF28D84F93006CA0F6 /* README.md */; };
 		FA8382471E70FD7400F73E90 /* WilletObservationRails.json in Resources */ = {isa = PBXBuildFile; fileRef = FA8382461E70FD7400F73E90 /* WilletObservationRails.json */; };
 		FA86CC381EAAE496004D6482 /* TaxonSuggestionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */; };
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
@@ -2465,7 +2463,6 @@
 				FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */,
 				19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */,
 				19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */,
-				FA822FE028D84F93006CA0F6 /* README.md in Resources */,
 				FA97666820D1E3D200D172DC /* AboutHeaderView.xib in Resources */,
 				FACD11EF1C56E9720041E318 /* TaxonCell.xib in Resources */,
 				19E54CB2160997010036BA3B /* ObservationFieldValueDefaultCell.xib in Resources */,
@@ -2474,7 +2471,6 @@
 				19ADD5AC160A3D50001D886C /* ObservationFieldValueSwitchCell.xib in Resources */,
 				FA394EB8218909AF004AE0FE /* ProjectObservationHeaderView.xib in Resources */,
 				19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */,
-				FA822FDD28D84D67006CA0F6 /* README.md in Resources */,
 				60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */,
 				FADEF3F9235F97ED0025C580 /* GoogleService-Info.plist in Resources */,
 				FA74A6221CB4C4EE002EBD0A /* RankedUserObsSpecies.xib in Resources */,
