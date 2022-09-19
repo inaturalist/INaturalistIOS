@@ -1980,16 +1980,16 @@
 		FA9437871C869F2C00CB10F3 /* ViewProtocols */ = {
 			isa = PBXGroup;
 			children = (
-				FA9437881C869F5900CB10F3 /* ObservationVisualization.h */,
-				FA4F28171D2356F400449A1C /* TaxonVisualization.h */,
-				FAA6EB061C8E5A0B00F43552 /* IdentificationVisualization.h */,
-				FAA6EB071C8E5A1300F43552 /* CommentVisualization.h */,
 				FAA6EB081C8E61A300F43552 /* ActivityVisualization.h */,
+				FAA6EB071C8E5A1300F43552 /* CommentVisualization.h */,
 				FAA6EB0C1C8F821800F43552 /* FaveVisualization.h */,
-				FA4B096421116F5600E942B3 /* UserVisualization.h */,
+				FAA6EB061C8E5A0B00F43552 /* IdentificationVisualization.h */,
+				FA9437881C869F5900CB10F3 /* ObservationVisualization.h */,
 				FAFA9C9B23C412EA002E22FD /* ProjectVisualization.h */,
+				FA4F28171D2356F400449A1C /* TaxonVisualization.h */,
+				FA4B096421116F5600E942B3 /* UserVisualization.h */,
 			);
-			name = ViewProtocols;
+			path = ViewProtocols;
 			sourceTree = "<group>";
 		};
 		FA97666320D1E26600D172DC /* Settings */ = {
