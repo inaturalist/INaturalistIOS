@@ -43,9 +43,9 @@ static const int WebViewTag = 1;
     if (xmlString && [xmlString rangeOfString:@"xsl"].location == NSNotFound) {
         NSString *xslPath;
         if (local) {
-            xslPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"guide_taxon-local.xsl"];
+            xslPath = [[NSBundle mainBundle] pathForResource:@"guide_taxon-local" ofType:@"xsl"];
         } else {
-            xslPath = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:@"guide_taxon-remote.xsl"];
+            xslPath = [[NSBundle mainBundle] pathForResource:@"guide_taxon-remote" ofType:@"xsl"];
         }
         NSString *header = [NSString stringWithFormat:@"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<?xml-stylesheet type=\"text/xsl\" href=\"%@\"?>\n<INatGuide xmlns:dc=\"http://purl.org/dc/elements/1.1/\" xmlns:dcterms=\"http://purl.org/dc/terms/\" xmlns:eol=\"http://www.eol.org/transfer/content/1.0\">", xslPath];
         xmlString = [[header stringByAppendingString:xmlString] stringByAppendingString:@"</INatGuide>"];
