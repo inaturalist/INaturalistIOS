@@ -1327,6 +1327,7 @@
 		1927513D14E9CCC9000ABAC4 /* INaturalist */ = {
 			isa = PBXGroup;
 			children = (
+				FA822FFF28D855C9006CA0F6 /* API Endpoints */,
 				FA822FE128D850A9006CA0F6 /* Controllers */,
 				FA4E72AF19FAC8FD00A9AB5D /* Explore */,
 				FA822FDE28D84E95006CA0F6 /* Extensions */,
@@ -1398,15 +1399,6 @@
 		FA4E72ED19FACEC700A9AB5D /* iNat API */ = {
 			isa = PBXGroup;
 			children = (
-				FA4E72F219FACF1800A9AB5D /* ExploreObservationsController.h */,
-				FA4E72F319FACF1800A9AB5D /* ExploreObservationsController.m */,
-				FA4E72EF19FACEF000A9AB5D /* ExploreSearchPredicate.h */,
-				FA4E72F019FACEF000A9AB5D /* ExploreSearchPredicate.m */,
-				FA4E72EE19FACEE000A9AB5D /* ExploreObservationsDataSource.h */,
-				FA4529E61A03F70200147895 /* ExploreRegion.h */,
-				FA4529E71A03F70200147895 /* ExploreRegion.m */,
-				FA3F1F981A12DFD200928102 /* ExploreSearchController.h */,
-				FA3F1F991A12DFD200928102 /* ExploreSearchController.m */,
 			);
 			name = "iNat API";
 			sourceTree = "<group>";
@@ -2237,6 +2229,72 @@
 			path = "Grid View";
 			sourceTree = "<group>";
 		};
+		FA822FFF28D855C9006CA0F6 /* API Endpoints */ = {
+			isa = PBXGroup;
+			children = (
+				FA82300228D85629006CA0F6 /* Explore API */,
+				FA82300128D855E5006CA0F6 /* Rails API */,
+				FA82300028D855DF006CA0F6 /* Node API */,
+			);
+			path = "API Endpoints";
+			sourceTree = "<group>";
+		};
+		FA82300028D855DF006CA0F6 /* Node API */ = {
+			isa = PBXGroup;
+			children = (
+				FA99BDC91FD794E300C9D985 /* CommentsAPI.h */,
+				FA99BDCA1FD794E300C9D985 /* CommentsAPI.m */,
+				FAB0B8E6237F17DE00E73681 /* GuidesAPI.h */,
+				FAB0B8E7237F17DE00E73681 /* GuidesAPI.m */,
+				FADE67491FD7B2B400AB4F09 /* IdentificationsAPI.h */,
+				FADE674A1FD7B2B400AB4F09 /* IdentificationsAPI.m */,
+				FAEF23331C7D00A600208F44 /* INatAPI.h */,
+				FAEF23341C7D00A600208F44 /* INatAPI.m */,
+				FA9437841C869B7300CB10F3 /* ObservationAPI.h */,
+				FA9437851C869B7300CB10F3 /* ObservationAPI.m */,
+				FA711AA21D515F3000C4FFDB /* PeopleAPI.h */,
+				FA711AA31D515F3000C4FFDB /* PeopleAPI.m */,
+				FAC59EEE25E59C9B00DF23FD /* PlaceAPI.h */,
+				FAC59EEF25E59C9B00DF23FD /* PlaceAPI.m */,
+				FA60EA1223EA453D0026F7A3 /* PostsAPI.h */,
+				FA60EA1323EA453D0026F7A3 /* PostsAPI.m */,
+				FA9437811C869AA400CB10F3 /* ProjectsAPI.h */,
+				FA9437821C869AA400CB10F3 /* ProjectsAPI.m */,
+				FA2552111D1F4D62005D2128 /* TaxaAPI.h */,
+				FA2552121D1F4D62005D2128 /* TaxaAPI.m */,
+				FABCAD0823C661CA006479CA /* YearInReviewAPI.h */,
+				FABCAD0923C661CA006479CA /* YearInReviewAPI.m */,
+			);
+			path = "Node API";
+			sourceTree = "<group>";
+		};
+		FA82300128D855E5006CA0F6 /* Rails API */ = {
+			isa = PBXGroup;
+			children = (
+				FAB0B8E9237F1B0300E73681 /* INatRailsAPI.h */,
+				FAB0B8EA237F1B0300E73681 /* INatRailsAPI.m */,
+				FABC7B5C28B8186F0004FFE4 /* PeopleRailsAPI.h */,
+				FABC7B5D28B8186F0004FFE4 /* PeopleRailsAPI.m */,
+			);
+			path = "Rails API";
+			sourceTree = "<group>";
+		};
+		FA82300228D85629006CA0F6 /* Explore API */ = {
+			isa = PBXGroup;
+			children = (
+				FA4E72F219FACF1800A9AB5D /* ExploreObservationsController.h */,
+				FA4E72F319FACF1800A9AB5D /* ExploreObservationsController.m */,
+				FA4E72EF19FACEF000A9AB5D /* ExploreSearchPredicate.h */,
+				FA4E72F019FACEF000A9AB5D /* ExploreSearchPredicate.m */,
+				FA4E72EE19FACEE000A9AB5D /* ExploreObservationsDataSource.h */,
+				FA4529E61A03F70200147895 /* ExploreRegion.h */,
+				FA4529E71A03F70200147895 /* ExploreRegion.m */,
+				FA3F1F981A12DFD200928102 /* ExploreSearchController.h */,
+				FA3F1F991A12DFD200928102 /* ExploreSearchController.m */,
+			);
+			path = "Explore API";
+			sourceTree = "<group>";
+		};
 		FA9437871C869F2C00CB10F3 /* ViewProtocols */ = {
 			isa = PBXGroup;
 			children = (
@@ -2284,32 +2342,6 @@
 		FAEF23321C7D007C00208F44 /* iNat Node API */ = {
 			isa = PBXGroup;
 			children = (
-				FA99BDC91FD794E300C9D985 /* CommentsAPI.h */,
-				FA99BDCA1FD794E300C9D985 /* CommentsAPI.m */,
-				FAB0B8E6237F17DE00E73681 /* GuidesAPI.h */,
-				FAB0B8E7237F17DE00E73681 /* GuidesAPI.m */,
-				FABC7B5C28B8186F0004FFE4 /* PeopleRailsAPI.h */,
-				FABC7B5D28B8186F0004FFE4 /* PeopleRailsAPI.m */,
-				FADE67491FD7B2B400AB4F09 /* IdentificationsAPI.h */,
-				FADE674A1FD7B2B400AB4F09 /* IdentificationsAPI.m */,
-				FAEF23331C7D00A600208F44 /* INatAPI.h */,
-				FAEF23341C7D00A600208F44 /* INatAPI.m */,
-				FAB0B8E9237F1B0300E73681 /* INatRailsAPI.h */,
-				FAB0B8EA237F1B0300E73681 /* INatRailsAPI.m */,
-				FA9437841C869B7300CB10F3 /* ObservationAPI.h */,
-				FA9437851C869B7300CB10F3 /* ObservationAPI.m */,
-				FA711AA21D515F3000C4FFDB /* PeopleAPI.h */,
-				FA711AA31D515F3000C4FFDB /* PeopleAPI.m */,
-				FAC59EEE25E59C9B00DF23FD /* PlaceAPI.h */,
-				FAC59EEF25E59C9B00DF23FD /* PlaceAPI.m */,
-				FA60EA1223EA453D0026F7A3 /* PostsAPI.h */,
-				FA60EA1323EA453D0026F7A3 /* PostsAPI.m */,
-				FA9437811C869AA400CB10F3 /* ProjectsAPI.h */,
-				FA9437821C869AA400CB10F3 /* ProjectsAPI.m */,
-				FA2552111D1F4D62005D2128 /* TaxaAPI.h */,
-				FA2552121D1F4D62005D2128 /* TaxaAPI.m */,
-				FABCAD0823C661CA006479CA /* YearInReviewAPI.h */,
-				FABCAD0923C661CA006479CA /* YearInReviewAPI.m */,
 			);
 			name = "iNat Node API";
 			sourceTree = "<group>";
