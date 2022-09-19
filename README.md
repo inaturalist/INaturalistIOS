@@ -20,7 +20,7 @@ We do our translations on Crowdin. Head over to https://crowdin.com/project/inat
 Roadmap
 -----
 
-Check out our [Roadmap](https://github.com/inaturalist/INaturalistIOS/wiki/Roadmap) for details on where we're doing.
+We're focusing active feature development in [iNaturalistReactNative](https://github.com/inaturalist/iNaturalistReactNative) now.
 
 Getting Help
 ------------
