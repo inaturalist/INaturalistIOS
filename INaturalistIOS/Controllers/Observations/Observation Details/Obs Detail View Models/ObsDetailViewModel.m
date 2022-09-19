@@ -24,7 +24,6 @@
 #import "DisclosureCell.h"
 #import "SubtitleDisclosureCell.h"
 #import "NSURL+INaturalist.h"
-#import "Analytics.h"
 #import "FAKINaturalist.h"
 #import "ObsDetailInfoViewModel.h"
 #import "ObsDetailActivityViewModel.h"

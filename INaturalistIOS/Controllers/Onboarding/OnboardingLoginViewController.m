@@ -26,7 +26,6 @@
 #import "OnboardingViewController.h"
 #import "UITapGestureRecognizer+InatHelpers.h"
 #import "IconAndTextControl.h"
-#import "Analytics.h"
 #import "PartnerController.h"
 #import "Partner.h"
 #import "INatReachability.h"
@@ -547,14 +546,11 @@
 
 - (IBAction)skipPressed:(id)sender {
     if (self.skipAction) {
-        [[Analytics sharedClient] event:kAnalyticsEventOnboardingLoginSkip];
         self.skipAction();
     }
 }
 
 - (IBAction)closePressed:(id)sender {
-    [[Analytics sharedClient] event:kAnalyticsEventOnboardingLoginCancel];
-    
     if (self.closeAction) {
         self.closeAction();
     } else {
@@ -632,10 +628,7 @@
         [self presentViewController:alert animated:YES completion:nil];
         return;
     }
-    
-    [[Analytics sharedClient] event:kAnalyticsEventOnboardingLoginPressed
-                     withProperties:@{ @"mode": @"signup" }];
-    
+        
     NSString *license = self.licenseDataConsentView.userConsent ? @"CC-BY-NC" : @"";
     NSInteger selectedPartnerId = self.selectedPartner ? self.selectedPartner.identifier : 1;
         
@@ -686,10 +679,7 @@
         [self presentViewController:alert animated:YES completion:nil];
         return;
     }
-    
-    [[Analytics sharedClient] event:kAnalyticsEventOnboardingLoginPressed
-                     withProperties:@{ @"mode": @"login" }];
-        
+            
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     [appDelegate.loginController loginWithUsername:self.loginUsernameField.text
                                           password:self.loginPasswordField.text];
@@ -699,10 +689,7 @@
 
 - (void)showPartnerAlertForPartner:(Partner *)partner {
     if (!partner) { return; }
-    
-    [[Analytics sharedClient] event:kAnalyticsEventPartnerAlertPresented
-                     withProperties:@{ @"Partner": partner.name }];
-    
+        
     NSString *alertTitle = [NSString stringWithFormat:NSLocalizedString(@"Join %@?",
                                                                         @"join iNat network partner alert title"),
                             partner.shortName];

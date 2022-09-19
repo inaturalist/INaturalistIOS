@@ -19,7 +19,6 @@
 #import "ObsDetailDataQualityCell.h"
 #import "ObsDetailQualityDetailsFooter.h"
 #import "FAKINaturalist.h"
-#import "Analytics.h"
 #import "UIImage+MapAnnotations.h"
 #import "iNaturalist-Swift.h"
 

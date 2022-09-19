@@ -14,7 +14,6 @@
 
 #import "SiteNewsViewController.h"
 #import "UIColor+INaturalist.h"
-#import "Analytics.h"
 #import "NewsItemViewController.h"
 #import "NewsItemCell.h"
 #import "UIColor+INaturalist.h"
@@ -161,14 +160,7 @@ static UIImage *briefcase;
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     ExplorePost *post = [self.posts objectAtIndex:indexPath.item];
-    
-    [[Analytics sharedClient] event:kAnalyticsEventNewsOpenArticle
-                     withProperties:@{
-                                      @"ParentType": @([post parentType]) ?: @"",
-                                      @"ParentName": [post parentTitleText] ?: @"",
-                                      @"ArticleTitle": [post postTitle] ?: @"",
-                                      }];
-    
+        
     [self performSegueWithIdentifier:@"detail" sender:post];
 }
 

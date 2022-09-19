@@ -11,7 +11,6 @@
 #import "Observation.h"
 #import "SSZipArchive.h"
 #import "UIColor+INaturalist.h"
-#import "Analytics.h"
 
 @implementation GuideMenuViewController
 
@@ -285,9 +284,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
                                                       style:UIAlertActionStyleDestructive
                                                     handler:^(UIAlertAction * _Nonnull action) {
                                                         [self.guide deleteNGZ];
-                                                        
-                                                        [[Analytics sharedClient] event:kAnalyticsEventDeleteDownloadedGuide];
-                                                        
+                                                                                                                
                                                         if (self.delegate && [self.delegate respondsToSelector:@selector(guideMenuControllerGuideDeletedNGZForGuide:)]) {
                                                             [self.delegate guideMenuControllerGuideDeletedNGZForGuide:self.guide];
                                                         }
@@ -352,9 +349,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 - (void)downloadNGZ
 {
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-    
-    [[Analytics sharedClient] event:kAnalyticsEventDownloadGuideStarted];
-    
+        
     self.ngzFilePath = self.guide.ngzPath;
     NSString *ngzURL = self.guide.ngzURL;
     NSURL *url = [NSURL URLWithString:ngzURL];
@@ -426,7 +421,6 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     if (self.lastStatusCode == 200) {
         if ([self.receivedData writeToFile:self.ngzFilePath options:NSDataWritingAtomic error:&error]) {
             NSLog(@"wrote to file: %@", self.ngzFilePath);
-            [[Analytics sharedClient] event:kAnalyticsEventDownloadGuideCompleted];
         } else {
             NSLog(@"failed to write to %@, error: %@", self.ngzFilePath, error);
         }

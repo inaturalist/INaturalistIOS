@@ -11,7 +11,6 @@
 #import "EditLocationViewController.h"
 #import "CrossHairView.h"
 #import "AccuracyCircleView.h"
-#import "Analytics.h"
 #import "iNaturalist-Swift.h"
 #import "ExploreLocation.h"
 
@@ -160,13 +159,6 @@
 
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
     // this location manager requests authorization changes to set user tracking mode
-    
-    [[Analytics sharedClient] event:kAnalyticsEventLocationPermissionsChanged
-                     withProperties:@{
-                                      @"Via": NSStringFromClass(self.class),
-                                      @"NewValue": @(status),
-                                      }];
-
     switch ([CLLocationManager authorizationStatus]) {
         case kCLAuthorizationStatusAuthorizedAlways:
         case kCLAuthorizationStatusAuthorizedWhenInUse:

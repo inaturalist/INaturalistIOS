@@ -10,7 +10,6 @@
 
 #import "NewsItemViewController.h"
 #import "ExplorePost.h"
-#import "Analytics.h"
 #import "NSDate+INaturalist.h"
 
 @interface NewsItemViewController ()
@@ -40,22 +39,10 @@
 }
 
 - (void)share:(UIBarButtonItem *)button {
-    
-    [[Analytics sharedClient] event:kAnalyticsEventNewsShareStarted];
-    
-    
     ARSafariActivity *safariActivity = [[ARSafariActivity alloc] init];
     
     UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[self.post.urlForNewsItem]
                                                                            applicationActivities:@[safariActivity]];
-    activity.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
-        if (completed) {
-            [[Analytics sharedClient] event:kAnalyticsEventNewsShareFinished
-                             withProperties:@{ @"destination": activityType }];
-        } else {
-            [[Analytics sharedClient] event:kAnalyticsEventNewsShareCancelled];
-        }
-    };
     
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         activity.modalPresentationStyle = UIModalPresentationPopover;
@@ -108,15 +95,6 @@
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
     
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-        
-        [[Analytics sharedClient] event:kAnalyticsEventNewsTapLink
-                         withProperties:@{
-                                          @"ParentType": @([self.post parentType]),
-                                          @"ParentName": [self.post parentTitleText],
-                                          @"ArticleTitle": [self.post postTitle],
-                                          @"Link": request.URL.absoluteString,
-                                          }];
-
         // open links taps in Safari
         [[UIApplication sharedApplication] openURL:request.URL];
         return NO;

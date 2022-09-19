@@ -15,7 +15,6 @@
 #import "Observation.h"
 #import "RXMLElement+Helpers.h"
 #import "GuideImageXML.h"
-#import "Analytics.h"
 #import "Taxon.h"
 #import "iNaturalist-Swift.h"
 #import "ExploreTaxonRealm.h"

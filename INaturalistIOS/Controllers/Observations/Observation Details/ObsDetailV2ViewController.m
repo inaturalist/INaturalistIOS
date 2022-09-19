@@ -21,7 +21,6 @@
 #import "ObsDetailActivityViewModel.h"
 #import "ObsDetailInfoViewModel.h"
 #import "ObsDetailFavesViewModel.h"
-#import "Analytics.h"
 #import "AddCommentViewController.h"
 #import "AddIdentificationViewController.h"
 #import "ObsEditV2ViewController.h"
@@ -326,8 +325,6 @@
 
 - (void)inat_performSegueWithIdentifier:(NSString *)identifier sender:(NSObject *)object {
     if ([identifier isEqualToString:@"photos"]) {
-        [[Analytics sharedClient] event:kAnalyticsEventObservationViewHiresPhoto];
-        
         NSNumber *photoIndex = (NSNumber *)object;
         // can't do this in storyboards
         
@@ -401,10 +398,6 @@
         
     } else if ([identifier isEqualToString:@"share"]) {
         // this isn't a storyboard thing either
-        
-        [[Analytics sharedClient] event:kAnalyticsEventObservationShareStarted];
-        
-        
         NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/observations/%ld",
                                            INatWebBaseURL, (long)self.observation.inatRecordId]];
         
@@ -412,14 +405,6 @@
         
         UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[url]
                                                                                applicationActivities:@[safariActivity]];
-        activity.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
-            if (completed) {
-                [[Analytics sharedClient] event:kAnalyticsEventObservationShareFinished
-                                 withProperties:@{ @"destination": activityType }];
-            } else {
-                [[Analytics sharedClient] event:kAnalyticsEventObservationShareCancelled];
-            }
-        };
         
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             UIButton *shareButton = (UIButton *)object;

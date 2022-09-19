@@ -12,7 +12,6 @@
 #import "OnboardingPageViewController.h"
 #import "OnboardingLoginViewController.h"
 #import "INaturalistAppDelegate.h"
-#import "Analytics.h"
 
 @interface OnboardingPageViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate>
 @property NSArray *orderedViewControllers;
@@ -52,9 +51,7 @@
             return [onboarding instantiateViewControllerWithIdentifier:identifier];
         }
     }];
-    
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateOnboardingScreenLogo];
-    
+        
     // always dispatch this to the main thread
     dispatch_async(dispatch_get_main_queue(), ^{
         [self setViewControllers:@[ [self.orderedViewControllers firstObject] ]
@@ -134,8 +131,6 @@
     
     UIViewController *pending = [pendingViewControllers firstObject];
     NSInteger newIndex = [self.orderedViewControllers indexOfObject:pending];
-    [[Analytics sharedClient] event:[self analyticsEventForIndex:newIndex]
-                     withProperties:@{ @"via": @"onboarding" }];
     
     [self.onboardingDelegate onboardingPageViewController:self willUpdateToPageIndex:newIndex fromPageIndex:oldIndex];
 }
@@ -149,8 +144,6 @@
 }
 
 - (void)scrollToViewControllerAtIndex:(NSInteger)newIndex {
-    [[Analytics sharedClient] event:[self analyticsEventForIndex:newIndex]
-                     withProperties:@{ @"via": @"onboarding" }];
     
     UIViewController *first = [self.viewControllers firstObject];
     NSInteger currentIndex = [self.orderedViewControllers indexOfObject:first];
@@ -179,16 +172,6 @@
     UIViewController *first = [self.viewControllers firstObject];
     NSInteger index = [self.orderedViewControllers indexOfObject:first];
     [self.onboardingDelegate onboardingPageViewController:self didUpdatePageIndex:index];
-}
-
-- (NSString *)analyticsEventForIndex:(NSInteger)index {
-    return @[
-        kAnalyticsEventNavigateOnboardingScreenLogo,
-        kAnalyticsEventNavigateOnboardingScreenObserve,
-        kAnalyticsEventNavigateOnboardingScreenShare,
-        kAnalyticsEventNavigateOnboardingScreenLearn,
-        kAnalyticsEventNavigateOnboardingScreenContribue,
-        kAnalyticsEventNavigateOnboardingScreenLogin][index];
 }
 
 @end

@@ -16,7 +16,6 @@
 #import "Observation.h"
 #import "ImageStore.h"
 #import "TaxonPhoto.h"
-#import "Analytics.h"
 #import "TextViewCell.h"
 #import "ObsDetailTaxonCell.h"
 #import "INaturalistAppDelegate.h"

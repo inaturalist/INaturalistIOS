@@ -13,7 +13,6 @@
 
 #import "ProjectObservationsViewController.h"
 #import "ProjectObservationHeaderView.h"
-#import "Analytics.h"
 #import "ObsFieldSimpleValueCell.h"
 #import "ObsFieldLongTextValueCell.h"
 #import "ProjectObsFieldViewController.h"

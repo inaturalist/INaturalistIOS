@@ -17,7 +17,6 @@
 #import "ExploreObservation.h"
 #import "ExploreGridCell.h"
 #import "UIColor+ExploreColors.h"
-#import "Analytics.h"
 #import "RestrictedCollectionHeader.h"
 #import "ObsDetailV2ViewController.h"
 
@@ -144,8 +143,6 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
     ExploreObservation *selectedObservation = [self.observationDataSource.observations objectAtIndex:indexPath.item];
     obsDetail.observation = selectedObservation;
     [self.navigationController pushViewController:obsDetail animated:YES];
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
-                     withProperties:@{ @"via": @"Explore Grid" }];
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {

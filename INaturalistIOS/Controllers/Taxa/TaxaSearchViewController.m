@@ -17,7 +17,6 @@
 #import "ImageStore.h"
 #import "TaxonPhoto.h"
 #import "TaxonDetailViewController.h"
-#import "Analytics.h"
 #import "FAKINaturalist.h"
 #import "ExploreTaxon.h"
 #import "ExploreTaxonRealm.h"
@@ -287,24 +286,12 @@
     INatAPISuggestionsCompletionHandler done = ^(NSArray *suggestions, ExploreTaxon *parent, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (error) {
-                [[Analytics sharedClient] event:kAnalyticsEventSuggestionsFailed
-                                 withProperties:@{
-                                     @"error": error.localizedDescription,
-                                 }];
                 self.tableView.backgroundView = self.loadingView;
                 self.loadingSpinner.hidden = YES;
                 self.statusLabel.text = [NSString stringWithFormat:NSLocalizedString(@"Cannot load suggestions: %@",
                                                                                      @"error when loading suggestions. %@ is the error message"),
                                          error.localizedDescription];
             } else {
-                if (self.imageToClassify) {
-                    [[Analytics sharedClient] logMetric:kAnalyticsEventSuggestionsImageGauge
-                                                  value:@(fabs([beforeSuggestions timeIntervalSinceNow]))];
-                } else {
-                    [[Analytics sharedClient] logMetric:kAnalyticsEventSuggestionsObservationGauge
-                                                  value:@(fabs([beforeSuggestions timeIntervalSinceNow]))];
-                }
-                
                 RLMRealm *realm = [RLMRealm defaultRealm];
                 [realm beginWriteTransaction];
                 if (parent) {
@@ -321,16 +308,6 @@
                 [realm commitWriteTransaction];
                 
                 self.scores = suggestions;
-                
-                [[Analytics sharedClient] event:kAnalyticsEventSuggestionsLoaded
-                                 withProperties:@{
-                                     @"WithAncestor": self.commonAncestor ? @"Yes": @"No",
-                                     @"Ancestor": self.commonAncestor ? self.commonAncestor.scientificName : @"None",
-                                     @"AncestorRank": self.commonAncestor ? self.commonAncestor.rankName : @"None",
-                                     @"TopTaxon": self.scores.firstObject.exploreTaxon.scientificName ?: @"Unknown",
-                                     @"TopTaxonScore": @(self.scores.firstObject.combinedScore ?: 0),
-                                 }];
-                
                 
                 // remove the loading view
                 self.tableView.backgroundView = nil;
@@ -384,37 +361,13 @@
     
     if (![[NSUserDefaults standardUserDefaults] boolForKey:kINatSuggestionsPrefKey]) {
         // no suggestions without permission
-        [[Analytics sharedClient] event:kAnalyticsEventLoadTaxaSearch
-                         withProperties:@{
-                             @"Suggestions": @"No",
-                             @"Reason": @"No Permissions",
-                         }];
         [self showNoSuggestions];
     } else if (self.imageToClassify) {
-        [[Analytics sharedClient] event:kAnalyticsEventLoadTaxaSearch
-                         withProperties:@{
-                             @"Suggestions": @"Yes",
-                             @"Source": @"Local Image",
-                             @"Coordinate": CLLocationCoordinate2DIsValid(self.coordinate) ? @"Yes" : @"No",
-                             @"Date": self.observedOn ? @"Yes" : @"No",
-                         }];
         [self loadAndShowImageSuggestionsWithCompletion:done];
     } else if (self.observationToClassify && self.observationToClassify.sortedObservationPhotos.count > 0) {
-        [[Analytics sharedClient] event:kAnalyticsEventLoadTaxaSearch
-                         withProperties:@{
-                             @"Suggestions": @"Yes",
-                             @"Source": @"Observation",
-                             @"Coordinate": CLLocationCoordinate2DIsValid(self.coordinate) ? @"Yes" : @"No",
-                             @"Date": self.observedOn ? @"Yes" : @"No",
-                         }];
         [self loadAndShowObservationSuggestionsWithCompletion:done];
     } else {
         // no suggestions without a photo
-        [[Analytics sharedClient] event:kAnalyticsEventLoadTaxaSearch
-                         withProperties:@{
-                             @"Suggestions": @"No",
-                             @"Reason": @"No Photo",
-                         }];
         [self showNoSuggestions];
     }
 }
@@ -563,11 +516,6 @@
             // no accessory for switcher cell but let's be safe
             return;
         } else if (indexPath.section == 0 && self.commonAncestor) {
-            [[Analytics sharedClient] event:kAnalyticsEventShowTaxonDetails
-                             withProperties:@{
-                                 @"Suggestions": @"Yes",
-                                 @"Common Ancestor": @"Yes",
-                             }];
             [self showTaxonId:self.commonAncestor.taxonId];
         } else {
             ExploreTaxonScore *ets = nil;
@@ -578,22 +526,12 @@
             }
             
             ExploreTaxon *taxon = ets.exploreTaxon;
-            
-            [[Analytics sharedClient] event:kAnalyticsEventShowTaxonDetails
-                             withProperties:@{
-                                 @"Suggestions": @"Yes",
-                                 @"Common Ancestor": @"No",
-                             }];
             [self showTaxonId:taxon.taxonId];
         }
     } else {
         if (self.searchResults.count > 0 && indexPath.section == 0) {
             
             ExploreTaxonRealm *taxon = [self.searchResults objectAtIndex:indexPath.item];
-            [[Analytics sharedClient] event:kAnalyticsEventShowTaxonDetails
-                             withProperties:@{
-                                 @"Suggestions": @"No",
-                             }];
             [self showTaxonId:taxon.taxonId];
         } else {
             // do nothing
@@ -607,25 +545,9 @@
             // be safe for switcher cell
             return;
         } else if (indexPath.section == 0 && self.commonAncestor) {
-            [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
-                             withProperties:@{
-                                 @"IsTaxon": @"Yes",
-                                 @"Suggestions": @"Yes",
-                                 @"Common Ancestor": @"Yes",
-                                 @"Via": @"List",
-                             }];
             [self.delegate taxaSearchViewControllerChoseTaxon:self.commonAncestor
                                               chosenViaVision:YES];
         } else {
-            [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
-                             withProperties:@{
-                                 @"IsTaxon": @"Yes",
-                                 @"Suggestions": @"Yes",
-                                 @"Common Ancestor": @"No",
-                                 @"Suggestion Rank": @(indexPath.item+1),
-                                 @"Via": @"List",
-                             }];
-            
             ExploreTaxonScore *ets = nil;
             if (self.showingNearbySuggestionsOnly) {
                 ets = [[self nearbyScores] objectAtIndex:indexPath.item];
@@ -640,25 +562,11 @@
         }
     } else {
         if (indexPath.section == 1) {
-            [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
-                             withProperties:@{
-                                 @"IsTaxon": @"No",
-                                 @"Suggestions": @"No",
-                                 @"Common Ancestor": @"No",
-                                 @"Via": @"List",
-                             }];
             [self.delegate taxaSearchViewControllerChoseSpeciesGuess:self.searchController.searchBar.text];
         } else if (self.searchResults.count > 0) {
             ExploreTaxonRealm *etr = [self.searchResults objectAtIndex:indexPath.item];
             [self.delegate taxaSearchViewControllerChoseTaxon:etr
                                               chosenViaVision:NO];
-            [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
-                             withProperties:@{
-                                 @"IsTaxon": @"Yes",
-                                 @"Suggestions": @"No",
-                                 @"Common Ancestor": @"No",
-                                 @"Via": @"List",
-                             }];
         } else {
             // shouldn't happen, do nothing
         }
@@ -803,15 +711,6 @@
 #pragma mark - TaxonDetailViewControllerDelegate
 
 - (void)taxonDetailViewControllerClickedActionForTaxonId:(NSInteger)taxonId {
-    
-    [[Analytics sharedClient] event:kAnalyticsEventChoseTaxon
-                     withProperties:@{
-                         @"IsTaxon": @"Yes",
-                         @"Suggestions": [self showingSuggestions] ? @"Yes" : @"No",
-                         @"Common Ancestor": ([self showingSuggestions] && taxonId == self.commonAncestor.taxonId) ? @"Yes" : @"No",
-                         @"Via": @"Details",
-                     }];
-    
     ExploreTaxonRealm *etr = [ExploreTaxonRealm objectForPrimaryKey:@(taxonId)];
     [self.delegate taxaSearchViewControllerChoseTaxon:etr
                                       chosenViaVision:[self showingSuggestions]];

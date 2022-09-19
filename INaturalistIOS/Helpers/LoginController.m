@@ -15,7 +15,6 @@
 #import <SimpleKeychain/SimpleKeychain.h>
 
 #import "LoginController.h"
-#import "Analytics.h"
 #import "INaturalistAppDelegate.h"
 #import "UIColor+INaturalist.h"
 #import "Partner.h"
@@ -96,12 +95,8 @@ NSInteger INatMinPasswordLength = 6;
 - (void)loginButton:(FBSDKLoginButton *)loginButton didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result error:(NSError *)error {
     
     if (error || !result.token) {
-        [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
-                         withProperties:@{ @"Via": @"Facebook" }];
         [self.delegate loginFailedWithError:error];
     } else {
-        [[Analytics sharedClient] event:kAnalyticsEventLogin
-                         withProperties:@{ @"Via": @"Facebook" }];
         externalAccessToken = [[result.token tokenString] copy];
         accountType = kINatAuthServiceExtToken;
         [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
@@ -144,8 +139,6 @@ NSInteger INatMinPasswordLength = 6;
             id json = results.firstObject;
             // require an ID response from the user
             if (json && [json valueForKey:@"id"]) {
-                [[Analytics sharedClient] event:kAnalyticsEventSignup];
-                
                 ExploreUserRealm *me = [ExploreUserRealm new];
                 me.userId = [[json valueForKey:@"id"] integerValue];
                 me.login = username;
@@ -223,10 +216,6 @@ NSInteger INatMinPasswordLength = 6;
     }
     
     if (loginSucceeded) {
-        if ([accountType isEqualToString:kINatAuthService]) {
-            [[Analytics sharedClient] event:kAnalyticsEventLogin
-                             withProperties:@{ @"Via": @"iNaturalist" }];
-        }
         isLoginCompleted = YES;
         [[NSUserDefaults standardUserDefaults] setValue:iNatAccessToken
                                                  forKey:INatTokenPrefKey];
@@ -287,10 +276,6 @@ NSInteger INatMinPasswordLength = 6;
             }
         }
     } else {
-        [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
-                         withProperties:@{ @"from": @"iNaturalist",
-                                           @"error": @"no data in nxoauth store",
-                                           }];
         [self.delegate loginFailedWithError:nil];
     }
 }
@@ -314,12 +299,8 @@ NSInteger INatMinPasswordLength = 6;
                                              callback:^(GIDGoogleUser * _Nullable user, NSError * _Nullable error) {
         
         if (error || !user.authentication.idToken) {
-            [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
-                             withProperties:@{ @"Via": @"Google" }];
             [self.delegate loginFailedWithError:error];
         } else {
-            [[Analytics sharedClient] event:kAnalyticsEventLogin
-                             withProperties:@{ @"Via": @"Google" }];
             self->externalAccessToken = [user.authentication.accessToken copy];
             self->accountType = kINatAuthServiceExtToken;
             [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:self->accountType
@@ -339,12 +320,8 @@ didSignInForUser:(GIDGoogleUser *)user
      withError:(NSError *)error {
     
     if (error || !user.authentication.idToken) {
-        [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
-                         withProperties:@{ @"Via": @"Google" }];
         [self.delegate loginFailedWithError:error];
     } else {
-        [[Analytics sharedClient] event:kAnalyticsEventLogin
-                         withProperties:@{ @"Via": @"Google" }];
         externalAccessToken = [user.authentication.accessToken copy];
         accountType = kINatAuthServiceExtToken;
         [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
@@ -362,8 +339,6 @@ didSignInForUser:(GIDGoogleUser *)user
 - (void)authorizationController:(ASAuthorizationController *)controller didCompleteWithAuthorization:(ASAuthorization *)authorization  API_AVAILABLE(ios(13.0)) {
     
     if ([authorization.credential isKindOfClass:ASAuthorizationAppleIDCredential.class]) {
-        [[Analytics sharedClient] event:kAnalyticsEventLogin
-                         withProperties:@{ @"Via": @"Apple" }];
 
         ASAuthorizationAppleIDCredential *credential = (ASAuthorizationAppleIDCredential *)authorization.credential;
         
@@ -387,8 +362,6 @@ didSignInForUser:(GIDGoogleUser *)user
                                                              error:&jsonError];
         NSString *assertionJSON = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
         
-        [[Analytics sharedClient] event:kAnalyticsEventLogin
-                         withProperties:@{ @"Via": @"Apple" }];
         externalAccessToken = [identityToken copy];
         accountType = kINatAuthServiceExtToken;
         [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType

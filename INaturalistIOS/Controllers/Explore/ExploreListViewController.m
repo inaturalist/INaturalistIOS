@@ -16,7 +16,6 @@
 #import "ExploreObservationPhoto.h"
 #import "ExploreListTableViewCell.h"
 #import "UIColor+ExploreColors.h"
-#import "Analytics.h"
 #import "RestrictedListHeader.h"
 #import "ObsDetailV2ViewController.h"
 
@@ -127,8 +126,6 @@ static NSString *ExploreListHeaderId = @"ExploreListHeader";
     ExploreObservation *selectedObservation = [self.observationDataSource.observations objectAtIndex:indexPath.item];
     obsDetail.observation = selectedObservation;
     [self.navigationController pushViewController:obsDetail animated:YES];
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
-                     withProperties:@{ @"via": @"Explore List" }];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {

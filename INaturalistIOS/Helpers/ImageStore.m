@@ -427,18 +427,6 @@
     
     NSDate *now = [NSDate date];
     NSTimeInterval cleanupExecutionSecondsUsed = [now timeIntervalSinceDate:beginCleanupDate];
-    
-    [[Analytics sharedClient] event:@"CleanupImageStore"
-                     withProperties:@{
-                         @"DeletedCount": @(deletedCount),
-                         @"CheckedCount": @(checkedCount),
-                         @"MakeExpiredCount": @(makeExpiredCount),
-                         @"BeginningNonExpiringFilesCount": @(allNonExpiringFiles.count),
-                         @"ValidKeysCount": @(validPhotoKeys.count),
-                         @"SyncedKeysCount": @(syncedPhotoKeys.count),
-                         @"ExecutionSecondsAllowedForCleanup": @(allowedExecutionSeconds),
-                         @"ExecutionSecondsTakenForCleanup": @(cleanupExecutionSecondsUsed),
-                     }];
 }
 
 

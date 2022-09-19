@@ -14,7 +14,6 @@
 #import "GuideCollectionViewController.h"
 #import "GuideViewController.h"
 #import "INaturalistAppDelegate.h"
-#import "Analytics.h"
 #import "TutorialSinglePageViewController.h"
 #import "LoginController.h"
 #import "UIImage+INaturalist.h"
@@ -173,9 +172,6 @@ static const int ListControlIndexNearby = 1;
 }
 
 - (void)presentSignupPrompt:(NSString *)reason {
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateOnboardingScreenLogin
-                     withProperties:@{ @"via": @"guides" }];
-
     __weak typeof(self) weakSelf = self;
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];

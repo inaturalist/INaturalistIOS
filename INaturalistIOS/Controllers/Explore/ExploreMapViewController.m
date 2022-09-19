@@ -18,7 +18,6 @@
 #import "ExploreLocation.h"
 #import "ExploreProject.h"
 #import "UIColor+ExploreColors.h"
-#import "Analytics.h"
 #import "ExploreObservation.h"
 #import "ExploreRegion.h"
 #import "MKMapView+ZoomLevel.h"
@@ -267,8 +266,6 @@
     ExploreObservation *selectedObservation = (ExploreObservation *)view.annotation;
     obsDetail.observation = selectedObservation;
     [self.navigationController pushViewController:obsDetail animated:YES];
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
-                     withProperties:@{ @"via": @"Explore Map" }];
 }
 
 #pragma mark - iNat API Calls

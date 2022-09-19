@@ -27,7 +27,6 @@
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
 #import "NSURL+INaturalist.h"
-#import "Analytics.h"
 #import "ObsDetailNoInteractionHeaderFooter.h"
 #import "IdentificationVisualization.h"
 #import "CommentVisualization.h"
@@ -479,11 +478,7 @@
                                message:NSLocalizedString(@"You must be logged in.", @"Account is required error message")];
         return;
     }
-    
-    // add an identification
-    [[Analytics sharedClient] event:kAnalyticsEventObservationAddIdentification
-                     withProperties:@{ @"Via": @"View Obs Agree" }];
-        
+            
     [self.delegate showProgressHud];
     
     __weak typeof(self)weakSelf = self;

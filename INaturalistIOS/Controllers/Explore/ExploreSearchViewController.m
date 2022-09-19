@@ -22,7 +22,6 @@
 #import "ExploreProject.h"
 #import "ExploreUser.h"
 #import "UIColor+ExploreColors.h"
-#import "Analytics.h"
 #import "Taxon.h"
 #import "TaxonPhoto.h"
 #import "UIFont+ExploreFonts.h"
@@ -382,8 +381,6 @@
     
     hasFulfilledLocationFetch = NO;
     
-    [[Analytics sharedClient] event:kAnalyticsEventExploreSearchNearMe];
-    
     // clear all active search predicates
     // since it's not built to remove them one at a time yet
     [observationsController removeAllSearchPredicatesUpdatingObservations:NO];
@@ -448,9 +445,6 @@
                                                     handler:nil]];
             [self presentViewController:alert animated:YES completion:nil];
         } else {
-            
-            [[Analytics sharedClient] event:kAnalyticsEventExploreSearchCritters];
-            
             if (results.count == 0) {
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Oops", nil)
                                                                                message:NSLocalizedString(@"No such organisms found. :(", nil)
@@ -522,9 +516,6 @@
                                                     handler:nil]];
             [self presentViewController:alert animated:YES completion:nil];
         } else {
-            
-            [[Analytics sharedClient] event:kAnalyticsEventExploreSearchPeople];
-            
             if (results.count == 0) {
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Oops", nil)
                                                                                message:NSLocalizedString(@"No such person found. :(", nil)
@@ -594,9 +585,6 @@
                                                     handler:nil]];
             [self presentViewController:alert animated:YES completion:nil];
         } else {
-            
-            [[Analytics sharedClient] event:kAnalyticsEventExploreSearchPlaces];
-            
             // filter out garbage locations
             NSArray *validPlaces = [results bk_select:^BOOL(ExploreLocation *location) {
                 // all administrative places are valid
@@ -697,8 +685,6 @@
                                                     handler:nil]];
             [self presentViewController:alert animated:YES completion:nil];
         } else {
-            [[Analytics sharedClient] event:kAnalyticsEventExploreSearchProjects];
-            
             if (results.count == 0) {
                 UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Oops", nil)
                                                                                message:NSLocalizedString(@"No such project found. :(", nil)
@@ -778,12 +764,6 @@
 }
 
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
-    [[Analytics sharedClient] event:kAnalyticsEventLocationPermissionsChanged
-                     withProperties:@{
-                                      @"Via": NSStringFromClass(self.class),
-                                      @"NewValue": @(status),
-                                      }];
-    
     if (hasFulfilledLocationFetch)
         return;
     

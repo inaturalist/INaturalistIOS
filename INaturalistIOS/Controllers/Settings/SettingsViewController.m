@@ -127,9 +127,6 @@ static const int ChangePartnerMinimumInterval = 86400;
 #pragma mark - UI helpers
 
 - (void)presentSignup {
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateOnboardingScreenLogin
-                     withProperties:@{ @"via": @"settings" }];
-    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;
@@ -441,8 +438,6 @@ static const int ChangePartnerMinimumInterval = 86400;
                                                     handler:nil]];
             [weakSelf presentViewController:alert animated:YES completion:nil];
         } else {
-            [[Analytics sharedClient] event:kAnalyticsEventProfileLoginChanged];
-            
             RLMRealm *realm = [RLMRealm defaultRealm];
             [realm beginWriteTransaction];
             me.login = newUsername;
@@ -453,7 +448,6 @@ static const int ChangePartnerMinimumInterval = 86400;
 }
 
 - (void)signOut {
-    [[Analytics sharedClient] event:kAnalyticsEventLogout];
     [[Analytics sharedClient] debugLog:@"User Logout"];
     
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.tabBarController.view
@@ -528,7 +522,6 @@ static const int ChangePartnerMinimumInterval = 86400;
 - (void)launchTutorial {
 #ifdef INatTutorialURL
     if ([[INatReachability sharedClient] isNetworkReachable]) {
-        [[Analytics sharedClient] event:kAnalyticsEventTutorial];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:INatTutorialURL]];
     } else {
         [self networkUnreachableAlert];
@@ -596,7 +589,6 @@ static const int ChangePartnerMinimumInterval = 86400;
 - (void)launchRateUs {
 #ifdef INatAppStoreURL
     if ([[INatReachability sharedClient] isNetworkReachable]) {
-        [[Analytics sharedClient] event:kAnalyticsEventSettingsRateUs];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:INatAppStoreURL]];
     } else {
         [self networkUnreachableAlert];
@@ -615,7 +607,6 @@ static const int ChangePartnerMinimumInterval = 86400;
 - (void)launchDonate {
 #ifdef INatDonateURL
     if ([[INatReachability sharedClient] isNetworkReachable]) {
-        [[Analytics sharedClient] event:kAnalyticsEventSettingsDonate];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:INatDonateURL]];
     } else {
         [self networkUnreachableAlert];
@@ -634,7 +625,6 @@ static const int ChangePartnerMinimumInterval = 86400;
 - (void)launchStore {
 #ifdef INatStoreURL
     if ([[INatReachability sharedClient] isNetworkReachable]) {
-        [[Analytics sharedClient] event:kAnalyticsEventSettingsOpenShop];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:INatStoreURL]];
     } else {
         [self networkUnreachableAlert];
@@ -657,9 +647,6 @@ static const int ChangePartnerMinimumInterval = 86400;
 }
 
 - (void)settingChanged:(NSString *)key newValue:(BOOL)newValue {
-    NSString *analyticsEvent = newValue ? kAnalyticsEventSettingEnabled : kAnalyticsEventSettingDisabled;
-    [[Analytics sharedClient] event:analyticsEvent
-                     withProperties:@{ @"setting": key }];
     [[NSUserDefaults standardUserDefaults] setBool:newValue forKey:key];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
@@ -773,8 +760,6 @@ static const int ChangePartnerMinimumInterval = 86400;
 
 - (void)choseToChangeNetworkPartner {
     if ([self canChangeNetworkPartner]) {
-        [[Analytics sharedClient] event:kAnalyticsEventSettingsNetworkChangeBegan];
-
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
         ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
         if (!me) { return; }
@@ -859,7 +844,6 @@ static const int ChangePartnerMinimumInterval = 86400;
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     [appDelegate.loginController loggedInUserSelectedPartner:partner
                                                   completion:^{
-                                                      [[Analytics sharedClient] event:kAnalyticsEventSettingsNetworkChangeCompleted];
                                                       [weakSelf.tableView reloadData];
                                                   }];
 

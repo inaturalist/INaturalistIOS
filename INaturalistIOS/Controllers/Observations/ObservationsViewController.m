@@ -22,7 +22,6 @@
 #import "RefreshControl.h"
 #import "UIImageView+WebCache.h"
 #import "UIColor+INaturalist.h"
-#import "Analytics.h"
 #import "MeHeaderView.h"
 #import "AnonHeaderView.h"
 #import "INaturalistAppDelegate.h"
@@ -48,6 +47,7 @@
 #import "InaturalistRealmMigration.h"
 #import "NSDate+INaturalist.h"
 #import "iNaturalist-Swift.h"
+#import "Analytics.h"
 
 @interface ObservationsViewController () <UploadManagerNotificationDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, MFMailComposeViewControllerDelegate>
 
@@ -104,9 +104,6 @@
 }
 
 - (void)presentLoginSplashWithReason:(NSString *)reason {
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateOnboardingScreenLogin
-                     withProperties:@{ @"via": @"observations" }];
-    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;
@@ -116,9 +113,6 @@
 }
 
 - (void)presentSignupSplashWithReason:(NSString *)reason {
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateOnboardingScreenLogin
-                     withProperties:@{ @"via": @"observations" }];
-    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;
@@ -258,8 +252,6 @@
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
     if (me) {
-        [[Analytics sharedClient] event:kAnalyticsEventProfilePhotoRemoved];
-        
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.removeFromSuperViewOnHide = YES;
         hud.dimBackground = YES;
@@ -315,10 +307,6 @@
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
     if (me) {
-        BOOL alreadyHadPhoto = me.userIcon != nil;
-        [[Analytics sharedClient] event:kAnalyticsEventProfilePhotoChanged
-                         withProperties:@{ @"AlreadyHadPhoto": alreadyHadPhoto ? @"Yes" : @"No" }];
-        
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.removeFromSuperViewOnHide = YES;
         hud.dimBackground = YES;
@@ -384,11 +372,6 @@
 }
 
 - (void)stopSyncPressed {
-    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
-                     withProperties:@{
-                         @"Via": @"Stop Upload Button",
-                     }];
-    
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     UploadManager *uploader = appDelegate.loginController.uploadManager;
     [uploader cancelSyncsAndUploads];
@@ -463,8 +446,6 @@
     if ([appDelegate.loginController isLoggedIn]) {
         
         ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
-        [[Analytics sharedClient] debugLog:@"Network - Refresh 10 recent observations"];
-        
         // fetch 10, quickly
         __weak typeof(self)weakSelf = self;
         [[self obsApi] observationsForUserId:me.userId count:10 handler:^(NSArray *results, NSInteger count, NSError *error) {
@@ -482,7 +463,6 @@
         }];
         
         
-        [[Analytics sharedClient] debugLog:@"Network - Refresh 200 recent observations"];
         // fetch 200 as well
         [[self obsApi] observationsForUserId:me.userId count:200 handler:^(NSArray *results, NSInteger count, NSError *error) {
             
@@ -537,7 +517,6 @@
 
 - (void)checkNewActivity {
     if ([[INatReachability sharedClient] isNetworkReachable]) {
-        [[Analytics sharedClient] debugLog:@"Network - Get My Updates Activity"];
         [[self obsApi] updatesWithHandler:^(NSArray *results, NSInteger count, NSError *error) {
             if (error) {
                 return;
@@ -1567,14 +1546,10 @@
     if ([segue.identifier isEqualToString:@"obsDetailV2"]) {
         ObsDetailV2ViewController *ovc = [segue destinationViewController];
         ovc.observation = (ExploreObservationRealm *)sender;
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
-                         withProperties:@{ @"via": @"Me Tab" }];
     } else if ([segue.identifier isEqual:@"obsDetailV2ShowActivity"]) {
         ObsDetailV2ViewController *ovc = [segue destinationViewController];
         ovc.observation = (ExploreObservationRealm *)sender;
         ovc.shouldShowActivityOnLoad = YES;
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
-                         withProperties:@{ @"via": @"Me Tab" }];
     }
 }
 
@@ -1612,10 +1587,6 @@
     // TODO: clear all upload ids
     
     [[Analytics sharedClient] debugLog:@"Upload - Session Finished"];
-    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
-                     withProperties:@{
-                         @"Via": @"Upload Complete",
-                     }];
 }
 
 - (void)uploadSessionCancelledFor:(NSString *)observationUUID {
@@ -1762,10 +1733,6 @@
 
 - (void)notifyUploadErrorJWTFetchFailed {
     [[Analytics sharedClient] debugLog:@"Upload - JWT Fetch Failed"];
-    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
-                     withProperties:@{
-                         @"Via": @"JWT Fetch Failed",
-                     }];
     
     NSString *title = NSLocalizedString(@"Upload Failed", @"upload failed alert title");
     NSString *message = NSLocalizedString(@"Fetching an authentication token failed. Please contact help@inaturalist.org and try later.",
@@ -1780,10 +1747,6 @@
 
 - (void)notifyUploadErrorAuthRequired {
     [[Analytics sharedClient] debugLog:@"Upload - Auth Required"];
-    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
-                     withProperties:@{
-                         @"Via": @"Auth Required",
-                     }];
     
     NSString *title = NSLocalizedString(@"Upload Failed", @"upload failed alert title");
     NSString *baseMsg = NSLocalizedString(@"Unable to upload to iNaturalist, error 401 unauthenticated. Please contact help@inaturalist.org and try later.",
@@ -1806,10 +1769,6 @@
 
 - (void)notifyUploadErrorSuspended {
     [[Analytics sharedClient] debugLog:@"Upload - Forbidden"];
-    [[Analytics sharedClient] event:kAnalyticsEventSyncStopped
-                     withProperties:@{
-                         @"Via": @"Auth Forbidden",
-                     }];
     
     NSString *alertTitle = NSLocalizedString(@"Not Authorized", @"403 unauthorized title");
     NSString *alertMessage = NSLocalizedString(@"You don't have permission to do that. Your account may have been suspended. Please contact help@inaturalist.org.",
@@ -1833,12 +1792,7 @@
     } else {
         alertMessage = NSLocalizedString(@"There was an unexpected error.",
                                          @"Unresolvable and unknown error during observation upload.");
-    }
-    
-    [[Analytics sharedClient] event:kAnalyticsEventSyncFailed
-                     withProperties:@{
-                         @"Alert": alertMessage,
-                     }];
+    }    
     
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
                                                                    message:alertMessage

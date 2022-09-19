@@ -16,7 +16,6 @@
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
 #import "ObservationAPI.h"
-#import "Analytics.h"
 #import "UpdatesItemCell.h"
 #import "ObservationPhoto.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
@@ -275,9 +274,6 @@
         } else {
             vc.observationId = eur.resourceId;
         }
-    
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
-                         withProperties:@{ @"via": @"Updates" }];
     }
 }
 

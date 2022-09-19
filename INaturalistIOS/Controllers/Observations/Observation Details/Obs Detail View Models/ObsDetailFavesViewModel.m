@@ -20,7 +20,6 @@
 #import "NSURL+INaturalist.h"
 #import "ObsDetailActivityAuthorCell.h"
 #import "ObsDetailNoInteractionHeaderFooter.h"
-#import "Analytics.h"
 #import "UIImage+INaturalist.h"
 #import "INatReachability.h"
 #import "ExploreUserRealm.h"
@@ -172,7 +171,6 @@
     
     if ([self loggedInUserHasFavedThisObservation]) {
         // need to unfave it
-        [[Analytics sharedClient] event:kAnalyticsEventObservationUnfave];
         
         [self.delegate showProgressHud];
         
@@ -183,7 +181,6 @@
         }];
     } else {
         // need to fave it
-        [[Analytics sharedClient] event:kAnalyticsEventObservationFave];
         
         [self.delegate showProgressHud];
         

@@ -10,7 +10,6 @@
 
 #import "AddCommentViewController.h"
 #import "Observation.h"
-#import "Analytics.h"
 #import "CommentsAPI.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"

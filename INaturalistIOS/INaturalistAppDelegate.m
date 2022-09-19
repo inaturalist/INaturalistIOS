@@ -87,9 +87,7 @@
     return handled;
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [self setupAnalytics];
-    
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     // never log any events with facebook analytics
     [FBSDKSettings setCodelessDebugLogEnabled:@(NO)];
     [FBSDKSettings setAutoLogAppEventsEnabled:@(NO)];
@@ -134,11 +132,6 @@
         [application endBackgroundTask:taskId];
         taskId = UIBackgroundTaskInvalid;
     });
-}
-
-- (void)setupAnalytics {
-    // setup analytics
-    [[Analytics sharedClient] event:kAnalyticsEventAppLaunch];    
 }
 
 - (void)showLoadingScreen {
@@ -457,14 +450,6 @@
     
     NSDate *endDate = [NSDate date];
     NSTimeInterval elapsed = [endDate timeIntervalSinceDate:beginDate];
-    
-    [[Analytics sharedClient] event:@"CleanupRealmDatabase"
-                     withProperties:@{
-                         @"DeletedCount": @(deletedItems),
-                         @"ClassesPlanned": @(childClassesToCleanup.count),
-                         @"ClassesCompleted": @(classesCompleted),
-                         @"ExecutionElapsed": @(elapsed),
-                     }];
 }
 
 - (void)cleanupPhotosExecutionSeconds:(NSInteger)allowedExecutionSeconds {

@@ -16,7 +16,6 @@
 #import "GuidePageViewController.h"
 #import "INaturalistAppDelegate.h"
 #import "UIColor+INaturalist.h"
-#import "Analytics.h"
 #import "ImageStore.h"
 #import "INatReachability.h"
 

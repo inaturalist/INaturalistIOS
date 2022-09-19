@@ -58,24 +58,12 @@
     if (!url) {
         return;
     }
-    
-    // analytics
-    [[Analytics sharedClient] event:kAnalyticsEventObservationShareStarted];
-    
+        
     ARSafariActivity *openInSafari = [[ARSafariActivity alloc] init];
     INatCopyNameActivity *copyName = [[INatCopyNameActivity alloc] init];
     UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[url, self.fullTaxon.scientificName]
                                                                            applicationActivities:@[openInSafari, copyName]];
-    
-    activity.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
-        if (completed) {
-            [[Analytics sharedClient] event:kAnalyticsEventObservationShareFinished
-                             withProperties:@{ @"destination": activityType }];
-        } else {
-            [[Analytics sharedClient] event:kAnalyticsEventObservationShareCancelled];
-        }
-    };
-    
+        
     // does this work on iPad?
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         activity.modalPresentationStyle = UIModalPresentationPopover;

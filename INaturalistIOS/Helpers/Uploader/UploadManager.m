@@ -11,7 +11,6 @@
 #import "UploadManager.h"
 #import "INatModel.h"
 #import "ExploreObservationRealm.h"
-#import "Analytics.h"
 #import "ObservationPhoto.h"
 #import "ObservationFieldValue.h"
 #import "ProjectObservation.h"

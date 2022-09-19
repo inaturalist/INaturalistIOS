@@ -9,7 +9,6 @@
 #import "ObservationFieldValue.h"
 #import "Observation.h"
 #import "ObservationField.h"
-#import "Analytics.h"
 
 @implementation ObservationFieldValue
 

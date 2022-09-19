@@ -61,8 +61,6 @@ class INatTabBarController: UITabBarController {
       }
       
       if canAccessCamera {
-         Analytics.sharedClient()?.event(kAnalyticsEventNewObservationCameraStart)
-         
          let camera = UIImagePickerController()
          camera.delegate = self
          camera.mediaTypes = ["public.image"]
@@ -86,8 +84,6 @@ class INatTabBarController: UITabBarController {
    }
    
    func showCameraRoll() {
-      Analytics.sharedClient()?.event(kAnalyticsEventNewObservationLibraryStart)
-      
       if #available(iOS 14, *) {
          var config = PHPickerConfiguration()
          config.filter = .images
@@ -108,8 +104,6 @@ class INatTabBarController: UITabBarController {
    }
    
    func showSoundRecorder() {
-      Analytics.sharedClient()?.event(kAnalyticsEventNewObservationSoundRecordingStart)
-      
       let soundRecorder = SoundRecordViewController(nibName: nil, bundle: nil)
       soundRecorder.recorderDelegate = self
       let soundNav = UINavigationController(rootViewController: soundRecorder)
@@ -118,8 +112,6 @@ class INatTabBarController: UITabBarController {
    }
    
    func newObsNoPhoto() {
-      Analytics.sharedClient()?.event(kAnalyticsEventNewObservationNoPhotoStart)
-      
       let o = ExploreObservationRealm()
       o.uuid = UUID().uuidString.lowercased()
       o.timeCreated = Date()

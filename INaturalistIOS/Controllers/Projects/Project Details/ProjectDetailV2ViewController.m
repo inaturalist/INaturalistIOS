@@ -16,7 +16,6 @@
 #import "ObsDetailV2ViewController.h"
 #import "TaxonDetailViewController.h"
 #import "INaturalistAppDelegate.h"
-#import "Analytics.h"
 #import "ProjectAboutViewController.h"
 #import "SiteNewsViewController.h"
 #import "UIImage+INaturalist.h"
@@ -139,8 +138,6 @@
     } else if ([segue.identifier isEqualToString:@"segueToObservationDetail"]) {
         ObsDetailV2ViewController *vc = [segue destinationViewController];
         vc.observation = sender;
-        [[Analytics sharedClient] event:kAnalyticsEventNavigateObservationDetail
-                         withProperties:@{ @"via": @"Project Details" }];
     } else if ([segue.identifier isEqualToString:@"taxon"]) {
         TaxonDetailViewController *vc = [segue destinationViewController];
         vc.taxonId = [sender integerValue];
@@ -257,9 +254,6 @@
 }
 
 - (void)presentSignupPrompt:(NSString *)reason {
-    [[Analytics sharedClient] event:kAnalyticsEventNavigateOnboardingScreenLogin
-                     withProperties:@{ @"via": @"project detail" }];
-
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     OnboardingLoginViewController *login = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-login"];
     login.skippable = NO;

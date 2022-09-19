@@ -20,7 +20,6 @@
 #import "MultiImageView.h"
 #import "TaxaSearchViewController.h"
 #import "UIColor+ExploreColors.h"
-#import "Analytics.h"
 #import "ObsEditV2ViewController.h"
 #import "UIColor+INaturalist.h"
 #import "INaturalistAppDelegate.h"
@@ -162,7 +161,6 @@
         __weak typeof(self)weakSelf = self;
         [button bk_addEventHandler:^(id sender) {
             __strong typeof(weakSelf)strongSelf = weakSelf;
-            [[Analytics sharedClient] event:kAnalyticsEventNewObservationRetakePhotos];
             [strongSelf.navigationController popViewControllerAnimated:YES];
         } forControlEvents:UIControlEventTouchUpInside];
         
@@ -247,11 +245,6 @@
 
 - (void)requestPhotoLibraryPermission {
     [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-        [[Analytics sharedClient] event:kAnalyticsEventPhotoLibraryPermissionsChanged
-                         withProperties:@{
-                                          @"Via": NSStringFromClass(self.class),
-                                          @"NewValue": @(status),
-                                          }];
         switch (status) {
             case PHAuthorizationStatusDenied:
             case PHAuthorizationStatusRestricted:
@@ -289,8 +282,6 @@
 }
 
 - (void)savePhotoAndMoveOn {
-    [[Analytics sharedClient] event:kAnalyticsEventNewObservationConfirmPhotos];
-    
     // this can take a moment, so hide the retake/confirm buttons
     confirm.hidden = YES;
     retake.hidden = YES;

@@ -8,7 +8,6 @@
 
 #import "ExploreSearchController.h"
 #import "NSLocale+INaturalist.h"
-#import "Analytics.h"
 #import "ExploreTaxon.h"
 #import "ExploreProject.h"
 #import "ExploreUser.h"
