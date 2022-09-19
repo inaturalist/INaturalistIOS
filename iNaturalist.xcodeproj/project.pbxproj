@@ -836,7 +836,7 @@
 		FA74A6211CB4C4EE002EBD0A /* RankedUserObsSpecies.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RankedUserObsSpecies.xib; sourceTree = "<group>"; };
 		FA74A6231CB4C517002EBD0A /* RankedUserObsSpeciesCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RankedUserObsSpeciesCell.h; sourceTree = "<group>"; };
 		FA74A6241CB4C517002EBD0A /* RankedUserObsSpeciesCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RankedUserObsSpeciesCell.m; sourceTree = "<group>"; };
-		FA753DBD1B7AC40E00EC13B7 /* LaunchScreenRebrand.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LaunchScreenRebrand.xib; path = INaturalistIOS/LaunchScreenRebrand.xib; sourceTree = "<group>"; };
+		FA753DBD1B7AC40E00EC13B7 /* LaunchScreenRebrand.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreenRebrand.xib; sourceTree = "<group>"; };
 		FA7558471B9A4BDF00762D7B /* ObsEditV2ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsEditV2ViewController.h; sourceTree = "<group>"; };
 		FA7558481B9A4BDF00762D7B /* ObsEditV2ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsEditV2ViewController.m; sourceTree = "<group>"; };
 		FA75584A1B9A599800762D7B /* DisclosureCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisclosureCell.h; sourceTree = "<group>"; };
@@ -1325,6 +1325,7 @@
 		1927513D14E9CCC9000ABAC4 /* INaturalist */ = {
 			isa = PBXGroup;
 			children = (
+				FA82300628D85D47006CA0F6 /* User Interface */,
 				FA822FFF28D855C9006CA0F6 /* API Endpoints */,
 				FA822FE128D850A9006CA0F6 /* Controllers */,
 				FA822FDE28D84E95006CA0F6 /* Extensions */,
@@ -1347,8 +1348,6 @@
 				FA3759CE23EB467E0053F783 /* iNaturalist-Bridging-Header.h */,
 				893FE7171B525BFD00BC7CC4 /* config.h.example */,
 				1904E5F117FB7DAC00725804 /* guides */,
-				60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */,
-				60F6CEC016E29AD60031504A /* Localizable.strings */,
 				1927513F14E9CCC9000ABAC4 /* INaturalistIOS-Info.plist */,
 				1927514314E9CCC9000ABAC4 /* main.m */,
 				1927514514E9CCC9000ABAC4 /* iNaturalist-Prefix.pch */,
@@ -1356,7 +1355,6 @@
 				198552E914EF369E00DB55C5 /* constants.h */,
 				19A219F11707B8A50042A889 /* config.h */,
 				FA4C195F1B30EDB70066CA22 /* partners.plist */,
-				FA8A0E5325E1D98F006CA8A4 /* TaxaRanks.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1431,26 +1429,10 @@
 			name = Helpers;
 			sourceTree = "<group>";
 		};
-		FA6F87661B0E996B0019B157 /* fonts */ = {
-			isa = PBXGroup;
-			children = (
-				FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */,
-			);
-			name = fonts;
-			path = INaturalistIOS;
-			sourceTree = "<group>";
-		};
 		FA711AA51D52873600C4FFDB /* User Interface */ = {
 			isa = PBXGroup;
 			children = (
-				1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */,
-				FAB6214F1D7397A70026FDC6 /* Onboarding.storyboard */,
-				FA399A991DDBDB3E007ABD3E /* Projects.storyboard */,
-				FA399AAE1DDBDC73007ABD3E /* Activity.storyboard */,
-				FA399AC31DDBDC88007ABD3E /* Guides.storyboard */,
 				FADD57E919FEFF2500E141C9 /* Images.xcassets */,
-				FA753DBD1B7AC40E00EC13B7 /* LaunchScreenRebrand.xib */,
-				FA6F87661B0E996B0019B157 /* fonts */,
 			);
 			name = "User Interface";
 			path = ..;
@@ -2276,6 +2258,31 @@
 			path = "Explore API";
 			sourceTree = "<group>";
 		};
+		FA82300628D85D47006CA0F6 /* User Interface */ = {
+			isa = PBXGroup;
+			children = (
+				FA399AAE1DDBDC73007ABD3E /* Activity.storyboard */,
+				FA82300728D85E12006CA0F6 /* fonts */,
+				FA399AC31DDBDC88007ABD3E /* Guides.storyboard */,
+				60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */,
+				FA753DBD1B7AC40E00EC13B7 /* LaunchScreenRebrand.xib */,
+				60F6CEC016E29AD60031504A /* Localizable.strings */,
+				1927514914E9CCC9000ABAC4 /* MainStoryboard.storyboard */,
+				FAB6214F1D7397A70026FDC6 /* Onboarding.storyboard */,
+				FA399A991DDBDB3E007ABD3E /* Projects.storyboard */,
+				FA8A0E5325E1D98F006CA8A4 /* TaxaRanks.strings */,
+			);
+			path = "User Interface";
+			sourceTree = "<group>";
+		};
+		FA82300728D85E12006CA0F6 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
 		FA9437871C869F2C00CB10F3 /* ViewProtocols */ = {
 			isa = PBXGroup;
 			children = (
@@ -3064,7 +3071,6 @@
 				FA03D5AB261B8D45005F2B66 /* th */,
 			);
 			name = MainStoryboard.storyboard;
-			path = INaturalistIOS;
 			sourceTree = "<group>";
 		};
 		60EBAD5116E5C65B00BFCDAF /* InfoPlist.strings */ = {
@@ -3187,7 +3193,6 @@
 				FA03D5AD261B8D72005F2B66 /* th */,
 			);
 			name = Projects.storyboard;
-			path = INaturalistIOS;
 			sourceTree = "<group>";
 		};
 		FA399AAE1DDBDC73007ABD3E /* Activity.storyboard */ = {
@@ -3206,7 +3211,6 @@
 				FA03D5AE261B8D73005F2B66 /* th */,
 			);
 			name = Activity.storyboard;
-			path = INaturalistIOS;
 			sourceTree = "<group>";
 		};
 		FA399AC31DDBDC88007ABD3E /* Guides.storyboard */ = {
@@ -3249,7 +3253,6 @@
 				FA03D5AF261B8D73005F2B66 /* th */,
 			);
 			name = Guides.storyboard;
-			path = INaturalistIOS;
 			sourceTree = "<group>";
 		};
 		FA8A0E5325E1D98F006CA8A4 /* TaxaRanks.strings */ = {
@@ -3334,7 +3337,6 @@
 				FA03D5AC261B8D45005F2B66 /* th */,
 			);
 			name = Onboarding.storyboard;
-			path = INaturalistIOS;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
