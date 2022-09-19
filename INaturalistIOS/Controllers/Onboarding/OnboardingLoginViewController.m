@@ -32,7 +32,7 @@
 #import "INatReachability.h"
 #import "iNaturalist-Swift.h"
 
-@interface OnboardingLoginViewController () <UITextFieldDelegate, ForgotPasswordDelegate, INatAuthenticationDelegate, GIDSignInUIDelegate, ASAuthorizationControllerPresentationContextProviding, ASAuthorizationControllerDelegate>
+@interface OnboardingLoginViewController () <UITextFieldDelegate, ForgotPasswordDelegate, INatAuthenticationDelegate, ASAuthorizationControllerPresentationContextProviding, ASAuthorizationControllerDelegate>
 
 @property IBOutlet UISegmentedControl *switchContextControl;
 
@@ -308,11 +308,13 @@
         [fb logOut];
     }
     
-    // a ui delegate is required
-    GIDSignIn.sharedInstance.uiDelegate = self;
+    [self.googleButton addTarget:self
+                          action:@selector(handleAuthorizationGoogleButtonPress)
+                forControlEvents:UIControlEventTouchUpInside];
+    
     // ensure we're unauthenticated from google
-    if ([[GIDSignIn sharedInstance] hasAuthInKeychain]) {
-        [[GIDSignIn sharedInstance] signOut];
+    if ([GIDSignIn.sharedInstance hasPreviousSignIn]) {
+        [GIDSignIn.sharedInstance signOut];
     }
     
     
@@ -559,6 +561,12 @@
         [self dismissViewControllerAnimated:YES
                                  completion:nil];
     }
+}
+
+- (void)handleAuthorizationGoogleButtonPress {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    LoginController *login = appDelegate.loginController;
+    [login loginWithGoogleWithPresentingVC:self];
 }
 
 - (void)handleAuthorizationAppleIDButtonPress {

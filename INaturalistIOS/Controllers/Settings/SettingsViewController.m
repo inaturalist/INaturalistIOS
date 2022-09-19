@@ -494,8 +494,8 @@ static const int ChangePartnerMinimumInterval = 86400;
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     // clear google signin
-    if ([[GIDSignIn sharedInstance] hasAuthInKeychain]) {
-        [[GIDSignIn sharedInstance] signOut];
+    if ([GIDSignIn.sharedInstance hasPreviousSignIn]) {
+        [GIDSignIn.sharedInstance signOut];
     }
     
     // clear facebook login

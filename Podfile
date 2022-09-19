@@ -20,7 +20,7 @@ target :iNaturalist do
   pod 'UIColor-HTMLColors', '1.0.0'
   pod 'SVPullToRefresh', '0.4.1'
   pod 'PDKTStickySectionHeadersCollectionViewLayout', '0.1'
-  pod 'GoogleSignIn', '4.4.0'
+  pod 'GoogleSignIn', '6.2.4'
   pod 'SSZipArchive', '0.3.2'
   pod 'ActionSheetPicker-3.0', '1.3.12'
   pod 'NXOAuth2Client', :git => 'https://github.com/inaturalist/OAuth2Client', :branch => 'iNat'

@@ -29,7 +29,7 @@
 
 static const NSTimeInterval LocalMeUserValidTimeInterval = 600;
 
-@interface LoginController () <GIDSignInDelegate> {
+@interface LoginController () {
     NSString         *externalAccessToken;
     NSString         *iNatAccessToken;
     NSString         *accountType;
@@ -306,12 +306,32 @@ NSInteger INatMinPasswordLength = 6;
 
 #pragma mark - Google methods
 
+- (void)loginWithGoogleWithPresentingVC:(UIViewController *)presentingVC {
+    GIDConfiguration *config = [[GIDConfiguration alloc] initWithClientID:GoogleClientId];
+    
+    [GIDSignIn.sharedInstance signInWithConfiguration:config
+                             presentingViewController:presentingVC
+                                             callback:^(GIDGoogleUser * _Nullable user, NSError * _Nullable error) {
+        
+        if (error || !user.authentication.idToken) {
+            [[Analytics sharedClient] event:kAnalyticsEventLoginFailed
+                             withProperties:@{ @"Via": @"Google" }];
+            [self.delegate loginFailedWithError:error];
+        } else {
+            [[Analytics sharedClient] event:kAnalyticsEventLogin
+                             withProperties:@{ @"Via": @"Google" }];
+            self->externalAccessToken = [user.authentication.accessToken copy];
+            self->accountType = kINatAuthServiceExtToken;
+            [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:self->accountType
+                                                                 assertionType:[NSURL URLWithString:@"http://google.com"]
+                                                                     assertion:self->externalAccessToken];
+            
+        }
+    }];
+}
+
 - (void)initGoogleLogin {
-    GIDSignIn.sharedInstance.clientID = GoogleClientId;
-    GIDSignIn.sharedInstance.scopes = @[
-                                        @"https://www.googleapis.com/auth/userinfo.email",
-                                        ];
-    GIDSignIn.sharedInstance.delegate = self;
+    
 }
 
 - (void)signIn:(GIDSignIn *)signIn

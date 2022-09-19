@@ -42,6 +42,7 @@ typedef void (^LoginErrorBlock)(NSError *error);
                        license:(NSString *)license;
 - (void)loginWithUsername:(NSString *)username
                  password:(NSString *)password;
+- (void)loginWithGoogleWithPresentingVC:(UIViewController *)vc;
 - (void)logout;
 
 - (void)loggedInUserSelectedPartner:(Partner *)partner
