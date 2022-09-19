@@ -1,5 +1,5 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, :deployment_target => '10.2'
+platform :ios, :deployment_target => '11.0'
 
 inhibit_all_warnings!
 use_frameworks!
@@ -54,7 +54,7 @@ end
 post_install do |installer|
      installer.pods_project.targets.each do |target|
          target.build_configurations.each do |config|
-             config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.3'
+             config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '11.0'
              config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
              config.build_settings['EXCLUDED_ARCHS[sdk=watchsimulator*]'] = 'arm64'
              config.build_settings['EXCLUDED_ARCHS[sdk=appletvsimulator*]'] = 'arm64'
