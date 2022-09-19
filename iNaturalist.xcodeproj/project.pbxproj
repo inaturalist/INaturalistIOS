@@ -208,6 +208,8 @@
 		FA7FF84A1BAB622200885034 /* UIAlertController+IOS9_Autorotate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */; };
 		FA81DF0E1E6F73A9006E7132 /* ObsDetailViewModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */; };
 		FA822FD428D81BC0006CA0F6 /* OnboardingReauthenticateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA822FD328D81BC0006CA0F6 /* OnboardingReauthenticateViewController.swift */; };
+		FA822FDB28D84D4C006CA0F6 /* ExploreObservationPhoto+BestAvailableURL.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */; };
+		FA822FDD28D84D67006CA0F6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = FA822FDC28D84D67006CA0F6 /* README.md */; };
 		FA8382471E70FD7400F73E90 /* WilletObservationRails.json in Resources */ = {isa = PBXBuildFile; fileRef = FA8382461E70FD7400F73E90 /* WilletObservationRails.json */; };
 		FA86CC381EAAE496004D6482 /* TaxonSuggestionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */; };
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
@@ -873,6 +875,7 @@
 		FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+IOS9_Autorotate.m"; sourceTree = "<group>"; };
 		FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailViewModelTests.m; sourceTree = "<group>"; };
 		FA822FD328D81BC0006CA0F6 /* OnboardingReauthenticateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingReauthenticateViewController.swift; sourceTree = "<group>"; };
+		FA822FDC28D84D67006CA0F6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		FA8382461E70FD7400F73E90 /* WilletObservationRails.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = WilletObservationRails.json; path = Fixtures/WilletObservationRails.json; sourceTree = "<group>"; };
 		FA86CC361EAAE496004D6482 /* TaxonSuggestionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxonSuggestionCell.h; sourceTree = "<group>"; };
 		FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonSuggestionCell.m; sourceTree = "<group>"; };
@@ -1325,7 +1328,6 @@
 		1927513D14E9CCC9000ABAC4 /* INaturalist */ = {
 			isa = PBXGroup;
 			children = (
-				FA9437871C869F2C00CB10F3 /* ViewProtocols */,
 				19F621A2150ECD3000C58F28 /* Controllers */,
 				FA4E72AF19FAC8FD00A9AB5D /* Explore */,
 				19F621A4150ECDC700C58F28 /* Helpers */,
@@ -1364,7 +1366,11 @@
 		19F621A1150ECD0100C58F28 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				FA822FDC28D84D67006CA0F6 /* README.md */,
 				FA822FD528D84839006CA0F6 /* CoreData */,
+				FA822FD828D84BB2006CA0F6 /* Mantle */,
+				FA822FD928D84BCA006CA0F6 /* Realm */,
+				FA9437871C869F2C00CB10F3 /* ViewProtocols */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1657,18 +1663,8 @@
 				FA4E72D419FACE3300A9AB5D /* Views */,
 				FA4E72ED19FACEC700A9AB5D /* iNat API */,
 				FA4E72CD19FACDF100A9AB5D /* Extensions */,
-				FA4E72C519FAC93600A9AB5D /* Model */,
 			);
 			name = Explore;
-			sourceTree = "<group>";
-		};
-		FA4E72C519FAC93600A9AB5D /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				FADBED5F1D2C81F100753692 /* Mantle */,
-				FADBED5E1D2C81D400753692 /* Realm */,
-			);
-			name = Model;
 			sourceTree = "<group>";
 		};
 		FA4E72CD19FACDF100A9AB5D /* Extensions */ = {
@@ -1682,8 +1678,6 @@
 				FADD58651A00662200E141C9 /* UIFont+ExploreFonts.m */,
 				FA0069211A0C51F600C64F28 /* MKMapView+ZoomLevel.h */,
 				FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */,
-				FA8872721A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.h */,
-				FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -1944,6 +1938,100 @@
 			path = CoreData;
 			sourceTree = "<group>";
 		};
+		FA822FD828D84BB2006CA0F6 /* Mantle */ = {
+			isa = PBXGroup;
+			children = (
+				FA4E72B019FAC93400A9AB5D /* ExploreComment.h */,
+				FA4E72B119FAC93400A9AB5D /* ExploreComment.m */,
+				FAA6EB091C8F820000F43552 /* ExploreFave.h */,
+				FAA6EB0A1C8F820000F43552 /* ExploreFave.m */,
+				FAB0B8E3237CE4E800E73681 /* ExploreGuide.h */,
+				FAB0B8E4237CE4E800E73681 /* ExploreGuide.m */,
+				FA4E72B219FAC93400A9AB5D /* ExploreIdentification.h */,
+				FA4E72B319FAC93400A9AB5D /* ExploreIdentification.m */,
+				FA4E72B419FAC93400A9AB5D /* ExploreLocation.h */,
+				FA4E72B519FAC93400A9AB5D /* ExploreLocation.m */,
+				FA4E72B619FAC93400A9AB5D /* ExploreObservation.h */,
+				FA4E72B719FAC93400A9AB5D /* ExploreObservation.m */,
+				FA4E72CA19FACD7700A9AB5D /* ExploreObservationPhoto.h */,
+				FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */,
+				FA8872721A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.h */,
+				FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */,
+				FAC415E525E24A47002814C7 /* ExploreObservationSound.h */,
+				FAC415E625E24A47002814C7 /* ExploreObservationSound.m */,
+				FAA8D26123CD267200757A1E /* ExploreObsField.h */,
+				FAA8D26223CD267200757A1E /* ExploreObsField.m */,
+				FA930F6E244FBA37001B9D81 /* ExploreObsFieldValue.h */,
+				FA930F6F244FBA37001B9D81 /* ExploreObsFieldValue.m */,
+				FA60EA0F23EA3F7F0026F7A3 /* ExplorePost.h */,
+				FA60EA1023EA3F7F0026F7A3 /* ExplorePost.m */,
+				FA4E72BA19FAC93400A9AB5D /* ExploreProject.h */,
+				FA4E72BB19FAC93400A9AB5D /* ExploreProject.m */,
+				FA930F6B244FA582001B9D81 /* ExploreProjectObservation.h */,
+				FA930F6C244FA582001B9D81 /* ExploreProjectObservation.m */,
+				FAA8D25E23CD266400757A1E /* ExploreProjectObsField.h */,
+				FAA8D25F23CD266400757A1E /* ExploreProjectObsField.m */,
+				FA4E72BC19FAC93400A9AB5D /* ExploreTaxon.h */,
+				FA4E72BD19FAC93400A9AB5D /* ExploreTaxon.m */,
+				FA427EED1ECD087F003B26C3 /* ExploreTaxonPhoto.h */,
+				FA427EEE1ECD087F003B26C3 /* ExploreTaxonPhoto.m */,
+				FA9249801EF85FD000E0C387 /* ExploreTaxonScore.h */,
+				FA9249811EF85FD000E0C387 /* ExploreTaxonScore.m */,
+				FAFED1F11DB595C10015CCBA /* ExploreUpdate.h */,
+				FAFED1F21DB595C10015CCBA /* ExploreUpdate.m */,
+				FACEEB261D1C607600B2EC62 /* ExploreUser.h */,
+				FACEEB271D1C607600B2EC62 /* ExploreUser.m */,
+				FAEF234F1C7D2DBA00208F44 /* IdentifierCount.h */,
+				FAEF23501C7D2DBA00208F44 /* IdentifierCount.m */,
+				FAEF23521C7D2DC300208F44 /* ObserverCount.h */,
+				FAEF23531C7D2DC300208F44 /* ObserverCount.m */,
+				FAEF23551C7D2DCD00208F44 /* SpeciesCount.h */,
+				FAEF23561C7D2DCD00208F44 /* SpeciesCount.m */,
+			);
+			path = Mantle;
+			sourceTree = "<group>";
+		};
+		FA822FD928D84BCA006CA0F6 /* Realm */ = {
+			isa = PBXGroup;
+			children = (
+				FAFED1FA1DB5A2680015CCBA /* ExploreCommentRealm.h */,
+				FAFED1FB1DB5A2680015CCBA /* ExploreCommentRealm.m */,
+				FA8EBCE5230DE48400C1D789 /* ExploreDeletedRecord.h */,
+				FA8EBCE6230DE48400C1D789 /* ExploreDeletedRecord.m */,
+				FA9C631C23E8C51400E1AD62 /* ExploreFaveRealm.h */,
+				FA9C631D23E8C51400E1AD62 /* ExploreFaveRealm.m */,
+				FAB0B8EC237F37C000E73681 /* ExploreGuideRealm.h */,
+				FAB0B8ED237F37C000E73681 /* ExploreGuideRealm.m */,
+				FAFED1FD1DB5A2730015CCBA /* ExploreIdentificationRealm.h */,
+				FAFED1FE1DB5A2730015CCBA /* ExploreIdentificationRealm.m */,
+				FA9C631923E7795600E1AD62 /* ExploreObservationPhotoRealm.h */,
+				FA9C631A23E7795600E1AD62 /* ExploreObservationPhotoRealm.m */,
+				FAD0890823E4AD4F002D9F3C /* ExploreObservationRealm.h */,
+				FAD0890923E4AD4F002D9F3C /* ExploreObservationRealm.m */,
+				FAC415F425E2FB44002814C7 /* ExploreObservationSoundRealm.h */,
+				FAC415F525E2FB44002814C7 /* ExploreObservationSoundRealm.m */,
+				FA8B8DD323CE7266007FBA63 /* ExploreObsFieldRealm.h */,
+				FA8B8DD423CE7266007FBA63 /* ExploreObsFieldRealm.m */,
+				FAD44AE52456635000E9DA38 /* ExploreObsFieldValueRealm.h */,
+				FAD44AE62456635000E9DA38 /* ExploreObsFieldValueRealm.m */,
+				FAD44AE824576E2800E9DA38 /* ExploreProjectObservationRealm.h */,
+				FAD44AE924576E2800E9DA38 /* ExploreProjectObservationRealm.m */,
+				FA8B8DD623CE7279007FBA63 /* ExploreProjectObsFieldRealm.h */,
+				FA8B8DD723CE7279007FBA63 /* ExploreProjectObsFieldRealm.m */,
+				FAFA9C9823C40A40002E22FD /* ExploreProjectRealm.h */,
+				FAFA9C9923C40A40002E22FD /* ExploreProjectRealm.m */,
+				FA427EF01ECD1794003B26C3 /* ExploreTaxonPhotoRealm.h */,
+				FA427EF11ECD1794003B26C3 /* ExploreTaxonPhotoRealm.m */,
+				FA25520E1D1F49A8005D2128 /* ExploreTaxonRealm.h */,
+				FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */,
+				FAFED1F41DB59EA90015CCBA /* ExploreUpdateRealm.h */,
+				FAFED1F51DB59EA90015CCBA /* ExploreUpdateRealm.m */,
+				FAFED1F71DB5A25C0015CCBA /* ExploreUserRealm.h */,
+				FAFED1F81DB5A25C0015CCBA /* ExploreUserRealm.m */,
+			);
+			path = Realm;
+			sourceTree = "<group>";
+		};
 		FA88726B1A2CFBD900D2168E /* Grid View */ = {
 			isa = PBXGroup;
 			children = (
@@ -2084,98 +2172,6 @@
 				FA9EBE4B1ED50767001FE4AD /* TaxonMapViewController.m */,
 			);
 			name = "Taxon Details";
-			sourceTree = "<group>";
-		};
-		FADBED5E1D2C81D400753692 /* Realm */ = {
-			isa = PBXGroup;
-			children = (
-				FAFED1FA1DB5A2680015CCBA /* ExploreCommentRealm.h */,
-				FAFED1FB1DB5A2680015CCBA /* ExploreCommentRealm.m */,
-				FA8EBCE5230DE48400C1D789 /* ExploreDeletedRecord.h */,
-				FA8EBCE6230DE48400C1D789 /* ExploreDeletedRecord.m */,
-				FA9C631C23E8C51400E1AD62 /* ExploreFaveRealm.h */,
-				FA9C631D23E8C51400E1AD62 /* ExploreFaveRealm.m */,
-				FAB0B8EC237F37C000E73681 /* ExploreGuideRealm.h */,
-				FAB0B8ED237F37C000E73681 /* ExploreGuideRealm.m */,
-				FAFED1FD1DB5A2730015CCBA /* ExploreIdentificationRealm.h */,
-				FAFED1FE1DB5A2730015CCBA /* ExploreIdentificationRealm.m */,
-				FA9C631923E7795600E1AD62 /* ExploreObservationPhotoRealm.h */,
-				FA9C631A23E7795600E1AD62 /* ExploreObservationPhotoRealm.m */,
-				FAD0890823E4AD4F002D9F3C /* ExploreObservationRealm.h */,
-				FAD0890923E4AD4F002D9F3C /* ExploreObservationRealm.m */,
-				FAC415F425E2FB44002814C7 /* ExploreObservationSoundRealm.h */,
-				FAC415F525E2FB44002814C7 /* ExploreObservationSoundRealm.m */,
-				FA8B8DD323CE7266007FBA63 /* ExploreObsFieldRealm.h */,
-				FA8B8DD423CE7266007FBA63 /* ExploreObsFieldRealm.m */,
-				FAD44AE52456635000E9DA38 /* ExploreObsFieldValueRealm.h */,
-				FAD44AE62456635000E9DA38 /* ExploreObsFieldValueRealm.m */,
-				FAD44AE824576E2800E9DA38 /* ExploreProjectObservationRealm.h */,
-				FAD44AE924576E2800E9DA38 /* ExploreProjectObservationRealm.m */,
-				FA8B8DD623CE7279007FBA63 /* ExploreProjectObsFieldRealm.h */,
-				FA8B8DD723CE7279007FBA63 /* ExploreProjectObsFieldRealm.m */,
-				FAFA9C9823C40A40002E22FD /* ExploreProjectRealm.h */,
-				FAFA9C9923C40A40002E22FD /* ExploreProjectRealm.m */,
-				FA427EF01ECD1794003B26C3 /* ExploreTaxonPhotoRealm.h */,
-				FA427EF11ECD1794003B26C3 /* ExploreTaxonPhotoRealm.m */,
-				FA25520E1D1F49A8005D2128 /* ExploreTaxonRealm.h */,
-				FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */,
-				FAFED1F41DB59EA90015CCBA /* ExploreUpdateRealm.h */,
-				FAFED1F51DB59EA90015CCBA /* ExploreUpdateRealm.m */,
-				FAFED1F71DB5A25C0015CCBA /* ExploreUserRealm.h */,
-				FAFED1F81DB5A25C0015CCBA /* ExploreUserRealm.m */,
-			);
-			name = Realm;
-			sourceTree = "<group>";
-		};
-		FADBED5F1D2C81F100753692 /* Mantle */ = {
-			isa = PBXGroup;
-			children = (
-				FA4E72B019FAC93400A9AB5D /* ExploreComment.h */,
-				FA4E72B119FAC93400A9AB5D /* ExploreComment.m */,
-				FAA6EB091C8F820000F43552 /* ExploreFave.h */,
-				FAA6EB0A1C8F820000F43552 /* ExploreFave.m */,
-				FAB0B8E3237CE4E800E73681 /* ExploreGuide.h */,
-				FAB0B8E4237CE4E800E73681 /* ExploreGuide.m */,
-				FA4E72B219FAC93400A9AB5D /* ExploreIdentification.h */,
-				FA4E72B319FAC93400A9AB5D /* ExploreIdentification.m */,
-				FA4E72B419FAC93400A9AB5D /* ExploreLocation.h */,
-				FA4E72B519FAC93400A9AB5D /* ExploreLocation.m */,
-				FA4E72B619FAC93400A9AB5D /* ExploreObservation.h */,
-				FA4E72B719FAC93400A9AB5D /* ExploreObservation.m */,
-				FA4E72CA19FACD7700A9AB5D /* ExploreObservationPhoto.h */,
-				FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */,
-				FAC415E525E24A47002814C7 /* ExploreObservationSound.h */,
-				FAC415E625E24A47002814C7 /* ExploreObservationSound.m */,
-				FAA8D26123CD267200757A1E /* ExploreObsField.h */,
-				FAA8D26223CD267200757A1E /* ExploreObsField.m */,
-				FA930F6E244FBA37001B9D81 /* ExploreObsFieldValue.h */,
-				FA930F6F244FBA37001B9D81 /* ExploreObsFieldValue.m */,
-				FA60EA0F23EA3F7F0026F7A3 /* ExplorePost.h */,
-				FA60EA1023EA3F7F0026F7A3 /* ExplorePost.m */,
-				FA4E72BA19FAC93400A9AB5D /* ExploreProject.h */,
-				FA4E72BB19FAC93400A9AB5D /* ExploreProject.m */,
-				FA930F6B244FA582001B9D81 /* ExploreProjectObservation.h */,
-				FA930F6C244FA582001B9D81 /* ExploreProjectObservation.m */,
-				FAA8D25E23CD266400757A1E /* ExploreProjectObsField.h */,
-				FAA8D25F23CD266400757A1E /* ExploreProjectObsField.m */,
-				FA4E72BC19FAC93400A9AB5D /* ExploreTaxon.h */,
-				FA4E72BD19FAC93400A9AB5D /* ExploreTaxon.m */,
-				FA427EED1ECD087F003B26C3 /* ExploreTaxonPhoto.h */,
-				FA427EEE1ECD087F003B26C3 /* ExploreTaxonPhoto.m */,
-				FA9249801EF85FD000E0C387 /* ExploreTaxonScore.h */,
-				FA9249811EF85FD000E0C387 /* ExploreTaxonScore.m */,
-				FAFED1F11DB595C10015CCBA /* ExploreUpdate.h */,
-				FAFED1F21DB595C10015CCBA /* ExploreUpdate.m */,
-				FACEEB261D1C607600B2EC62 /* ExploreUser.h */,
-				FACEEB271D1C607600B2EC62 /* ExploreUser.m */,
-				FAEF234F1C7D2DBA00208F44 /* IdentifierCount.h */,
-				FAEF23501C7D2DBA00208F44 /* IdentifierCount.m */,
-				FAEF23521C7D2DC300208F44 /* ObserverCount.h */,
-				FAEF23531C7D2DC300208F44 /* ObserverCount.m */,
-				FAEF23551C7D2DCD00208F44 /* SpeciesCount.h */,
-				FAEF23561C7D2DCD00208F44 /* SpeciesCount.m */,
-			);
-			name = Mantle;
 			sourceTree = "<group>";
 		};
 		FADDA3B91DBABA7800FB054F /* News */ = {
@@ -2431,6 +2427,7 @@
 				19ADD5AC160A3D50001D886C /* ObservationFieldValueSwitchCell.xib in Resources */,
 				FA394EB8218909AF004AE0FE /* ProjectObservationHeaderView.xib in Resources */,
 				19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */,
+				FA822FDD28D84D67006CA0F6 /* README.md in Resources */,
 				60F6CEBE16E29AD60031504A /* Localizable.strings in Resources */,
 				FADEF3F9235F97ED0025C580 /* GoogleService-Info.plist in Resources */,
 				FA74A6221CB4C4EE002EBD0A /* RankedUserObsSpecies.xib in Resources */,
@@ -2696,6 +2693,7 @@
 				FA4E730719FAD14E00A9AB5D /* ExploreMapViewController.m in Sources */,
 				FAA0A1981F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.m in Sources */,
 				FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */,
+				FA822FDB28D84D4C006CA0F6 /* ExploreObservationPhoto+BestAvailableURL.m in Sources */,
 				FA5564871BD9A9340049803B /* MediaScrollViewCell.m in Sources */,
 				FAEF23311C7CF20500208F44 /* ProjectDetailPageViewController.m in Sources */,
 				FAEF233B1C7D091F00208F44 /* ProjectDetailSpeciesViewController.m in Sources */,
