@@ -80,6 +80,11 @@
     bodyText = [bodyText stringByAppendingFormat:@"%@\n\n",
                 NSLocalizedString(@"Portugal: Associação Biodiversidade Para Todos operating Biodiversity4All (Biodiversity4All.org).",
                                   @"portugal partner")];
+    
+    bodyText = [bodyText stringByAppendingFormat:@"%@\n\n",
+                NSLocalizedString(@"Taiwan: National Chiayi University and Taiwan Forestry Research Institute supporting iNaturalist Taiwan (taiwan.inaturalist.org).",
+                                  @"taiwan partner")];
+
     bodyText = [bodyText stringByAppendingFormat:@"%@\n\n",
                 NSLocalizedString(@"United Kingdom: National Biodiversity Network Trust supporting iNaturalist United Kingdom (uk.inaturalist.org).",
                                   @"uk partner")];

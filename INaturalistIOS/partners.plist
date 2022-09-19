@@ -20,6 +20,24 @@
 			<string>714</string>
 		</array>
 	</dict>
+    <dict>
+        <key>logoName</key>
+        <string>network_logo_tw</string>
+        <key>countryName</key>
+        <string>Taiwan</string>
+        <key>identifier</key>
+        <string>27</string>
+        <key>name</key>
+        <string>愛自然-臺灣(iNaturalist Taiwan)</string>
+        <key>shortName</key>
+        <string>iNaturalistTW</string>
+        <key>baseUrl</key>
+        <string>https://taiwan.inaturalist.org/string>
+        <key>mobileCountryCodes</key>
+        <array>
+            <string>466</string>
+        </array>
+    </dict>
 	<dict>
 		<key>countryName</key>
 		<string>Portugal</string>
