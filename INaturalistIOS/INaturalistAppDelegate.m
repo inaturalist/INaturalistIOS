@@ -38,7 +38,6 @@
 #import "Fave.h"
 #import "NewsItem.h"
 #import "ExploreTaxonRealm.h"
-#import "ABSorter.h"
 #import "ObservationAPI.h"
 #import "ExploreUpdate.h"
 #import "ExploreUpdateRealm.h"
