@@ -836,4 +836,20 @@
     return ObsTrueCoordinatePrivacyVisible;
 }
 
+- (NSString *)localizedGeoprivacyText {
+    // TODO: long term fix is to convert geoprivacy to an enum
+    NSDictionary *geoPrivacyOptions = @{
+        @"open": NSLocalizedString(@"Open", @"open geoprivacy"),
+        @"obscured": NSLocalizedString(@"Obscured", @"obscured geoprivacy"),
+        @"private": NSLocalizedString(@"Private", @"private geoprivacy"),
+    };
+    
+    NSString *str = [geoPrivacyOptions valueForKey:self.geoprivacy];
+    if (str == nil) {
+        str = NSLocalizedString(@"Unknown", nil);
+    }
+    
+    return str;
+}
+
 @end

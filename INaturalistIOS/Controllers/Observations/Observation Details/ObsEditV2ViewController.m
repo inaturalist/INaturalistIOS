@@ -1658,7 +1658,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
     
     cell.titleLabel.text = [self geoPrivacyTitle];
-    cell.secondaryLabel.text = self.standaloneObservation.geoprivacy;
+    cell.secondaryLabel.text = self.standaloneObservation.localizedGeoprivacyText;
     
     FAKIcon *globe = [FAKIonIcons iosWorldOutlineIconWithSize:44];
     [globe addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];

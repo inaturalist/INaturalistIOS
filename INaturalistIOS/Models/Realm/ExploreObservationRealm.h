@@ -90,4 +90,6 @@
 
 - (instancetype)standaloneCopyWithMedia;
 
+- (NSString *)localizedGeoprivacyText;
+
 @end
