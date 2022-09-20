@@ -228,8 +228,8 @@
     NSDictionary *views = @{
                             @"searchMenu": searchMenu,
                             @"activeSearch": activeSearchView,
-                            @"topLayoutGuide": self.topLayoutGuide,
-                            @"bottomLayoutGuide": self.bottomLayoutGuide,
+                            @"topLayoutGuide": self.view.safeAreaLayoutGuide.topAnchor,
+                            @"bottomLayoutGuide": self.view.safeAreaLayoutGuide.bottomAnchor,
                             };
     
     

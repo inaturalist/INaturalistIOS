@@ -56,8 +56,8 @@ static NSString *ExploreListHeaderId = @"ExploreListHeader";
     [self.view addSubview:observationsTableView];
     
     NSDictionary *views = @{
-                            @"topLayoutGuide": self.topLayoutGuide,
-                            @"bottomLayoutGuide": self.bottomLayoutGuide,
+                            @"topLayoutGuide": self.view.safeAreaLayoutGuide.topAnchor,
+                            @"bottomLayoutGuide": self.view.safeAreaLayoutGuide.bottomAnchor,
                             @"observationsTableView": observationsTableView,
                             };
     

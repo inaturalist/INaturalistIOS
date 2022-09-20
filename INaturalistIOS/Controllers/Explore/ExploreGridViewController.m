@@ -67,8 +67,8 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
     [self.view addSubview:observationsCollectionView];
     
     NSDictionary *views = @{
-                            @"topLayoutGuide": self.topLayoutGuide,
-                            @"bottomLayoutGuide": self.bottomLayoutGuide,
+                            @"topLayoutGuide": self.view.safeAreaLayoutGuide.topAnchor,
+                            @"bottomLayoutGuide": self.view.safeAreaLayoutGuide.bottomAnchor,
                             @"observationsCollectionView": observationsCollectionView,
                             };
     

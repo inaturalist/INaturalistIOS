@@ -19,8 +19,8 @@
         [self.view addLayoutGuide:safeLayoutGuide];
         [safeLayoutGuide.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor].active = YES;
         [safeLayoutGuide.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor].active = YES;
-        [safeLayoutGuide.topAnchor constraintEqualToAnchor:self.topLayoutGuide.bottomAnchor].active = YES;
-        [safeLayoutGuide.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.topAnchor].active = YES;
+        [safeLayoutGuide.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = YES;
+        [safeLayoutGuide.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor].active = YES;
     }
     return safeLayoutGuide;
 }
