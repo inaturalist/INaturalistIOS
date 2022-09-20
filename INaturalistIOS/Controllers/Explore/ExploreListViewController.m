@@ -22,9 +22,8 @@
 static NSString *ExploreListCellId = @"ExploreListCell";
 static NSString *ExploreListHeaderId = @"ExploreListHeader";
 
-@interface ExploreListViewController () <UITableViewDataSource,UITableViewDelegate> {
-    UITableView *observationsTableView;
-}
+@interface ExploreListViewController () <UITableViewDataSource,UITableViewDelegate>
+@property UITableView *observationsTableView;
 @end
 
 @implementation ExploreListViewController
@@ -32,7 +31,7 @@ static NSString *ExploreListHeaderId = @"ExploreListHeader";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    observationsTableView = ({
+    self.observationsTableView = ({
         // use autolayout
         UITableView *tv = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         tv.translatesAutoresizingMaskIntoConstraints = NO;
@@ -53,35 +52,26 @@ static NSString *ExploreListHeaderId = @"ExploreListHeader";
         
         tv;
     });
-    [self.view addSubview:observationsTableView];
+    [self.view addSubview:self.observationsTableView];
     
-    NSDictionary *views = @{
-                            @"topLayoutGuide": self.view.safeAreaLayoutGuide.topAnchor,
-                            @"bottomLayoutGuide": self.view.safeAreaLayoutGuide.bottomAnchor,
-                            @"observationsTableView": observationsTableView,
-                            };
+    [self.observationsTableView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = YES;
+    [self.observationsTableView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor].active = YES;
+    [self.observationsTableView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor].active = YES;
+    [self.observationsTableView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor].active = YES;
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[observationsTableView]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[topLayoutGuide]-0-[observationsTableView]-0-[bottomLayoutGuide]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [observationsTableView layoutIfNeeded];
-    [observationsTableView reloadData];
+    [self.observationsTableView layoutIfNeeded];
+    [self.observationsTableView reloadData];
     
-    observationsTableView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
+    self.observationsTableView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
     
-    if (observationsTableView.visibleCells.count > 0)
-        [observationsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
-                                     atScrollPosition:UITableViewScrollPositionTop
-                                             animated:YES];
+    if (self.observationsTableView.visibleCells.count > 0)
+        [self.observationsTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
+                                          atScrollPosition:UITableViewScrollPositionTop
+                                                  animated:YES];
 }
 
 - (void)viewWillLayoutSubviews {
-
+    
     [super viewWillLayoutSubviews];
 }
 
@@ -90,7 +80,7 @@ static NSString *ExploreListHeaderId = @"ExploreListHeader";
     
     // presenting from this collection view is screwing up the content inset
     // reset it here
-    observationsTableView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
+    self.observationsTableView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
 }
 
 #pragma mark - UI Helper
@@ -108,13 +98,13 @@ static NSString *ExploreListHeaderId = @"ExploreListHeader";
 - (void)observationChangedCallback {
     dispatch_async(dispatch_get_main_queue(), ^{
         // in case refresh was triggered by infinite scrolling, stop the animation
-        [observationsTableView.infiniteScrollingView stopAnimating];
+        [self.observationsTableView.infiniteScrollingView stopAnimating];
         
-        [observationsTableView reloadData];
+        [self.observationsTableView reloadData];
         
         // if necessary, adjust the content inset of the table view
         // to make room for the active search predicate
-        observationsTableView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
+        self.observationsTableView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
     });
 }
 

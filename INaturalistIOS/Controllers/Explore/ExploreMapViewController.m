@@ -26,12 +26,12 @@
 #import "ObsDetailV2ViewController.h"
 #import "UIImage+MapAnnotations.h"
 
-@interface ExploreMapViewController () <MKMapViewDelegate, CLLocationManagerDelegate> {
-    ExploreLocation *centerLocation;
-    MKMapView *mapView;
-    NSTimer *mapChangedTimer;
-    BOOL mapViewHasRenderedTiles;
-}
+@interface ExploreMapViewController () <MKMapViewDelegate, CLLocationManagerDelegate>
+
+@property MKMapView *mapView;
+@property NSTimer *mapChangedTimer;
+@property ExploreLocation *centerLocation;
+@property BOOL mapViewHasRenderedTiles;
 
 @end
 
@@ -60,8 +60,8 @@
                 
                 // if the limiting region was cleared, then re-apply it once the map returns
                 // avoid doing this if the map hasn't rendered at least once (ie a fresh launch)
-                if (!self.observationDataSource.limitingRegion && mapViewHasRenderedTiles) {
-                    self.observationDataSource.limitingRegion = [ExploreRegion regionFromMKMapRect:mapView.visibleMapRect];
+                if (!self.observationDataSource.limitingRegion && self.mapViewHasRenderedTiles) {
+                    self.observationDataSource.limitingRegion = [ExploreRegion regionFromMKMapRect:self.mapView.visibleMapRect];
                 }
             }
         }
@@ -69,15 +69,15 @@
     
     // wait to set the delegate and receive regionDidChange notifications until
     // after the view has completely finished loading
-    mapView.delegate = self;
+    self.mapView.delegate = self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    mapViewHasRenderedTiles = NO;
+    self.mapViewHasRenderedTiles = NO;
     
-    mapView = ({
+    self.mapView = ({
         // use autolayout
         MKMapView *map = [[MKMapView alloc] initWithFrame:CGRectZero];
         map.translatesAutoresizingMaskIntoConstraints = NO;
@@ -86,25 +86,18 @@
         
         map;
     });
-    [self.view addSubview:mapView];
+    [self.view addSubview:self.mapView];
     
-    NSDictionary *views = @{
-                            @"mapView": mapView,
-                            };
+    NSArray *constraints = @[
+        [self.mapView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [self.mapView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+        [self.mapView.topAnchor constraintEqualToAnchor:self.view.topAnchor],
+        [self.mapView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor],
+    ];
     
-    NSDictionary *metrics = @{
-                              @"topLayoutGuideLength": @(self.parentViewController.topLayoutGuide.length),
-                              @"bottomLayoutGuideLength": @(self.parentViewController.bottomLayoutGuide.length),
-                              };
-    
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[mapView]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-topLayoutGuideLength-[mapView]-bottomLayoutGuideLength-|"
-                                                                      options:0
-                                                                      metrics:metrics
-                                                                        views:views]];
+    for (NSLayoutConstraint *constraint in constraints) {
+        constraint.active = YES;
+    }
 }
 
 #pragma mark - KVO
@@ -113,7 +106,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         if ([self.observationDataSource activeSearchLimitedBySearchedLocation]) {
             // remove any overlays that were already there
-            [mapView removeOverlays:mapView.overlays];
+            [self.mapView removeOverlays:self.mapView.overlays];
             
             CLLocationCoordinate2D newCenter;
             MKMapRect newMapRect = MKMapRectNull;
@@ -137,17 +130,17 @@
             if (!MKMapRectIsEmpty(newMapRect)) {
                 [self addOverlaysForLocationId:overlayLocationId];
                 MKCoordinateRegion region = MKCoordinateRegionForMapRect(newMapRect);
-                [mapView setRegion:region animated:YES];
+                [self.mapView setRegion:region animated:YES];
             } else if (overlayLocationId != 0) {
                 [self addOverlaysForLocationId:overlayLocationId];
                 if (CLLocationCoordinate2DIsValid(newCenter)) {
-                    [mapView setCenterCoordinate:newCenter animated:YES];
+                    [self.mapView setCenterCoordinate:newCenter animated:YES];
                 }
             }
             
-        } else if (![self.observationDataSource activeSearchLimitedBySearchedLocation] && mapView.overlays.count > 0) {
+        } else if (![self.observationDataSource activeSearchLimitedBySearchedLocation] && self.mapView.overlays.count > 0) {
             // if necessary, remove the overlays
-            [mapView removeOverlays:mapView.overlays];
+            [self.mapView removeOverlays:self.mapView.overlays];
         }
     });
 }
@@ -156,37 +149,37 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         // in case this callback fires because of a change in search,
         // invalidate the map changed timer. unlikely but be safe.
-        [mapChangedTimer invalidate];
+        [self.mapChangedTimer invalidate];
         
         // try to be smart about updating the visible annotations
         // sweep through and remove any annotations that aren't in the visible map rect anymore
-        [mapView removeAnnotations:[mapView.annotations bk_select:^BOOL(id <MKAnnotation> annotation) {
-            return !MKMapRectContainsPoint(mapView.visibleMapRect, MKMapPointForCoordinate(annotation.coordinate));
+        [self.mapView removeAnnotations:[self.mapView.annotations bk_select:^BOOL(id <MKAnnotation> annotation) {
+            return !MKMapRectContainsPoint(self.mapView.visibleMapRect, MKMapPointForCoordinate(annotation.coordinate));
         }]];
         
         // sweep through and remove any annotations that aren't in the active observations list anymore
-        [mapView removeAnnotations:[mapView.annotations bk_select:^BOOL(id <MKAnnotation> annotation) {
+        [self.mapView removeAnnotations:[self.mapView.annotations bk_select:^BOOL(id <MKAnnotation> annotation) {
             return ![self.observationDataSource.observations containsObject:annotation];
         }]];
         
         // compile candidates for adding to the map
         NSArray *sortedCandidates = [self.observationDataSource.observations.array bk_select:^BOOL(ExploreObservation *candidate) {
             return CLLocationCoordinate2DIsValid(candidate.location) &&
-            MKMapRectContainsPoint(mapView.visibleMapRect, MKMapPointForCoordinate(candidate.location));
+            MKMapRectContainsPoint(self.mapView.visibleMapRect, MKMapPointForCoordinate(candidate.location));
         }];
         
         // remove anything that's not in candidates, or that's not in the first 100
-        NSArray *annotationsToRemove = [mapView.annotations bk_select:^BOOL(id obj) {
+        NSArray *annotationsToRemove = [self.mapView.annotations bk_select:^BOOL(id obj) {
             return [sortedCandidates containsObject:obj] && [sortedCandidates indexOfObject:obj] >= 100;
         }];
-        [mapView removeAnnotations:annotationsToRemove];
+        [self.mapView removeAnnotations:annotationsToRemove];
         
         // add anything that's in candidates but not on the map already, and that's in the first 100
         NSArray *annotationsToAdd = [sortedCandidates bk_select:^BOOL(id obj) {
-            return ![mapView.annotations containsObject:obj] && [sortedCandidates indexOfObject:obj] < 100;
+            return ![self.mapView.annotations containsObject:obj] && [sortedCandidates indexOfObject:obj] < 100;
         }];
         
-        [mapView addAnnotations:annotationsToAdd];
+        [self.mapView addAnnotations:annotationsToAdd];
         
     });
 }
@@ -195,29 +188,29 @@
 
 - (void)mapViewDidFinishRenderingMap:(MKMapView *)mapView fullyRendered:(BOOL)fullyRendered {
     //sentinal that the mapview has rendered at least once
-    mapViewHasRenderedTiles = YES;
+    self.mapViewHasRenderedTiles = YES;
 }
 
 - (void)mapView:(MKMapView *)mv regionWillChangeAnimated:(BOOL)animated {
-    [mapChangedTimer invalidate];
+    [self.mapChangedTimer invalidate];
 }
 
 - (void)mapView:(MKMapView *)mv regionDidChangeAnimated:(BOOL)animated {
     if ([self.navigationController.topViewController isKindOfClass:[ExploreContainerViewController class]]) {
         ExploreContainerViewController *container = (ExploreContainerViewController *)self.navigationController.topViewController;
         if ([container.selectedViewController isEqual:self] && [self.tabBarController.selectedViewController isEqual:self.navigationController]) {
-            [mapChangedTimer invalidate];
+            [self.mapChangedTimer invalidate];
             
             __weak typeof(self) weakSelf = self;
             // give the user a bit to keep scrolling before we make a new API call
-            mapChangedTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.75f
-                                                                   block:^(NSTimer *timer) {
-                                                                       __strong typeof(weakSelf) strongSelf = weakSelf;
-                                                                       // notify the observation data source that we have a new limiting region
-                                                                       ExploreRegion *region = [ExploreRegion regionFromMKMapRect:mv.visibleMapRect];
-                                                                       strongSelf.observationDataSource.limitingRegion = region;
-                                                                   }
-                                                                 repeats:NO];
+            self.mapChangedTimer = [NSTimer bk_scheduledTimerWithTimeInterval:0.75f
+                                                                        block:^(NSTimer *timer) {
+                __strong typeof(weakSelf) strongSelf = weakSelf;
+                // notify the observation data source that we have a new limiting region
+                ExploreRegion *region = [ExploreRegion regionFromMKMapRect:mv.visibleMapRect];
+                strongSelf.observationDataSource.limitingRegion = region;
+            }
+                                                                      repeats:NO];
         }
     }
 }
@@ -232,7 +225,7 @@
     MKAnnotationView *annotationView = [map dequeueReusableAnnotationViewWithIdentifier:AnnotationViewReuseID];
     if (!annotationView) {
         annotationView = [[MKAnnotationView alloc] initWithAnnotation:annotation
-                                                       reuseIdentifier:AnnotationViewReuseID];
+                                                      reuseIdentifier:AnnotationViewReuseID];
         annotationView.canShowCallout = NO;
     }
     
@@ -259,7 +252,7 @@
     }
     
     // deselect the annotation so the user can select it again
-    [mapView deselectAnnotation:view.annotation animated:NO];
+    [self.mapView deselectAnnotation:view.annotation animated:NO];
     
     UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
     ObsDetailV2ViewController *obsDetail = [mainStoryboard instantiateViewControllerWithIdentifier:@"obsDetailV2"];
@@ -281,7 +274,7 @@
         return;
     
     // add
-    [self addShapesFromGeoJSONData:data toMap:mapView];
+    [self addShapesFromGeoJSONData:data toMap:self.mapView];
 }
 
 
@@ -346,8 +339,8 @@
     mapRegion.span.latitudeDelta = degreesRadius;
     mapRegion.span.longitudeDelta = degreesRadius;
     
-    [mapView setRegion:mapRegion animated: YES];
-    mapView.showsUserLocation = showUserLocation;
+    [self.mapView setRegion:mapRegion animated: YES];
+    self.mapView.showsUserLocation = showUserLocation;
 }
 
 @end

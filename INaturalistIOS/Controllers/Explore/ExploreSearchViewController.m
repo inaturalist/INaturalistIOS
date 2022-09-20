@@ -224,34 +224,17 @@
     // display first item
     [self.segmentedControl setSelectedSegmentIndex:0];
     [self displayContentController:mapVC];
-    
-    NSDictionary *views = @{
-                            @"searchMenu": searchMenu,
-                            @"activeSearch": activeSearchView,
-                            @"topLayoutGuide": self.view.safeAreaLayoutGuide.topAnchor,
-                            @"bottomLayoutGuide": self.view.safeAreaLayoutGuide.bottomAnchor,
-                            };
-    
-    
-    // Configure the Active Search UI
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[activeSearch]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[topLayoutGuide]-0-[activeSearch(==50)]"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
+        
+    [activeSearchView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = YES;
+    [activeSearchView.heightAnchor constraintEqualToConstant:50].active = YES;
+    [activeSearchView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor].active = YES;
+    [activeSearchView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor].active = YES;
 
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[searchMenu]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[topLayoutGuide]-0-[searchMenu]-0-[bottomLayoutGuide]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    
+    [searchMenu.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = YES;
+    [searchMenu.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor].active = YES;
+    [searchMenu.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor].active = YES;
+    [searchMenu.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor].active = YES;
+
     // ios 15 nav bar appearance
     if (@available(iOS 13.0, *)) {
         UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];

@@ -23,10 +23,9 @@
 static NSString *ExploreGridCellId = @"ExploreCell";
 static NSString *ExploreGridHeaderId = @"ExploreHeader";
 
-@interface ExploreGridViewController () <UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout> {
-    UICollectionView *observationsCollectionView;
-    UICollectionViewFlowLayout *flowLayout;
-}
+@interface ExploreGridViewController () <UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>
+@property UICollectionView *observationsCollectionView;
+@property UICollectionViewFlowLayout *flowLayout;
 @end
 
 @implementation ExploreGridViewController
@@ -36,17 +35,17 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
     
     self.view.backgroundColor = [UIColor whiteColor];
     
-    observationsCollectionView = ({
-        flowLayout = [[PDKTStickySectionHeadersCollectionViewLayout alloc] init];
-        flowLayout.minimumInteritemSpacing = 2.0f;
-        flowLayout.minimumLineSpacing = 2.0f;
+    self.observationsCollectionView = ({
+        self.flowLayout = [[PDKTStickySectionHeadersCollectionViewLayout alloc] init];
+        self.flowLayout.minimumInteritemSpacing = 2.0f;
+        self.flowLayout.minimumLineSpacing = 2.0f;
         // this will get reset once layout is done
       	float itemWidth = (self.view.bounds.size.width / 3) - 2.0f;
-		flowLayout.itemSize = CGSizeMake(itemWidth, itemWidth);
+        self.flowLayout.itemSize = CGSizeMake(itemWidth, itemWidth);
         
         // use autolayout
         UICollectionView *cv = [[UICollectionView alloc] initWithFrame:CGRectZero
-                                                  collectionViewLayout:flowLayout];
+                                                  collectionViewLayout:self.flowLayout];
         cv.translatesAutoresizingMaskIntoConstraints = NO;
         
         cv.backgroundColor = [UIColor whiteColor];
@@ -64,29 +63,20 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
         
         cv;
     });
-    [self.view addSubview:observationsCollectionView];
+    [self.view addSubview:self.observationsCollectionView];
+        
+    [self.observationsCollectionView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = YES;
+    [self.observationsCollectionView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor].active = YES;
+    [self.observationsCollectionView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor].active = YES;
+    [self.observationsCollectionView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor].active = YES;
     
-    NSDictionary *views = @{
-                            @"topLayoutGuide": self.view.safeAreaLayoutGuide.topAnchor,
-                            @"bottomLayoutGuide": self.view.safeAreaLayoutGuide.bottomAnchor,
-                            @"observationsCollectionView": observationsCollectionView,
-                            };
     
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-0-[observationsCollectionView]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[topLayoutGuide]-0-[observationsCollectionView]-0-[bottomLayoutGuide]-0-|"
-                                                                      options:0
-                                                                      metrics:0
-                                                                        views:views]];
-    
-    if (observationsCollectionView.visibleCells.count > 0)
-        [observationsCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
+    if (self.observationsCollectionView.visibleCells.count > 0)
+        [self.observationsCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]
                                            atScrollPosition:UICollectionViewScrollPositionTop
                                                    animated:YES];
     
-    observationsCollectionView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
+    self.observationsCollectionView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
     
 }
 
@@ -95,7 +85,9 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 
     [coordinator animateAlongsideTransition:nil completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-    	[self configureFlowLayout:flowLayout inCollectionView:observationsCollectionView forTraits:self.traitCollection];
+    	[self configureFlowLayout:self.flowLayout
+                 inCollectionView:self.observationsCollectionView
+                        forTraits:self.traitCollection];
     }];
 }
 
@@ -125,13 +117,13 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
 - (void)observationChangedCallback {
     dispatch_async(dispatch_get_main_queue(), ^{
         // in case refresh was triggered by infinite scrolling, stop the animation
-        [observationsCollectionView.infiniteScrollingView stopAnimating];
+        [self.observationsCollectionView.infiniteScrollingView stopAnimating];
         
-        [observationsCollectionView reloadData];
+        [self.observationsCollectionView reloadData];
         
         // if necessary, inset the collection view content inside the container
         // to make room for the active search text
-        observationsCollectionView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
+        self.observationsCollectionView.contentInset = [self insetsForPredicateCount:self.observationDataSource.activeSearchPredicates.count];
     });
 }
 
