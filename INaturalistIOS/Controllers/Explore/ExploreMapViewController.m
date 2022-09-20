@@ -88,16 +88,13 @@
     });
     [self.view addSubview:self.mapView];
     
-    NSArray *constraints = @[
+    
+    [NSLayoutConstraint activateConstraints:@[
         [self.mapView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
         [self.mapView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
         [self.mapView.topAnchor constraintEqualToAnchor:self.view.topAnchor],
         [self.mapView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor],
-    ];
-    
-    for (NSLayoutConstraint *constraint in constraints) {
-        constraint.active = YES;
-    }
+    ]];    
 }
 
 #pragma mark - KVO

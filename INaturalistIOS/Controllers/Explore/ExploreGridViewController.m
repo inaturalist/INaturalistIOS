@@ -64,11 +64,12 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
         cv;
     });
     [self.view addSubview:self.observationsCollectionView];
-        
-    [self.observationsCollectionView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = YES;
-    [self.observationsCollectionView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor].active = YES;
-    [self.observationsCollectionView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor].active = YES;
-    [self.observationsCollectionView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor].active = YES;
+    [NSLayoutConstraint activateConstraints:@[
+        [self.observationsCollectionView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
+        [self.observationsCollectionView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor],
+        [self.observationsCollectionView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [self.observationsCollectionView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+    ]];
     
     
     if (self.observationsCollectionView.visibleCells.count > 0)

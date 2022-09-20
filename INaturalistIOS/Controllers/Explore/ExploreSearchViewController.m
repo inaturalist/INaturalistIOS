@@ -224,16 +224,18 @@
     // display first item
     [self.segmentedControl setSelectedSegmentIndex:0];
     [self displayContentController:mapVC];
-        
-    [activeSearchView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = YES;
-    [activeSearchView.heightAnchor constraintEqualToConstant:50].active = YES;
-    [activeSearchView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor].active = YES;
-    [activeSearchView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor].active = YES;
+    
+    [NSLayoutConstraint activateConstraints:@[
+        [activeSearchView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
+        [activeSearchView.heightAnchor constraintEqualToConstant:50],
+        [activeSearchView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [activeSearchView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
 
-    [searchMenu.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = YES;
-    [searchMenu.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor].active = YES;
-    [searchMenu.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor].active = YES;
-    [searchMenu.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor].active = YES;
+        [searchMenu.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
+        [searchMenu.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor],
+        [searchMenu.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [searchMenu.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+    ]];
 
     // ios 15 nav bar appearance
     if (@available(iOS 13.0, *)) {

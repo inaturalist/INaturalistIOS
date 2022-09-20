@@ -54,11 +54,13 @@ static NSString *ExploreListHeaderId = @"ExploreListHeader";
     });
     [self.view addSubview:self.observationsTableView];
     
-    [self.observationsTableView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = YES;
-    [self.observationsTableView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor].active = YES;
-    [self.observationsTableView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor].active = YES;
-    [self.observationsTableView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor].active = YES;
-    
+    [NSLayoutConstraint activateConstraints:@[
+        [self.observationsTableView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
+        [self.observationsTableView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor],
+        [self.observationsTableView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [self.observationsTableView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+    ]];
+
     [self.observationsTableView layoutIfNeeded];
     [self.observationsTableView reloadData];
     
