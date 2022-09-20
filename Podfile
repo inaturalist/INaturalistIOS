@@ -41,8 +41,6 @@ target :iNaturalist do
   pod 'ARSafariActivity'
   pod 'M13ProgressSuite', :git => 'https://github.com/rogerioth/M13ProgressSuite.git'
   pod 'MHVideoPhotoGallery', :git => 'https://github.com/alexshepard/MHVideoPhotoGallery', :commit => '0a343f12b60c8719a280db73b1e2b6d25fef164a'
-  pod 'JSONKit', :git => 'https://github.com/alexshepard/JSONKit.git', :commit => '46343e0e46fa8390fed0e8fff6367adb745d7fdd'
-  pod 'FileMD5Hash', :git => 'https://github.com/FutureWorkshops/FileMD5Hash.git', :commit => '6864c180c010ab4b0514ba5c025091e12ab01199'
   pod 'Down', :git => 'https://github.com/ocshing/Down-gfm'
   pod 'SimpleKeychain'
 

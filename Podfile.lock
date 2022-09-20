@@ -51,7 +51,6 @@ PODS:
     - Bolts (~> 1.7)
   - FBSDKLoginKit (4.37.0):
     - FBSDKCoreKit
-  - FileMD5Hash (0.0.1)
   - Firebase/Analytics (9.2.0):
     - Firebase/Core
   - Firebase/Core (9.2.0):
@@ -182,7 +181,6 @@ PODS:
   - ICViewPager (1.5.1)
   - JDFTooltips (1.0)
   - JDStatusBarNotification (1.5.2)
-  - JSONKit (1.5pre)
   - JWT (2.2.0):
     - Base64 (~> 1.1.2)
   - M13ProgressSuite (1.2.9)
@@ -233,7 +231,6 @@ DEPENDENCIES:
   - Down (from `https://github.com/ocshing/Down-gfm`)
   - FBSDKCoreKit (= 4.37.0)
   - FBSDKLoginKit (= 4.37.0)
-  - FileMD5Hash (from `https://github.com/FutureWorkshops/FileMD5Hash.git`, commit `6864c180c010ab4b0514ba5c025091e12ab01199`)
   - Firebase/Analytics
   - Firebase/Crashlytics
   - FontAwesomeKit (= 2.2.1)
@@ -244,7 +241,6 @@ DEPENDENCIES:
   - ICViewPager (from `https://github.com/alexshepard/ICViewPager.git`, commit `4c45423b6a36fb38753af86a1050b6a3a1d548b8`)
   - JDFTooltips (= 1.0)
   - JDStatusBarNotification (= 1.5.2)
-  - JSONKit (from `https://github.com/alexshepard/JSONKit.git`, commit `46343e0e46fa8390fed0e8fff6367adb745d7fdd`)
   - JWT (= 2.2.0)
   - M13ProgressSuite (from `https://github.com/rogerioth/M13ProgressSuite.git`)
   - Mantle (= 1.5.8)
@@ -319,15 +315,9 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Down:
     :git: https://github.com/ocshing/Down-gfm
-  FileMD5Hash:
-    :commit: 6864c180c010ab4b0514ba5c025091e12ab01199
-    :git: https://github.com/FutureWorkshops/FileMD5Hash.git
   ICViewPager:
     :commit: 4c45423b6a36fb38753af86a1050b6a3a1d548b8
     :git: https://github.com/alexshepard/ICViewPager.git
-  JSONKit:
-    :commit: 46343e0e46fa8390fed0e8fff6367adb745d7fdd
-    :git: https://github.com/alexshepard/JSONKit.git
   M13ProgressSuite:
     :git: https://github.com/rogerioth/M13ProgressSuite.git
   MHVideoPhotoGallery:
@@ -341,15 +331,9 @@ CHECKOUT OPTIONS:
   Down:
     :commit: b889d6dac0c3e692badbfbd1e77a8059cdda9f05
     :git: https://github.com/ocshing/Down-gfm
-  FileMD5Hash:
-    :commit: 6864c180c010ab4b0514ba5c025091e12ab01199
-    :git: https://github.com/FutureWorkshops/FileMD5Hash.git
   ICViewPager:
     :commit: 4c45423b6a36fb38753af86a1050b6a3a1d548b8
     :git: https://github.com/alexshepard/ICViewPager.git
-  JSONKit:
-    :commit: 46343e0e46fa8390fed0e8fff6367adb745d7fdd
-    :git: https://github.com/alexshepard/JSONKit.git
   M13ProgressSuite:
     :commit: 203e52a4975296884cc813c7321cdc79aaae514b
     :git: https://github.com/rogerioth/M13ProgressSuite.git
@@ -373,7 +357,6 @@ SPEC CHECKSUMS:
   Down: 19deac4611bfbc1cabdf8f9657870a44d34ac7fa
   FBSDKCoreKit: fe5f3474499a81963e11e3f3a5c753d0a95ca2b4
   FBSDKLoginKit: 2f7249686d1e30ce8a5ef5400eedf50b3e3df332
-  FileMD5Hash: 81918bf9f82de8bce6a2ae38584c2cc95b7b078c
   Firebase: 4ba896cb8e5105d4b9e247e1c1b6222b548df55a
   FirebaseAnalytics: af5a03a8dff7648c7b8486f6a78b1368e0268dd3
   FirebaseCore: 0e27f2a15d8f7b7ef11e7d93e23b1cbab55d748c
@@ -394,7 +377,6 @@ SPEC CHECKSUMS:
   ICViewPager: 74e83c8bebd572b3baebac5959875d0fb5e70000
   JDFTooltips: 439e3f1010b5e689e8438f66fce8448726e59897
   JDStatusBarNotification: a36d09ccbb047217572b074a61e7ca10dddc5f0a
-  JSONKit: d64c81f94cf4fa7a11ee1e0e996237ab672e1e0d
   JWT: cf73c0ab0dac762df3de8a3f1164352089d97780
   M13ProgressSuite: ea9f7263e73e9215e6849dfa54e29ee0ad6a145c
   Mantle: f03b2b606c3f0cabd80214ad8a2fed6b464a7359
@@ -418,6 +400,6 @@ SPEC CHECKSUMS:
   VTAcknowledgementsViewController: 575f5841fb47b7d9c852ccb406104ea68de07b21
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: ed42c62bf8a229b6917b72a8484e6f4b013609cc
+PODFILE CHECKSUM: e49ce99fdab1bc6121b81cdd095dcb5dd6ae922a
 
 COCOAPODS: 1.11.3
