@@ -360,11 +360,7 @@
     NSError *listError = nil;
     NSArray *allNonExpiringFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:photoDirPath error:&listError];
     if (listError) { return; }
-    
-    NSInteger deletedCount = 0;
-    NSInteger checkedCount = 0;
-    NSInteger makeExpiredCount = 0;
-    
+        
     for (NSString *nonExpiringFilename in allNonExpiringFiles) {
         NSDate *now = [NSDate date];
         NSTimeInterval timeCleaningSoFar = [now timeIntervalSinceDate:beginCleanupDate];
@@ -410,23 +406,14 @@
             NSError *deleteError = nil;
             [[NSFileManager defaultManager] removeItemAtPath:filePath error:&deleteError];
             if (deleteError) { break; }
-            
-            deletedCount += 1;
         }
         
         // if we've synced this observation photo, then the photo can safely be moved
         // to the SDImageCache where it can be expired based on date & space used
         if ([syncedPhotoKeys containsObject:key]) {
             [self makeExpiring:key];
-            
-            makeExpiredCount += 1;
         }
-        
-        checkedCount += 1;
     }
-    
-    NSDate *now = [NSDate date];
-    NSTimeInterval cleanupExecutionSecondsUsed = [now timeIntervalSinceDate:beginCleanupDate];
 }
 
 
