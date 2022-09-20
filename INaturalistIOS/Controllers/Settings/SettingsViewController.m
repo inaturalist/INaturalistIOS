@@ -290,11 +290,33 @@ static const int ChangePartnerMinimumInterval = 86400;
                                          confirmationCode:confirmationCode
                                              confirmation:confirmation
                                                      done:^(NSArray *results, NSInteger count, NSError *error) {
+                
+                NSString *alertTitle = NSLocalizedString(@"Your account has been deleted.", @"account deletion confirmation msg");
+                NSString *alertMsg = @"";
+                
+                
                 if (error) {
-                    NSLog(@"error is %@", error);
+                    // http status code 204 is technically success but it's treated as an error in the api
+                    // client (since we normally need a response), so handle it here
+                    if ([error.domain isEqualToString: @"org.inaturalist.rails.http"] && error.code == 204) {
+                        [self signOut];
+                    } else {
+                        alertTitle = NSLocalizedString(@"Oops", nil);
+                        alertMsg = error.localizedDescription;
+                    }
                 } else {
                     [self signOut];
                 }
+                
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+                                                                               message:alertMsg
+                                                                        preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                          style:UIAlertActionStyleDefault
+                                                        handler:nil]];
+                
+                [self presentViewController:alert animated:YES completion:nil];
+
             }];
         } else {
             NSString *oops = NSLocalizedString(@"Oops",nil);
