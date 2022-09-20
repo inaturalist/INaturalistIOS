@@ -557,6 +557,8 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                         op.photoKey = photoKey
                         
                         o.observationPhotos.add(op)
+                        
+                        position += 1
                      }
                      
                      if let taxonId = self.observingTaxonId,
