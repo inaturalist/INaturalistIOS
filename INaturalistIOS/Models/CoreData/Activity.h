@@ -12,7 +12,7 @@
 
 @class User, Observation;
 
-@interface Activity : INatModel <ActivityVisualization>
+@interface Activity : INatModel
 
 @property (nonatomic, retain) NSString *body;
 @property (nonatomic, retain) User *user;

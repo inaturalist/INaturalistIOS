@@ -14,7 +14,7 @@
 
 @class Observation, ObservationField;
 
-@interface ObservationFieldValue : INatModel <Uploadable>
+@interface ObservationFieldValue : INatModel
 
 @property (nonatomic, retain) NSNumber * recordID;
 @property (nonatomic, retain) NSNumber * observationID;

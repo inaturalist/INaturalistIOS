@@ -13,7 +13,7 @@
 
 @class Observation, Taxon, User;
 
-@interface Identification : Activity <IdentificationVisualization>
+@interface Identification : Activity
 
 @property (nonatomic, retain) NSNumber * recordID;
 @property (nonatomic, retain) NSNumber * current;

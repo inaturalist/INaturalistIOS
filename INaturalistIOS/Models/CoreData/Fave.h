@@ -14,7 +14,7 @@
 @class Observation, User;
 
 // don't inherit from InatModel, since we don't have recordIDs/etc
-@interface Fave : NSManagedObject <FaveVisualization>
+@interface Fave : NSManagedObject
 
 @property (nonatomic, retain) NSDate *faveDate;
 @property (nonatomic, retain) Observation *observation;

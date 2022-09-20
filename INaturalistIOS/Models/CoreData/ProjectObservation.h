@@ -14,7 +14,7 @@
 @class Project;
 @class Observation;
 
-@interface ProjectObservation : INatModel <Uploadable>
+@interface ProjectObservation : INatModel
 
 @property (nonatomic, retain) NSDate * localCreatedAt;
 @property (nonatomic, retain) NSDate * localUpdatedAt;

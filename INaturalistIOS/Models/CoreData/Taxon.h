@@ -11,7 +11,7 @@
 #import "INatModel.h"
 #import "TaxonVisualization.h"
 
-@interface Taxon : INatModel <TaxonVisualization>
+@interface Taxon : INatModel
 
 @property (nonatomic, retain) NSNumber * recordID;
 @property (nonatomic, retain) NSDate * createdAt;

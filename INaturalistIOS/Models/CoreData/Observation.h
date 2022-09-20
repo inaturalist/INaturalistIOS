@@ -17,7 +17,7 @@
 
 @class Taxon, Comment, Identification;
 
-@interface Observation : INatModel <Uploadable, ObservationVisualization>
+@interface Observation : INatModel
 
 @property (nonatomic, retain) NSString * speciesGuess;
 @property (nonatomic, retain) NSNumber * taxonID;

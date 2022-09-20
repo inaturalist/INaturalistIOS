@@ -14,7 +14,7 @@
 
 @class Observation;
 
-@interface ObservationPhoto : INatModel <INatPhoto, Uploadable>
+@interface ObservationPhoto : INatModel
 
 @property (nonatomic, retain) NSString * largeURL;
 @property (nonatomic, retain) NSString * licenseCode;

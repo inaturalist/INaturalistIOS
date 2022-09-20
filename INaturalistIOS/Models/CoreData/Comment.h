@@ -15,7 +15,7 @@
 
 @class Observation, User;
 
-@interface Comment : Activity <CommentVisualization, ActivityVisualization>
+@interface Comment : Activity
 
 @property (nonatomic, retain) NSNumber * recordID;
 @property (nonatomic, retain) NSDate * updatedAt;
