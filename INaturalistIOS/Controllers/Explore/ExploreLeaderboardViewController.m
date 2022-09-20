@@ -21,11 +21,10 @@
 
 static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
 
-@interface ExploreLeaderboardViewController () <UITableViewDataSource,UITableViewDelegate> {
-    UITableView *leaderboardTableView;
-    NSArray *leaderboard;
-    UIActivityIndicatorView *loadingSpinner;
-}
+@interface ExploreLeaderboardViewController () <UITableViewDataSource,UITableViewDelegate>
+@property UITableView *leaderboardTableView;
+@property NSArray *leaderboard;
+@property UIActivityIndicatorView *loadingSpinner;
 @end
 
 @implementation ExploreLeaderboardViewController
@@ -35,11 +34,11 @@ static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    leaderboard = @[];
+    self.leaderboard = @[];
     
     self.title = NSLocalizedString(@"Leaderboard", @"Title for leaderboard page.");
     
-    leaderboardTableView = ({
+    self.leaderboardTableView = ({
         UITableView *tv =[[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         tv.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -53,49 +52,25 @@ static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
         
         tv;
     });
-    [self.view addSubview:leaderboardTableView];
+    [self.view addSubview:self.leaderboardTableView];
     
-    loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    loadingSpinner.hidden = YES;
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:loadingSpinner];
+    self.loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.loadingSpinner.hidden = YES;
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.loadingSpinner];
     
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:leaderboardTableView
-                                                          attribute:NSLayoutAttributeCenterX
-                                                          relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.view
-                                                          attribute:NSLayoutAttributeCenterX
-                                                         multiplier:1.0f
-                                                           constant:0.0f]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:leaderboardTableView
-                                                          attribute:NSLayoutAttributeCenterY
-                                                          relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.view
-                                                          attribute:NSLayoutAttributeCenterY
-                                                         multiplier:1.0f
-                                                           constant:0.0f]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:leaderboardTableView
-                                                          attribute:NSLayoutAttributeHeight
-                                                          relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.view
-                                                          attribute:NSLayoutAttributeHeight
-                                                         multiplier:1.0f
-                                                           constant:0.0f]];
-    [self.view addConstraint:[NSLayoutConstraint constraintWithItem:leaderboardTableView
-                                                          attribute:NSLayoutAttributeWidth
-                                                          relatedBy:NSLayoutRelationEqual
-                                                             toItem:self.view
-                                                          attribute:NSLayoutAttributeWidth
-                                                         multiplier:1.0f
-                                                           constant:0.0f]];
-    
-    
+    [NSLayoutConstraint activateConstraints:@[
+        [self.leaderboardTableView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [self.leaderboardTableView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+        [self.leaderboardTableView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
+        [self.leaderboardTableView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor],
+    ]];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    loadingSpinner.hidden = NO;
-    [loadingSpinner startAnimating];
+    self.loadingSpinner.hidden = NO;
+    [self.loadingSpinner startAnimating];
     
     [self.observationsController loadLeaderboardCompletion:^(NSArray *results, NSError *error) {
         
@@ -112,12 +87,12 @@ static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
             return;
         }
         
-        leaderboard = results;
+        self.leaderboard = results;
         
-        [leaderboardTableView reloadData];
+        [self.leaderboardTableView reloadData];
         
-        [loadingSpinner stopAnimating];
-        loadingSpinner.hidden = YES;
+        [self.loadingSpinner stopAnimating];
+        self.loadingSpinner.hidden = YES;
     }];
 }
 
@@ -129,7 +104,7 @@ static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return leaderboard.count;
+    return self.leaderboard.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -146,7 +121,7 @@ static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
 
 - (void)configureCell:(ExploreLeaderboardCell *)cell forIndexPath:(NSIndexPath *)indexPath {
     
-    ObserverCount *count = [leaderboard objectAtIndex:indexPath.item];
+    ObserverCount *count = [self.leaderboard objectAtIndex:indexPath.item];
     NSInteger obsCount = count.observationCount;
     NSInteger speciesCount = count.speciesCount;
     NSString *username = count.observer.login;
