@@ -100,12 +100,15 @@ static const int WebViewTag = 1;
             [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"Open link in Safari", nil)
                                                       style:UIAlertActionStyleDefault
                                                     handler:^(UIAlertAction * _Nonnull action) {
-                                                        if (lastURL) {
-                                                            [[UIApplication sharedApplication] openURL:lastURL];
-                                                        }
-                                                        lastURL = nil;
-                                                    }]];
-
+                
+                if ([UIApplication.sharedApplication canOpenURL:request.URL]) {
+                    [UIApplication.sharedApplication openURL:request.URL
+                                                     options:@{}
+                                           completionHandler:nil];
+                    
+                }
+            }]];
+            
             [self.tabBarController presentViewController:alert animated:YES completion:nil];
         }
     } else if ([urlString hasPrefix:@"file:"]) {

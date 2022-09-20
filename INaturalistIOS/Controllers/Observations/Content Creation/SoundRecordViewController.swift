@@ -133,7 +133,7 @@ class SoundRecordViewController: UIViewController {
                         alert.addAction(UIAlertAction(title: openSettings, style: .default, handler: { _ in
                             
                             if let url = URL(string: UIApplication.openSettingsURLString) {
-                                UIApplication.shared.openURL(url)
+                                UIApplication.shared.open(url)
                             }
                             
                         }))

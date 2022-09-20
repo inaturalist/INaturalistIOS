@@ -11,9 +11,6 @@
 #import "GuideTaxonXML.h"
 
 @interface GuideTaxonViewController : UIViewController <UIWebViewDelegate>
-{
-    NSURL *lastURL;
-}
 @property (strong, nonatomic) IBOutlet UIWebView *webView;
 @property (strong, nonatomic) GuideTaxonXML *guideTaxon;
 

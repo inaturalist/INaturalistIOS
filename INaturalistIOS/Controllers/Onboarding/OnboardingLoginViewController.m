@@ -203,10 +203,18 @@
         UITapGestureRecognizer *tapSender = (UITapGestureRecognizer *)sender;
         if ([tapSender didTapAttributedTextInLabel:self.termsLabel inRange:termsRange]) {
             NSURL *termsURL = [NSURL URLWithString:@"https://www.inaturalist.org/pages/terms"];
-            [[UIApplication sharedApplication] openURL:termsURL];
+            if ([UIApplication.sharedApplication canOpenURL:termsURL]) {
+                [UIApplication.sharedApplication openURL:termsURL
+                                                 options:@{}
+                                       completionHandler:nil];
+            }
         } else if ([tapSender didTapAttributedTextInLabel:self.termsLabel inRange:privacyRange]) {
             NSURL *privacyURL = [NSURL URLWithString:@"https://www.inaturalist.org/pages/privacy"];
-            [[UIApplication sharedApplication] openURL:privacyURL];
+            if ([UIApplication.sharedApplication canOpenURL:privacyURL]) {
+                [UIApplication.sharedApplication openURL:privacyURL
+                                                 options:@{}
+                                       completionHandler:nil];
+            }
         }
     }];
     self.termsLabel.userInteractionEnabled = YES;

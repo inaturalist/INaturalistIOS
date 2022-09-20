@@ -316,8 +316,11 @@
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
         if (self.observation.dataQuality == ObsDataQualityNone) {
             NSURL *dataQualityURL = [NSURL URLWithString:@"https://www.inaturalist.org/pages/help#quality"];
-            if (dataQualityURL) {
-                [[UIApplication sharedApplication] openURL:dataQualityURL];
+            if ([UIApplication.sharedApplication canOpenURL:dataQualityURL]) {
+                [[UIApplication sharedApplication] openURL:dataQualityURL
+                                                   options:@{}
+                                         completionHandler:nil];
+
             }
         }
     }

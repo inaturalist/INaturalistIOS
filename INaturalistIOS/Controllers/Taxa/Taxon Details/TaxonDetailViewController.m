@@ -82,7 +82,12 @@
 
 - (void)infoTapped:(id)sender {
     if (!self.fullTaxon) { return; }
-    [[UIApplication sharedApplication] openURL:[self moreDetailsURL]];
+    
+    if ([UIApplication.sharedApplication canOpenURL:[self moreDetailsURL]]) {
+        [UIApplication.sharedApplication openURL:[self moreDetailsURL]
+                                         options:@{}
+                               completionHandler:nil];
+    }
 }
 
 - (void)toggleTooltipInView:(UIView *)view parentView:(UIView *)parentView {

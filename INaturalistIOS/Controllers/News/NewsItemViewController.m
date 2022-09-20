@@ -96,7 +96,11 @@
     
     if (navigationType == UIWebViewNavigationTypeLinkClicked) {
         // open links taps in Safari
-        [[UIApplication sharedApplication] openURL:request.URL];
+        if ([UIApplication.sharedApplication canOpenURL:request.URL]) {
+            [UIApplication.sharedApplication openURL:request.URL
+                                             options:@{}
+                                   completionHandler:nil];
+        }
         return NO;
     }
     
