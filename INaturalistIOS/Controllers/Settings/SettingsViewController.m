@@ -540,18 +540,17 @@ static const int ChangePartnerMinimumInterval = 86400;
 - (void)sendSupportEmail {
     // email params
     NSString *supportEmailAddress = @"help@inaturalist.org";
-    NSString *supportTitle = [NSString stringWithFormat:@"iNaturalist iPhone help - (version %@)",
-                              self.versionText];
     
+    NSString *supportUserInfo = @"user not logged in";
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     if ([appDelegate.loginController isLoggedIn]) {
         ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
-        supportTitle = [supportTitle stringByAppendingString:[NSString stringWithFormat:@" user id: %ld,", (long)me.userId]];
-        supportTitle = [supportTitle stringByAppendingString:[NSString stringWithFormat:@" username: %@", me.login]];
-    } else {
-        supportTitle = [supportTitle stringByAppendingString:@" user not logged in"];
+        supportUserInfo = [NSString stringWithFormat:@"user id: %ld, username: %@", (long)me.userId, me.login];
     }
     
+    NSString *supportTitle = [NSString stringWithFormat:@"iNaturalist iPhone help - (version %@ %@)",
+                              self.versionText, supportUserInfo];
+        
     // try built in mail client
     if ([MFMailComposeViewController canSendMail]) {
         MFMailComposeViewController* composeVC = [[MFMailComposeViewController alloc] init];
