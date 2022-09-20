@@ -400,7 +400,7 @@
 
 - (void)loadAndShowObservationSuggestionsWithCompletion:(INatAPISuggestionsCompletionHandler)done {
     self.showingSuggestions = YES;
-    ObservationPhoto *op = [[self.observationToClassify sortedObservationPhotos] firstObject];
+    id <INatPhoto> op = [[self.observationToClassify sortedObservationPhotos] firstObject];
     [self.headerImageView setImageWithURL:[op squarePhotoUrl]];
     self.tableView.backgroundView = self.loadingView;
     [[self api] suggestionsForObservationId:self.observationToClassify.inatRecordId

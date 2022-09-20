@@ -146,7 +146,7 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
         
         id mediaItem = self.media[indexPath.item - 1];
         if ([mediaItem conformsToProtocol:@protocol(INatPhoto)]) {
-            ObservationPhoto *obsPhoto = (ObservationPhoto *)self.media[indexPath.item - 1];
+            id <INatPhoto> obsPhoto = self.media[indexPath.item - 1];
             if (obsPhoto.photoKey) {
                 cell.photoImageView.image = [[ImageStore sharedImageStore] find:obsPhoto.photoKey
                                                                         forSize:ImageStoreSquareSize];
