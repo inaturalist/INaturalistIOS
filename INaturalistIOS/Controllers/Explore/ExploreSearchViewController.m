@@ -40,29 +40,24 @@
 #import "ExploreUserRealm.h"
 #import "ExploreActiveSearchView.h"
 
-@interface ExploreSearchViewController () <CLLocationManagerDelegate, ActiveSearchTextDelegate> {
-    ExploreObservationsController *observationsController;
-    
-    ExploreSearchView *searchMenu;
-    ExploreActiveSearchView *activeSearchView;
-    
-    CLLocationManager *locationManager;
-    
-    NSTimer *locationFetchTimer;
-    BOOL hasFulfilledLocationFetch;
-    BOOL isFetchingLocation;
-    
-    ExploreMapViewController *mapVC;
-    ExploreGridViewController *gridVC;
-    ExploreListViewController *listVC;
-    
-    ExploreSearchController *searchController;
-    
-    UIBarButtonItem *leaderboardItem;
-    UIBarButtonItem *spinnerItem;
-    UIActivityIndicatorView *spinner;
-}
+@interface ExploreSearchViewController () <CLLocationManagerDelegate, ActiveSearchTextDelegate>
+@property CLLocationManager *locationManager;
+@property NSTimer *locationFetchTimer;
+@property BOOL hasFulfilledLocationFetch;
+@property BOOL isFetchingLocation;
 
+@property UIBarButtonItem *leaderboardItem;
+@property UIBarButtonItem *spinnerItem;
+@property UIActivityIndicatorView *spinner;
+
+@property ExploreSearchView *searchMenu;
+@property ExploreActiveSearchView *activeSearchView;
+
+@property ExploreMapViewController *mapVC;
+@property ExploreGridViewController *gridVC;
+@property ExploreListViewController *listVC;
+@property ExploreObservationsController *observationsController;
+@property ExploreSearchController *searchController;
 @end
 
 
@@ -91,20 +86,20 @@
                                                                                 action:@selector(searchPressed)];
         self.navigationItem.leftBarButtonItem = search;
         
-        leaderboardItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stats", @"Title for button in the explore tab that leads to the stats leaderboard.")
-                                                           style:UIBarButtonItemStylePlain
-                                                          target:self
-                                                          action:@selector(leaderboardPressed)];
-        self.navigationItem.rightBarButtonItem = leaderboardItem;
+        self.leaderboardItem = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"Stats", @"Title for button in the explore tab that leads to the stats leaderboard.")
+                                                                style:UIBarButtonItemStylePlain
+                                                               target:self
+                                                               action:@selector(leaderboardPressed)];
+        self.navigationItem.rightBarButtonItem = self.leaderboardItem;
         
-        spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        spinnerItem = [[UIBarButtonItem alloc] initWithCustomView:spinner];
+        self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        self.spinnerItem = [[UIBarButtonItem alloc] initWithCustomView:self.spinner];
         
         
-        observationsController = [[ExploreObservationsController alloc] init];
-        observationsController.notificationDelegate = self;
+        self.observationsController = [[ExploreObservationsController alloc] init];
+        self.observationsController.notificationDelegate = self;
         
-        searchController = [[ExploreSearchController alloc] init];
+        self.searchController = [[ExploreSearchController alloc] init];
     }
     return self;
 }
@@ -112,7 +107,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    activeSearchView = ({
+    self.activeSearchView = ({
         ExploreActiveSearchView *view = [ExploreActiveSearchView new];
         view.backgroundColor = [UIColor redColor];
         view.translatesAutoresizingMaskIntoConstraints = NO;
@@ -121,13 +116,13 @@
                                           action:@selector(removeSearchPressed)
                                 forControlEvents:UIControlEventTouchUpInside];
         view.activeSearchTextDelegate = self;
-        view.hidden = YES;        
+        view.hidden = YES;
         
         view;
     });
-    [self.view addSubview:activeSearchView];
+    [self.view addSubview:self.activeSearchView];
     
-    searchMenu = ({
+    self.searchMenu = ({
         ExploreSearchView *view = [[ExploreSearchView alloc] initWithFrame:CGRectZero];
         view.translatesAutoresizingMaskIntoConstraints = NO;
         
@@ -135,79 +130,79 @@
         // autocomplete items
         AutocompleteSearchItem *critters = [AutocompleteSearchItem itemWithPredicate:AutocompletePredicateOrganisms
                                                                               action:^(NSString *searchText) {
-                                                                                  [weakSelf searchForTaxon:searchText];
-                                                                                  [searchMenu hideOptionSearch];
-                                                                                  if (observationsController.activeSearchPredicates.count > 0)
-                                                                                      [weakSelf showActiveSearch];
-                                                                              }];
+            [weakSelf searchForTaxon:searchText];
+            [weakSelf.searchMenu hideOptionSearch];
+            if (weakSelf.observationsController.activeSearchPredicates.count > 0)
+                [weakSelf showActiveSearch];
+        }];
         AutocompleteSearchItem *people = [AutocompleteSearchItem itemWithPredicate:AutocompletePredicatePeople
                                                                             action:^(NSString *searchText) {
-                                                                                [weakSelf searchForPerson:searchText];
-                                                                                [searchMenu hideOptionSearch];
-                                                                                if (observationsController.activeSearchPredicates.count > 0)
-                                                                                    [weakSelf showActiveSearch];
-                                                                            }];
+            [weakSelf searchForPerson:searchText];
+            [weakSelf.searchMenu hideOptionSearch];
+            if (weakSelf.observationsController.activeSearchPredicates.count > 0)
+                [weakSelf showActiveSearch];
+        }];
         AutocompleteSearchItem *locations = [AutocompleteSearchItem itemWithPredicate:AutocompletePredicateLocations
                                                                                action:^(NSString *searchText) {
-                                                                                   [weakSelf searchForLocation:searchText];
-                                                                                   [searchMenu hideOptionSearch];
-                                                                                   if (observationsController.activeSearchPredicates.count > 0)
-                                                                                       [weakSelf showActiveSearch];
-                                                                               }];
+            [weakSelf searchForLocation:searchText];
+            [weakSelf.searchMenu hideOptionSearch];
+            if (weakSelf.observationsController.activeSearchPredicates.count > 0)
+                [weakSelf showActiveSearch];
+        }];
         AutocompleteSearchItem *projects = [AutocompleteSearchItem itemWithPredicate:AutocompletePredicateProjects
                                                                               action:^(NSString *searchText) {
-                                                                                  [weakSelf searchForProject:searchText];
-                                                                                  [searchMenu hideOptionSearch];
-                                                                                  if (observationsController.activeSearchPredicates.count > 0)
-                                                                                      [weakSelf showActiveSearch];
-                                                                              }];
+            [weakSelf searchForProject:searchText];
+            [weakSelf.searchMenu hideOptionSearch];
+            if (weakSelf.observationsController.activeSearchPredicates.count > 0)
+                [weakSelf showActiveSearch];
+        }];
         view.autocompleteItems = @[critters, people, locations, projects];
         
         // non-autocomplete shortcut items
         ShortcutSearchItem *nearMe = [ShortcutSearchItem itemWithTitle:NSLocalizedString(@"Find observations near me", nil)
                                                                 action:^{
-                                                                    [weakSelf searchForNearbyObservations];
-                                                                    [searchMenu hideOptionSearch];
-                                                                    if (observationsController.activeSearchPredicates.count > 0)
-                                                                        [weakSelf showActiveSearch];
-                                                                }];
+            [weakSelf searchForNearbyObservations];
+            [weakSelf.searchMenu hideOptionSearch];
+            if (weakSelf.observationsController.activeSearchPredicates.count > 0)
+                [weakSelf showActiveSearch];
+        }];
         
         ShortcutSearchItem *mine = [ShortcutSearchItem itemWithTitle:NSLocalizedString(@"Find my observations", nil)
                                                               action:^{
-                                                                  [searchMenu hideOptionSearch];
-                                                                  __strong typeof(weakSelf)strongSelf = weakSelf;
-                                                                  INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-                                                                  if ([appDelegate.loginController isLoggedIn]) {
-                                                                      [strongSelf searchForMyObservations];
-                                                                      if (observationsController.activeSearchPredicates.count > 0)
-                                                                          [strongSelf showActiveSearch];
-                                                                  } else {
-                                                                      [strongSelf presentSignupPrompt:NSLocalizedString(@"You must be logged in to do that.",
-                                                                                                                        @"Unspecific signup prompt reason.")];
-                                                                  }
-                                                              }];
+            [weakSelf.searchMenu hideOptionSearch];
+            __strong typeof(weakSelf)strongSelf = weakSelf;
+            INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+            if ([appDelegate.loginController isLoggedIn]) {
+                [strongSelf searchForMyObservations];
+                if (strongSelf.observationsController.activeSearchPredicates.count > 0)
+                    [strongSelf showActiveSearch];
+            } else {
+                [strongSelf presentSignupPrompt:NSLocalizedString(@"You must be logged in to do that.",
+                                                                  @"Unspecific signup prompt reason.")];
+            }
+        }];
         view.shortcutItems = @[nearMe, mine];
         
         
         view;
     });
-    [self.view addSubview:searchMenu];
+    [self.view addSubview:self.searchMenu];
     
     // the active search view overlays on top
     // of all of the stuff in the container view
-    self.overlayView = activeSearchView;
+    self.overlayView = self.activeSearchView;
     
     if ([self respondsToSelector:@selector(edgesForExtendedLayout)])
         self.edgesForExtendedLayout = UIRectEdgeNone;
     
     // set up the map|grid|list selector
-    mapVC = [[ExploreMapViewController alloc] initWithNibName:nil bundle:nil];
-    mapVC.observationDataSource = observationsController;
-    gridVC = [[ExploreGridViewController alloc] initWithNibName:nil bundle:nil];
-    gridVC.observationDataSource = observationsController;
-    listVC = [[ExploreListViewController alloc] initWithNibName:nil bundle:nil];
-    listVC.observationDataSource = observationsController;
-    self.viewControllers = @[mapVC, gridVC, listVC];
+    self.mapVC = [[ExploreMapViewController alloc] initWithNibName:nil bundle:nil];
+    self.mapVC.observationDataSource = self.observationsController;
+    self.gridVC = [[ExploreGridViewController alloc] initWithNibName:nil bundle:nil];
+    self.gridVC.observationDataSource = self.observationsController;
+    self.listVC = [[ExploreListViewController alloc] initWithNibName:nil bundle:nil];
+    self.listVC.observationDataSource = self.observationsController;
+    self.viewControllers = @[self.mapVC, self.gridVC, self.listVC];
     
     // configure the segmented control
     [self.viewControllers bk_each:^(UIViewController *vc) {
@@ -223,20 +218,20 @@
     
     // display first item
     [self.segmentedControl setSelectedSegmentIndex:0];
-    [self displayContentController:mapVC];
+    [self displayContentController:self.mapVC];
     
     [NSLayoutConstraint activateConstraints:@[
-        [activeSearchView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
-        [activeSearchView.heightAnchor constraintEqualToConstant:50],
-        [activeSearchView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
-        [activeSearchView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
-
-        [searchMenu.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
-        [searchMenu.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor],
-        [searchMenu.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
-        [searchMenu.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+        [self.activeSearchView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
+        [self.activeSearchView.heightAnchor constraintEqualToConstant:50],
+        [self.activeSearchView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [self.activeSearchView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
+        
+        [self.searchMenu.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor],
+        [self.searchMenu.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor],
+        [self.searchMenu.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor],
+        [self.searchMenu.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor],
     ]];
-
+    
     // ios 15 nav bar appearance
     if (@available(iOS 13.0, *)) {
         UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
@@ -272,20 +267,20 @@
 }
 
 - (void)showActiveSearch {
-    activeSearchView.activeSearchLabel.text = self.activeSearchText;
-    activeSearchView.hidden = NO;
+    self.activeSearchView.activeSearchLabel.text = self.activeSearchText;
+    self.activeSearchView.hidden = NO;
 }
 
 - (void)hideActiveSearch {
-    activeSearchView.activeSearchLabel.text = nil;
-    activeSearchView.hidden = YES;
+    self.activeSearchView.activeSearchLabel.text = nil;
+    self.activeSearchView.hidden = YES;
 }
 
 #pragma mark - UIControl targets
 
 - (void)leaderboardPressed {
     ExploreLeaderboardViewController *vc = [[ExploreLeaderboardViewController alloc] initWithNibName:nil bundle:nil];
-    vc.observationsController = observationsController;
+    vc.observationsController = self.observationsController;
     
     [self.navigationController pushViewController:vc animated:YES];
 }
@@ -293,18 +288,18 @@
 - (void)removeSearchPressed {
     [self hideActiveSearch];
     
-    [observationsController removeAllSearchPredicates];
+    [self.observationsController removeAllSearchPredicates];
 }
 
 - (void)searchPressed {
-    if ([searchMenu optionSearchIsActive]) {
-        if (observationsController.activeSearchPredicates.count > 0) {
+    if ([self.searchMenu optionSearchIsActive]) {
+        if (self.observationsController.activeSearchPredicates.count > 0) {
             [self showActiveSearch]; // implicitly hides option search
         } else {
-            [searchMenu hideOptionSearch];
+            [self.searchMenu hideOptionSearch];
         }
     } else {
-        [searchMenu showOptionSearch];
+        [self.searchMenu showOptionSearch];
     }
 }
 
@@ -325,7 +320,7 @@
     
     // clear all active search predicates
     // since it's not built to remove them one at a time yet
-    [observationsController removeAllSearchPredicatesUpdatingObservations:NO];
+    [self.observationsController removeAllSearchPredicatesUpdatingObservations:NO];
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = [appDelegate loginController];
@@ -337,7 +332,7 @@
         exploreMe.name = me.name;
         exploreMe.userIcon = me.userIcon;
         
-       	[observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:exploreMe]];
+        [self.observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:exploreMe]];
         [self showActiveSearch];
     } else {
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Oops", nil)
@@ -364,11 +359,11 @@
         return;
     }
     
-    hasFulfilledLocationFetch = NO;
+    self.hasFulfilledLocationFetch = NO;
     
     // clear all active search predicates
     // since it's not built to remove them one at a time yet
-    [observationsController removeAllSearchPredicatesUpdatingObservations:NO];
+    [self.observationsController removeAllSearchPredicatesUpdatingObservations:NO];
     
     // no predicates, so hide the active search UI
     [self hideActiveSearch];
@@ -416,7 +411,7 @@
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
     
-    [searchController searchForTaxon:text completionHandler:^(NSArray *results, NSError *error) {
+    [self.searchController searchForTaxon:text completionHandler:^(NSArray *results, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         });
@@ -440,7 +435,7 @@
                 [self presentViewController:alert animated:YES completion:nil];
             } else if (results.count == 1) {
                 // observations controller will fetch observations using this predicate
-                [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForTaxon:results.firstObject]];
+                [self.observationsController addSearchPredicate:[ExploreSearchPredicate predicateForTaxon:results.firstObject]];
                 
                 [self showActiveSearch];
                 
@@ -453,7 +448,7 @@
                 __weak typeof(self)weakSelf = self;
                 disambiguator.chosenBlock = ^void(id choice) {
                     // observations controller will fetch observations using this taxon
-                    [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForTaxon:(Taxon *)choice]];
+                    [self.observationsController addSearchPredicate:[ExploreSearchPredicate predicateForTaxon:(ExploreTaxon *)choice]];
                     
                     __strong typeof(weakSelf)strongSelf = weakSelf;
                     [strongSelf showActiveSearch];
@@ -487,7 +482,7 @@
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
     
-    [searchController searchForPerson:text completionHandler:^(NSArray *results, NSError *error) {
+    [self.searchController searchForPerson:text completionHandler:^(NSArray *results, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         });
@@ -511,7 +506,7 @@
                 [self presentViewController:alert animated:YES completion:nil];
             } else if (results.count == 1) {
                 // observations controller will fetch observations using this predicate
-                [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:results.firstObject]];
+                [self.observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:results.firstObject]];
                 
                 [self showActiveSearch];
                 
@@ -525,7 +520,7 @@
                     __strong typeof(weakSelf)strongSelf = weakSelf;
                     
                     // observations controller will fetch observations using this predicate
-                    [strongSelf->observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:(ExploreUser *)choice]];
+                    [strongSelf.observationsController addSearchPredicate:[ExploreSearchPredicate predicateForPerson:(ExploreUser *)choice]];
                     
                     [strongSelf showActiveSearch];
                 };
@@ -556,7 +551,7 @@
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
     
-    [searchController searchForLocation:text completionHandler:^(NSArray *results, NSError *error) {
+    [self.searchController searchForLocation:text completionHandler:^(NSArray *results, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         });
@@ -585,32 +580,32 @@
                 [geocoder geocodeAddressString:text
                                       inRegion:nil  // if we're auth'd for location svcs, uses the user's location as the region
                              completionHandler:^(NSArray *placemarks, NSError *error) {
-                                 if (error.code == kCLErrorNetwork) {
-                                     UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
-                                                                                                    message:NSLocalizedString(@"Please try again in a few moments.", @"Error message for the user, when the geocoder is telling us to slow down.")
-                                                                                             preferredStyle:UIAlertControllerStyleAlert];
-                                     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                                               style:UIAlertActionStyleCancel
-                                                                             handler:nil]];
-                                     [self presentViewController:alert animated:YES completion:nil];
-                                 } else {
-                                     if (placemarks.count == 0) {
-                                         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Oops", nil)
-                                                                                                        message:NSLocalizedString(@"No such place found. :(", nil)
-                                                                                                 preferredStyle:UIAlertControllerStyleAlert];
-                                         [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                                                   style:UIAlertActionStyleCancel
-                                                                                 handler:nil]];
-                                         [self presentViewController:alert animated:YES completion:nil];
-                                     } else {
-                                         CLPlacemark *place = placemarks.firstObject;
-                                         [mapVC mapShouldZoomToCoordinates:place.location.coordinate showUserLocation:YES];
-                                     }
-                                 }
-                             }];
+                    if (error.code == kCLErrorNetwork) {
+                        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Cannot search iNaturalist.org", nil)
+                                                                                       message:NSLocalizedString(@"Please try again in a few moments.", @"Error message for the user, when the geocoder is telling us to slow down.")
+                                                                                preferredStyle:UIAlertControllerStyleAlert];
+                        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                  style:UIAlertActionStyleCancel
+                                                                handler:nil]];
+                        [self presentViewController:alert animated:YES completion:nil];
+                    } else {
+                        if (placemarks.count == 0) {
+                            UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Oops", nil)
+                                                                                           message:NSLocalizedString(@"No such place found. :(", nil)
+                                                                                    preferredStyle:UIAlertControllerStyleAlert];
+                            [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                                      style:UIAlertActionStyleCancel
+                                                                    handler:nil]];
+                            [self presentViewController:alert animated:YES completion:nil];
+                        } else {
+                            CLPlacemark *place = placemarks.firstObject;
+                            [self.mapVC mapShouldZoomToCoordinates:place.location.coordinate showUserLocation:YES];
+                        }
+                    }
+                }];
             } else if (validPlaces.count == 1) {
                 // observations controller will fetch observations using this predicate
-                [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForLocation:(ExploreLocation *)validPlaces.firstObject]];
+                [self.observationsController addSearchPredicate:[ExploreSearchPredicate predicateForLocation:(ExploreLocation *)validPlaces.firstObject]];
                 
                 [self showActiveSearch];
                 
@@ -624,7 +619,7 @@
                     __strong typeof(weakSelf)strongSelf = weakSelf;
                     
                     // observations controller will fetch observations using this predicate
-                    [strongSelf->observationsController addSearchPredicate:[ExploreSearchPredicate predicateForLocation:(ExploreLocation *)choice]];
+                    [strongSelf.observationsController addSearchPredicate:[ExploreSearchPredicate predicateForLocation:(ExploreLocation *)choice]];
                     
                     [strongSelf showActiveSearch];
                 };
@@ -656,7 +651,7 @@
     hud.removeFromSuperViewOnHide = YES;
     hud.dimBackground = YES;
     
-    [searchController searchForProject:text completionHandler:^(NSArray *results, NSError *error) {
+    [self.searchController searchForProject:text completionHandler:^(NSArray *results, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         });
@@ -680,7 +675,7 @@
                 [self presentViewController:alert animated:YES completion:nil];
             } else if (results.count == 1) {
                 // observations controller will fetch observations using this predicate
-                [observationsController addSearchPredicate:[ExploreSearchPredicate predicateForProject:results.firstObject]];
+                [self.observationsController addSearchPredicate:[ExploreSearchPredicate predicateForProject:results.firstObject]];
                 
                 [self showActiveSearch];
                 
@@ -694,7 +689,7 @@
                     __strong typeof(weakSelf)strongSelf = weakSelf;
                     
                     // observations controller will fetch observations using this predicate
-                    [strongSelf->observationsController addSearchPredicate:[ExploreSearchPredicate predicateForProject:(ExploreProject *)choice]];
+                    [strongSelf.observationsController addSearchPredicate:[ExploreSearchPredicate predicateForProject:(ExploreProject *)choice]];
                     
                     [strongSelf showActiveSearch];
                 };
@@ -722,34 +717,34 @@
                                               style:UIAlertActionStyleCancel
                                             handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
-    isFetchingLocation = NO;
+    self.isFetchingLocation = NO;
 }
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
-    if (hasFulfilledLocationFetch)
+    if (self.hasFulfilledLocationFetch)
         return;
     
-    isFetchingLocation = NO;
+    self.isFetchingLocation = NO;
     CLLocation *recentLocation = locations.lastObject;
     
-    [locationFetchTimer invalidate];
+    [self.locationFetchTimer invalidate];
     
-    [locationManager stopUpdatingLocation];
+    [self.locationManager stopUpdatingLocation];
     
     // one location fetch per user interaction with the "find observations near me" menu item
-    if (!hasFulfilledLocationFetch) {
-        hasFulfilledLocationFetch = YES;
+    if (!self.hasFulfilledLocationFetch) {
+        self.hasFulfilledLocationFetch = YES;
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         });
         
-        [mapVC mapShouldZoomToCoordinates:recentLocation.coordinate showUserLocation:YES];
+        [self.mapVC mapShouldZoomToCoordinates:recentLocation.coordinate showUserLocation:YES];
     }
 }
 
 -(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
-    if (hasFulfilledLocationFetch)
+    if (self.hasFulfilledLocationFetch)
         return;
     
     switch ([CLLocationManager authorizationStatus]) {
@@ -781,23 +776,23 @@
 #pragma mark - Location Manager helpers
 
 - (void)startLookingForCurrentLocationNotify:(BOOL)shouldNotify {
-    if (isFetchingLocation)
+    if (self.isFetchingLocation)
         return;
     
-    if (hasFulfilledLocationFetch)
+    if (self.hasFulfilledLocationFetch)
         return;
     
-    isFetchingLocation = YES;
-    locationManager = [[CLLocationManager alloc] init];
+    self.isFetchingLocation = YES;
+    self.locationManager = [[CLLocationManager alloc] init];
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
         // request will start over
-        [locationManager requestWhenInUseAuthorization];
+        [self.locationManager requestWhenInUseAuthorization];
     }
     
-    locationManager.delegate = self;
-    locationManager.distanceFilter = 1000;
-    [locationManager stopUpdatingLocation];
-    [locationManager startUpdatingLocation];
+    self.locationManager.delegate = self;
+    self.locationManager.distanceFilter = 1000;
+    [self.locationManager stopUpdatingLocation];
+    [self.locationManager startUpdatingLocation];
     
     if (shouldNotify) {
         // this may take a moment
@@ -807,24 +802,24 @@
         hud.dimBackground = YES;
     }
     
-    locationFetchTimer = [NSTimer bk_scheduledTimerWithTimeInterval:15.0f
+    self.locationFetchTimer = [NSTimer bk_scheduledTimerWithTimeInterval:15.0f
                                                               block:^(NSTimer *timer) {
-                                                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                                                      [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
-                                                                  });
-                                                                  
-                                                                  UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Timeout", nil)
-                                                                                                                                 message:NSLocalizedString(@"Unable to find location", nil)
-                                                                                                                          preferredStyle:UIAlertControllerStyleAlert];
-                                                                  [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
-                                                                                                            style:UIAlertActionStyleCancel
-                                                                                                          handler:nil]];
-                                                                  [self presentViewController:alert animated:YES completion:nil];
-                                                                                                                                    
-                                                                  [locationManager stopUpdatingLocation];
-                                                                  locationManager = nil;
-                                                                  isFetchingLocation = NO;
-                                                              }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
+        });
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Timeout", nil)
+                                                                       message:NSLocalizedString(@"Unable to find location", nil)
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+        
+        [self.locationManager stopUpdatingLocation];
+        self.locationManager = nil;
+        self.isFetchingLocation = NO;
+    }
                                                             repeats:NO];
 }
 
@@ -833,22 +828,22 @@
 #pragma mark ActiveSearchText delegate
 
 - (NSString *)activeSearchText {
-    return observationsController.combinedColloquialSearchPhrase;
+    return self.observationsController.combinedColloquialSearchPhrase;
 }
 
 #pragma mark - ExploreObsNotificationDelegate
 
 - (void)startedObservationFetch {
-    [spinner startAnimating];
-    self.navigationItem.rightBarButtonItem = spinnerItem;
+    [self.spinner startAnimating];
+    self.navigationItem.rightBarButtonItem = self.spinnerItem;
 }
 
 - (void)finishedObservationFetch {
-    if (!observationsController.isFetching) {
+    if (!self.observationsController.isFetching) {
         // set the right bar button item to the reload button
-        self.navigationItem.rightBarButtonItem = leaderboardItem;
+        self.navigationItem.rightBarButtonItem = self.leaderboardItem;
         // stop the progress view
-        [spinner stopAnimating];
+        [self.spinner stopAnimating];
     }
 }
 
@@ -870,11 +865,11 @@
                                               style:UIAlertActionStyleCancel
                                             handler:nil]];
     [self presentViewController:alert animated:YES completion:nil];
-
+    
     // set the right bar button item to the reload button
-    self.navigationItem.rightBarButtonItem = leaderboardItem;
+    self.navigationItem.rightBarButtonItem = self.leaderboardItem;
     // stop the progress view
-    [spinner stopAnimating];
+    [self.spinner stopAnimating];
 }
 
 @end
