@@ -544,7 +544,12 @@ static const int ChangePartnerMinimumInterval = 86400;
 - (void)launchTutorial {
 #ifdef INatTutorialURL
     if ([[INatReachability sharedClient] isNetworkReachable]) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:INatTutorialURL]];
+        NSURL *url = [NSURL URLWithString:INatTutorialURL];
+        if ([UIApplication.sharedApplication canOpenURL:url]) {
+            [UIApplication.sharedApplication openURL:url
+                                             options:@{}
+                                   completionHandler:nil];
+        }
     } else {
         [self networkUnreachableAlert];
     }
@@ -591,7 +596,9 @@ static const int ChangePartnerMinimumInterval = 86400;
         NSURL *url = [NSURL URLWithString:percentEncodedURLString];
         if (url) {
             if ([[UIApplication sharedApplication] canOpenURL:url]) {
-                [[UIApplication sharedApplication] openURL:url];
+                [UIApplication.sharedApplication openURL:url
+                                                 options:@{}
+                                       completionHandler:nil];
             } else {
                 UIAlertController *alert = [[UIAlertController alloc] init];
                 alert.title = NSLocalizedString(@"Cannot Send Email", @"Title of alert when the system is not configured for the user to send email");
@@ -610,7 +617,12 @@ static const int ChangePartnerMinimumInterval = 86400;
 - (void)launchRateUs {
 #ifdef INatAppStoreURL
     if ([[INatReachability sharedClient] isNetworkReachable]) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:INatAppStoreURL]];
+        NSURL *url = [NSURL URLWithString:INatAppStoreURL];
+        if ([UIApplication.sharedApplication canOpenURL:url]) {
+            [UIApplication.sharedApplication openURL:url
+                                             options:@{}
+                                   completionHandler:nil];
+        }
     } else {
         [self networkUnreachableAlert];
     }
@@ -628,7 +640,12 @@ static const int ChangePartnerMinimumInterval = 86400;
 - (void)launchDonate {
 #ifdef INatDonateURL
     if ([[INatReachability sharedClient] isNetworkReachable]) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:INatDonateURL]];
+        NSURL *url = [NSURL URLWithString:INatDonateURL];
+        if ([UIApplication.sharedApplication canOpenURL:url]) {
+            [UIApplication.sharedApplication openURL:url
+                                             options:@{}
+                                   completionHandler:nil];
+        }
     } else {
         [self networkUnreachableAlert];
     }
@@ -646,7 +663,12 @@ static const int ChangePartnerMinimumInterval = 86400;
 - (void)launchStore {
 #ifdef INatStoreURL
     if ([[INatReachability sharedClient] isNetworkReachable]) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:INatStoreURL]];
+        NSURL *url = [NSURL URLWithString:INatStoreURL];
+        if ([UIApplication.sharedApplication canOpenURL:url]) {
+            [UIApplication.sharedApplication openURL:url
+                                             options:@{}
+                                   completionHandler:nil];
+        }
     } else {
         [self networkUnreachableAlert];
     }
@@ -847,9 +869,13 @@ static const int ChangePartnerMinimumInterval = 86400;
      [alert addAction:[UIAlertAction actionWithTitle:learnMoreText
                                        style:UIAlertActionStyleDefault
                                              handler:^(UIAlertAction * _Nonnull action) {
-                                                 UIApplication *app = [UIApplication sharedApplication];
-                                                 [app openURL:[NSURL URLWithString:INatPartnerLearnMoreURL]];
-                                             }]];
+         NSURL *url = [NSURL URLWithString:INatPartnerLearnMoreURL];
+         if ([UIApplication.sharedApplication canOpenURL:url]) {
+             [UIApplication.sharedApplication openURL:url
+                                              options:@{}
+                                    completionHandler:nil];
+         }
+     }]];
 #endif
     
     [self presentViewController:alert animated:YES completion:nil];
@@ -1174,7 +1200,6 @@ static const int ChangePartnerMinimumInterval = 86400;
                                                                forIndexPath:indexPath];
     cell.switchLabel.text = NSLocalizedString(@"Prefer No Tracking", @"label for prefer no tracking switch in settings");
     
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     cell.switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatPreferNoTrackPrefKey];
     
     __weak typeof(self)weakSelf = self;
