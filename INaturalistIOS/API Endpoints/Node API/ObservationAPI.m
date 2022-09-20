@@ -56,12 +56,6 @@
     [self fetch:path classMapping:IdentifierCount.class handler:done];
 }
 
-- (void)postObservation:(Observation *)observation handler:(INatAPIFetchCompletionCountHandler)done {
-    [[Analytics sharedClient] debugLog:@"Network - post observation to node"];
-    NSString *path = @"observations";
-    [self post:path params:[observation uploadableRepresentation] classMapping:[ExploreObservation class] handler:done];
-}
-
 - (void)faveObservationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fave observation via node"];
     NSString *path = [NSString stringWithFormat:@"observations/%ld/fave", (long)identifier];

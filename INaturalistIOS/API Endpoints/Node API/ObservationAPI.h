@@ -20,8 +20,6 @@
 - (void)topIdentifiersForTaxaIds:(NSArray *)taxaIds handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)faveObservationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)unfaveObservationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done;
-
-- (void)postObservation:(Observation *)observation handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)fetchDeletedObservationsSinceDate:(NSDate *)sinceDate handler:(INatAPIFetchCompletionCountHandler)done;
 
 @end
