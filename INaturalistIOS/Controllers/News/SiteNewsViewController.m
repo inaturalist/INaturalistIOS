@@ -6,9 +6,10 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
+@import NSString_stripHtml;
+
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <FontAwesomeKit/FAKIonIcons.h>
-#import <NSString_stripHtml/NSString_stripHTML.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import <Realm/Realm.h>
 
