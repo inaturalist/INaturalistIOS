@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="zUI-iq-68M">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="zUI-iq-68M">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment version="2304" identifier="iOS"/>
+        <deployment version="4352" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,10 +21,6 @@
         <scene sceneID="aQe-Km-fDG">
             <objects>
                 <viewController id="zUI-iq-68M" customClass="OnboardingViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="V3h-ZB-opg"/>
-                        <viewControllerLayoutGuide type="bottom" id="otP-bM-WqL"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="jK3-VW-cec">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -38,15 +35,16 @@
                                 <rect key="frame" x="20" y="563" width="560" height="37"/>
                             </pageControl>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="Bly-Or-4pV"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="Efo-ex-SWT" firstAttribute="leading" secondItem="jK3-VW-cec" secondAttribute="leading" id="2w4-rs-1ai"/>
-                            <constraint firstItem="otP-bM-WqL" firstAttribute="top" secondItem="sOh-eX-28k" secondAttribute="bottom" constant="10" id="QLh-d2-NQu"/>
-                            <constraint firstAttribute="leading" secondItem="sOh-eX-28k" secondAttribute="leading" id="c4U-ny-m8k"/>
-                            <constraint firstItem="Efo-ex-SWT" firstAttribute="top" secondItem="V3h-ZB-opg" secondAttribute="bottom" id="cp9-aT-2MK"/>
-                            <constraint firstAttribute="trailing" secondItem="sOh-eX-28k" secondAttribute="trailing" id="duD-2O-jjr"/>
-                            <constraint firstItem="otP-bM-WqL" firstAttribute="top" secondItem="Efo-ex-SWT" secondAttribute="bottom" id="f8M-ZR-GxP"/>
-                            <constraint firstAttribute="trailing" secondItem="Efo-ex-SWT" secondAttribute="trailing" id="mXE-Jb-Rse"/>
+                            <constraint firstItem="Efo-ex-SWT" firstAttribute="leading" secondItem="Bly-Or-4pV" secondAttribute="leading" id="2w4-rs-1ai"/>
+                            <constraint firstItem="Bly-Or-4pV" firstAttribute="bottom" secondItem="sOh-eX-28k" secondAttribute="bottom" constant="10" id="QLh-d2-NQu"/>
+                            <constraint firstItem="Bly-Or-4pV" firstAttribute="leading" secondItem="sOh-eX-28k" secondAttribute="leading" id="c4U-ny-m8k"/>
+                            <constraint firstItem="Efo-ex-SWT" firstAttribute="top" secondItem="Bly-Or-4pV" secondAttribute="top" id="cp9-aT-2MK"/>
+                            <constraint firstItem="Bly-Or-4pV" firstAttribute="trailing" secondItem="sOh-eX-28k" secondAttribute="trailing" id="duD-2O-jjr"/>
+                            <constraint firstItem="Bly-Or-4pV" firstAttribute="bottom" secondItem="Efo-ex-SWT" secondAttribute="bottom" id="f8M-ZR-GxP"/>
+                            <constraint firstItem="Bly-Or-4pV" firstAttribute="trailing" secondItem="Efo-ex-SWT" secondAttribute="trailing" id="mXE-Jb-Rse"/>
                         </constraints>
                     </view>
                     <connections>
@@ -61,10 +59,6 @@
         <scene sceneID="hR2-0g-ciE">
             <objects>
                 <viewController storyboardIdentifier="onboarding-logo" useStoryboardIdentifierAsRestorationIdentifier="YES" id="wzT-un-1j9" userLabel="iNaturalist Logo" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="jnx-4o-7i5"/>
-                        <viewControllerLayoutGuide type="bottom" id="5B7-bG-Ubh"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="ZSy-K5-emj">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -93,14 +87,15 @@
                                 </subviews>
                             </stackView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="nUh-hj-WsX"/>
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.93725490196078431" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="287-Kd-BHQ" secondAttribute="trailing" constant="20" id="H1b-7N-Rn6"/>
-                            <constraint firstItem="Nvg-kJ-bxo" firstAttribute="centerX" secondItem="ZSy-K5-emj" secondAttribute="centerX" id="Rh8-cK-FaU"/>
-                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="xY9-2P-uSM" secondAttribute="trailing" constant="35" id="UhX-n9-CtK"/>
+                            <constraint firstItem="nUh-hj-WsX" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="287-Kd-BHQ" secondAttribute="trailing" constant="20" id="H1b-7N-Rn6"/>
+                            <constraint firstItem="Nvg-kJ-bxo" firstAttribute="centerX" secondItem="nUh-hj-WsX" secondAttribute="centerX" id="Rh8-cK-FaU"/>
+                            <constraint firstItem="nUh-hj-WsX" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="xY9-2P-uSM" secondAttribute="trailing" constant="35" id="UhX-n9-CtK"/>
                             <constraint firstItem="Nvg-kJ-bxo" firstAttribute="centerY" secondItem="ZSy-K5-emj" secondAttribute="centerY" constant="-50" id="u8O-nP-tcv"/>
-                            <constraint firstItem="287-Kd-BHQ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ZSy-K5-emj" secondAttribute="leading" constant="20" id="z5D-Ii-VQf"/>
-                            <constraint firstItem="xY9-2P-uSM" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="ZSy-K5-emj" secondAttribute="leading" constant="35" id="zUM-hg-VPC"/>
+                            <constraint firstItem="287-Kd-BHQ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="nUh-hj-WsX" secondAttribute="leading" constant="20" id="z5D-Ii-VQf"/>
+                            <constraint firstItem="xY9-2P-uSM" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="nUh-hj-WsX" secondAttribute="leading" constant="35" id="zUM-hg-VPC"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -112,10 +107,6 @@
         <scene sceneID="AUU-3B-Kdn">
             <objects>
                 <viewController storyboardIdentifier="onboarding-observe" useStoryboardIdentifierAsRestorationIdentifier="YES" id="WEK-2c-qOo" userLabel="Observe" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="c2B-Vt-OT1"/>
-                        <viewControllerLayoutGuide type="bottom" id="XUg-tC-7an"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="NQL-wJ-uOd">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -156,11 +147,12 @@
                                 </subviews>
                             </stackView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="GGF-Tb-ZQr"/>
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.93725490196078431" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="3yr-K1-cKR" firstAttribute="leading" secondItem="NQL-wJ-uOd" secondAttribute="leading" constant="30" id="VLv-Hw-h53"/>
+                            <constraint firstItem="3yr-K1-cKR" firstAttribute="leading" secondItem="GGF-Tb-ZQr" secondAttribute="leading" constant="30" id="VLv-Hw-h53"/>
                             <constraint firstItem="0HC-89-zFL" firstAttribute="centerY" secondItem="NQL-wJ-uOd" secondAttribute="centerY" multiplier="1.4" id="Xlv-YO-wHN"/>
-                            <constraint firstAttribute="trailing" secondItem="3yr-K1-cKR" secondAttribute="trailing" constant="30" id="YcY-U4-g8T"/>
+                            <constraint firstItem="GGF-Tb-ZQr" firstAttribute="trailing" secondItem="3yr-K1-cKR" secondAttribute="trailing" constant="30" id="YcY-U4-g8T"/>
                             <constraint firstItem="3yr-K1-cKR" firstAttribute="centerY" secondItem="NQL-wJ-uOd" secondAttribute="centerY" id="hax-vl-Jgo">
                                 <variation key="heightClass=regular-widthClass=regular" constant="-50"/>
                             </constraint>
@@ -186,10 +178,6 @@
         <scene sceneID="eWm-gD-3XX">
             <objects>
                 <viewController storyboardIdentifier="onboarding-identify" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Grd-Qw-HnV" userLabel="Identify" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="f9R-G0-tRK"/>
-                        <viewControllerLayoutGuide type="bottom" id="Z6R-3Y-R2M"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="smj-dY-u2O">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -230,12 +218,13 @@
                                 </subviews>
                             </stackView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="9V8-4k-4yF"/>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.93725490199999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="6Iv-Oy-yzX" firstAttribute="centerY" secondItem="smj-dY-u2O" secondAttribute="centerY" constant="-50" id="4FZ-9k-NbG"/>
-                            <constraint firstItem="6Iv-Oy-yzX" firstAttribute="leading" secondItem="smj-dY-u2O" secondAttribute="leading" constant="30" id="EeW-7A-5q2"/>
+                            <constraint firstItem="6Iv-Oy-yzX" firstAttribute="leading" secondItem="9V8-4k-4yF" secondAttribute="leading" constant="30" id="EeW-7A-5q2"/>
                             <constraint firstItem="vCH-CP-6hM" firstAttribute="centerY" secondItem="smj-dY-u2O" secondAttribute="centerY" multiplier="1.4" id="Xa8-19-r6g"/>
-                            <constraint firstAttribute="trailing" secondItem="6Iv-Oy-yzX" secondAttribute="trailing" constant="30" id="bfi-MY-RGf"/>
+                            <constraint firstItem="9V8-4k-4yF" firstAttribute="trailing" secondItem="6Iv-Oy-yzX" secondAttribute="trailing" constant="30" id="bfi-MY-RGf"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -258,10 +247,6 @@
         <scene sceneID="KjJ-O2-cQn">
             <objects>
                 <viewController storyboardIdentifier="onboarding-discuss" useStoryboardIdentifierAsRestorationIdentifier="YES" id="h3q-kt-O3d" userLabel="Discuss" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="4CM-y8-rfa"/>
-                        <viewControllerLayoutGuide type="bottom" id="Ytx-XH-okQ"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Q77-Lc-pyW">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -302,12 +287,13 @@
                                 </subviews>
                             </stackView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="4U1-QT-PH0"/>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.93725490199999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="YMy-Rp-boP" firstAttribute="leading" secondItem="Q77-Lc-pyW" secondAttribute="leading" constant="30" id="LHR-6B-iIM"/>
+                            <constraint firstItem="YMy-Rp-boP" firstAttribute="leading" secondItem="4U1-QT-PH0" secondAttribute="leading" constant="30" id="LHR-6B-iIM"/>
                             <constraint firstItem="2hB-WM-pN1" firstAttribute="centerY" secondItem="Q77-Lc-pyW" secondAttribute="centerY" multiplier="1.4" id="Lfz-F0-EOV"/>
                             <constraint firstItem="YMy-Rp-boP" firstAttribute="centerY" secondItem="Q77-Lc-pyW" secondAttribute="centerY" constant="-50" id="MWq-jL-DOX"/>
-                            <constraint firstAttribute="trailing" secondItem="YMy-Rp-boP" secondAttribute="trailing" constant="30" id="V5d-m8-KDF"/>
+                            <constraint firstItem="4U1-QT-PH0" firstAttribute="trailing" secondItem="YMy-Rp-boP" secondAttribute="trailing" constant="30" id="V5d-m8-KDF"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -330,10 +316,6 @@
         <scene sceneID="ra1-kR-4iz">
             <objects>
                 <viewController storyboardIdentifier="onboarding-login" useStoryboardIdentifierAsRestorationIdentifier="YES" id="j80-yK-ZbF" userLabel="Login" customClass="OnboardingLoginViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="Hgf-d3-Me4"/>
-                        <viewControllerLayoutGuide type="bottom" id="lno-pb-Pqa"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="sOT-vv-oc9">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -535,18 +517,19 @@
                                 <variation key="heightClass=regular-widthClass=regular" spacing="25"/>
                             </stackView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="e79-gd-sFv"/>
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.93725490196078431" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="31y-8d-eUf" firstAttribute="centerY" secondItem="sOT-vv-oc9" secondAttribute="centerY" constant="-100" id="4oF-Vb-jIf"/>
                             <constraint firstItem="LMC-dJ-pka" firstAttribute="top" secondItem="31y-8d-eUf" secondAttribute="bottom" constant="30" id="OBM-m4-LvD"/>
                             <constraint firstAttribute="trailingMargin" secondItem="MC0-kW-bph" secondAttribute="trailing" id="Q8t-4Y-DFP"/>
-                            <constraint firstItem="lno-pb-Pqa" firstAttribute="top" secondItem="LMC-dJ-pka" secondAttribute="bottom" id="RCr-J3-NA6"/>
-                            <constraint firstItem="31y-8d-eUf" firstAttribute="centerX" secondItem="sOT-vv-oc9" secondAttribute="centerX" id="SrQ-g6-qx6"/>
-                            <constraint firstAttribute="trailing" secondItem="31y-8d-eUf" secondAttribute="trailing" priority="750" constant="15" id="TQV-5G-S7B"/>
-                            <constraint firstItem="MC0-kW-bph" firstAttribute="top" secondItem="Hgf-d3-Me4" secondAttribute="bottom" constant="8" id="XN4-JN-Eta"/>
-                            <constraint firstItem="31y-8d-eUf" firstAttribute="leading" secondItem="sOT-vv-oc9" secondAttribute="leading" priority="750" constant="15" id="h4U-RA-Wca"/>
-                            <constraint firstItem="31y-8d-eUf" firstAttribute="top" secondItem="Hgf-d3-Me4" secondAttribute="bottom" constant="20" id="khz-cV-7nr"/>
-                            <constraint firstItem="LMC-dJ-pka" firstAttribute="centerX" secondItem="sOT-vv-oc9" secondAttribute="centerX" id="q0Y-MI-OTS"/>
+                            <constraint firstItem="e79-gd-sFv" firstAttribute="bottom" secondItem="LMC-dJ-pka" secondAttribute="bottom" id="RCr-J3-NA6"/>
+                            <constraint firstItem="31y-8d-eUf" firstAttribute="centerX" secondItem="e79-gd-sFv" secondAttribute="centerX" id="SrQ-g6-qx6"/>
+                            <constraint firstItem="e79-gd-sFv" firstAttribute="trailing" secondItem="31y-8d-eUf" secondAttribute="trailing" priority="750" constant="15" id="TQV-5G-S7B"/>
+                            <constraint firstItem="MC0-kW-bph" firstAttribute="top" secondItem="e79-gd-sFv" secondAttribute="top" constant="8" id="XN4-JN-Eta"/>
+                            <constraint firstItem="31y-8d-eUf" firstAttribute="leading" secondItem="e79-gd-sFv" secondAttribute="leading" priority="750" constant="15" id="h4U-RA-Wca"/>
+                            <constraint firstItem="31y-8d-eUf" firstAttribute="top" secondItem="e79-gd-sFv" secondAttribute="top" constant="20" id="khz-cV-7nr"/>
+                            <constraint firstItem="LMC-dJ-pka" firstAttribute="centerX" secondItem="e79-gd-sFv" secondAttribute="centerX" id="q0Y-MI-OTS"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -592,10 +575,6 @@
         <scene sceneID="udk-O0-rnj">
             <objects>
                 <viewController storyboardIdentifier="onboarding-contribute" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ypX-M6-xkZ" userLabel="Contribute" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="dui-YQ-EfH"/>
-                        <viewControllerLayoutGuide type="bottom" id="bKb-Bi-B9w"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="UYl-8w-6UW">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -636,12 +615,13 @@
                                 </subviews>
                             </stackView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="A4E-PJ-j2P"/>
                         <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.93725490199999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="xel-z6-qIE" firstAttribute="leading" secondItem="UYl-8w-6UW" secondAttribute="leading" constant="30" id="2Fm-6Y-wop"/>
+                            <constraint firstItem="xel-z6-qIE" firstAttribute="leading" secondItem="A4E-PJ-j2P" secondAttribute="leading" constant="30" id="2Fm-6Y-wop"/>
                             <constraint firstItem="sBd-1Y-eNL" firstAttribute="centerY" secondItem="UYl-8w-6UW" secondAttribute="centerY" multiplier="1.4" id="JpJ-PE-NI9"/>
                             <constraint firstItem="xel-z6-qIE" firstAttribute="centerY" secondItem="UYl-8w-6UW" secondAttribute="centerY" constant="-50" id="ZdJ-S9-5GJ"/>
-                            <constraint firstAttribute="trailing" secondItem="xel-z6-qIE" secondAttribute="trailing" constant="30" id="qb8-Ze-x1T"/>
+                            <constraint firstItem="A4E-PJ-j2P" firstAttribute="trailing" secondItem="xel-z6-qIE" secondAttribute="trailing" constant="30" id="qb8-Ze-x1T"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -664,10 +644,6 @@
         <scene sceneID="ZPY-2E-aXv">
             <objects>
                 <viewController storyboardIdentifier="onboarding-reauthenticate" id="UJ1-a0-AKB" customClass="OnboardingReauthenticateViewController" customModule="iNaturalist" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="xBN-MY-j1a"/>
-                        <viewControllerLayoutGuide type="bottom" id="SP8-bW-v52"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="r6R-Hf-AAj">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -745,11 +721,12 @@
                                 </constraints>
                             </stackView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="0Rz-w6-nvZ"/>
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.93725490196078431" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="5VN-hc-Du2" firstAttribute="leading" secondItem="r6R-Hf-AAj" secondAttribute="leading" constant="16" id="1Wc-V9-OB2"/>
-                            <constraint firstItem="5VN-hc-Du2" firstAttribute="top" secondItem="xBN-MY-j1a" secondAttribute="bottom" constant="64" id="GTr-cj-Jgk"/>
-                            <constraint firstAttribute="trailing" secondItem="5VN-hc-Du2" secondAttribute="trailing" constant="16" id="UsI-yb-8hZ"/>
+                            <constraint firstItem="5VN-hc-Du2" firstAttribute="leading" secondItem="0Rz-w6-nvZ" secondAttribute="leading" constant="16" id="1Wc-V9-OB2"/>
+                            <constraint firstItem="5VN-hc-Du2" firstAttribute="top" secondItem="0Rz-w6-nvZ" secondAttribute="top" constant="64" id="GTr-cj-Jgk"/>
+                            <constraint firstItem="0Rz-w6-nvZ" firstAttribute="trailing" secondItem="5VN-hc-Du2" secondAttribute="trailing" constant="16" id="UsI-yb-8hZ"/>
                         </constraints>
                     </view>
                     <connections>
