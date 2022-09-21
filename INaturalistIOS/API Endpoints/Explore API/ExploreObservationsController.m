@@ -78,7 +78,7 @@ NSInteger const ObsFetchEmptyCode = -100;
     // trim out any observations that aren't in the map rect, unless we have an overriding location search predicate
     if (![self hasActiveLocationSearchPredicate]) {
         self.observations = [self.observations bk_select:^BOOL(id <MKAnnotation> annotation) {
-            return MKMapRectContainsPoint(_limitingRegion.mapRect, MKMapPointForCoordinate(annotation.coordinate));
+            return MKMapRectContainsPoint(self.limitingRegion.mapRect, MKMapPointForCoordinate(annotation.coordinate));
         }];
     }
     
