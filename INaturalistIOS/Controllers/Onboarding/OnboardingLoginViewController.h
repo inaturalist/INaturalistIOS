@@ -13,7 +13,7 @@
 @property BOOL skippable;
 @property BOOL startsInLoginMode;
 @property NSString *reason;
-@property (nonatomic, copy) void(^skipAction)();
-@property (nonatomic, copy) void(^closeAction)();
+@property (nonatomic, copy) void(^skipAction)(void);
+@property (nonatomic, copy) void(^closeAction)(void);
 
 @end
