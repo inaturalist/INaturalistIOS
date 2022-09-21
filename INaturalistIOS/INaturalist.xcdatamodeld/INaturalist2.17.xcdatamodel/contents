@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="12141" systemVersion="16E195" minimumToolsVersion="Xcode 7.3" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="2.17">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21279" systemVersion="21G115" minimumToolsVersion="Xcode 7.3" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="2.17">
     <entity name="Comment" representedClassName="Comment" syncable="YES">
         <attribute name="body" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
@@ -57,7 +57,7 @@
         <attribute name="updatedAt" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="userID" optional="YES" attributeType="Integer 32" usesScalarValueType="NO" syncable="YES"/>
         <relationship name="observation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Observation" inverseName="identifications" inverseEntity="Observation" syncable="YES"/>
-        <relationship name="taxon" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Taxon" syncable="YES"/>
+        <relationship name="taxon" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Taxon" inverseName="identifications" inverseEntity="Taxon" syncable="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="identifications" inverseEntity="User" syncable="YES"/>
     </entity>
     <entity name="NewsItem" representedClassName="NewsItem" syncable="YES">
@@ -270,6 +270,7 @@
         <attribute name="wikipediaSummary" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="wikipediaTitle" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="guides" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Guide" inverseName="taxon" inverseEntity="Guide" syncable="YES"/>
+        <relationship name="identifications" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Identification" inverseName="taxon" inverseEntity="Identification" syncable="YES"/>
         <relationship name="observations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Observation" inverseName="taxon" inverseEntity="Observation" syncable="YES"/>
         <relationship name="taxonPhotos" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="TaxonPhoto" inverseName="taxon" inverseEntity="TaxonPhoto" syncable="YES"/>
     </entity>
@@ -312,23 +313,4 @@
         <relationship name="comments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Comment" inverseName="user" inverseEntity="Comment" syncable="YES"/>
         <relationship name="identifications" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Identification" inverseName="user" inverseEntity="Identification" syncable="YES"/>
     </entity>
-    <elements>
-        <element name="Comment" positionX="216" positionY="378" width="128" height="223"/>
-        <element name="DeletedRecord" positionX="160" positionY="192" width="128" height="75"/>
-        <element name="Fave" positionX="207" positionY="351" width="128" height="120"/>
-        <element name="Guide" positionX="160" positionY="192" width="128" height="283"/>
-        <element name="Identification" positionX="234" positionY="387" width="128" height="268"/>
-        <element name="NewsItem" positionX="207" positionY="351" width="128" height="270"/>
-        <element name="Observation" positionX="160" positionY="192" width="128" height="735"/>
-        <element name="ObservationField" positionX="160" positionY="192" width="128" height="240"/>
-        <element name="ObservationFieldValue" positionX="160" positionY="192" width="128" height="210"/>
-        <element name="ObservationPhoto" positionX="160" positionY="192" width="128" height="390"/>
-        <element name="Project" positionX="160" positionY="192" width="128" height="390"/>
-        <element name="ProjectObservation" positionX="160" positionY="192" width="128" height="210"/>
-        <element name="ProjectObservationField" positionX="160" positionY="192" width="128" height="225"/>
-        <element name="ProjectUser" positionX="160" positionY="192" width="128" height="240"/>
-        <element name="Taxon" positionX="160" positionY="192" width="128" height="435"/>
-        <element name="TaxonPhoto" positionX="160" positionY="192" width="128" height="345"/>
-        <element name="User" positionX="198" positionY="369" width="128" height="270"/>
-    </elements>
 </model>
