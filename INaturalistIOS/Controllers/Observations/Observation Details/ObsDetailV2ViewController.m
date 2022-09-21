@@ -193,7 +193,7 @@
         vc.onlineEditingDelegate = self;
     } else if ([segue.identifier isEqualToString:@"taxon"]) {
         NSInteger taxonId = [sender integerValue];
-        RLMResults *results = [ExploreTaxonRealm objectsWhere:@"taxonId == %d", taxonId];
+
         TaxonDetailViewController *vc = [segue destinationViewController];
         vc.taxonId = taxonId;
         vc.observationCoordinate = [self.observation visibleLocation];
