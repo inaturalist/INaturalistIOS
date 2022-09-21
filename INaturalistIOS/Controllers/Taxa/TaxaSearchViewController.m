@@ -279,9 +279,6 @@
     self.headerImageView.layer.minificationFilter = kCAFilterTrilinear;
     self.headerImageView.layer.minificationFilterBias = 0.1;
     
-    
-    NSDate *beforeSuggestions = [NSDate date];
-    
     // this is the callback for our suggestions api call
     INatAPISuggestionsCompletionHandler done = ^(NSArray *suggestions, ExploreTaxon *parent, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
