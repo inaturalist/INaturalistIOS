@@ -175,7 +175,7 @@
     label.numberOfLines = 2;
     label.textAlignment = NSTextAlignmentCenter;
     
-    NSInteger *count;
+    NSInteger count;
     NSString *title;
     
     switch (index) {
