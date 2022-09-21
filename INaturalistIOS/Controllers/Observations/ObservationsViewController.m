@@ -41,7 +41,6 @@
 #import "INatReachability.h"
 #import "NSLocale+INaturalist.h"
 #import "ExploreDeletedRecord.h"
-#import "YearInReviewAPI.h"
 #import "ExploreObservationRealm.h"
 #import "ObservationAPI.h"
 #import "InaturalistRealmMigration.h"
@@ -72,15 +71,6 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _api = [[ObservationAPI alloc] init];
-    });
-    return _api;
-}
-
-- (YearInReviewAPI *)yearInReviewApi {
-    static YearInReviewAPI *_api = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _api = [[YearInReviewAPI alloc] init];
     });
     return _api;
 }
