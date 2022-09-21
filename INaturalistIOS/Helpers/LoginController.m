@@ -28,14 +28,12 @@
 
 static const NSTimeInterval LocalMeUserValidTimeInterval = 600;
 
-@interface LoginController () {
-    NSString         *externalAccessToken;
-    NSString         *iNatAccessToken;
-    NSString         *accountType;
-    BOOL             isLoginCompleted;
-    NSInteger        lastAssertionType;
-    dispatch_group_t jwtTokenRequestGroup;
-}
+@interface LoginController ()
+@property NSString *externalAccessToken;
+@property NSString *iNatAccessToken;
+@property NSString *accountType;
+@property BOOL isLoginCompleted;
+@property dispatch_group_t jwtTokenRequestGroup;
 @end
 
 #pragma mark - NSNotification names
@@ -68,12 +66,12 @@ NSInteger INatMinPasswordLength = 6;
 }
 
 - (void)logout {
-    isLoginCompleted = NO;
+    self.isLoginCompleted = NO;
     self.jwtToken = nil;
     
-    externalAccessToken = nil;
-    iNatAccessToken = nil;
-    accountType = nil;
+    self.externalAccessToken = nil;
+    self.iNatAccessToken = nil;
+    self.accountType = nil;
     
     [[A0SimpleKeychain keychain] deleteEntryForKey:INatJWTPrefKey];
     
@@ -97,11 +95,11 @@ NSInteger INatMinPasswordLength = 6;
     if (error || !result.token) {
         [self.delegate loginFailedWithError:error];
     } else {
-        externalAccessToken = [[result.token tokenString] copy];
-        accountType = kINatAuthServiceExtToken;
-        [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
+        self.externalAccessToken = [[result.token tokenString] copy];
+        self.accountType = kINatAuthServiceExtToken;
+        [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:self.accountType
                                                              assertionType:[NSURL URLWithString:@"http://facebook.com"]
-                                                                 assertion:externalAccessToken];
+                                                                 assertion:self.externalAccessToken];
     }
 }
 
@@ -172,9 +170,9 @@ NSInteger INatMinPasswordLength = 6;
 - (void)loginWithUsername:(NSString *)username
                  password:(NSString *)password {
     
-    accountType = kINatAuthService;
-    isLoginCompleted = NO;
-    [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
+    self.accountType = kINatAuthService;
+    self.isLoginCompleted = NO;
+    [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:self.accountType
                                                               username:username
                                                               password:password];
 }
@@ -184,7 +182,7 @@ NSInteger INatMinPasswordLength = 6;
                                                       object:[NXOAuth2AccountStore sharedStore]
                                                        queue:nil
                                                   usingBlock:^(NSNotification *aNotification){
-        if (!isLoginCompleted) {
+        if (!self.isLoginCompleted) {
             [self finishWithAuth2Login];
         }
     }];
@@ -206,18 +204,18 @@ NSInteger INatMinPasswordLength = 6;
 -(void)finishWithAuth2Login {
     NXOAuth2AccountStore *sharedStore = [NXOAuth2AccountStore sharedStore];
     BOOL loginSucceeded = NO;
-    for (NXOAuth2Account *account in [sharedStore accountsWithAccountType:accountType]) {
+    for (NXOAuth2Account *account in [sharedStore accountsWithAccountType:self.accountType]) {
         NSString *accessT = [[account accessToken] accessToken];
         if (accessT && [accessT length] > 0){
-            iNatAccessToken = nil;
-            iNatAccessToken = [NSString stringWithFormat:@"Bearer %@", accessT ];
+            self.iNatAccessToken = nil;
+            self.iNatAccessToken = [NSString stringWithFormat:@"Bearer %@", accessT ];
             loginSucceeded = YES;
         }
     }
     
     if (loginSucceeded) {
-        isLoginCompleted = YES;
-        [[NSUserDefaults standardUserDefaults] setValue:iNatAccessToken
+        self.isLoginCompleted = YES;
+        [[NSUserDefaults standardUserDefaults] setValue:self.iNatAccessToken
                                                  forKey:INatTokenPrefKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
@@ -259,7 +257,7 @@ NSInteger INatMinPasswordLength = 6;
                 }
             };
             
-            if ([accountType isEqualToString:kINatAuthService]) {
+            if ([self.accountType isEqualToString:kINatAuthService]) {
                 // if the account was a new account made via create,
                 // we would already have the me user object stored
                 // via the responses. so this is a login, and we can
@@ -301,11 +299,11 @@ NSInteger INatMinPasswordLength = 6;
         if (error || !user.authentication.idToken) {
             [self.delegate loginFailedWithError:error];
         } else {
-            self->externalAccessToken = [user.authentication.accessToken copy];
-            self->accountType = kINatAuthServiceExtToken;
-            [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:self->accountType
+            self.externalAccessToken = [user.authentication.accessToken copy];
+            self.accountType = kINatAuthServiceExtToken;
+            [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:self.accountType
                                                                  assertionType:[NSURL URLWithString:@"http://google.com"]
-                                                                     assertion:self->externalAccessToken];
+                                                                     assertion:self.externalAccessToken];
             
         }
     }];
@@ -322,11 +320,11 @@ didSignInForUser:(GIDGoogleUser *)user
     if (error || !user.authentication.idToken) {
         [self.delegate loginFailedWithError:error];
     } else {
-        externalAccessToken = [user.authentication.accessToken copy];
-        accountType = kINatAuthServiceExtToken;
-        [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
+        self.externalAccessToken = [user.authentication.accessToken copy];
+        self.accountType = kINatAuthServiceExtToken;
+        [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:self.accountType
                                                              assertionType:[NSURL URLWithString:@"http://google.com"]
-                                                                 assertion:externalAccessToken];
+                                                                 assertion:self.externalAccessToken];
     }
 }
 
@@ -362,9 +360,9 @@ didSignInForUser:(GIDGoogleUser *)user
                                                              error:&jsonError];
         NSString *assertionJSON = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
         
-        externalAccessToken = [identityToken copy];
-        accountType = kINatAuthServiceExtToken;
-        [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:accountType
+        self.externalAccessToken = [identityToken copy];
+        self.accountType = kINatAuthServiceExtToken;
+        [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:self.accountType
                                                              assertionType:[NSURL URLWithString:@"https://appleid.apple.com"]
                                                                  assertion:assertionJSON];
     }
@@ -540,8 +538,8 @@ didSignInForUser:(GIDGoogleUser *)user
         return;
     }
     
-    if (jwtTokenRequestGroup) {
-        dispatch_group_notify(jwtTokenRequestGroup, dispatch_get_main_queue(), ^{
+    if (self.jwtTokenRequestGroup) {
+        dispatch_group_notify(self.jwtTokenRequestGroup, dispatch_get_main_queue(), ^{
             if (self.jwtToken && success) {
                 success(@{ tokenKey: self.jwtToken});
             }
@@ -549,8 +547,8 @@ didSignInForUser:(GIDGoogleUser *)user
         return;
     }
     
-    jwtTokenRequestGroup = dispatch_group_create();
-    dispatch_group_enter(jwtTokenRequestGroup);
+    self.jwtTokenRequestGroup = dispatch_group_create();
+    dispatch_group_enter(self.jwtTokenRequestGroup);
     
     NSURL *url = [NSURL URLWithString:@"https://www.inaturalist.org/users/api_token.json"];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -572,12 +570,12 @@ didSignInForUser:(GIDGoogleUser *)user
                 });
             }
             strongSelf.jwtToken = nil;
-            dispatch_group_leave(jwtTokenRequestGroup);
-            jwtTokenRequestGroup = NULL;
+            dispatch_group_leave(strongSelf.jwtTokenRequestGroup);
+            strongSelf.jwtTokenRequestGroup = NULL;
         } else if ([httpResponse statusCode] != 200) {
             strongSelf.jwtToken = nil;
-            dispatch_group_leave(jwtTokenRequestGroup);
-            jwtTokenRequestGroup = NULL;
+            dispatch_group_leave(strongSelf.jwtTokenRequestGroup);
+            strongSelf.jwtTokenRequestGroup = NULL;
             if (failure) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *errorDesc = nil;
@@ -604,8 +602,8 @@ didSignInForUser:(GIDGoogleUser *)user
             NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&jsonError];
             if (jsonError) {
                 strongSelf.jwtToken = nil;
-                dispatch_group_leave(jwtTokenRequestGroup);
-                jwtTokenRequestGroup = NULL;
+                dispatch_group_leave(strongSelf.jwtTokenRequestGroup);
+                strongSelf.jwtTokenRequestGroup = NULL;
                 if (failure) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         failure(jsonError);
@@ -616,8 +614,8 @@ didSignInForUser:(GIDGoogleUser *)user
                     NSString *jwt = [json valueForKey:@"api_token"];
                     strongSelf.jwtToken = jwt;
                     [[A0SimpleKeychain keychain] setString:jwt forKey:INatJWTPrefKey];
-                    dispatch_group_leave(jwtTokenRequestGroup);
-                    jwtTokenRequestGroup = NULL;
+                    dispatch_group_leave(strongSelf.jwtTokenRequestGroup);
+                    strongSelf.jwtTokenRequestGroup = NULL;
                     if (success) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             success(@{ tokenKey: jwt });
@@ -625,8 +623,8 @@ didSignInForUser:(GIDGoogleUser *)user
                     }
                 } else {
                     strongSelf.jwtToken = nil;
-                    dispatch_group_leave(jwtTokenRequestGroup);
-                    jwtTokenRequestGroup = NULL;
+                    dispatch_group_leave(strongSelf.jwtTokenRequestGroup);
+                    strongSelf.jwtTokenRequestGroup = NULL;
                     if (failure) {
                         dispatch_async(dispatch_get_main_queue(), ^{
                             failure(nil);
