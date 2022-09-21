@@ -9,9 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @interface AboutHeaderView : UIView
+NS_ASSUME_NONNULL_BEGIN
+
 + (nullable instancetype)fromXib;
 @property IBOutlet UILabel *headerTitleLabel;
-@property IBOutlet UIImageView *casLogo;
-@property IBOutlet UIImageView *ngsLogo;
 @property IBOutlet UILabel *headerBodyLabel;
+
+NS_ASSUME_NONNULL_END
 @end
