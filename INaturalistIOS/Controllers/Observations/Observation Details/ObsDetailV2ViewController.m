@@ -204,10 +204,10 @@
 }
 
 - (void)editObs {
-    if ([self.observation isEditable]) {
+    if ([self.observation isEditable] && [self.observation isKindOfClass:ExploreObservationRealm.class]) {
         ObsEditV2ViewController *edit = [[ObsEditV2ViewController alloc] initWithNibName:nil bundle:nil];
         edit.shouldContinueUpdatingLocation = NO;
-        edit.persistedObservation = self.observation;
+        edit.persistedObservation = (ExploreObservationRealm *)self.observation;
         edit.isMakingNewObservation = NO;
         
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:edit];
