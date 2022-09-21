@@ -447,9 +447,6 @@
         }
         classesCompleted += 1;
     }
-    
-    NSDate *endDate = [NSDate date];
-    NSTimeInterval elapsed = [endDate timeIntervalSinceDate:beginDate];
 }
 
 - (void)cleanupPhotosExecutionSeconds:(NSInteger)allowedExecutionSeconds {
