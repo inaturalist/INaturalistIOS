@@ -265,7 +265,6 @@
 		FAB8C44D1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB8C44C1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m */; };
 		FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */; };
 		FABC7B5E28B8186F0004FFE4 /* PeopleRailsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FABC7B5D28B8186F0004FFE4 /* PeopleRailsAPI.m */; };
-		FABCAD0A23C661CA006479CA /* YearInReviewAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FABCAD0923C661CA006479CA /* YearInReviewAPI.m */; };
 		FABCAD0E23C6B289006479CA /* MeHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FABCAD0D23C6B289006479CA /* MeHeaderView.xib */; };
 		FABCAD1123C6BA2C006479CA /* AnonHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = FABCAD1023C6BA2C006479CA /* AnonHeaderView.m */; };
 		FABCAD1423C6BEA4006479CA /* AnonHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FABCAD1323C6BEA4006479CA /* AnonHeaderView.xib */; };
@@ -1048,8 +1047,6 @@
 		FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ExploreSearchViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		FABC7B5C28B8186F0004FFE4 /* PeopleRailsAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PeopleRailsAPI.h; sourceTree = "<group>"; };
 		FABC7B5D28B8186F0004FFE4 /* PeopleRailsAPI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PeopleRailsAPI.m; sourceTree = "<group>"; };
-		FABCAD0823C661CA006479CA /* YearInReviewAPI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = YearInReviewAPI.h; sourceTree = "<group>"; };
-		FABCAD0923C661CA006479CA /* YearInReviewAPI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = YearInReviewAPI.m; sourceTree = "<group>"; };
 		FABCAD0D23C6B289006479CA /* MeHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MeHeaderView.xib; sourceTree = "<group>"; };
 		FABCAD0F23C6BA2C006479CA /* AnonHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AnonHeaderView.h; sourceTree = "<group>"; };
 		FABCAD1023C6BA2C006479CA /* AnonHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AnonHeaderView.m; sourceTree = "<group>"; };
@@ -2217,8 +2214,6 @@
 				FA9437821C869AA400CB10F3 /* ProjectsAPI.m */,
 				FA2552111D1F4D62005D2128 /* TaxaAPI.h */,
 				FA2552121D1F4D62005D2128 /* TaxaAPI.m */,
-				FABCAD0823C661CA006479CA /* YearInReviewAPI.h */,
-				FABCAD0923C661CA006479CA /* YearInReviewAPI.m */,
 			);
 			path = "Node API";
 			sourceTree = "<group>";
@@ -2760,7 +2755,6 @@
 				FA63FA1519E4CE65007306F9 /* Analytics.m in Sources */,
 				FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */,
 				FA6DF0641C498C9400718CF4 /* NewsItemViewController.m in Sources */,
-				FABCAD0A23C661CA006479CA /* YearInReviewAPI.m in Sources */,
 				FAA20BBA1C5079830075EF2C /* NewsItemCell.m in Sources */,
 				FA60EA1123EA3F7F0026F7A3 /* ExplorePost.m in Sources */,
 				FA97666B20D1E45900D172DC /* AboutHeaderView.m in Sources */,
