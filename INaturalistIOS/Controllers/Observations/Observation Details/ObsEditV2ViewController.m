@@ -794,7 +794,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     }
 }
 
-- (void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation {
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations {
+    CLLocation *newLocation = locations.lastObject;
     
     if (newLocation.timestamp.timeIntervalSinceNow < -60) return;
     
@@ -826,7 +827,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             [self stopUpdatingLocation];
         }
         
-        if (self.standaloneObservation.placeGuess.length == 0 || !oldLocation || [newLocation distanceFromLocation:oldLocation] > 100) {
+        if (self.standaloneObservation.placeGuess.length == 0) {
             [self reverseGeocodeCoordinatesForObservation:self.standaloneObservation];
         }
     } @catch (NSException *exception) {
