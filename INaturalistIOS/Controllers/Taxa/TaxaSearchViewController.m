@@ -242,7 +242,7 @@
     // setup the search controller
     self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
     self.searchController.searchResultsUpdater = self;
-    self.searchController.dimsBackgroundDuringPresentation = false;
+    self.searchController.obscuresBackgroundDuringPresentation = false;
     self.searchController.searchBar.placeholder = NSLocalizedString(@"Look up a species by name",
                                                                     @"placeholder text for taxon search bar");
     self.searchController.searchBar.inputAccessoryView = self.doneToolbar;
