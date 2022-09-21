@@ -6,7 +6,7 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
-#import <NSString_stripHtml/NSString_stripHTML.h>
+@import NSString_stripHtml;
 
 #import "NewsItem.h"
 #import "NSURL+INaturalist.h"
