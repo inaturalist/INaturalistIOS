@@ -4,6 +4,7 @@
     <dependencies>
         <deployment version="2304" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -671,8 +672,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="5VN-hc-Du2">
-                                <rect key="frame" x="16" y="64" width="343" height="172"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="5VN-hc-Du2">
+                                <rect key="frame" x="16" y="64" width="343" height="346"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TIr-IJ-Q9Z">
                                         <rect key="frame" x="0.0" y="0.0" width="343" height="0.0"/>
@@ -725,6 +726,18 @@
                                             <action selector="loginButtonTapped:" destination="UJ1-a0-AKB" eventType="touchUpInside" id="YgT-Hc-zNH"/>
                                         </connections>
                                     </button>
+                                    <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="q1v-7I-H9X" customClass="GIDSignInButton">
+                                        <rect key="frame" x="0.0" y="188" width="343" height="128"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <connections>
+                                            <action selector="googleLoginPressed:" destination="UJ1-a0-AKB" eventType="touchUpInside" id="YJP-SA-dcM"/>
+                                        </connections>
+                                    </view>
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qQZ-rz-tQI" customClass="FBSDKLoginButton">
+                                        <rect key="frame" x="0.0" y="332" width="343" height="14"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain"/>
+                                    </button>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="5WV-jN-UjN" firstAttribute="width" secondItem="5VN-hc-Du2" secondAttribute="width" id="Fht-2J-hrz"/>
@@ -740,9 +753,11 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="facebookLoginButton" destination="qQZ-rz-tQI" id="iy1-ra-1MJ"/>
                         <outlet property="infoLabel" destination="TIr-IJ-Q9Z" id="p4B-fs-IzZ"/>
                         <outlet property="loginButton" destination="DO1-al-HTc" id="tIm-h4-clN"/>
                         <outlet property="passwordField" destination="Bpg-fN-eOX" id="Rah-SP-aKi"/>
+                        <outlet property="stackview" destination="5VN-hc-Du2" id="4be-6i-0f7"/>
                         <outlet property="usernameField" destination="5WV-jN-UjN" id="pGS-ob-wI0"/>
                     </connections>
                 </viewController>
@@ -758,5 +773,8 @@
         <image name="img-identify" width="304" height="290"/>
         <image name="img-logo" width="336" height="63"/>
         <image name="img-observe" width="304" height="290"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

@@ -8,13 +8,21 @@
 
 import Foundation
 import UIKit
+import FBSDKLoginKit
+import GoogleSignIn
 
 @objc
 class OnboardingReauthenticateViewController: UIViewController {
+    
     @IBOutlet weak var infoLabel: UILabel!
     @IBOutlet weak var usernameField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
     @IBOutlet weak var loginButton: UIButton!
+    
+    @IBOutlet weak var googleLoginButton: GIDSignInButton!
+    @IBOutlet weak var facebookLoginButton: FBSDKLoginButton!
+    
+    @IBOutlet weak var stackview: UIStackView!
     
     @objc var loginAction: (() -> Void)?
 
@@ -28,6 +36,7 @@ class OnboardingReauthenticateViewController: UIViewController {
         {
             usernameField.text = login.meUserLocal().login
             login.delegate = self
+            self.facebookLoginButton.delegate = login
         }
         
         let cancel = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
@@ -35,8 +44,48 @@ class OnboardingReauthenticateViewController: UIViewController {
         
         loginButton.setTitleColor(.inatTint(), for: .normal)
         
+        if #available(iOS 13.0, *) {
+            let signInWithAppleButton = ASAuthorizationAppleIDButton(authorizationButtonType: .signIn, authorizationButtonStyle: .black)
+            signInWithAppleButton.addTarget(self, action: #selector(appleLoginPressed), for: .touchUpInside)
+            signInWithAppleButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
+            
+            self.stackview .addArrangedSubview(signInWithAppleButton)
+        }
     }
     
+    @objc func appleLoginPressed(_ sender: Any) {
+        guard let appDelegate = UIApplication.shared.delegate as? INaturalistAppDelegate,
+              let login = appDelegate.loginController else
+        {
+            return
+        }
+        
+        if #available(iOS 13.0, *) {
+            
+            let provider = ASAuthorizationAppleIDProvider()
+            let request = provider.createRequest()
+            request.requestedScopes = [.email, .fullName]
+            
+            let authController = ASAuthorizationController(authorizationRequests: [request])
+            authController.delegate = login
+            authController.presentationContextProvider = self
+            authController.performRequests()
+        }
+    }
+    
+    @IBAction func googleLoginPressed(_ sender: Any) {
+        
+        if GIDSignIn.sharedInstance.hasPreviousSignIn() {
+            GIDSignIn.sharedInstance.signOut()
+        }
+
+        if let appDelegate = UIApplication.shared.delegate as? INaturalistAppDelegate,
+           let login = appDelegate.loginController
+        {
+            login.loginWithGoogle(withPresentingVC: self)
+        }
+    }
+                                    
     @objc func cancel(_ sender: UIBarButtonItem) {
         dismiss(animated: true)
     }
@@ -76,3 +125,11 @@ extension OnboardingReauthenticateViewController: INatAuthenticationDelegate {
         self.present(alert, animated: true)
     }
 }
+
+extension OnboardingReauthenticateViewController: ASAuthorizationControllerPresentationContextProviding {
+    @available(iOS 13.0, *)
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return self.view.window!
+    }
+}
+

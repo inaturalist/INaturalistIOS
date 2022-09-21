@@ -334,7 +334,7 @@ static const int ChangePartnerMinimumInterval = 86400;
     [self presentViewController:alert animated:YES completion:nil];
 }
 
-- (void)tappedDeleteAccount {
+- (void)tappedDeleteAccount {    
     if ([[INatReachability sharedClient] isNetworkReachable]) {
                 
         NSSet *scopes = [NSSet setWithArray:@[ @"login", @"write", @"account_delete" ]];
@@ -352,6 +352,21 @@ static const int ChangePartnerMinimumInterval = 86400;
                                             redirectURL:redirectURL
                                           keyChainGroup:nil
                                          forAccountType:kINatAuthService];
+        
+        // setup external auth as well
+        tokenURL = [NSURL URLWithString:@"/oauth/assertion_token.json"
+                          relativeToURL:[NSURL inat_baseURLForAuthentication]];
+        redirectURL = [NSURL URLWithString:@"urn:ietf:wg:oauth:2.0:oob"];
+        
+        [[NXOAuth2AccountStore sharedStore] setClientID:INatClientID
+                                                 secret:INatClientSecret
+                                                  scope:scopes
+                                       authorizationURL:authorizationURL
+                                               tokenURL:tokenURL
+                                            redirectURL:redirectURL
+                                          keyChainGroup:nil
+                                         forAccountType:kINatAuthServiceExtToken];
+
         
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
         OnboardingReauthenticateViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"onboarding-reauthenticate"];
