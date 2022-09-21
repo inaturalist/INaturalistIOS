@@ -40,10 +40,6 @@
     }
 }
 
-- (BOOL)shouldAutorotate {
-    return ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad);
-}
-
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue destinationViewController] isKindOfClass:[OnboardingPageViewController class]]) {
         OnboardingPageViewController *pvc = (OnboardingPageViewController *)[segue destinationViewController];

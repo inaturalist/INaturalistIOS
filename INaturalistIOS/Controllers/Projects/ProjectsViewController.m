@@ -371,12 +371,6 @@ static const int ListControlIndexNearby = 2;
     }
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
 - (void)dealloc {
     [self.joinedToken invalidate];
 }

@@ -332,12 +332,6 @@ static const int ListControlIndexNearby = 1;
     }
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
 #pragma mark - button targets
 
 - (IBAction)tappedSearch:(id)sender {
