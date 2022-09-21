@@ -20,9 +20,12 @@
 
 - (void)requestMethod:(NSString *)method path:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
     
-    NSString *escapedPath = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], escapedPath];
-    NSURL *url = [NSURL URLWithString:urlString];
+    NSURLComponents *components = [NSURLComponents componentsWithString:[self apiBaseUrl]];
+    NSArray *inputs = [path componentsSeparatedByString:@"?"];
+    components.path = inputs.firstObject;
+    components.query = inputs.lastObject;
+    
+    NSURL *url = components.URL;
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.HTTPMethod = method;
     
