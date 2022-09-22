@@ -38,4 +38,30 @@
     return [NSValueTransformer valueTransformerForName:MTLURLValueTransformerName];
 }
 
+#pragma mark - INatPhoto
+
+- (NSURL *)largePhotoUrl {
+    return self.largeUrl;
+}
+
+- (NSURL *)mediumPhotoUrl {
+    return self.mediumUrl;
+}
+
+- (NSURL *)smallPhotoUrl {
+    return self.smallUrl;
+}
+
+- (NSURL *)squarePhotoUrl {
+    return self.squareUrl;
+}
+
+- (NSURL *)thumbPhotoUrl {
+    return self.squareUrl;
+}
+
+- (NSString *)photoKey {
+    return nil;
+}
+
 @end

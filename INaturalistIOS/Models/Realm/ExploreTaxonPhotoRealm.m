@@ -83,6 +83,11 @@
     return [NSURL URLWithString:self.urlString];
 }
 
+- (NSString *)photoKey {
+    return nil;
+}
+
+
 - (NSString *)urlStringForSize:(NSString *)size {
     return [self.urlString stringByReplacingOccurrencesOfString:@"square" withString:size];
 }

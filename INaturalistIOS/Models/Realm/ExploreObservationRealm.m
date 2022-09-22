@@ -836,6 +836,30 @@
     return ObsTrueCoordinatePrivacyVisible;
 }
 
+- (NSString *)qualityGrade {
+    // TODO: this should be implmented on the enum 
+    switch (self.dataQuality) {
+        case ObsDataQualityResearch:
+            return @"research";
+            break;
+        case ObsDataQualityNeedsID:
+            return @"needs_id";
+            break;
+        case ObsDataQualityCasual:
+            return @"casual";
+            break;
+        default:
+            return @"";
+            break;
+    }
+}
+
+
+- (NSString *)sortable {
+    return [NSString stringWithFormat:@"%f", self.timeObserved.timeIntervalSinceNow];
+}
+
+
 - (NSString *)localizedGeoprivacyText {
     // TODO: long term fix is to convert geoprivacy to an enum
     NSDictionary *geoPrivacyOptions = @{

@@ -78,6 +78,11 @@
     }
 }
 
+- (NSArray *)sortedProjectObservationFields {
+    return [self sortedProjectObsFields];
+}
+
+
 - (NSArray *)sortedProjectObsFields {
     NSSortDescriptor *position = [NSSortDescriptor sortDescriptorWithKey:@"position"
                                                                ascending:YES];
