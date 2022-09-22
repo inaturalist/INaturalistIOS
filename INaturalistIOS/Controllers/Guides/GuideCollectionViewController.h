@@ -12,12 +12,12 @@
 #import "GuideMenuViewController.h"
 
 @interface GuideCollectionViewController : UICollectionViewController <UISearchBarDelegate, GuideMenuControllerDelegate>
-{
-    NSTimer *searchTimer;
-    NSMutableArray *items;
-    UILabel *noContent;
-    CGFloat keyboardHeight;
-}
+
+@property NSTimer *searchTimer;
+@property NSMutableArray *items;
+@property UILabel *noContent;
+@property CGFloat keyboardHeight;
+
 @property (nonatomic, strong) GuideXML *guide;
 @property (nonatomic, strong) NSString *guideXMLPath;
 @property (nonatomic, strong) NSString *guideXMLURL;

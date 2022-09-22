@@ -81,14 +81,14 @@ static const int GutterWidth  = 5;
         self.tags = [[NSMutableArray alloc] init];
     }
     
-    noContent = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.collectionView.frame) / 2, CGRectGetWidth(self.collectionView.frame), 44)];
-    noContent.text = NSLocalizedString(@"No matching taxa", nil);
-    noContent.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
-    noContent.backgroundColor = [UIColor clearColor];
-    noContent.textColor = [UIColor lightGrayColor];
-    noContent.textAlignment = NSTextAlignmentCenter;
-    [noContent setHidden:YES];
-    [self.view addSubview:noContent];
+    self.noContent = [[UILabel alloc] initWithFrame:CGRectMake(0, CGRectGetHeight(self.collectionView.frame) / 2, CGRectGetWidth(self.collectionView.frame), 44)];
+    self.noContent.text = NSLocalizedString(@"No matching taxa", nil);
+    self.noContent.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
+    self.noContent.backgroundColor = [UIColor clearColor];
+    self.noContent.textColor = [UIColor lightGrayColor];
+    self.noContent.textAlignment = NSTextAlignmentCenter;
+    [self.noContent setHidden:YES];
+    [self.view addSubview:self.noContent];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
 }
@@ -215,9 +215,9 @@ static const int GutterWidth  = 5;
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
     self.search = searchText;
-    [searchTimer invalidate];
-    searchTimer = nil;
-    searchTimer = [NSTimer scheduledTimerWithTimeInterval:0.5
+    [self.searchTimer invalidate];
+    self.searchTimer = nil;
+    self.searchTimer = [NSTimer scheduledTimerWithTimeInterval:0.5
                                                    target:self
                                                  selector:@selector(performSearch)
                                                  userInfo:searchText
@@ -260,7 +260,7 @@ static const int GutterWidth  = 5;
             [self toggleNoContent];
         });
     });
-    searchTimer = nil;
+    self.searchTimer = nil;
 }
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
@@ -339,13 +339,13 @@ static const int GutterWidth  = 5;
 
 - (void)loadData
 {
-    if (items) {
-        [items removeAllObjects];
+    if (self.items) {
+        [self.items removeAllObjects];
     } else {
-        items = [[NSMutableArray alloc] init];
+        self.items = [[NSMutableArray alloc] init];
     }
     [self.guide iterateWithXPath:self.currentXPath usingBlock:^(RXMLElement *e) {
-        [items addObject:[[GuideTaxonXML alloc] initWithGuide:self.guide andXML:e]];
+        [self.items addObject:[[GuideTaxonXML alloc] initWithGuide:self.guide andXML:e]];
     }];
 }
 
@@ -407,7 +407,7 @@ static const int GutterWidth  = 5;
 {
     GuideTaxonXML *guideTaxon = nil;
     @try {
-        guideTaxon = [items objectAtIndex:indexPath.row];
+        guideTaxon = [self.items objectAtIndex:indexPath.row];
     } @catch (NSException *exception) {
         // return nil in case of range exceptions
         if (![exception.name isEqualToString:NSRangeException]) {
@@ -484,26 +484,26 @@ static const int GutterWidth  = 5;
 {
     NSValue *v = [notification.userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
     CGRect kbRect = [self.view convertRect:v.CGRectValue toView:nil];
-    keyboardHeight = kbRect.size.height;
+    self.keyboardHeight = kbRect.size.height;
     [self toggleNoContent];
 }
 
 - (void)keyboardDidHide:(NSNotification *)notification
 {
-    keyboardHeight = 0;
+    self.keyboardHeight = 0;
     [self toggleNoContent];
 }
 
 - (void)toggleNoContent
 {
-    CGFloat h = (CGRectGetHeight(self.collectionView.frame) - keyboardHeight) / 2;
-    if (keyboardHeight > 0) {
+    CGFloat h = (CGRectGetHeight(self.collectionView.frame) - self.keyboardHeight) / 2;
+    if (self.keyboardHeight > 0) {
         h = h + 22;
     }
     [UIView beginAnimations:nil context:NULL];
     [UIView setAnimationDuration:0.5f];
-    noContent.frame = CGRectMake(0, h, CGRectGetWidth(self.collectionView.frame), 44);
-    [noContent setHidden:(items.count != 0)];
+    self.noContent.frame = CGRectMake(0, h, CGRectGetWidth(self.collectionView.frame), 44);
+    [self.noContent setHidden:(self.items.count != 0)];
     [UIView commitAnimations];
 }
 @end
