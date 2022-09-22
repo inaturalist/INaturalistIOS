@@ -1093,16 +1093,6 @@
             </objects>
             <point key="canvasLocation" x="-2118.4000000000001" y="2536.7316341829087"/>
         </scene>
-        <!--Guides-->
-        <scene sceneID="dMc-As-AjP">
-            <objects>
-                <viewControllerPlaceholder storyboardName="Guides" id="4eK-mN-1Hq" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="" id="7vx-h6-sT9"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="oWu-zH-Qhd" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-2196.8000000000002" y="3309.4452773613198"/>
-        </scene>
         <!--Taxon-->
         <scene sceneID="PP3-HD-gqT">
             <objects>
