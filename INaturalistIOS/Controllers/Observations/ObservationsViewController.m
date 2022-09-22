@@ -551,7 +551,8 @@
     }
     UIView *popup = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth*widthFraction, screenHeight*heightFraction)];
     popup.backgroundColor = [UIColor clearColor];
-    UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectMake(10,10, popup.bounds.size.width-20, popup.bounds.size.height-20)];
+    
+    WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectMake(10,10, popup.bounds.size.width-20, popup.bounds.size.height-20)];
     NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
     NSString *changesFilePath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"changes.%@", language]
                                                                 ofType:@"html"
