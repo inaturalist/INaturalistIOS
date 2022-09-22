@@ -17,7 +17,7 @@
 @class ExploreTaxon;
 @class ExploreUser;
 
-@interface ExploreObservation : MTLModel <MKAnnotation, ObservationVisualization, Uploadable, MTLJSONSerializing>
+@interface ExploreObservation : MTLModel <MKAnnotation, ObservationVisualization, MTLJSONSerializing>
 
 @property (nonatomic, assign) NSInteger observationId;
 @property (nonatomic, copy) NSString *speciesGuess;

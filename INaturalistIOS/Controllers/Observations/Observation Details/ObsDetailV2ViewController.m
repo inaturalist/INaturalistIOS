@@ -158,10 +158,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    // don't clobber any un-uploaded edits to this observation or its children
-    if (!self.observation.needsUpload || self.observation.childrenNeedingUpload.count != 0) {
-        [self reloadObservation];
-    }
+    [self reloadObservation];
 }
 
 - (void)uploadFinished {
@@ -215,14 +212,18 @@
 }
 
 - (void)reloadObservation {
-    if (self.observation.needsUpload || self.observation.childrenNeedingUpload.count != 0) {
-        // don't clobber any un-uploaded edits to this observation or its children
-        return;
+    if ([self.observation conformsToProtocol:@protocol(Uploadable)]) {
+        id <Uploadable> uploadableObs = (id <Uploadable>)self.observation;
+        
+        if (uploadableObs.needsUpload || uploadableObs.childrenNeedingUpload.count != 0) {
+            // don't clobber any un-uploaded edits to this observation or its children
+            return;
+        }
     }
     
     NSInteger obsIdToReload = 0;
     if (self.observation) {
-        obsIdToReload = self.observation.recordId;
+        obsIdToReload = self.observation.inatRecordId;
     } else {
         obsIdToReload = self.observationId;
     }

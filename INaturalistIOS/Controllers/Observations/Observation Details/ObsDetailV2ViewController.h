@@ -19,7 +19,7 @@
 
 @interface ObsDetailV2ViewController : UIViewController <ObservationOnlineEditingDelegate>
 
-@property id <ObservationVisualization, Uploadable> observation;
+@property id <ObservationVisualization> observation;
 @property NSInteger observationId;
 @property BOOL shouldShowActivityOnLoad;
 
