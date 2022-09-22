@@ -64,7 +64,7 @@
 @property ConsentView *personalInfoConsentView;
 @property ConsentView *dataTransferConsentView;
 
-@property ASAuthorizationAppleIDButton *signinWithAppleButton;
+@property ASAuthorizationAppleIDButton *signinWithAppleButton API_AVAILABLE(ios(13.0));
 
 @property NSArray <FAKIcon *> *leftViewIcons;
 
