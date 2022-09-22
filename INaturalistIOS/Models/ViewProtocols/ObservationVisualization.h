@@ -47,7 +47,6 @@ typedef NS_ENUM(NSInteger, ObsTrueCoordinateVisibility) {
 - (NSURL *)userThumbUrl;
 
 - (NSString *)placeGuess;
-- (BOOL)idPlease;
 - (NSString *)geoprivacy;
 
 - (ObsTrueCoordinateVisibility)trueCoordinateVisibility;

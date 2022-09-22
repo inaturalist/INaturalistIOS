@@ -71,15 +71,6 @@
     return [UIColor colorWithHexString:@"#dceea3"];
 }
 
-+ (UIColor *)colorForIdPleaseNotice {
-    return [UIColor colorWithHexString:@"#85743d"];
-}
-
-+ (UIColor *)secondaryColorForIdPleaseNotice {
-    return [UIColor colorWithHexString:@"#ffee91"];
-}
-
-
 // style colors
 + (UIColor *)inatGray {
     return [UIColor colorWithHexString:@"#95a5a6"];

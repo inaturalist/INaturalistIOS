@@ -17,9 +17,7 @@
 
 // notices
 + (UIColor *)colorForResearchGradeNotice;
-+ (UIColor *)colorForIdPleaseNotice;
 + (UIColor *)secondaryColorForResearchGradeNotice;
-+ (UIColor *)secondaryColorForIdPleaseNotice;
 
 + (UIColor *)inatBlack;
 + (UIColor *)inatGray;
