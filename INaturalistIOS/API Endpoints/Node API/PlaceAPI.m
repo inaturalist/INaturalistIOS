@@ -14,8 +14,9 @@
 
 - (void)placesMatching:(NSString *)searchTerm handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - search for places from node"];
-    NSString *path =[NSString stringWithFormat:@"places/autocomplete?q=%@", searchTerm];
-    [self fetch:path classMapping:ExploreLocation.class handler:done];
+    NSString *path = @"/v1/places/autocomplete";
+    NSString *query = [NSString stringWithFormat:@"autocomplete?q=%@", searchTerm];
+    [self fetch:path query:query classMapping:ExploreLocation.class handler:done];
 }
 
 @end

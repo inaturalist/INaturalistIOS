@@ -18,13 +18,13 @@
     return [[NSUserDefaults standardUserDefaults] objectForKey:INatTokenPrefKey];
 }
 
-- (void)requestMethod:(NSString *)method path:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
-    
-    // TODO: safer just to use URL components directly into requestMethod: here
+- (void)requestMethod:(NSString *)method path:(NSString *)path query:(NSString *)query params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
+        
     NSURLComponents *components = [NSURLComponents componentsWithString:[self apiBaseUrl]];
-    NSArray *inputs = [path componentsSeparatedByString:@"?"];
-    components.path = inputs.firstObject;
-    components.query = inputs.lastObject;
+    components.path = path;
+    if (query) {
+        components.query = query;
+    }
     
     NSURL *url = components.URL;
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -35,7 +35,6 @@
     }
     [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
 
-    
     // not handling params for now
     NSAssert(params == nil, @"Params must be nil in INatRailsAPI");
     

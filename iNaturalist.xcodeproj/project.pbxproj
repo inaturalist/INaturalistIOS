@@ -2196,8 +2196,6 @@
 			children = (
 				FA99BDC91FD794E300C9D985 /* CommentsAPI.h */,
 				FA99BDCA1FD794E300C9D985 /* CommentsAPI.m */,
-				FAB0B8E6237F17DE00E73681 /* GuidesAPI.h */,
-				FAB0B8E7237F17DE00E73681 /* GuidesAPI.m */,
 				FADE67491FD7B2B400AB4F09 /* IdentificationsAPI.h */,
 				FADE674A1FD7B2B400AB4F09 /* IdentificationsAPI.m */,
 				FAEF23331C7D00A600208F44 /* INatAPI.h */,
@@ -2225,6 +2223,8 @@
 				FAB0B8EA237F1B0300E73681 /* INatRailsAPI.m */,
 				FABC7B5C28B8186F0004FFE4 /* PeopleRailsAPI.h */,
 				FABC7B5D28B8186F0004FFE4 /* PeopleRailsAPI.m */,
+				FAB0B8E6237F17DE00E73681 /* GuidesAPI.h */,
+				FAB0B8E7237F17DE00E73681 /* GuidesAPI.m */,
 			);
 			path = "Rails API";
 			sourceTree = "<group>";

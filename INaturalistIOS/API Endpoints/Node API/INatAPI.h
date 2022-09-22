@@ -15,14 +15,16 @@ typedef void(^INatAPIFetchCompletionCountHandler)(NSArray *results, NSInteger co
 
 @interface INatAPI : NSObject
 
-- (void)put:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done;
-- (void)post:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done;
-- (void)fetch:(NSString *)path classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done;
-- (void)delete:(NSString *)path handler:(INatAPIFetchCompletionCountHandler)done;
-
-- (void)requestMethod:(NSString *)method path:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done;
 - (void)extractObjectsFromData:(NSData *)data classMapping:(Class)ClassForMapping handler:(INatAPIFetchCompletionCountHandler)done;
 
 - (NSString *)apiBaseUrl;
+
+
+- (void)requestMethod:(NSString *)method path:(NSString *)path query:(NSString *)query params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)put:(NSString *)path query:(NSString *)query params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)post:(NSString *)path query:(NSString *)query params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)fetch:(NSString *)path query:(NSString *)query classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done;
+- (void)delete:(NSString *)path query:(NSString *)query handler:(INatAPIFetchCompletionCountHandler)done;
+
 
 @end

@@ -22,14 +22,15 @@
 
 - (void)taxaMatching:(NSString *)name handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch autocomplete taxa"];
-    NSString *path = [NSString stringWithFormat:@"taxa/autocomplete?q=%@", name];
-    [self fetch:path classMapping:[ExploreTaxon class] handler:done];
+    NSString *path = @"/v1/taxa/autocomplete";
+    NSString *query = [NSString stringWithFormat:@"q=%@", name];
+    [self fetch:path query:query classMapping:[ExploreTaxon class] handler:done];
 }
 
 - (void)taxonWithId:(NSInteger)taxonId handler:(INatAPIFetchCompletionCountHandler)done {
 	[[Analytics sharedClient] debugLog:@"Network - fetch taxon by id"];
-    NSString *path = [NSString stringWithFormat:@"taxa/%ld", (long)taxonId];
-    [self fetch:path classMapping:[ExploreTaxon class] handler:done];
+    NSString *path = [NSString stringWithFormat:@"/v1/taxa/%ld", (long)taxonId];
+    [self fetch:path query:nil classMapping:[ExploreTaxon class] handler:done];
 
 }
 

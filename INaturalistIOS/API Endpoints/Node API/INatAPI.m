@@ -16,34 +16,34 @@
 
 @implementation INatAPI
 
-- (void)delete:(NSString *)path handler:(INatAPIFetchCompletionCountHandler)done {
-    [self requestMethod:@"DELETE" path:path params:nil classMapping:nil handler:done];
+- (void)delete:(NSString *)path query:(NSString *)query handler:(INatAPIFetchCompletionCountHandler)done {
+    [self requestMethod:@"DELETE" path:path query:query params:nil classMapping:nil handler:done];
 }
 
-- (void)post:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
-    [self requestMethod:@"POST" path:path params:params classMapping:classForMapping handler:done];
+- (void)post:(NSString *)path query:(NSString *)query params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
+    [self requestMethod:@"POST" path:path query:query params:params classMapping:classForMapping handler:done];
 }
 
-- (void)put:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
-    [self requestMethod:@"PUT" path:path params:params classMapping:classForMapping handler:done];
+- (void)put:(NSString *)path query:(NSString *)query params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
+    [self requestMethod:@"PUT" path:path query:query params:params classMapping:classForMapping handler:done];
 }
 
-- (void)fetch:(NSString *)path classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
-    [self requestMethod:@"GET" path:path params:nil classMapping:classForMapping handler:done];
+- (void)fetch:(NSString *)path query:(NSString *)query classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
+    [self requestMethod:@"GET" path:path query:query params:nil classMapping:classForMapping handler:done];
 }
 
 - (NSString *)apiBaseUrl {
     return @"https://api.inaturalist.org/v1";
 }
 
-- (void)requestMethod:(NSString *)method path:(NSString *)path params:(NSDictionary *)params jwt:(NSString *)jwtToken classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
+- (void)requestMethod:(NSString *)method path:(NSString *)path query:(NSString *)query params:(NSDictionary *)params jwt:(NSString *)jwtToken classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
     
-    NSString *escapedPath = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], escapedPath];
-    NSURL *url = [NSURL URLWithString:urlString];
+    NSURLComponents *components = [NSURLComponents componentsWithString:[self apiBaseUrl]];
+    components.path = path;
+    if (query) {
+        components.query = query;
+    }
     
-    // add locale to the request
-    NSURLComponents *components = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:YES];
     NSString *localeIdentifier = [[NSLocale currentLocale] localeIdentifier];
     // node expects locales like fr-FR not fr_FR
     NSString *serverLocaleIdentifier = [localeIdentifier stringByReplacingOccurrencesOfString:@"_" withString:@"-"];
@@ -53,8 +53,9 @@
     } else {
         components.queryItems = @[ localeQueryItem ];
     }
-    url = [components URL];
     
+    NSURL *url = [components URL];
+
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.HTTPMethod = method;
     
@@ -131,21 +132,21 @@
     }
 }
 
-- (void)requestMethod:(NSString *)method path:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
+
+- (void)requestMethod:(NSString *)method path:(NSString *)path query:(NSString *)query params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     if (appDelegate.loggedIn) {
         __weak typeof(self)weakSelf = self;
         [appDelegate.loginController getJWTTokenSuccess:^(NSDictionary *info) {
-            [weakSelf requestMethod:method path:path params:params jwt:info[@"token"] classMapping:classForMapping handler:done];
+            [weakSelf requestMethod:method path:path query:query params:params jwt:info[@"token"] classMapping:classForMapping handler:done];
         } failure:^(NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 done(nil, 0, error);
             });
         }];
     } else {
-        [self requestMethod:method path:path params:params jwt:nil classMapping:classForMapping handler:done];
+        [self requestMethod:method path:path query:query params:params jwt:nil classMapping:classForMapping handler:done];
     }
-    
 }
 
 // extract objects from server response data

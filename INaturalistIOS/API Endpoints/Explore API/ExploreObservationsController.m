@@ -199,24 +199,23 @@ NSInteger const ObsFetchEmptyCode = -100;
 }
 
 - (void)fetchObservationsPage:(NSInteger)page {
-    NSString *path = [self pathForFetchWithSearchPredicates:self.activeSearchPredicates
-                                                   withPage:page];
-    [self performObservationFetchForPath:path shouldNotify:YES];
+    NSString *query = [self queryForFetchWithSearchPredicates:self.activeSearchPredicates
+                                                     withPage:page];
+    [self performObservationFetchForQuery:query shouldNotify:YES];
 }
 
 - (void)fetchObservationsShouldNotify:(BOOL)notify {
-    NSString *path = [self pathForFetchWithSearchPredicates:self.activeSearchPredicates];
-    [self performObservationFetchForPath:path shouldNotify:notify];
+    NSString *query = [self queryForFetchWithSearchPredicates:self.activeSearchPredicates];
+    [self performObservationFetchForQuery:query shouldNotify:notify];
 }
 
-- (NSString *)pathForFetchWithSearchPredicates:(NSArray *)predicates withPage:(NSInteger)page {
-    NSString *path = [self pathForFetchWithSearchPredicates:predicates];
-    return [path stringByAppendingString:[NSString stringWithFormat:@"&page=%ld", (long)page]];
+- (NSString *)queryForFetchWithSearchPredicates:(NSArray *)predicates withPage:(NSInteger)page {
+    NSString *query = [self queryForFetchWithSearchPredicates:predicates];
+    return [query stringByAppendingString:[NSString stringWithFormat:@"&page=%ld", (long)page]];
 }
 
-- (NSString *)pathForFetchWithSearchPredicates:(NSArray *)predicates {
-    NSString *pathPattern = @"observations";
-    NSString *query = @"?per_page=100&verifiable=true";
+- (NSString *)queryForFetchWithSearchPredicates:(NSArray *)predicates {
+    NSString *query = @"per_page=100&verifiable=true";
     
     BOOL hasActiveLocationPredicate = NO;
     
@@ -246,11 +245,10 @@ NSInteger const ObsFetchEmptyCode = -100;
                                                 self.limitingRegion.neCoord.longitude]];
     }
     
-    
-    return [NSString stringWithFormat:@"%@%@", pathPattern, query];
+    return query;
 }
 
-- (void)performObservationFetchForPath:(NSString *)path shouldNotify:(BOOL)shouldNotify {
+- (void)performObservationFetchForQuery:(NSString *)query shouldNotify:(BOOL)shouldNotify {
     
     if (shouldNotify) {
         NSString *statusMessage;
@@ -272,8 +270,10 @@ NSInteger const ObsFetchEmptyCode = -100;
         });
     }
     
+    NSString *path = @"/v1/observations";
+    
     [[Analytics sharedClient] debugLog:@"Network - Explore fetch observations"];
-    [self.api fetch:path classMapping:ExploreObservation.class handler:^(NSArray *results, NSInteger count, NSError *error) {
+    [self.api fetch:path query:query classMapping:ExploreObservation.class handler:^(NSArray *results, NSInteger count, NSError *error) {
         if (error) {
             [self.notificationDelegate failedObservationFetch:error];
             return;
@@ -361,19 +361,13 @@ NSInteger const ObsFetchEmptyCode = -100;
     }];
 }
 
-- (NSString *)pathForLeaderboardSearchPredicates:(NSArray *)predicates {
-    
-    NSString *path = @"observations/observers";
-    
+- (NSString *)queryForLeaderboardSearchPredicates:(NSArray *)predicates {
     NSString *query = @"";
     
     // apply active search predicates to the query
     if (predicates.count > 0) {
         for (ExploreSearchPredicate *predicate in predicates) {
             NSString *join = @"&";
-            if ([predicates indexOfObject:predicate] == 0) {
-                join = @"?";
-            }
             if (predicate.type == ExploreSearchPredicateTypePerson) {
                 query = [query stringByAppendingString:[NSString stringWithFormat:@"%@user_id=%ld",
                                                         join, (long)predicate.searchPerson.userId]];
@@ -390,14 +384,15 @@ NSInteger const ObsFetchEmptyCode = -100;
         }
     }
     
-    return [NSString stringWithFormat:@"%@%@", path, query];
+    return query;
 }
 
 
 - (void)loadLeaderboardCompletion:(FetchCompletionHandler)handler {
-    NSString *path = [self pathForLeaderboardSearchPredicates:self.activeSearchPredicates];
+    NSString *path = @"/v1/observations/observers";
+    NSString *query = [self queryForLeaderboardSearchPredicates:self.activeSearchPredicates];
     
-    [self.api fetch:path classMapping:ObserverCount.class handler:^(NSArray *results, NSInteger count, NSError *error) {
+    [self.api fetch:path query:query classMapping:ObserverCount.class handler:^(NSArray *results, NSInteger count, NSError *error) {
         if (error) {
             handler(nil, error);
         } else {

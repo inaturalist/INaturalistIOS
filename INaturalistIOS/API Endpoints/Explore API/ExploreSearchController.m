@@ -30,41 +30,36 @@
     return _api;
 }
 
-- (NSString *)searchPathForQuery:(NSString *)userQuery inCategory:(NSString *)category {
-    NSString *pathPattern = [NSString stringWithFormat:@"%@/autocomplete", category];
-    NSString *queryBase = @"?per_page=25&q=%@";
-    NSString *query = [NSString stringWithFormat:queryBase, userQuery];
-    
-    NSString *path = [NSString stringWithFormat:@"%@%@", pathPattern, query];
-    return path;
-}
-
-- (void)performSearchForPath:(NSString *)path classMapping:(Class)klass handler:(SearchCompletionHandler)handler {
-    [self.api fetch:path classMapping:klass handler:^(NSArray *results, NSInteger count, NSError *error) {
+- (void)performSearchForPath:(NSString *)path query:(NSString *)query classMapping:(Class)klass handler:(SearchCompletionHandler)handler {
+    [self.api fetch:path query:query classMapping:klass handler:^(NSArray *results, NSInteger count, NSError *error) {
         dispatch_async(dispatch_get_main_queue(), ^{
             handler(results, error);
         });
     }];
 }
 
-- (void)searchForTaxon:(NSString *)taxon completionHandler:(SearchCompletionHandler)handler {
-    NSString *path = [self searchPathForQuery:taxon inCategory:@"taxa"];
-    [self performSearchForPath:path classMapping:ExploreTaxon.class handler:handler];
+- (void)searchForTaxon:(NSString *)searchString completionHandler:(SearchCompletionHandler)handler {
+    NSString *path = @"/v1/taxa/autocomplete";
+    NSString *query = [NSString stringWithFormat:@"per_page=25&q=%@", searchString];
+    [self performSearchForPath:path query:query classMapping:ExploreTaxon.class handler:handler];
 }
 
-- (void)searchForPerson:(NSString *)name completionHandler:(SearchCompletionHandler)handler {
-    NSString *path = [self searchPathForQuery:name inCategory:@"users"];
-    [self performSearchForPath:path classMapping:ExploreUser.class handler:handler];
+- (void)searchForPerson:(NSString *)searchString completionHandler:(SearchCompletionHandler)handler {
+    NSString *path = @"/v1/users/autocomplete";
+    NSString *query = [NSString stringWithFormat:@"per_page=25&q=%@", searchString];
+    [self performSearchForPath:path query:query classMapping:ExploreUser.class handler:handler];
 }
 
-- (void)searchForLocation:(NSString *)location completionHandler:(SearchCompletionHandler)handler {
-    NSString *path = [self searchPathForQuery:location inCategory:@"places"];
-    [self performSearchForPath:path classMapping:ExploreLocation.class handler:handler];
+- (void)searchForLocation:(NSString *)searchString completionHandler:(SearchCompletionHandler)handler {
+    NSString *path = @"/v1/places/autocomplete";
+    NSString *query = [NSString stringWithFormat:@"per_page=25&q=%@", searchString];
+    [self performSearchForPath:path query:query classMapping:ExploreLocation.class handler:handler];
 }
 
-- (void)searchForProject:(NSString *)project completionHandler:(SearchCompletionHandler)handler {
-    NSString *path = [self searchPathForQuery:project inCategory:@"projects"];
-    [self performSearchForPath:path classMapping:ExploreProject.class handler:handler];
+- (void)searchForProject:(NSString *)searchString completionHandler:(SearchCompletionHandler)handler {
+    NSString *path = @"/v1/projects/autocomplete";
+    NSString *query = [NSString stringWithFormat:@"per_page=25&q=%@", searchString];
+    [self performSearchForPath:path query:query classMapping:ExploreProject.class handler:handler];
 }
 
 - (void)searchForLogin:(NSString *)loginName completionHandler:(SearchCompletionHandler)handler {

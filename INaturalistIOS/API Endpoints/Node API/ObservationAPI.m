@@ -19,53 +19,58 @@
 
 - (void)observationsForUserId:(NSInteger)userId count:(NSInteger)count handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch user observation from node"];
-    NSString *path = [NSString stringWithFormat:@"observations?user_id=%ld&per_page=%ld&details=all",
+    NSString *path = @"/v1/observations";
+    NSString *query = [NSString stringWithFormat:@"user_id=%ld&per_page=%ld&details=all",
                       (long)userId, (long)count];;
-    [self fetch:path classMapping:ExploreObservation.class handler:done];
+    [self fetch:path query:query classMapping:ExploreObservation.class handler:done];
 }
 
 - (void)observationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch observation from node"];
-    NSString *path = [NSString stringWithFormat:@"observations/%ld?ttl=-1", (long)identifier];
-    [self fetch:path classMapping:ExploreObservation.class handler:done];
+    NSString *path = [NSString stringWithFormat:@"/v1/observations/%ld", (long)identifier];
+    NSString *query = @"ttl=-1";
+    [self fetch:path query:query classMapping:ExploreObservation.class handler:done];
 }
 
 - (void)updatesWithHandler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch observation updates from node"];
-    NSString *path = @"observations/updates?per_page=200&observations_by=owner";
-    [self fetch:path classMapping:ExploreUpdate.class handler:done];
+    NSString *path = @"/v1/observations/updates";
+    NSString *query = @"per_page=200&observations_by=owner";
+    [self fetch:path query:query classMapping:ExploreUpdate.class handler:done];
 }
 
 - (void)seenUpdatesForObservationId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - mark seen updates via node"];
-    NSString *path = [NSString stringWithFormat:@"observations/%ld/viewed_updates", (long)identifier];
-    [self put:path params:nil classMapping:nil handler:done];
+    NSString *path = [NSString stringWithFormat:@"/v1/observations/%ld/viewed_updates", (long)identifier];
+    [self put:path query:nil params:nil classMapping:nil handler:done];
 }
 
 - (void)topObserversForTaxaIds:(NSArray *)taxaIds handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch top observers from node"];
-    NSString *path = [NSString stringWithFormat:@"observations/observers?per_page=3&taxon_id=%@",
-                      [taxaIds componentsJoinedByString:@","]];
-    [self fetch:path classMapping:ObserverCount.class handler:done];
+    NSString *path = @"/v1/observations/observers";
+    NSString *query = [NSString stringWithFormat:@"per_page=3&taxon_id=%@",
+                       [taxaIds componentsJoinedByString:@","]];
+    [self fetch:path query:query classMapping:ObserverCount.class handler:done];
 }
 
 - (void)topIdentifiersForTaxaIds:(NSArray *)taxaIds handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch top identifiers from node"];
-    NSString *path = [NSString stringWithFormat:@"observations/identifiers?per_page=3&taxon_id=%@",
-                      [taxaIds componentsJoinedByString:@","]];
-    [self fetch:path classMapping:IdentifierCount.class handler:done];
+    NSString *path = @"/v1/observations/identifiers";
+    NSString *query = [NSString stringWithFormat:@"per_page=3&taxon_id=%@",
+                       [taxaIds componentsJoinedByString:@","]];
+    [self fetch:path query:query classMapping:IdentifierCount.class handler:done];
 }
 
 - (void)faveObservationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fave observation via node"];
-    NSString *path = [NSString stringWithFormat:@"observations/%ld/fave", (long)identifier];
-    [self post:path params:nil classMapping:[ExploreObservation class] handler:done];
+    NSString *path = [NSString stringWithFormat:@"/v1/observations/%ld/fave", (long)identifier];
+    [self post:path query:nil params:nil classMapping:[ExploreObservation class] handler:done];
 }
 
 - (void)unfaveObservationWithId:(NSInteger)identifier handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fave observation via node"];
-    NSString *path = [NSString stringWithFormat:@"observations/%ld/unfave", (long)identifier];
-    [self delete:path handler:done];
+    NSString *path = [NSString stringWithFormat:@"/v1/observations/%ld/unfave", (long)identifier];
+    [self delete:path query:nil handler:done];
 }
 
 - (void)fetchDeletedObservationsSinceDate:(NSDate *)sinceDate handler:(INatAPIFetchCompletionCountHandler)done {
@@ -79,8 +84,9 @@
     }
     NSString *sinceDateString = [dateFormatter stringFromDate:sinceDate];
     
-    NSString *path = [NSString stringWithFormat:@"observations/deleted?since=%@", sinceDateString];
-    [self fetch:path classMapping:NSNumber.class handler:done];
+    NSString *path = @"/v1/observations/deleted";
+    NSString *query = [NSString stringWithFormat:@"since=%@", sinceDateString];
+    [self fetch:path query:query classMapping:NSNumber.class handler:done];
 }
 
 @end

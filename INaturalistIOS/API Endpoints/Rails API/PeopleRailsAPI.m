@@ -13,10 +13,10 @@
 
 - (void)deleteAccountForUserId:(NSInteger)userId confirmationCode:(NSString *)code confirmation:(NSString *)confirmation done:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - delete user account via rails"];
-    NSString *path =[NSString stringWithFormat:@"/users/%ld.json?confirmation_code=%@&confirmation=%@",
-                     userId, code, confirmation];
-    NSLog(@"path is %@", path);
-    [self delete:path handler:done];
+    NSString *path = [NSString stringWithFormat:@"/users/%ld.json", userId];
+    NSString *query = [NSString stringWithFormat:@"confirmation_code=%@&confirmation=%@",
+                       code, confirmation];
+    [self delete:path query:query handler:done];
 
 }
 

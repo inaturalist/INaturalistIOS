@@ -14,7 +14,7 @@
 - (void)addIdentificationTaxonId:(NSInteger)taxonId observationId:(NSInteger)obsId body:(NSString *)body vision:(BOOL)withVision handler:(INatAPIFetchCompletionCountHandler)done {
     
     [[Analytics sharedClient] debugLog:@"Network - post identification via node"];
-    NSString *path = @"identifications";
+    NSString *path = @"/v1/identifications";
     NSDictionary *identification = @{
                                      @"observation_id": @(obsId),
                                      @"taxon_id": @(taxonId),
@@ -30,12 +30,12 @@
     }
     
     NSDictionary *params = @{ @"identification": identification };
-    [self post:path params:params classMapping:nil handler:done];
+    [self post:path query:nil params:params classMapping:nil handler:done];
 }
 
-- (void)withdrawIdentification:(NSInteger)identfiicationId handler:(INatAPIFetchCompletionCountHandler)done {
+- (void)withdrawIdentification:(NSInteger)identficationId handler:(INatAPIFetchCompletionCountHandler)done {
     NSDictionary *params = @{ @"identification": @{ @"current": @(NO), } };
-    [self updateIdentification:identfiicationId params:params handler:done];
+    [self updateIdentification:identficationId params:params handler:done];
 }
 
 - (void)restoreIdentification:(NSInteger)identificationId handler:(INatAPIFetchCompletionCountHandler)done {
@@ -48,12 +48,10 @@
     [self updateIdentification:identificationId params:params handler:done];
 }
 
-
-
 - (void)updateIdentification:(NSInteger)identificationId params:(NSDictionary *)params handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - put/update id body via node"];
-    NSString *path = [NSString stringWithFormat:@"identification/%ld", (long)identificationId];
-    [self put:path params:params classMapping:nil handler:done];
+    NSString *path = [NSString stringWithFormat:@"/v1/identification/%ld", (long)identificationId];
+    [self put:path query:nil params:params classMapping:nil handler:done];
 }
 
 

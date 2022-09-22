@@ -19,8 +19,8 @@
 
 - (void)fetchMeHandler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - fetch me from node"];
-    NSString *path = @"users/me";
-    [self fetch:path classMapping:ExploreUser.class handler:done];
+    NSString *path = @"/v1/users/me";
+    [self fetch:path query:nil classMapping:ExploreUser.class handler:done];
 }
 
 - (void)setSiteId:(NSInteger)siteId forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
@@ -28,8 +28,8 @@
     NSDictionary *params = @{
                              @"user": @{ @"site_id": @(siteId) },
                              };
-    NSString *path = [NSString stringWithFormat:@"users/%ld", (long)userId];
-    [self put:path params:params classMapping:nil handler:done];
+    NSString *path = [NSString stringWithFormat:@"/v1/users/%ld", (long)userId];
+    [self put:path query:nil params:params classMapping:nil handler:done];
 }
 
 - (void)createUserEmail:(NSString *)email login:(NSString *)login password:(NSString *)password siteId:(NSInteger)siteId license:(NSString *)license localeStr:(NSString *)localeStr handler:(INatAPIFetchCompletionCountHandler) done {
@@ -286,8 +286,8 @@
     NSDictionary *params = @{
                              @"user": @{ @"email": email },
                              };
-    NSString *path = [NSString stringWithFormat:@"users/%ld", (long)userId];
-    [self put:path params:params classMapping:nil handler:done];
+    NSString *path = [NSString stringWithFormat:@"/v1/users/%ld", (long)userId];
+    [self put:path query:nil params:params classMapping:nil handler:done];
 }
 
 - (void)setPrefersNoTracking:(BOOL)preference forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
@@ -296,8 +296,8 @@
     NSDictionary *params = @{
         @"user": @{ @"prefers_no_tracking": preference ? @"true" : @"false" }
     };
-    NSString *path = [NSString stringWithFormat:@"users/%ld", (long)userId];
-    [self put:path params:params classMapping:nil handler:done];
+    NSString *path = [NSString stringWithFormat:@"/v1/users/%ld", (long)userId];
+    [self put:path query:nil params:params classMapping:nil handler:done];
 }
 
 - (void)setPrefersShowCommonNames:(BOOL)preference forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
@@ -306,8 +306,8 @@
     NSDictionary *params = @{
         @"user": @{ @"prefers_common_names": preference ? @"true" : @"false" }
     };
-    NSString *path = [NSString stringWithFormat:@"users/%ld", (long)userId];
-    [self put:path params:params classMapping:nil handler:done];
+    NSString *path = [NSString stringWithFormat:@"/v1/users/%ld", (long)userId];
+    [self put:path query:nil params:params classMapping:nil handler:done];
 }
 
 - (void)setPrefersShowScientificNamesFirst:(BOOL)preference forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
@@ -316,8 +316,8 @@
     NSDictionary *params = @{
         @"user": @{ @"prefers_scientific_name_first": preference ? @"true" : @"false" }
     };
-    NSString *path = [NSString stringWithFormat:@"users/%ld", (long)userId];
-    [self put:path params:params classMapping:nil handler:done];
+    NSString *path = [NSString stringWithFormat:@"/v1/users/%ld", (long)userId];
+    [self put:path query:nil params:params classMapping:nil handler:done];
 }
 
 - (void)setPiConsent:(BOOL)piConsent dtConsent:(BOOL)dtConsent forUserId:(NSInteger)userId handler:(INatAPIFetchCompletionCountHandler)done {
@@ -328,8 +328,8 @@
             @"data_transfer_consent": dtConsent ? @"true" : @"false",
         }
     };
-    NSString *path = [NSString stringWithFormat:@"users/%ld", (long)userId];
-    [self put:path params:params classMapping:nil handler:done];
+    NSString *path = [NSString stringWithFormat:@"/v1/users/%ld", (long)userId];
+    [self put:path query:nil params:params classMapping:nil handler:done];
 }
 
 
