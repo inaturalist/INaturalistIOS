@@ -123,8 +123,7 @@ static const int GutterWidth  = 5;
     // Dispose of any resources that can be recreated.
 }
 
-- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-{
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [self toggleNoContent];
     [self fitScale];
 }
