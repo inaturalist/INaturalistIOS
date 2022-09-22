@@ -20,6 +20,7 @@
 
 - (void)requestMethod:(NSString *)method path:(NSString *)path params:(NSDictionary *)params classMapping:(Class)classForMapping handler:(INatAPIFetchCompletionCountHandler)done {
     
+    // TODO: safer just to use URL components directly into requestMethod: here
     NSURLComponents *components = [NSURLComponents componentsWithString:[self apiBaseUrl]];
     NSArray *inputs = [path componentsSeparatedByString:@"?"];
     components.path = inputs.firstObject;

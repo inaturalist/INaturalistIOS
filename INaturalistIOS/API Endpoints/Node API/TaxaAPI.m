@@ -35,12 +35,15 @@
 
 - (void)boundingBoxForTaxon:(NSInteger)taxonId handler:(INatAPIFetchCompletionCountHandler)done {
     [[Analytics sharedClient] debugLog:@"Network - bounding box for taxon"];
-    NSString *path = [NSString stringWithFormat:@"observations?taxon_id=%ld&per_page=1&return_bounds=true&verifiable=true",
+    
+    NSString *path = @"/v1/observations";
+    NSString *query = [NSString stringWithFormat:@"taxon_id=%ld&per_page=1&return_bounds=true&verifiable=true",
                       (long)taxonId];
     
-    path = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], path];
-    NSURL *url = [NSURL URLWithString:urlString];
+    NSURLComponents *components = [NSURLComponents componentsWithString:[self apiBaseUrl]];
+    components.path = path;
+    components.query = query;
+    NSURL *url = components.URL;
     
     if (url) {
         NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
