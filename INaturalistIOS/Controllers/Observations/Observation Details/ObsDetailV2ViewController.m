@@ -45,7 +45,6 @@
 @property IBOutlet UITableView *tableView;
 @property ObsDetailViewModel *viewModel;
 @property BOOL shouldScrollToNewestActivity;
-@property UIPopoverController *sharePopover;
 @property MBProgressHUD *progressHud;
 @property RLMNotificationToken *obsChangedToken;
 
@@ -406,18 +405,9 @@
         UIActivityViewController *activity = [[UIActivityViewController alloc] initWithActivityItems:@[url]
                                                                                applicationActivities:@[safariActivity]];
         
-        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-            UIButton *shareButton = (UIButton *)object;
-            CGRect frame = [self.view convertRect:shareButton.frame
-                                         fromView:shareButton.superview];
-            UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:activity];
-            [popover presentPopoverFromRect:frame
-                                     inView:self.view
-                   permittedArrowDirections:UIPopoverArrowDirectionAny
-                                   animated:YES];
-        } else {
-            [self presentViewController:activity animated:YES completion:nil];
-        }
+        activity.modalPresentationStyle = UIModalPresentationPageSheet;
+        
+        [self presentViewController:activity animated:YES completion:nil];
     } else {
         [self performSegueWithIdentifier:identifier sender:object];
     }
