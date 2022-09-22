@@ -28,10 +28,6 @@
 + (NSInteger)needingSyncCount;
 + (id)stub;
 + (void)deleteAll;
-+ (NSManagedObjectContext *)managedObjectContext;
-- (void)save;
-- (void)destroy;
 - (BOOL)needsSync;
 - (void)updateLocalTimestamps;
-- (NSDictionary *)attributeChanges;
 @end
