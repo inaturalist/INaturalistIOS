@@ -124,17 +124,12 @@
 
 - (void)suggestionsForObservationId:(NSInteger)observationId handler:(INatAPISuggestionsCompletionHandler)done {
     //  https://api.inaturalist.org/v1/computervision/score_observation/1000000
-
-    
     [[Analytics sharedClient] debugLog:@"Network - fetch suggestions by id"];
-    NSString *path = [NSString stringWithFormat:@"computervision/score_observation/%ld", (long)observationId];
-        
-    path = [path stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *urlString = [NSString stringWithFormat:@"%@/%@", [self apiBaseUrl], path];
-    NSURL *url = [NSURL URLWithString:urlString];
+
+    NSURLComponents *components = [NSURLComponents componentsWithString:[self apiBaseUrl]];
+    components.path = [NSString stringWithFormat:@"/v1/computervision/score_observation/%ld", (long)observationId];;
     
     // add locale to the request
-    NSURLComponents *components = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:YES];
     NSString *localeIdentifier = [[NSLocale currentLocale] localeIdentifier];
     // node expects locales like fr-FR not fr_FR
     NSString *serverLocaleIdentifier = [localeIdentifier stringByReplacingOccurrencesOfString:@"_" withString:@"-"];
@@ -144,7 +139,8 @@
     } else {
         components.queryItems = @[ localeQueryItem ];
     }
-    url = [components URL];
+    
+    NSURL *url = [components URL];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     
