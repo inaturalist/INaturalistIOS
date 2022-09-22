@@ -367,23 +367,13 @@
     
     CTTelephonyNetworkInfo *info = [[CTTelephonyNetworkInfo alloc] init];
     if (info) {
-        if (@available(iOS 12.0, *)) {
-            for (CTCarrier *carrier in info.serviceSubscriberCellularProviders.allValues) {
-                // I guess just show one? There doesn't seem to be a way to prefer the "home"
-                // network, and since this is a dictionary, there's no preferred order.
-                Partner *p = [partners partnerForMobileCountryCode:carrier.mobileCountryCode];
-                if (p) {
-                    [self showPartnerAlertForPartner:p];
-                    break;
-                }
-            }
-        } else {
-            CTCarrier *carrier = info.subscriberCellularProvider;
-            if (carrier) {
-                Partner *p = [partners partnerForMobileCountryCode:carrier.mobileCountryCode];
-                if (p) {
-                    [self showPartnerAlertForPartner:p];
-                }
+        for (CTCarrier *carrier in info.serviceSubscriberCellularProviders.allValues) {
+            // I guess just show one? There doesn't seem to be a way to prefer the "home"
+            // network, and since this is a dictionary, there's no preferred order.
+            Partner *p = [partners partnerForMobileCountryCode:carrier.mobileCountryCode];
+            if (p) {
+                [self showPartnerAlertForPartner:p];
+                break;
             }
         }
     }
