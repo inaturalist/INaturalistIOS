@@ -12,8 +12,8 @@
 #import "ExplorePost.h"
 #import "NSDate+INaturalist.h"
 
-@interface NewsItemViewController ()
-
+@interface NewsItemViewController () <WKNavigationDelegate>
+@property IBOutlet WKWebView *postBodyWebView;
 @end
 
 @implementation NewsItemViewController
@@ -29,6 +29,7 @@
                                                                                                action:@selector(share:)];
     }
     
+    self.postBodyWebView.navigationDelegate = self;
     [self loadPostBodyIntoWebView];
 }
 
@@ -72,8 +73,7 @@
     
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://inat-project-post/%ld", (long)self.post.postId]];
     
-    [self.postBodyWebView loadHTMLString:html
-                                 baseURL:url];
+    [self.postBodyWebView loadHTMLString:html baseURL:url];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -91,20 +91,21 @@
 }
 
 #pragma mark - UIWebViewDelegate
+#pragma mark - WKUIDelegate
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType {
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     
-    if (navigationType == UIWebViewNavigationTypeLinkClicked) {
-        // open links taps in Safari
-        if ([UIApplication.sharedApplication canOpenURL:request.URL]) {
-            [UIApplication.sharedApplication openURL:request.URL
+    if (navigationAction.navigationType == WKNavigationTypeLinkActivated) {
+        decisionHandler(WKNavigationActionPolicyCancel);
+        
+        if ([UIApplication.sharedApplication canOpenURL:navigationAction.request.URL]) {
+            [UIApplication.sharedApplication openURL:navigationAction.request.URL
                                              options:@{}
                                    completionHandler:nil];
         }
-        return NO;
+    } else {
+        decisionHandler(WKNavigationActionPolicyAllow);
     }
-    
-    return YES;
 }
 
 @end
