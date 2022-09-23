@@ -55,7 +55,7 @@ def main():
     args = parser.parse_args()
 
     for (ios, crowdin) in ios_to_crowdin_lang_mappings.items():
-        target_dir = Path(args.inat_ios_source_dir).joinpath("INaturalistIOS").joinpath(ios).with_suffix(".lproj")
+        target_dir = Path(args.inat_ios_source_dir).joinpath("INaturalistIOS/User Interface").joinpath(ios).with_suffix(".lproj")
         source_dir = Path(args.translations_dir).joinpath(crowdin).joinpath("iOS")
         source_files = os.listdir(source_dir)
         for source_file in source_files:
