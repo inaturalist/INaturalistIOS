@@ -2,10 +2,10 @@
 "0HC-89-zFL.text" = "Gözlemle";
 
 /* Class = "UITextField"; placeholder = "Email"; ObjectID = "2e2-wM-KPk"; */
-"2e2-wM-KPk.placeholder" = "Eposta";
+"2e2-wM-KPk.placeholder" = "E-posta";
 
 /* Class = "UILabel"; text = "Discuss"; ObjectID = "2hB-WM-pN1"; */
-"2hB-WM-pN1.text" = "Tartışma";
+"2hB-WM-pN1.text" = "Tartış";
 
 /* Class = "UILabel"; text = "Or Log in with:"; ObjectID = "Bfj-77-C1k"; */
 "Bfj-77-C1k.text" = "Ya da şununla oturum aç:";
@@ -23,16 +23,16 @@
 "MC0-kW-bph.normalTitle" = "X";
 
 /* Class = "UILabel"; text = "iNaturalist will automatically generate suggestions based on your photo and location."; ObjectID = "Nb8-x2-D2v"; */
-"Nb8-x2-D2v.text" = "iNaturalist, fotoğrafınızı ve konumunuzu kullanarak sizin için otomatik öneriler oluşturur.";
+"Nb8-x2-D2v.text" = "iNaturalist, fotoğrafına ve konumuna göre otomatik olarak öneriler oluşturacaktır.";
 
 /* Class = "UILabel"; text = "Explore and Connect with Nature"; ObjectID = "RqF-E7-mYe"; */
-"RqF-E7-mYe.text" = "Nature ile Bağlanın ve Keşfedin";
+"RqF-E7-mYe.text" = "Nature ile Bağlan ve Keşfet";
 
 /* Class = "UILabel"; text = "Swipe >"; ObjectID = "L6Y-1o-yPc"; */
 "L6Y-1o-yPc.text" = "Kaydır >";
 
 /* Class = "UILabel"; text = "Get outside and observe an individual organism. Pick something wild, and take a clear, full frame photo."; ObjectID = "XWS-dF-hpb"; */
-"XWS-dF-hpb.text" = "Dışarı çık ve organizmaları gözlemle. Vahşi bir şey bul ve bütüncül açık bir fotoğrafını çek.";
+"XWS-dF-hpb.text" = "Dışarı çık ve bir organizmayı gözlemle. Yabani bir şey seç ve bütüncül, net bir fotoğrafını çek.";
 
 /* Class = "UILabel"; text = "By using iNaturalist you agree to the Terms of Service and Privacy Policy"; ObjectID = "YtY-We-SSc"; */
 "YtY-We-SSc.text" = "iNaturalist’i kullanarak Hizmet Şartları ve Gizlilik Politikası’nı kabul etmiş olursunuz";
@@ -41,10 +41,10 @@
 "dSw-gs-zGG.placeholder" = "Kullanıcı adı";
 
 /* Class = "UILabel"; text = "Share your observation with the community to discuss and confirm your findings."; ObjectID = "ixn-0U-lJ7"; */
-"ixn-0U-lJ7.text" = "Bulgularınızın tartışmasını yapmak ve doğrulamasını sağlamak için gözleminizi toplulukla paylaşabilirsiniz.";
+"ixn-0U-lJ7.text" = "Bulgularını tartışmak ve teyit etmek için gözlemini toplulukla paylaş.";
 
 /* Class = "UILabel"; text = "Your observation may be vetted as Research Grade and shared with scientists working to better understand and protect nature. "; ObjectID = "oro-uB-RY1"; */
-"oro-uB-RY1.text" = "Gözleminiz, Araştırma Sınıfı olarak incelenebilir ve doğayı daha iyi anlamak ve korumak için çalışan bilim insanlarıyla paylaşılabilir. ";
+"oro-uB-RY1.text" = "Gözlemin, Araştırma Sınıfı olarak incelenebilir ve doğayı daha iyi anlamak ve korumak için çalışan bilim insanlarıyla paylaşılabilir. ";
 
 /* Class = "UILabel"; text = "Sign Up"; ObjectID = "pbQ-o3-5Xy"; */
 "pbQ-o3-5Xy.text" = "Kaydol";
@@ -53,13 +53,13 @@
 "sBd-1Y-eNL.text" = "Katkı yap";
 
 /* Class = "UIButton"; normalTitle = "Already have an account?"; ObjectID = "uop-S8-3lF"; */
-"uop-S8-3lF.normalTitle" = "Zaten bir hesabınız mı var?";
+"uop-S8-3lF.normalTitle" = "Zaten bir hesabın var mı?";
 
 /* Class = "UILabel"; text = "Identify"; ObjectID = "vCH-CP-6hM"; */
 "vCH-CP-6hM.text" = "Tanımla";
 
 /* Class = "UILabel"; text = "Yes, license my content so scientists can use my data! Learn More"; ObjectID = "xUc-8o-XIN"; */
-"xUc-8o-XIN.text" = "Evet, bilim adamlarının verilerimi kullanabilmesi için içeriğimi lisanslıyorum. Daha fazla bilgi edin";
+"xUc-8o-XIN.text" = "Evet, bilim insanlarının verilerimi kullanabilmesi için içeriğimi lisanslayın! Daha Fazla Bilgi";
 
 /* Class = "UIButton"; normalTitle = "Button"; ObjectID = "yxB-jO-b09"; */
 "yxB-jO-b09.normalTitle" = "Tuş";
