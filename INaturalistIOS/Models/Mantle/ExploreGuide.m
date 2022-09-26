@@ -74,7 +74,7 @@
 /*
  helper for the date json transformers
  */
-+ (NSDateFormatter *)iNatAPIDateFormatter {
++ (NSValueTransformer *)iNatAPIDateFormatter {
     static NSISO8601DateFormatter *_dateFormatter = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
