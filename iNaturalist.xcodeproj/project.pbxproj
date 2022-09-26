@@ -240,6 +240,7 @@
 		FA9EE9FB1C20BA6900CACF70 /* LocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9EE9FA1C20BA6900CACF70 /* LocationViewController.m */; };
 		FAA0A1981F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA0A1971F870CD60081A4CC /* CLLocation+EXIFGPSDictionary.m */; };
 		FAA20BBA1C5079830075EF2C /* NewsItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA20BB91C5079830075EF2C /* NewsItemCell.m */; };
+		FAA227C128E268010099F375 /* AnonymousJWTHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA227C028E268010099F375 /* AnonymousJWTHelper.m */; };
 		FAA6EB0B1C8F820000F43552 /* ExploreFave.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA6EB0A1C8F820000F43552 /* ExploreFave.m */; };
 		FAA6EB171C90C15400F43552 /* TaxonPhotoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA6EB161C90C15400F43552 /* TaxonPhotoCell.m */; };
 		FAA6EB1A1C90C28800F43552 /* TaxonSummaryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA6EB191C90C28800F43552 /* TaxonSummaryCell.m */; };
@@ -977,6 +978,8 @@
 		FAA20BB81C5079830075EF2C /* NewsItemCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsItemCell.h; sourceTree = "<group>"; };
 		FAA20BB91C5079830075EF2C /* NewsItemCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsItemCell.m; sourceTree = "<group>"; };
 		FAA20BBB1C5357530075EF2C /* INaturalist2.12.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.12.xcdatamodel; sourceTree = "<group>"; };
+		FAA227BF28E268010099F375 /* AnonymousJWTHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AnonymousJWTHelper.h; sourceTree = "<group>"; };
+		FAA227C028E268010099F375 /* AnonymousJWTHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AnonymousJWTHelper.m; sourceTree = "<group>"; };
 		FAA6EB061C8E5A0B00F43552 /* IdentificationVisualization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IdentificationVisualization.h; sourceTree = "<group>"; };
 		FAA6EB071C8E5A1300F43552 /* CommentVisualization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommentVisualization.h; sourceTree = "<group>"; };
 		FAA6EB081C8E61A300F43552 /* ActivityVisualization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityVisualization.h; sourceTree = "<group>"; };
@@ -1884,6 +1887,8 @@
 			children = (
 				FA63FA1319E4CE65007306F9 /* Analytics.h */,
 				FA63FA1419E4CE65007306F9 /* Analytics.m */,
+				FAA227BF28E268010099F375 /* AnonymousJWTHelper.h */,
+				FAA227C028E268010099F375 /* AnonymousJWTHelper.m */,
 				FAF16A1924733E5C00209D96 /* DownWrapper.swift */,
 				FA3F1F881A12ABEF00928102 /* ExploreDisambiguator.h */,
 				FA3F1F891A12ABEF00928102 /* ExploreDisambiguator.m */,
@@ -2867,6 +2872,7 @@
 				FA3759D023EB467E0053F783 /* INatTabBarController.swift in Sources */,
 				FAC59DF820D9DF87000A6558 /* DeleteRecordOperation.m in Sources */,
 				FAB8C44A1C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m in Sources */,
+				FAA227C128E268010099F375 /* AnonymousJWTHelper.m in Sources */,
 				191FB4CD16014A6800C1F5DE /* ObservationField.m in Sources */,
 				191FB4D016014FF400C1F5DE /* ObservationFieldValue.m in Sources */,
 				FA7591D720F43A170062DE7F /* SettingsSwitchCell.m in Sources */,
