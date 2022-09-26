@@ -19,8 +19,6 @@
 #import "iNaturalist-Swift.h"
 #import "ExploreTaxonRealm.h"
 
-static const int WebViewTag = 1;
-
 @interface GuideTaxonViewController ()
 @property (strong, nonatomic) IBOutlet UIWebView *webView;
 - (void)showAssetByURL:(NSString *)url;
