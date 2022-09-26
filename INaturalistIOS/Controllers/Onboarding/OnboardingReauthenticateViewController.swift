@@ -20,7 +20,7 @@ class OnboardingReauthenticateViewController: UIViewController {
     @IBOutlet weak var loginButton: UIButton!
     
     @IBOutlet weak var googleLoginButton: GIDSignInButton!
-    @IBOutlet weak var facebookLoginButton: FBSDKLoginButton!
+    @IBOutlet weak var facebookLoginButton: FBLoginButton!
     
     @IBOutlet weak var stackview: UIStackView!
     

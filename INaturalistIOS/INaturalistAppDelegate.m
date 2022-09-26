@@ -88,9 +88,6 @@
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
-    // never log any events with facebook analytics
-    [FBSDKSettings setCodelessDebugLogEnabled:@(NO)];
-    [FBSDKSettings setAutoLogAppEventsEnabled:@(NO)];
 
     // required for facebook login
     [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];

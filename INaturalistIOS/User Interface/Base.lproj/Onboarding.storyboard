@@ -469,7 +469,7 @@
                                                     <action selector="googlePressed:" destination="j80-yK-ZbF" eventType="valueChanged" id="gDJ-ON-Yxe"/>
                                                 </connections>
                                             </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u2t-rU-mF6" customClass="FBSDKLoginButton">
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u2t-rU-mF6" customClass="FBLoginButton">
                                                 <rect key="frame" x="150" y="7" width="140" height="36"/>
                                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
