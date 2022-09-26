@@ -21,16 +21,17 @@
 
 static const int WebViewTag = 1;
 
+@interface GuideTaxonViewController ()
+@property (strong, nonatomic) IBOutlet UIWebView *webView;
+- (void)showAssetByURL:(NSString *)url;
+@end
+
 @implementation GuideTaxonViewController
-@synthesize webView = _webView;
-@synthesize localPosition = _localPosition;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    if (!self.webView) {
-        self.webView = (UIWebView *)[self.view viewWithTag:WebViewTag];
-    }
+
     self.webView.delegate = self;
     if (self.guideTaxon.displayName) {
         self.title = self.guideTaxon.displayName;

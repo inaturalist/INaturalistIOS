@@ -11,11 +11,10 @@
 #import "GuideTaxonXML.h"
 
 @interface GuideTaxonViewController : UIViewController <UIWebViewDelegate>
-@property (strong, nonatomic) IBOutlet UIWebView *webView;
 @property (strong, nonatomic) GuideTaxonXML *guideTaxon;
 
 // position of this controller in context if contained in some kind of collection
 @property (assign, nonatomic) NSInteger localPosition;
+
 - (IBAction)clickedObserve:(id)sender;
-- (void)showAssetByURL:(NSString *)url;
 @end
