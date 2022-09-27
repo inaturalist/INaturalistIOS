@@ -32,7 +32,10 @@ class INatTabBarController: UITabBarController {
          if let vcs = self.viewControllers {
             let observeVC = vcs[2]
             observeVC.tabBarItem.image = cameraImg
-            observeVC.tabBarItem.title = NSLocalizedString("Observe", comment: "Title for New Observation Tab Bar Button")
+            observeVC.tabBarItem.title = NSLocalizedString(
+               "Observe",
+               comment: "Title for New Observation Tab Bar Button"
+            )
          }
       }
 
@@ -54,10 +57,16 @@ class INatTabBarController: UITabBarController {
       let cameraAuthStatus = AVCaptureDevice.authorizationStatus(for: .video)
       if cameraAuthStatus == .denied {
          canAccessCamera = false
-         cameraFailTitle = NSLocalizedString("iNaturalist doesn't have permission to access your camera.", comment: "alert title for camera denied")
+         cameraFailTitle = NSLocalizedString(
+            "iNaturalist doesn't have permission to access your camera.",
+            comment: "alert title for camera denied"
+         )
       } else if cameraAuthStatus == .restricted {
          canAccessCamera = false
-         cameraFailTitle = NSLocalizedString("iNaturalist has been restricted from camera access.", comment: "alert title for camera restricted")
+         cameraFailTitle = NSLocalizedString(
+            "iNaturalist has been restricted from camera access.",
+            comment: "alert title for camera restricted"
+         )
       }
 
       if canAccessCamera {
@@ -68,15 +77,28 @@ class INatTabBarController: UITabBarController {
 
          self.present(camera, animated: true, completion: nil)
       } else {
-         let msg = NSLocalizedString("Please update camera permissions to take photos with iNaturalist", comment: "alert msg to change camera permissions")
+         let msg = NSLocalizedString(
+            "Please update camera permissions to take photos with iNaturalist",
+            comment: "alert msg to change camera permissions"
+         )
          let alert = UIAlertController(title: cameraFailTitle, message: msg, preferredStyle: .alert)
-         alert.addAction(UIAlertAction(title: NSLocalizedString("Open Settings", comment: "open settings button title"), style: .default, handler: { _ in
-            if let settingsUrl = URL(string: UIApplication.openSettingsURLString),
-               UIApplication.shared.canOpenURL(settingsUrl) {
-               UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
+         let openSettingsAction = UIAlertAction(
+            title: NSLocalizedString("Open Settings", comment: "open settings button title"),
+            style: .default,
+            handler: { _ in
+               if let settingsUrl = URL(string: UIApplication.openSettingsURLString),
+                  UIApplication.shared.canOpenURL(settingsUrl) {
+                  UIApplication.shared.open(settingsUrl, options: [:], completionHandler: nil)
+               }
             }
-         }))
-         alert.addAction(UIAlertAction(title: NSLocalizedString("Never mind", comment: "decline to change cemra permissions button title"), style: .cancel, handler: nil))
+         )
+         alert.addAction(openSettingsAction)
+         let neverMindAction = UIAlertAction(
+            title: NSLocalizedString("Never mind", comment: "decline to change cemra permissions button title"),
+            style: .cancel,
+            handler: nil
+         )
+         alert.addAction(neverMindAction)
 
          self.present(alert, animated: true, completion: nil)
       }
@@ -111,21 +133,21 @@ class INatTabBarController: UITabBarController {
    }
 
    func newObsNoPhoto() {
-      let o = ExploreObservationRealm()
-      o.uuid = UUID().uuidString.lowercased()
-      o.timeCreated = Date()
-      o.timeUpdatedLocally = Date()
+      let obs = ExploreObservationRealm()
+      obs.uuid = UUID().uuidString.lowercased()
+      obs.timeCreated = Date()
+      obs.timeUpdatedLocally = Date()
       // photoless observation defaults to now
-      o.timeObserved = Date()
-      o.observedTimeZone = TimeZone.current.identifier
+      obs.timeObserved = Date()
+      obs.observedTimeZone = TimeZone.current.identifier
 
       if let taxonId = self.observingTaxonId,
          let taxon = ExploreTaxonRealm.object(forPrimaryKey: NSNumber(value: taxonId)) {
-         o.taxon = taxon
+         obs.taxon = taxon
       }
 
       let confirmVC = ObsEditV2ViewController(nibName: nil, bundle: nil)
-      confirmVC.standaloneObservation = o
+      confirmVC.standaloneObservation = obs
       confirmVC.shouldContinueUpdatingLocation = true
       confirmVC.isMakingNewObservation = true
 
@@ -156,7 +178,11 @@ class INatTabBarController: UITabBarController {
 }
 
 extension INatTabBarController: UITabBarControllerDelegate {
-   func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+   func tabBarController(
+      _ tabBarController: UITabBarController,
+      shouldSelect viewController: UIViewController
+   ) -> Bool {
+
       if let vcs = tabBarController.viewControllers {
          if vcs.firstIndex(of: viewController) == 2 {
             DispatchQueue.main.async {
@@ -216,7 +242,11 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
       picker.dismiss(animated: true, completion: nil)
    }
 
-   public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+   public func imagePickerController(
+      _ picker: UIImagePickerController,
+      didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
+   ) {
+
       guard let image = info[.originalImage] as? UIImage else {
          // no image, dismiss and give up
          picker.dismiss(animated: true, completion: nil)
@@ -269,31 +299,31 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
       }
 
       // with the standard image picker, no need to show confirmation screen
-      let o = ExploreObservationRealm()
-      o.uuid = UUID().uuidString.lowercased()
-      o.timeCreated = Date()
-      o.timeUpdatedLocally = Date()
+      let obs = ExploreObservationRealm()
+      obs.uuid = UUID().uuidString.lowercased()
+      obs.timeCreated = Date()
+      obs.timeUpdatedLocally = Date()
 
       // photo was taken now
-      o.timeObserved = Date()
-      o.observedTimeZone = TimeZone.current.identifier
+      obs.timeObserved = Date()
+      obs.observedTimeZone = TimeZone.current.identifier
 
-      let op = ExploreObservationPhotoRealm()
-      op.uuid = UUID().uuidString.lowercased()
-      op.timeCreated = Date()
-      op.timeUpdatedLocally = Date()
-      op.position = 0
-      op.photoKey = photoKey
+      let obsPhoto = ExploreObservationPhotoRealm()
+      obsPhoto.uuid = UUID().uuidString.lowercased()
+      obsPhoto.timeCreated = Date()
+      obsPhoto.timeUpdatedLocally = Date()
+      obsPhoto.position = 0
+      obsPhoto.photoKey = photoKey
 
-      o.observationPhotos.add(op)
+      obs.observationPhotos.add(obsPhoto)
 
       if let taxonId = self.observingTaxonId,
          let taxon = ExploreTaxonRealm.object(forPrimaryKey: NSNumber(value: taxonId)) {
-         o.taxon = taxon
+         obs.taxon = taxon
       }
 
       let editVC = ObsEditV2ViewController(nibName: nil, bundle: nil)
-      editVC.standaloneObservation = o
+      editVC.standaloneObservation = obs
       // photo was taken at the current location
       editVC.shouldContinueUpdatingLocation = true
       editVC.isMakingNewObservation = true
@@ -305,27 +335,27 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
 
 extension INatTabBarController: SoundRecorderDelegate {
    func recordedSound(recorder: SoundRecordViewController, uuidString: String) {
-      let o = ExploreObservationRealm()
-      o.uuid = UUID().uuidString.lowercased()
-      o.timeCreated = Date()
-      o.timeUpdatedLocally = Date()
+      let obs = ExploreObservationRealm()
+      obs.uuid = UUID().uuidString.lowercased()
+      obs.timeCreated = Date()
+      obs.timeUpdatedLocally = Date()
 
       // observation was made now
-      o.timeObserved = Date()
+      obs.timeObserved = Date()
 
       let obsSound = ExploreObservationSoundRealm()
       obsSound.uuid = uuidString
       obsSound.timeUpdatedLocally = Date()
 
-      o.observationSounds.add(obsSound)
+      obs.observationSounds.add(obsSound)
 
       if let taxonId = self.observingTaxonId,
          let taxon = ExploreTaxonRealm.object(forPrimaryKey: NSNumber(value: taxonId)) {
-         o.taxon = taxon
+         obs.taxon = taxon
       }
 
       let editVC = ObsEditV2ViewController(nibName: nil, bundle: nil)
-      editVC.standaloneObservation = o
+      editVC.standaloneObservation = obs
       // observation was taken at the current location
       editVC.shouldContinueUpdatingLocation = true
       editVC.isMakingNewObservation = true
@@ -343,6 +373,9 @@ extension INatTabBarController: UINavigationControllerDelegate { }
 
 extension INatTabBarController: PHPickerViewControllerDelegate {
    @available(iOS 14, *)
+   // disabling until we can refactor
+   // swiftlint:disable cyclomatic_complexity
+   // swiftlint:disable function_body_length
    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
       picker.dismiss(animated: true, completion: nil)
 
@@ -367,7 +400,10 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
       if let hud = MBProgressHUD.showAdded(to: self.view, animated: true) {
          hud.removeFromSuperViewOnHide = true
          hud.dimBackground = true
-         hud.labelText = NSLocalizedString("Creating Observation...", comment: "HUD text when creating a new observation from multiple photos")
+         hud.labelText = NSLocalizedString(
+            "Creating Observation...",
+            comment: "HUD text when creating a new observation from multiple photos"
+         )
       }
 
       for result in results {
@@ -386,13 +422,28 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                   // if there is one, we want to show the underlying error localized desc
                   let error = error as NSError
                   if let underlyingError = error.userInfo[NSUnderlyingErrorKey] as? NSError {
-                     let baseMsg = NSLocalizedString("We're not able to fetch your photo from iCloud: %@", comment: "base error message when icloud photo fetch fails")
+                     let baseMsg = NSLocalizedString(
+                        "We're not able to fetch your photo from iCloud: %@",
+                        comment: "base error message when icloud photo fetch fails"
+                     )
                      localizedDescription = String(format: baseMsg, underlyingError.localizedDescription)
                   }
 
-                  let alertTitle = NSLocalizedString("Photo Load Error", comment: "Title for photo library fetch error when making new obs")
-                  let alert = UIAlertController(title: alertTitle, message: localizedDescription, preferredStyle: .alert)
-                  alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
+                  let alertTitle = NSLocalizedString(
+                     "Photo Load Error",
+                     comment: "Title for photo library fetch error when making new obs"
+                  )
+                  let alert = UIAlertController(
+                     title: alertTitle,
+                     message: localizedDescription,
+                     preferredStyle: .alert
+                  )
+                  let action = UIAlertAction(
+                     title: NSLocalizedString("OK", comment: ""),
+                     style: .default,
+                     handler: nil
+                  )
+                  alert.addAction(action)
                   self.present(alert, animated: true, completion: nil)
                }
 
@@ -404,10 +455,21 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                   DispatchQueue.main.async {
                      MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
 
-                     let alertTitle = NSLocalizedString("Photo Load Error", comment: "Title for photo library error when making new obs")
-                     let alertMsg = NSLocalizedString("ImageStore Creation Error", comment: "Message when we can't make the image store for the app")
+                     let alertTitle = NSLocalizedString(
+                        "Photo Load Error",
+                        comment: "Title for photo library error when making new obs"
+                     )
+                     let alertMsg = NSLocalizedString(
+                        "ImageStore Creation Error",
+                        comment: "Message when we can't make the image store for the app"
+                     )
                      let alert = UIAlertController(title: alertTitle, message: alertMsg, preferredStyle: .alert)
-                     alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
+                     let action = UIAlertAction(
+                        title: NSLocalizedString("OK", comment: ""),
+                        style: .default,
+                        handler: nil
+                     )
+                     alert.addAction(action)
                      self.present(alert, animated: true, completion: nil)
                   }
 
@@ -422,10 +484,21 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                   DispatchQueue.main.async {
                      MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
 
-                     let alertTitle = NSLocalizedString("Photo Load Error", comment: "Title for photo library error when making new obs")
-                     let alertMsg = NSLocalizedString("ImageStore Save Error", comment: "Message when we can't save to the app image store")
+                     let alertTitle = NSLocalizedString(
+                        "Photo Load Error",
+                        comment: "Title for photo library error when making new obs"
+                     )
+                     let alertMsg = NSLocalizedString(
+                        "ImageStore Save Error",
+                        comment: "Message when we can't save to the app image store"
+                     )
                      let alert = UIAlertController(title: alertTitle, message: alertMsg, preferredStyle: .alert)
-                     alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
+                     let okAction = UIAlertAction(
+                        title: NSLocalizedString("OK", comment: ""),
+                        style: .default,
+                        handler: nil
+                     )
+                     alert.addAction(okAction)
                      self.present(alert, animated: true, completion: nil)
                   }
 
@@ -439,9 +512,9 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                         // still need to look for a taken date
                         if let exif = dict["{Exif}"] as? [String: Any] {
 
-                           let df = DateFormatter()
-                           df.calendar = Calendar(identifier: .gregorian)
-                           df.dateFormat = "yyyy:MM:dd HH:mm:ss"
+                           let formatter = DateFormatter()
+                           formatter.calendar = Calendar(identifier: .gregorian)
+                           formatter.dateFormat = "yyyy:MM:dd HH:mm:ss"
 
                            // sometimes different fields are populated, based on how & where the
                            // photo was digitized.
@@ -467,15 +540,15 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                                     timeDiff = gmtDate.timeIntervalSince(tzDate)
                                  }
 
-                                 if let tz = TimeZone(secondsFromGMT: Int(timeDiff)) {
-                                    takenTimezoneForObs = tz
-                                    df.timeZone = tz
+                                 if let timezone = TimeZone(secondsFromGMT: Int(timeDiff)) {
+                                    takenTimezoneForObs = timezone
+                                    formatter.timeZone = timezone
                                  }
                               }
                            }
 
                            if let takenDateExif = exif["DateTimeOriginal"] as? String,
-                              let takenDate = df.date(from: takenDateExif) {
+                              let takenDate = formatter.date(from: takenDateExif) {
                                  takenDateForObs = takenDate
                            }
                         }
@@ -512,53 +585,53 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                   // and can safely make our observation and move on
 
                   DispatchQueue.main.async {
-                     let o = ExploreObservationRealm()
+                     let obs = ExploreObservationRealm()
 
-                     o.uuid = UUID().uuidString.lowercased()
-                     o.timeCreated = Date()
-                     o.timeUpdatedLocally = Date()
+                     obs.uuid = UUID().uuidString.lowercased()
+                     obs.timeCreated = Date()
+                     obs.timeUpdatedLocally = Date()
 
                      if let latitude = takenLatitudeForObs {
-                        o.latitude = latitude
+                        obs.latitude = latitude
                      }
                      if let longitude = takenLongitudeForObs {
-                        o.longitude = longitude
+                        obs.longitude = longitude
                      }
                      if let accuracy = takenGeoAccuracyForObs {
-                        o.privatePositionalAccuracy = accuracy
+                        obs.privatePositionalAccuracy = accuracy
                      }
                      if let date = takenDateForObs {
-                        o.timeObserved = date
+                        obs.timeObserved = date
                      }
-                     if let tz = takenTimezoneForObs {
-                        o.observedTimeZone = tz.identifier
+                     if let timeZone = takenTimezoneForObs {
+                        obs.observedTimeZone = timeZone.identifier
                      }
 
                      var position = 0
                      for result in results {
                         let photoKey = resultsToPhotoKeys[result]
 
-                        let op = ExploreObservationPhotoRealm()
-                        op.uuid = UUID().uuidString.lowercased()
-                        op.timeCreated = Date()
-                        op.timeUpdatedLocally = Date()
-                        op.position = position
-                        op.photoKey = photoKey
+                        let obsPhoto = ExploreObservationPhotoRealm()
+                        obsPhoto.uuid = UUID().uuidString.lowercased()
+                        obsPhoto.timeCreated = Date()
+                        obsPhoto.timeUpdatedLocally = Date()
+                        obsPhoto.position = position
+                        obsPhoto.photoKey = photoKey
 
-                        o.observationPhotos.add(op)
+                        obs.observationPhotos.add(obsPhoto)
 
                         position += 1
                      }
 
                      if let taxonId = self.observingTaxonId,
                         let taxon = ExploreTaxonRealm.object(forPrimaryKey: NSNumber(value: taxonId)) {
-                        o.taxon = taxon
+                        obs.taxon = taxon
                      }
 
                      MBProgressHUD.hideAllHUDs(for: self.view, animated: false)
 
                      let editVC = ObsEditV2ViewController(nibName: nil, bundle: nil)
-                     editVC.standaloneObservation = o
+                     editVC.standaloneObservation = obs
                      // photo was taken at the current location
                      editVC.shouldContinueUpdatingLocation = false
                      editVC.isMakingNewObservation = true
@@ -571,11 +644,20 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
          }
 
          if result.itemProvider.hasItemConformingToTypeIdentifier("public.jpeg") {
-            result.itemProvider.loadFileRepresentation(forTypeIdentifier: "public.jpeg", completionHandler: loadCallback)
+            result.itemProvider.loadFileRepresentation(
+               forTypeIdentifier: "public.jpeg",
+               completionHandler: loadCallback
+            )
          } else if result.itemProvider.hasItemConformingToTypeIdentifier("public.png") {
-            result.itemProvider.loadFileRepresentation(forTypeIdentifier: "public.png", completionHandler: loadCallback)
+            result.itemProvider.loadFileRepresentation(
+               forTypeIdentifier: "public.png",
+               completionHandler: loadCallback
+            )
          } else if result.itemProvider.hasItemConformingToTypeIdentifier("com.adobe.raw-image") {
-            result.itemProvider.loadFileRepresentation(forTypeIdentifier: "com.adobe.raw-image", completionHandler: loadCallback)
+            result.itemProvider.loadFileRepresentation(
+               forTypeIdentifier: "com.adobe.raw-image",
+               completionHandler: loadCallback
+            )
          }
       }
    }

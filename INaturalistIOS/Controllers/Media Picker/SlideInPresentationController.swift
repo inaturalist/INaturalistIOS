@@ -52,15 +52,22 @@ class SlideInPresentationController: UIPresentationController {
         presentedView?.frame = frameOfPresentedViewInContainerView
     }
 
-    override func size(forChildContentContainer container: UIContentContainer, withParentContainerSize parentSize: CGSize) -> CGSize {
+    override func size(
+        forChildContentContainer
+        container: UIContentContainer,
+        withParentContainerSize parentSize: CGSize
+    ) -> CGSize {
+
         return CGSize(width: parentSize.width, height: 200.0)
     }
 
     override var frameOfPresentedViewInContainerView: CGRect {
         var frame: CGRect = .zero
-        frame.size = size(forChildContentContainer: presentedViewController, withParentContainerSize: containerView!.bounds.size)
+        frame.size = size(
+            forChildContentContainer: presentedViewController,
+            withParentContainerSize: containerView!.bounds.size
+        )
         frame.origin.y = containerView!.frame.height - 200.0
-        // frame.origin.y = containerView!.frame.height * (2.0/3.0)
         return frame
     }
 }

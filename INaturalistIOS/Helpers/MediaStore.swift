@@ -15,7 +15,11 @@ import UIKit
 
         if !FileManager.default.fileExists(atPath: getDocumentsDirectory().path) {
             do {
-                try FileManager.default.createDirectory(at: getDocumentsDirectory(), withIntermediateDirectories: true, attributes: nil)
+                try FileManager.default.createDirectory(
+                    at: getDocumentsDirectory(),
+                    withIntermediateDirectories: true,
+                    attributes: nil
+                )
             } catch let error {
                 print("FAILED creating sounds dir: \(error)")
             }

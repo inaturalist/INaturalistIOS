@@ -64,13 +64,17 @@ class SoundRecordViewController: UIViewController {
 
         recordButton = UIButton(type: .system)
         recordButton.setImage(self.micImage, for: .normal)
-        recordButton.accessibilityLabel = NSLocalizedString("Record", comment: "Accessibility Label for Record/Pause Button")
+        recordButton.accessibilityLabel = NSLocalizedString(
+            "Record",
+            comment: "Accessibility Label for Record/Pause Button"
+        )
         recordButton.addTarget(self, action: #selector(recordPressed), for: .touchUpInside)
         recordButton.isEnabled = false
         recordButton.tintColor = UIColor.inatTint()
 
         doneButton = UIButton(type: .system)
-        doneButton.setTitle(NSLocalizedString("Save Recording", comment: "Done button for recording observation sounds"), for: .normal)
+        let saveTitle = NSLocalizedString("Save Recording", comment: "Done button for recording observation sounds")
+        doneButton.setTitle(saveTitle, for: .normal)
         doneButton.addTarget(self, action: #selector(donePressed), for: .touchUpInside)
         doneButton.tintColor = UIColor.inatTint()
         doneButton.isEnabled = false
@@ -116,8 +120,16 @@ class SoundRecordViewController: UIViewController {
                     if allowed {
                         self.prepareRecording()
                     } else {
-                        let title = NSLocalizedString("No Microphone Permissions", comment: "title of alert when user tries to record a sound observation without granting mic permissions")
-                        let message = NSLocalizedString("If you wish to record a sound observation, you will need to give the iNaturalist app permission to use the microphone.", comment: "message of alert when mic permission is missing")
+                        let title = NSLocalizedString(
+                            "No Microphone Permissions",
+                            // swiftlint:disable:next line_length
+                            comment: "title of alert when user tries to record a sound observation without granting mic permissions"
+                        )
+                        let message = NSLocalizedString(
+                            // swiftlint:disable:next line_length
+                            "If you wish to record a sound observation, you will need to give the iNaturalist app permission to use the microphone.",
+                            comment: "message of alert when mic permission is missing"
+                        )
                         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 
                         let cancel = NSLocalizedString("Cancel", comment: "")
@@ -127,7 +139,10 @@ class SoundRecordViewController: UIViewController {
 
                         }))
 
-                        let openSettings = NSLocalizedString("Open Settings", comment: "button to open settings when user needs to adjust mic permissions")
+                        let openSettings = NSLocalizedString(
+                            "Open Settings",
+                            comment: "button to open settings when user needs to adjust mic permissions"
+                        )
                         alert.addAction(UIAlertAction(title: openSettings, style: .default, handler: { _ in
 
                             if let url = URL(string: UIApplication.openSettingsURLString) {
@@ -141,7 +156,10 @@ class SoundRecordViewController: UIViewController {
                 }
             }
         } catch let error {
-            let title = NSLocalizedString("Failed to Setup Sound Recording", comment: "title of alert when sound recording setup fails")
+            let title = NSLocalizedString(
+                "Failed to Setup Sound Recording",
+                comment: "title of alert when sound recording setup fails"
+            )
             let message = error.localizedDescription
             let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
 
@@ -154,7 +172,12 @@ class SoundRecordViewController: UIViewController {
         }
 
         // notifications about interruptions
-        NotificationCenter.default.addObserver(self, selector: #selector(audioInterruption), name: AVAudioSession.interruptionNotification, object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(audioInterruption),
+            name: AVAudioSession.interruptionNotification,
+            object: nil
+        )
 
     }
 
@@ -183,7 +206,13 @@ class SoundRecordViewController: UIViewController {
         case .ended:
             // interruption ended
             timerLabel.text = NSLocalizedString("Resuming", comment: "")
-            timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(timerCallback), userInfo: nil, repeats: true)
+            timer = Timer.scheduledTimer(
+                timeInterval: 0.1,
+                target: self,
+                selector: #selector(timerCallback),
+                userInfo: nil,
+                repeats: true
+            )
         default: ()
         }
     }
@@ -191,12 +220,18 @@ class SoundRecordViewController: UIViewController {
     @objc func recordPressed() {
         if let recorder = self.audioRecorder, recorder.isRecording {
             recordButton.setImage(self.micImage, for: .normal)
-            recordButton.accessibilityLabel = NSLocalizedString("Record", comment: "Accessibility Label for Record Button (when recording audio)")
+            recordButton.accessibilityLabel = NSLocalizedString(
+                "Record",
+                comment: "Accessibility Label for Record Button (when recording audio)"
+            )
 
             pauseRecording()
         } else {
             recordButton.setImage(self.pauseImage, for: .normal)
-            recordButton.accessibilityLabel = NSLocalizedString("Pause", comment: "Accessibility Label for Pause Button (when recording audio)")
+            recordButton.accessibilityLabel = NSLocalizedString(
+                "Pause",
+                comment: "Accessibility Label for Pause Button (when recording audio)"
+            )
 
             startRecording()
         }
@@ -218,8 +253,8 @@ class SoundRecordViewController: UIViewController {
     }
 
     func prepareRecording() {
-        let mm = MediaStore()
-        let soundUrl = mm.mediaUrlForKey(self.soundUUIDString)
+        let mediaStore = MediaStore()
+        let soundUrl = mediaStore.mediaUrlForKey(self.soundUUIDString)
 
         let settings = [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
@@ -234,7 +269,13 @@ class SoundRecordViewController: UIViewController {
             recorder.isMeteringEnabled = true
             recorder.prepareToRecord()
 
-            timer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(timerCallback), userInfo: nil, repeats: true)
+            timer = Timer.scheduledTimer(
+                timeInterval: 0.1,
+                target: self,
+                selector: #selector(timerCallback),
+                userInfo: nil,
+                repeats: true
+            )
 
             self.audioRecorder = recorder
 
@@ -316,19 +357,22 @@ class RecorderLevelView: UIView {
             if level < 0.0 { level = 0.0 }
             if level > 1.0 { level = 1.0 }
 
-            let baseString = NSLocalizedString("Recording Level (from 0 to 1)", comment: "Accessibility label for sound recorder")
+            let baseString = NSLocalizedString(
+                "Recording Level (from 0 to 1)",
+                comment: "Accessibility label for sound recorder"
+            )
             self.accessibilityLabel = String(format: baseString, level)
             self.accessibilityValue = "\(level)"
 
             let scaledLevel = level * 30
             // anything less than 0.01 is basically nothing
             if scaledLevel < 0.01 { return }
-            for i in 0..<30 {
+            for level in 0..<30 {
                 DispatchQueue.main.async {
-                    if i <= Int(scaledLevel) {
-                        self.levelViews[i].backgroundColor = .green
+                    if level <= Int(scaledLevel) {
+                        self.levelViews[level].backgroundColor = .green
                     } else {
-                        self.levelViews[i].backgroundColor = .black
+                        self.levelViews[level].backgroundColor = .black
                     }
                 }
             }

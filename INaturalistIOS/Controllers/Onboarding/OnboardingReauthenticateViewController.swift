@@ -29,7 +29,10 @@ class OnboardingReauthenticateViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        infoLabel.text = NSLocalizedString("You must re-authenticate to delete your account.", comment: "Reauthentication to delete account tip.")
+        infoLabel.text = NSLocalizedString(
+            "You must re-authenticate to delete your account.",
+            comment: "Reauthentication to delete account tip."
+        )
 
         if let appDelegate = UIApplication.shared.delegate as? INaturalistAppDelegate,
            let login = appDelegate.loginController {
@@ -44,7 +47,10 @@ class OnboardingReauthenticateViewController: UIViewController {
         loginButton.setTitleColor(.inatTint(), for: .normal)
 
         if #available(iOS 13.0, *) {
-            let signInWithAppleButton = ASAuthorizationAppleIDButton(authorizationButtonType: .signIn, authorizationButtonStyle: .black)
+            let signInWithAppleButton = ASAuthorizationAppleIDButton(
+                authorizationButtonType: .signIn,
+                authorizationButtonStyle: .black
+            )
             signInWithAppleButton.addTarget(self, action: #selector(appleLoginPressed), for: .touchUpInside)
             signInWithAppleButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
 
@@ -107,11 +113,17 @@ extension OnboardingReauthenticateViewController: INatAuthenticationDelegate {
 
     func loginFailedWithError(_ error: Error!) {
         let alertTitle = NSLocalizedString("Oops", comment: "Title error with oops text.")
-        var alertMsg = NSLocalizedString("Failed to log in to iNaturalist. Please try again.", comment: "Unknown iNat login error")
+        var alertMsg = NSLocalizedString(
+            "Failed to log in to iNaturalist. Please try again.",
+            comment: "Unknown iNat login error"
+        )
 
         if let error = error as? NSError {
             if error.code == 401 {
-                alertMsg = NSLocalizedString("Incorrect username or password.", comment: "Error msg when we get a 401 from the server")
+                alertMsg = NSLocalizedString(
+                    "Incorrect username or password.",
+                    comment: "Error msg when we get a 401 from the server"
+                )
             }
         }
 

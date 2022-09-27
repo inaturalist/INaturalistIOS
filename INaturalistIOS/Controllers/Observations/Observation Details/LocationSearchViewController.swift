@@ -35,7 +35,11 @@ class LocationSearchViewController: UITableViewController {
 
         self.tableView.tableFooterView = UIView()
 
-        self.cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelPressed))
+        self.cancelButton = UIBarButtonItem(
+            barButtonSystemItem: .cancel,
+            target: self,
+            action: #selector(cancelPressed)
+        )
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -60,13 +64,19 @@ class LocationSearchViewController: UITableViewController {
 
         if section == 0 {
             if self.placemarks.count > 0 {
-                return NSLocalizedString("System Places", comment: "Category of iOS standard places for place search")
+                return NSLocalizedString(
+                    "System Places",
+                    comment: "Category of iOS standard places for place search"
+                )
             } else {
                 return nil
             }
         } else {
             if self.inatPlaces.count > 0 {
-                return NSLocalizedString("iNaturalist Places", comment: "Category of iNaturalist places for place search")
+                return NSLocalizedString(
+                    "iNaturalist Places",
+                    comment: "Category of iNaturalist places for place search"
+                )
             } else {
                 return nil
             }
@@ -105,9 +115,15 @@ class LocationSearchViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
-            self.locationSearchDelegate?.locationSearchController(self, chosePlaceMark: self.placemarks[indexPath.item])
+            self.locationSearchDelegate?.locationSearchController(
+                self,
+                chosePlaceMark: self.placemarks[indexPath.item]
+            )
         } else {
-            self.locationSearchDelegate?.locationSearchController(self, choseInatPlace: self.inatPlaces[indexPath.item])
+            self.locationSearchDelegate?.locationSearchController(
+                self,
+                choseInatPlace: self.inatPlaces[indexPath.item]
+            )
         }
      }
 }
@@ -134,8 +150,13 @@ extension LocationSearchViewController: UISearchBarDelegate {
             self.view.endEditing(true)
         }
 
-        // TODO: handle dense languages like Chinese
-        if let searchText = searchBar.text, searchText.count > 3 {
+        var minCharsLocationSearch = 3
+        let isHan = (searchBar.text?.range(of: "\\p{Han}", options: .regularExpression) != nil)
+        if isHan {
+            minCharsLocationSearch = 1
+        }
+
+        if let searchText = searchBar.text, searchText.count > minCharsLocationSearch {
             let geocoder = CLGeocoder()
             geocoder.geocodeAddressString(searchText) { (placemarks, error) in
                 if let error = error {

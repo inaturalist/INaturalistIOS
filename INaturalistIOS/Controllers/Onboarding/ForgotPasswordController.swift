@@ -49,7 +49,11 @@ extension ForgotPasswordController: WKNavigationDelegate {
         activity.stopAnimating()
     }
 
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    func webView(
+        _ webView: WKWebView,
+        decidePolicyFor navigationAction: WKNavigationAction,
+        decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
+    ) {
 
         if navigationAction.request.httpMethod == "POST" {
             isPostingEmailAddress = true
@@ -58,7 +62,11 @@ extension ForgotPasswordController: WKNavigationDelegate {
         decisionHandler(.allow)
     }
 
-    func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+    func webView(
+        _ webView: WKWebView,
+        decidePolicyFor navigationResponse: WKNavigationResponse,
+        decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void
+    ) {
 
         if let response = navigationResponse.response as? HTTPURLResponse {
             if isPostingEmailAddress && response.statusCode > 199 && response.statusCode < 400 {

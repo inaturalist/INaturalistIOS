@@ -1,0 +1,6 @@
+included:
+  - INaturalistIOS
+
+excluded:
+  - Pods
+
