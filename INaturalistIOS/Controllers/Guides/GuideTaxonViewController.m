@@ -20,7 +20,12 @@
 #import "ExploreTaxonRealm.h"
 
 @interface GuideTaxonViewController ()
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 @property (strong, nonatomic) IBOutlet UIWebView *webView;
+#pragma GCC diagnostic pop
+
 - (void)showAssetByURL:(NSString *)url;
 @end
 
@@ -78,6 +83,9 @@
 }
 
 # pragma mark - UIWebViewDelegate
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-implementations"
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 // http://engineering.tumblr.com/post/32329287335/javascript-native-bridge-for-ioss-uiwebview
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
@@ -115,7 +123,7 @@
     }
     return NO;
 }
-
+#pragma GCC diagnostic pop
 
 # pragma mark - GuideTaxonViewController
 - (void)showAssetByURL:(NSString *)url

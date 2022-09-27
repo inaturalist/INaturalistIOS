@@ -64,7 +64,6 @@
 		19C26203160CF42B005565F8 /* UIView+UIViewHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C26202160CF42B005565F8 /* UIView+UIViewHelpers.m */; };
 		19D04794150FFDAE00BB5DBC /* NSString+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D04793150FFDAE00BB5DBC /* NSString+Helpers.m */; };
 		19D8341117E7B746000A5C35 /* RXMLElement+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D8341017E7B746000A5C35 /* RXMLElement+Helpers.m */; };
-		19D8342D17E7BBDC000A5C35 /* GuideTaxonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D8342C17E7BBDC000A5C35 /* GuideTaxonViewController.m */; settings = {COMPILER_FLAGS = "-Wno-deprecated-declarations"; }; };
 		19D8342F17E7C211000A5C35 /* guide_taxon-local.xsl in Resources */ = {isa = PBXBuildFile; fileRef = 19D8342E17E7C211000A5C35 /* guide_taxon-local.xsl */; };
 		19DA9F5F161D4B5900DCCB5B /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 198551F514EC939100DB55C5 /* CoreData.framework */; };
 		19E4CC3216240A5A00694E5D /* ObservationFieldValueStaticCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19E4CC3116240A5A00694E5D /* ObservationFieldValueStaticCell.xib */; };
@@ -170,6 +169,7 @@
 		FA6513371E04A03B0059FD70 /* NewsItemTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6513361E04A03B0059FD70 /* NewsItemTests.m */; };
 		FA65133A1E04A1F80059FD70 /* SiteBlogPost.json in Resources */ = {isa = PBXBuildFile; fileRef = FA6513391E04A1F80059FD70 /* SiteBlogPost.json */; };
 		FA65133C1E04A2090059FD70 /* ProjectBlogPost.json in Resources */ = {isa = PBXBuildFile; fileRef = FA65133B1E04A2090059FD70 /* ProjectBlogPost.json */; };
+		FA65234D28E2776200B7B311 /* GuideTaxonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19D8342C17E7BBDC000A5C35 /* GuideTaxonViewController.m */; };
 		FA69822D1B2F49C900D9BD0F /* UIImage+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA69822C1B2F49C900D9BD0F /* UIImage+INaturalist.m */; };
 		FA6B45031BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6B45021BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m */; };
 		FA6B45061BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6B45051BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m */; };
@@ -2797,6 +2797,7 @@
 				FAEB5C0F2069A19000BA3132 /* LoginSwitchContextButton.m in Sources */,
 				FAFED1FC1DB5A2680015CCBA /* ExploreCommentRealm.m in Sources */,
 				FA99BDCB1FD794E300C9D985 /* CommentsAPI.m in Sources */,
+				FA65234D28E2776200B7B311 /* GuideTaxonViewController.m in Sources */,
 				FAEF23571C7D2DCD00208F44 /* SpeciesCount.m in Sources */,
 				FAEF23511C7D2DBA00208F44 /* IdentifierCount.m in Sources */,
 				FA3E75E81D73A57D00C459E5 /* OnboardingViewController.m in Sources */,
@@ -2947,7 +2948,6 @@
 				FACADF881CA1A731004B9D4A /* ProjectAboutViewController.m in Sources */,
 				19D8341117E7B746000A5C35 /* RXMLElement+Helpers.m in Sources */,
 				FAFED1F91DB5A25C0015CCBA /* ExploreUserRealm.m in Sources */,
-				19D8342D17E7BBDC000A5C35 /* GuideTaxonViewController.m in Sources */,
 				FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */,
 				FA0F1AFE1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m in Sources */,
 				19570CC417EB92D8000C800A /* GuideViewController.m in Sources */,
