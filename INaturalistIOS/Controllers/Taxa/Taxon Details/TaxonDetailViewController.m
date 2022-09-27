@@ -25,7 +25,6 @@
 #import "NSURL+INaturalist.h"
 #import "TaxonPhotoCell.h"
 #import "TaxonSummaryCell.h"
-#import "RoundedButtonCell.h"
 #import "TaxonPhotoPageViewController.h"
 #import "TaxonMapCell.h"
 #import "TaxonMapViewController.h"

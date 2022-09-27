@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-#import "SplitTextButton.h"
-
 @interface MeHeaderView : UIView
 
 @property IBOutlet UIButton *iconButton;

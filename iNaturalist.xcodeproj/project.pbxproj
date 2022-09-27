@@ -75,8 +75,6 @@
 		19F6219C150ECC2400C58F28 /* ProjectObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F6219B150ECC2400C58F28 /* ProjectObservation.m */; };
 		19F6219F150ECC2E00C58F28 /* ProjectUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F6219E150ECC2E00C58F28 /* ProjectUser.m */; };
 		19F87499152679F300A65F9A /* TaxaSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19F87498152679F100A65F9A /* TaxaSearchViewController.m */; };
-		19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */; };
-		19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */; };
 		344E32DB328A6EEA07584A70 /* Pods_iNaturalist.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D3C51632D83AE64C4C0A2EB /* Pods_iNaturalist.framework */; };
 		6098FD1716F3BE4C0053987E /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6098FD1616F3BE4C0053987E /* Accounts.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		6098FD1916F3BE690053987E /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6098FD1816F3BE690053987E /* Social.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -182,7 +180,6 @@
 		FA6F81D71E72459900135C5E /* MantleHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F81D61E72459900135C5E /* MantleHelpers.m */; };
 		FA6F81D91E733ECE00135C5E /* ImageStoreTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F81D81E733ECE00135C5E /* ImageStoreTests.m */; };
 		FA6F81DB1E73404200135C5E /* willet.jpg in Resources */ = {isa = PBXBuildFile; fileRef = FA6F81DA1E73404200135C5E /* willet.jpg */; };
-		FA6F875B1B0E72C60019B157 /* SplitTextButton.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F875A1B0E72C60019B157 /* SplitTextButton.m */; };
 		FA6F876A1B0E99A20019B157 /* FAKINaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA6F87691B0E99A20019B157 /* FAKINaturalist.m */; };
 		FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */; };
 		FA711AA41D515F3000C4FFDB /* PeopleAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA711AA31D515F3000C4FFDB /* PeopleAPI.m */; };
@@ -242,9 +239,7 @@
 		FAA6EB0B1C8F820000F43552 /* ExploreFave.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA6EB0A1C8F820000F43552 /* ExploreFave.m */; };
 		FAA6EB171C90C15400F43552 /* TaxonPhotoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA6EB161C90C15400F43552 /* TaxonPhotoCell.m */; };
 		FAA6EB1A1C90C28800F43552 /* TaxonSummaryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA6EB191C90C28800F43552 /* TaxonSummaryCell.m */; };
-		FAA6EB1C1C90E17000F43552 /* RoundedButtonCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAA6EB1B1C90E17000F43552 /* RoundedButtonCell.xib */; };
 		FAA851911C2368030012C09D /* ObsCenteredLabelCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA851901C2368030012C09D /* ObsCenteredLabelCell.m */; };
-		FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CC1B13989D00366521 /* RoundedButtonCell.m */; };
 		FAA8D26023CD266400757A1E /* ExploreProjectObsField.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA8D25F23CD266400757A1E /* ExploreProjectObsField.m */; };
 		FAA8D26323CD267200757A1E /* ExploreObsField.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA8D26223CD267200757A1E /* ExploreObsField.m */; };
 		FAB0B8E5237CE4E800E73681 /* ExploreGuide.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB0B8E4237CE4E800E73681 /* ExploreGuide.m */; };
@@ -472,8 +467,6 @@
 		19F6219E150ECC2E00C58F28 /* ProjectUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectUser.m; sourceTree = "<group>"; };
 		19F87497152679F000A65F9A /* TaxaSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxaSearchViewController.h; sourceTree = "<group>"; };
 		19F87498152679F100A65F9A /* TaxaSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxaSearchViewController.m; sourceTree = "<group>"; };
-		19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TaxonOneNameTableViewCell.xib; sourceTree = "<group>"; };
-		19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TaxonTwoNameTableViewCell.xib; sourceTree = "<group>"; };
 		19FFA16F191D82CE000A6EBA /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		27F578FDE9FB0194B5FA7570 /* Pods-iNaturalistTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNaturalistTests.debug.xcconfig"; path = "Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests.debug.xcconfig"; sourceTree = "<group>"; };
 		38D9B4ACB70AA7FFA70A3FDB /* Pods-iNaturalistTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNaturalistTests.release.xcconfig"; path = "Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -813,8 +806,6 @@
 		FA6F81D61E72459900135C5E /* MantleHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MantleHelpers.m; sourceTree = "<group>"; };
 		FA6F81D81E733ECE00135C5E /* ImageStoreTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageStoreTests.m; sourceTree = "<group>"; };
 		FA6F81DA1E73404200135C5E /* willet.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = willet.jpg; path = Fixtures/willet.jpg; sourceTree = "<group>"; };
-		FA6F87591B0E72C60019B157 /* SplitTextButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SplitTextButton.h; sourceTree = "<group>"; };
-		FA6F875A1B0E72C60019B157 /* SplitTextButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SplitTextButton.m; sourceTree = "<group>"; };
 		FA6F87671B0E997D0019B157 /* inaturalisticons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inaturalisticons.ttf; sourceTree = "<group>"; };
 		FA6F87681B0E99A20019B157 /* FAKINaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FAKINaturalist.h; sourceTree = "<group>"; };
 		FA6F87691B0E99A20019B157 /* FAKINaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FAKINaturalist.m; sourceTree = "<group>"; };
@@ -982,11 +973,8 @@
 		FAA6EB161C90C15400F43552 /* TaxonPhotoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonPhotoCell.m; sourceTree = "<group>"; };
 		FAA6EB181C90C28800F43552 /* TaxonSummaryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxonSummaryCell.h; sourceTree = "<group>"; };
 		FAA6EB191C90C28800F43552 /* TaxonSummaryCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaxonSummaryCell.m; sourceTree = "<group>"; };
-		FAA6EB1B1C90E17000F43552 /* RoundedButtonCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RoundedButtonCell.xib; sourceTree = "<group>"; };
 		FAA8518F1C2368030012C09D /* ObsCenteredLabelCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsCenteredLabelCell.h; sourceTree = "<group>"; };
 		FAA851901C2368030012C09D /* ObsCenteredLabelCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsCenteredLabelCell.m; sourceTree = "<group>"; };
-		FAA872CB1B13989D00366521 /* RoundedButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoundedButtonCell.h; sourceTree = "<group>"; };
-		FAA872CC1B13989D00366521 /* RoundedButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundedButtonCell.m; sourceTree = "<group>"; };
 		FAA8D25E23CD266400757A1E /* ExploreProjectObsField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreProjectObsField.h; sourceTree = "<group>"; };
 		FAA8D25F23CD266400757A1E /* ExploreProjectObsField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreProjectObsField.m; sourceTree = "<group>"; };
 		FAA8D26123CD267200757A1E /* ExploreObsField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreObsField.h; sourceTree = "<group>"; };
@@ -1948,53 +1936,18 @@
 				FA822FF828D85532006CA0F6 /* Me Tab Header */,
 				FA822FF628D8550A006CA0F6 /* Project Details */,
 				FA822FF528D854FC006CA0F6 /* Taxon Details */,
-				191B0B30150015EA00F2508E /* AccuracyCircleView.h */,
-				191B0B31150015EA00F2508E /* AccuracyCircleView.m */,
-				FA55648B1BD9BC3C0049803B /* AddChicletCell.h */,
 				FAFA2BF628E3A01500BD2A09 /* My Observations */,
-				FA55648C1BD9BC3C0049803B /* AddChicletCell.m */,
 				FAFA2BF728E3A03700BD2A09 /* Observation Details */,
 				1922D99F14FEBF58003778B2 /* CrossHairView.h */,
 				1922D9A014FEBF58003778B2 /* CrossHairView.m */,
 				FA75584A1B9A599800762D7B /* DisclosureCell.h */,
 				FA75584B1B9A599800762D7B /* DisclosureCell.m */,
-				191B0B331500A8D900F2508E /* EditLocationAnnoView.h */,
-				191B0B341500A8D900F2508E /* EditLocationAnnoView.m */,
-				FAC0F17C1A9FDD0D000F20C4 /* MultiImageView.h */,
-				FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */,
-				FAA20BB81C5079830075EF2C /* NewsItemCell.h */,
-				FAA20BB91C5079830075EF2C /* NewsItemCell.m */,
-				19E54CB1160997010036BA3B /* ObservationFieldValueDefaultCell.xib */,
-				19E4CC3116240A5A00694E5D /* ObservationFieldValueStaticCell.xib */,
-				19ADD5AB160A3D50001D886C /* ObservationFieldValueSwitchCell.xib */,
-				FA6B45041BC73F3700EDDD42 /* ObsFieldLongTextValueCell.h */,
-				FA6B45051BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m */,
-				FA6B45011BC73F1600EDDD42 /* ObsFieldSimpleValueCell.h */,
-				FA6B45021BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m */,
-				FAF47B301BD99FFC007CC407 /* PhotoChicletCell.h */,
-				FAF47B311BD99FFC007CC407 /* PhotoChicletCell.m */,
-				FA5564851BD9A9340049803B /* MediaScrollViewCell.h */,
-				FA5564861BD9A9340049803B /* MediaScrollViewCell.m */,
-				FA78DFBE1BC5C97B002DCCB1 /* ProjectObservationHeaderView.h */,
-				FA78DFBF1BC5C97B002DCCB1 /* ProjectObservationHeaderView.m */,
-				FA394EB7218909AF004AE0FE /* ProjectObservationHeaderView.xib */,
-				899A00D21B53AADD0079162F /* ProjectTableViewCell.h */,
-				899A00D31B53AADD0079162F /* ProjectTableViewCell.m */,
-				FAA872CB1B13989D00366521 /* RoundedButtonCell.h */,
-				FAA872CC1B13989D00366521 /* RoundedButtonCell.m */,
-				FAA6EB1B1C90E17000F43552 /* RoundedButtonCell.xib */,
-				FA6F87591B0E72C60019B157 /* SplitTextButton.h */,
-				FA6F875A1B0E72C60019B157 /* SplitTextButton.m */,
-				FAFAF7001BA0D64700CCADC2 /* SubtitleDisclosureCell.h */,
-				FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */,
-				19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */,
+				FAFA2BF828E3A1CC00BD2A09 /* News */,
+				FAFA2BF928E3A1DA00BD2A09 /* Projects & Obs Fields */,
 				FA86CC361EAAE496004D6482 /* TaxonSuggestionCell.h */,
 				FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */,
-				19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */,
 				FAD05EA21B9A911400C14085 /* TextViewCell.h */,
 				FAD05EA31B9A911400C14085 /* TextViewCell.m */,
-				FA067F5E1DBACF0A00CBA5EF /* UpdatesItemCell.h */,
-				FA067F5F1DBACF0A00CBA5EF /* UpdatesItemCell.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2301,6 +2254,8 @@
 		FAFA2BF628E3A01500BD2A09 /* My Observations */ = {
 			isa = PBXGroup;
 			children = (
+				FA55648B1BD9BC3C0049803B /* AddChicletCell.h */,
+				FA55648C1BD9BC3C0049803B /* AddChicletCell.m */,
 				FA0F1B031BBB561600533ED5 /* ObservationViewCell.h */,
 				FA0F1B041BBB561600533ED5 /* ObservationViewCell.m */,
 				FA0F1AFF1BBB412C00533ED5 /* ObservationViewErrorCell.h */,
@@ -2318,11 +2273,53 @@
 		FAFA2BF728E3A03700BD2A09 /* Observation Details */ = {
 			isa = PBXGroup;
 			children = (
+				191B0B30150015EA00F2508E /* AccuracyCircleView.h */,
+				191B0B31150015EA00F2508E /* AccuracyCircleView.m */,
+				191B0B331500A8D900F2508E /* EditLocationAnnoView.h */,
+				191B0B341500A8D900F2508E /* EditLocationAnnoView.m */,
+				FAC0F17C1A9FDD0D000F20C4 /* MultiImageView.h */,
+				FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */,
+				FAFAF7001BA0D64700CCADC2 /* SubtitleDisclosureCell.h */,
+				FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */,
+				FAF47B301BD99FFC007CC407 /* PhotoChicletCell.h */,
+				FAF47B311BD99FFC007CC407 /* PhotoChicletCell.m */,
+				FA5564851BD9A9340049803B /* MediaScrollViewCell.h */,
+				FA5564861BD9A9340049803B /* MediaScrollViewCell.m */,
 				FA0F1AF61BBB2E9600533ED5 /* ObservationValidationErrorView.h */,
 				FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */,
 				FA822FF728D8551B006CA0F6 /* Obs Detail TableView Cells */,
 			);
 			path = "Observation Details";
+			sourceTree = "<group>";
+		};
+		FAFA2BF828E3A1CC00BD2A09 /* News */ = {
+			isa = PBXGroup;
+			children = (
+				FA067F5E1DBACF0A00CBA5EF /* UpdatesItemCell.h */,
+				FA067F5F1DBACF0A00CBA5EF /* UpdatesItemCell.m */,
+				FAA20BB81C5079830075EF2C /* NewsItemCell.h */,
+				FAA20BB91C5079830075EF2C /* NewsItemCell.m */,
+			);
+			path = News;
+			sourceTree = "<group>";
+		};
+		FAFA2BF928E3A1DA00BD2A09 /* Projects & Obs Fields */ = {
+			isa = PBXGroup;
+			children = (
+				19E54CB1160997010036BA3B /* ObservationFieldValueDefaultCell.xib */,
+				19E4CC3116240A5A00694E5D /* ObservationFieldValueStaticCell.xib */,
+				19ADD5AB160A3D50001D886C /* ObservationFieldValueSwitchCell.xib */,
+				FA6B45041BC73F3700EDDD42 /* ObsFieldLongTextValueCell.h */,
+				FA6B45051BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m */,
+				FA6B45011BC73F1600EDDD42 /* ObsFieldSimpleValueCell.h */,
+				FA6B45021BC73F1600EDDD42 /* ObsFieldSimpleValueCell.m */,
+				FA78DFBE1BC5C97B002DCCB1 /* ProjectObservationHeaderView.h */,
+				FA78DFBF1BC5C97B002DCCB1 /* ProjectObservationHeaderView.m */,
+				FA394EB7218909AF004AE0FE /* ProjectObservationHeaderView.xib */,
+				899A00D21B53AADD0079162F /* ProjectTableViewCell.h */,
+				899A00D31B53AADD0079162F /* ProjectTableViewCell.m */,
+			);
+			path = "Projects & Obs Fields";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2456,8 +2453,6 @@
 			files = (
 				1927514B14E9CCC9000ABAC4 /* MainStoryboard.storyboard in Resources */,
 				FA6F876C1B0E9C660019B157 /* inaturalisticons.ttf in Resources */,
-				19F8749B152684DF00A65F9A /* TaxonOneNameTableViewCell.xib in Resources */,
-				19F8749D1526850100A65F9A /* TaxonTwoNameTableViewCell.xib in Resources */,
 				FA97666820D1E3D200D172DC /* AboutHeaderView.xib in Resources */,
 				FACD11EF1C56E9720041E318 /* TaxonCell.xib in Resources */,
 				19E54CB2160997010036BA3B /* ObservationFieldValueDefaultCell.xib in Resources */,
@@ -2478,7 +2473,6 @@
 				19D8342F17E7C211000A5C35 /* guide_taxon-local.xsl in Resources */,
 				FA399AC11DDBDC88007ABD3E /* Guides.storyboard in Resources */,
 				19F0A47E17F3F4340086455D /* guide_taxon-remote.xsl in Resources */,
-				FAA6EB1C1C90E17000F43552 /* RoundedButtonCell.xib in Resources */,
 				1904E5F317FB814A00725804 /* bootstrap.min.css in Resources */,
 				FABCAD0E23C6B289006479CA /* MeHeaderView.xib in Resources */,
 				FA4C19601B30EDB70066CA22 /* partners.plist in Resources */,
@@ -2730,7 +2724,6 @@
 				FAD44AE72456635000E9DA38 /* ExploreObsFieldValueRealm.m in Sources */,
 				1927514814E9CCC9000ABAC4 /* INaturalistAppDelegate.m in Sources */,
 				FAEF23411C7D093900208F44 /* ProjectDetailIdentifiersViewController.m in Sources */,
-				FA6F875B1B0E72C60019B157 /* SplitTextButton.m in Sources */,
 				1927514E14E9CCC9000ABAC4 /* ObservationsViewController.m in Sources */,
 				19AE897318DD08A100505918 /* Comment.m in Sources */,
 				1985521814EC97C200DB55C5 /* INaturalist.xcdatamodeld in Sources */,
@@ -2751,7 +2744,6 @@
 				FA8B8DD523CE7266007FBA63 /* ExploreObsFieldRealm.m in Sources */,
 				FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */,
 				1902813D14F36B44005AC8D2 /* ObservationPhoto.m in Sources */,
-				FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */,
 				FA9C631E23E8C51400E1AD62 /* ExploreFaveRealm.m in Sources */,
 				FA4E72EC19FACE6900A9AB5D /* AutocompleteCell.m in Sources */,
 				FA51BA651C000A1900101807 /* Activity.m in Sources */,
