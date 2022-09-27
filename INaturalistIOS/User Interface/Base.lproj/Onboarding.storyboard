@@ -469,21 +469,15 @@
                                                     <action selector="googlePressed:" destination="j80-yK-ZbF" eventType="valueChanged" id="gDJ-ON-Yxe"/>
                                                 </connections>
                                             </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u2t-rU-mF6" customClass="FBLoginButton">
-                                                <rect key="frame" x="150" y="7" width="140" height="36"/>
-                                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lbS-Tt-Inn" customClass="FBSDKLoginButton">
+                                                <rect key="frame" x="150" y="8" width="140" height="34.5"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="36" id="cdl-8D-La0"/>
-                                                    <constraint firstAttribute="width" priority="750" constant="140" id="eXN-im-CZK"/>
+                                                    <constraint firstAttribute="height" constant="34.5" id="tCy-Rb-Ecb"/>
                                                 </constraints>
-                                                <connections>
-                                                    <action selector="facebookPressed:" destination="j80-yK-ZbF" eventType="valueChanged" id="1j7-eL-N8o"/>
-                                                </connections>
-                                            </view>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                            </button>
                                         </subviews>
-                                        <constraints>
-                                            <constraint firstItem="u2t-rU-mF6" firstAttribute="width" secondItem="JNh-8M-Acy" secondAttribute="width" id="8Ps-fm-yc9"/>
-                                        </constraints>
                                     </stackView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YtY-We-SSc">
                                         <rect key="frame" x="0.0" y="110.5" width="290" height="0.0"/>
@@ -550,7 +544,7 @@
                         <outlet property="closeButton" destination="MC0-kW-bph" id="hFk-nF-RRT"/>
                         <outlet property="externalLoginStackView" destination="dfE-eN-x9k" id="OZD-of-e4h"/>
                         <outlet property="extraLoginInfoStackView" destination="LMC-dJ-pka" id="gnX-nz-X8o"/>
-                        <outlet property="facebookButton" destination="u2t-rU-mF6" id="Ze9-Lz-HUy"/>
+                        <outlet property="facebookButton" destination="lbS-Tt-Inn" id="xB8-vs-uxx"/>
                         <outlet property="forgotButton" destination="sZe-lG-yg8" id="jPp-SK-2N8"/>
                         <outlet property="googleButton" destination="JNh-8M-Acy" id="Zq5-Ly-3Gw"/>
                         <outlet property="iNatAuthStackView" destination="31y-8d-eUf" id="myS-QY-yb4"/>
