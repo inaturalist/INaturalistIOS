@@ -9,9 +9,9 @@
 import UIKit
 
 class MediaPickerSegue: UIStoryboardSegue {
-    private var selfRetainer: MediaPickerSegue? = nil
+    private var selfRetainer: MediaPickerSegue?
     lazy var slideInTransitioningDelegate = SlideInPresentationManager()
-    
+
     override func perform() {
         destination.transitioningDelegate = slideInTransitioningDelegate
         // hold a strong reference to self so that the the transitioning delegate

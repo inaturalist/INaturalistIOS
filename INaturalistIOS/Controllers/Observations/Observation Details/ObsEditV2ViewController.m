@@ -27,7 +27,6 @@
 #import "TextViewCell.h"
 #import "EditLocationViewController.h"
 #import "SubtitleDisclosureCell.h"
-#import "ObsCameraOverlay.h"
 #import "ConfirmPhotoViewController.h"
 #import "FAKINaturalist.h"
 #import "ObservationFieldValue.h"

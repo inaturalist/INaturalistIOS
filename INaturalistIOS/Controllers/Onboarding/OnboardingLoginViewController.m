@@ -25,7 +25,6 @@
 #import "INaturalistAppDelegate.h"
 #import "OnboardingViewController.h"
 #import "UITapGestureRecognizer+InatHelpers.h"
-#import "IconAndTextControl.h"
 #import "PartnerController.h"
 #import "Partner.h"
 #import "INatReachability.h"

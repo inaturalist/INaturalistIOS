@@ -16,7 +16,7 @@ import Gallery
 
 @objc class GalleryWrapper: NSObject {
     @objc weak var wrapperDelegate: GalleryWrapperDelegate?
-    
+
     @objc public func gallery() -> UIViewController {
         let gallery = GalleryController()
         gallery.delegate = self
@@ -33,17 +33,17 @@ extension GalleryWrapper: GalleryControllerDelegate {
             self.wrapperDelegate?.galleryDidSelect( uiimages.compactMap { $0 })
         }
     }
-    
+
     func galleryController(_ controller: GalleryController, didSelectVideo video: Video) {
         // we don't support video
         wrapperDelegate?.galleryDidCancel()
     }
-    
+
     func galleryController(_ controller: GalleryController, requestLightbox images: [Image]) {
         // do nothing
         return
     }
-    
+
     func galleryControllerDidCancel(_ controller: GalleryController) {
         wrapperDelegate?.galleryDidCancel()
     }

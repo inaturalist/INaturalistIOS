@@ -16,38 +16,36 @@ import CoreLocation
 }
 
 class LocationSearchViewController: UITableViewController {
-    
+
     var cancelButton: UIBarButtonItem!
     var searchController: UISearchController!
     var placemarks = [CLPlacemark]()
     var inatPlaces = [ExploreLocation]()
     @objc weak var locationSearchDelegate: LocationSearchDelegate?
-    
+
     let placeApi = PlaceAPI()
-    
-    
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         searchController = UISearchController(searchResultsController: nil)
         self.tableView.tableHeaderView = searchController.searchBar
         searchController.searchBar.showsSearchResultsButton = true
         searchController.searchBar.delegate = self
-        
+
         self.tableView.tableFooterView = UIView()
-                
+
         self.cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelPressed))
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         DispatchQueue.main.async {
             self.searchController.isActive = true
         }
     }
-    
+
     @objc func cancelPressed() {
         self.locationSearchDelegate?.locationSearchControllerCancelled(self)
     }
@@ -57,17 +55,17 @@ class LocationSearchViewController: UITableViewController {
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
-    
+
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        
+
         if section == 0 {
-            if (self.placemarks.count > 0) {
+            if self.placemarks.count > 0 {
                 return NSLocalizedString("System Places", comment: "Category of iOS standard places for place search")
             } else {
                 return nil
             }
         } else {
-            if (self.inatPlaces.count > 0) {
+            if self.inatPlaces.count > 0 {
                 return NSLocalizedString("iNaturalist Places", comment: "Category of iNaturalist places for place search")
             } else {
                 return nil
@@ -82,15 +80,15 @@ class LocationSearchViewController: UITableViewController {
             return self.inatPlaces.count
         }
     }
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
+
         var cell = tableView.dequeueReusableCell(withIdentifier: "placemark")
         if cell == nil {
             cell = UITableViewCell(style: .subtitle, reuseIdentifier: "placemark")
         }
-        
-        if (indexPath.section == 0) {
+
+        if indexPath.section == 0 {
             let placemark = self.placemarks[indexPath.item]
             cell!.textLabel?.text = placemark.name
             cell!.textLabel?.numberOfLines = 0
@@ -101,12 +99,12 @@ class LocationSearchViewController: UITableViewController {
             cell!.textLabel?.text = place.name
             cell!.textLabel?.numberOfLines = 0
         }
-        
+
         return cell!
     }
-    
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if (indexPath.section == 0) {
+        if indexPath.section == 0 {
             self.locationSearchDelegate?.locationSearchController(self, chosePlaceMark: self.placemarks[indexPath.item])
         } else {
             self.locationSearchDelegate?.locationSearchController(self, choseInatPlace: self.inatPlaces[indexPath.item])
@@ -118,8 +116,7 @@ extension LocationSearchViewController: UISearchControllerDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         self.locationSearchDelegate?.locationSearchControllerCancelled(self)
     }
-    
-    
+
     func didPresentSearchController(_ searchController: UISearchController) {
         searchController.searchBar.becomeFirstResponder()
     }
@@ -127,16 +124,16 @@ extension LocationSearchViewController: UISearchControllerDelegate {
 
 extension LocationSearchViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        
+
         self.inatPlaces = [ExploreLocation]()
         self.placemarks = [CLPlacemark]()
-        
+
         DispatchQueue.main.async {
             self.searchController.isActive = false
             self.tableView.reloadData()
             self.view.endEditing(true)
         }
-        
+
         // TODO: handle dense languages like Chinese
         if let searchText = searchBar.text, searchText.count > 3 {
             let geocoder = CLGeocoder()
@@ -152,16 +149,16 @@ extension LocationSearchViewController: UISearchBarDelegate {
                     self.view.endEditing(true)
                 }
             }
-            
+
             // also search inat node api
-            self.placeApi.places(matching: searchText) { (places, count, error) in
+            self.placeApi.places(matching: searchText) { (places, _, error) in
                 if let error = error {
                     print("error \(error.localizedDescription)")
                 }
                 if let places = places as? [ExploreLocation] {
                     self.inatPlaces = places
                 }
-                
+
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                     self.view.endEditing(true)
