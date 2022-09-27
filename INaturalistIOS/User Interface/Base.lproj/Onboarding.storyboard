@@ -709,7 +709,7 @@
                                             <action selector="googleLoginPressed:" destination="UJ1-a0-AKB" eventType="touchUpInside" id="YJP-SA-dcM"/>
                                         </connections>
                                     </view>
-                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qQZ-rz-tQI" customClass="FBSDKLoginButton">
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qQZ-rz-tQI" customClass="FBLoginButton">
                                         <rect key="frame" x="0.0" y="332" width="343" height="14"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain"/>
