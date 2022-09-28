@@ -1060,18 +1060,7 @@
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
-        self.navigationController.tabBarItem.image = ({
-            FAKIcon *meInactive = [FAKIonIcons iosPersonIconWithSize:40];
-            [meInactive addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
-            [[meInactive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        });
-        
-        self.navigationController.tabBarItem.selectedImage = ({
-            FAKIcon *meActive = [FAKIonIcons iosPersonIconWithSize:40];
-            [meActive addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
-            [[meActive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        });
-        
+        self.navigationController.tabBarItem.image = [UIImage systemImageNamed:@"person.fill"];
         self.navigationController.tabBarItem.title = NSLocalizedString(@"Me", nil);
         
         self.uploadProgress = [[NSMutableDictionary alloc] init];
@@ -1343,25 +1332,15 @@
 
     
     self.navigationItem.leftBarButtonItem = nil;
-    FAKIcon *settings = [FAKIonIcons iosGearOutlineIconWithSize:30];
-    UIImage *settingsImage = [settings imageWithSize:CGSizeMake(30, 30)];
-    settings.iconFontSize = 20;
-    UIImage *settingsLandscapeImage = [settings imageWithSize:CGSizeMake(20, 20)];
-    
+    UIImage *settingsImage = [UIImage systemImageNamed:@"gear"];
     UIBarButtonItem *settingsBarButton = [[UIBarButtonItem alloc] initWithImage:settingsImage
-                                                            landscapeImagePhone:settingsLandscapeImage
                                                                           style:UIBarButtonItemStylePlain
                                                                          target:self
                                                                          action:@selector(settings)];
     settingsBarButton.accessibilityLabel = NSLocalizedString(@"Settings", @"accessibility label for settings button");
     
-    FAKIcon *book = [FAKIonIcons iosBookOutlineIconWithSize:30];
-    UIImage *bookImage = [book imageWithSize:CGSizeMake(30, 30)];
-    book.iconFontSize = 20;
-    UIImage *bookLandscapeImage = [book imageWithSize:CGSizeMake(20, 20)];
-    
+    UIImage *bookImage = [UIImage systemImageNamed:@"book"];
     UIBarButtonItem *guidesBarButton = [[UIBarButtonItem alloc] initWithImage:bookImage
-                                                          landscapeImagePhone:bookLandscapeImage
                                                                         style:UIBarButtonItemStylePlain
                                                                        target:self
                                                                        action:@selector(guides)];

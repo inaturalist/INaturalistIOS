@@ -258,21 +258,9 @@ static const int ListControlIndexNearby = 2;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
-    if (self = [super initWithCoder:aDecoder]) {
-        
+    if (self = [super initWithCoder:aDecoder]) {        
         self.title = NSLocalizedString(@"Projects", nil);
-        
-        self.tabBarItem.image = ({
-            FAKIcon *briefcaseInactive = [FAKIonIcons iosBriefcaseIconWithSize:35];
-            [briefcaseInactive addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
-            [[briefcaseInactive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        });
-        
-        self.tabBarItem.selectedImage = ({
-            FAKIcon *briefcaseActive = [FAKIonIcons iosBriefcaseIconWithSize:35];
-            [briefcaseActive addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
-            [[briefcaseActive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        });
+        self.tabBarItem.image = [UIImage systemImageNamed:@"briefcase.fill"];
     }
     
     return self;
