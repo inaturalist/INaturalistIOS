@@ -156,6 +156,73 @@ class INatTabBarController: UITabBarController {
 
       self.performSegue(withIdentifier: "MediaPickerSegue", sender: nil)
    }
+
+   func makeNewObservation(observationDate: Date, observationTimezone: TimeZone) -> ExploreObservationRealm {
+      let obs = ExploreObservationRealm()
+      obs.uuid = UUID().uuidString.lowercased()
+      obs.timeCreated = Date()
+      obs.timeUpdatedLocally = Date()
+
+      obs.timeObserved = observationDate
+      obs.observedTimeZone = observationTimezone.identifier
+
+      return obs
+   }
+
+   func makeNewObservationPhoto(photoKey: String, position: Int) -> ExploreObservationPhotoRealm {
+      let obsPhoto = ExploreObservationPhotoRealm()
+      obsPhoto.uuid = UUID().uuidString.lowercased()
+      obsPhoto.timeCreated = Date()
+      obsPhoto.timeUpdatedLocally = Date()
+      obsPhoto.position = position
+      obsPhoto.photoKey = photoKey
+      return obsPhoto
+   }
+
+   func makeNewObservationSound(uuidString: String) -> ExploreObservationSoundRealm {
+      let obsSound = ExploreObservationSoundRealm()
+      obsSound.uuid = uuidString
+      obsSound.timeUpdatedLocally = Date()
+      return obsSound
+   }
+
+   func saveNewCaptureToPhotoLibrary(info: [UIImagePickerController.InfoKey: Any]) {
+      guard let image = info[.originalImage] as? UIImage else {
+         return
+      }
+
+      let imageData: Data?
+      if var metadata = info[.mediaMetadata] as? [String: Any] {
+         // check if we have a recent location that can be embbed
+         // into the metadata.
+         if let location = CLLocationManager().location,
+            let gpsDict = location.inat_GPSDictionary(),
+            location.timestamp.timeIntervalSinceNow > -300 {
+            metadata[kCGImagePropertyGPSDictionary as String] = gpsDict
+         }
+
+         imageData = image.inat_JPEGDataRepresentation(withMetadata: metadata, quality: 0.9)
+      } else {
+         imageData = image.jpegData(compressionQuality: 0.9)
+      }
+
+      if let imageData = imageData {
+         do {
+            try PHPhotoLibrary.shared().performChangesAndWait {
+               let request = PHAssetCreationRequest.forAsset()
+               request.addResource(with: .photo, data: imageData, options: nil)
+               request.creationDate = Date()
+
+               // this updates the ios photos database but not exif
+               if let location = CLLocationManager().location,
+                  location.timestamp.timeIntervalSinceNow > -300
+               {
+                  request.location = location
+               }
+            }
+         } catch { } // silently continue if this save operation fails
+      }
+   }
 }
 
 extension INatTabBarController: UITabBarControllerDelegate {
@@ -203,18 +270,14 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
       didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
    ) {
 
-      guard let image = info[.originalImage] as? UIImage else {
-         // no image, dismiss and give up
+      guard let image = info[.originalImage] as? UIImage,
+            let imageStore = ImageStore.shared(),
+            let photoKey = imageStore.createKey()
+      else {
          picker.dismiss(animated: true, completion: nil)
          return
       }
 
-      guard let imageStore = ImageStore.shared() else {
-         picker.dismiss(animated: true, completion: nil)
-         return
-      }
-
-      let photoKey = imageStore.createKey()
       do {
          try imageStore.store(image, forKey: photoKey)
       } catch {
@@ -222,55 +285,10 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
          return
       }
 
-      let imageData: Data?
-      if var metadata = info[.mediaMetadata] as? [String: Any] {
-         // check if we have a recent location that can be embbed
-         // into the metadata.
-         if let location = CLLocationManager().location,
-            let gpsDict = location.inat_GPSDictionary(),
-            location.timestamp.timeIntervalSinceNow > -300 {
-            metadata[kCGImagePropertyGPSDictionary as String] = gpsDict
-         }
+      self.saveNewCaptureToPhotoLibrary(info: info)
 
-         imageData = image.inat_JPEGDataRepresentation(withMetadata: metadata, quality: 0.9)
-      } else {
-         imageData = image.jpegData(compressionQuality: 0.9)
-      }
-
-      if let imageData = imageData {
-         do {
-            try PHPhotoLibrary.shared().performChangesAndWait {
-               let request = PHAssetCreationRequest.forAsset()
-               request.addResource(with: .photo, data: imageData, options: nil)
-               request.creationDate = Date()
-
-               // this updates the ios photos database but not exif
-               if let location = CLLocationManager().location,
-                  location.timestamp.timeIntervalSinceNow > -300
-               {
-                  request.location = location
-               }
-            }
-         } catch { } // silently continue if this save operation fails
-      }
-
-      // with the standard image picker, no need to show confirmation screen
-      let obs = ExploreObservationRealm()
-      obs.uuid = UUID().uuidString.lowercased()
-      obs.timeCreated = Date()
-      obs.timeUpdatedLocally = Date()
-
-      // photo was taken now
-      obs.timeObserved = Date()
-      obs.observedTimeZone = TimeZone.current.identifier
-
-      let obsPhoto = ExploreObservationPhotoRealm()
-      obsPhoto.uuid = UUID().uuidString.lowercased()
-      obsPhoto.timeCreated = Date()
-      obsPhoto.timeUpdatedLocally = Date()
-      obsPhoto.position = 0
-      obsPhoto.photoKey = photoKey
-
+      let obs = makeNewObservation(observationDate: Date(), observationTimezone: TimeZone.current)
+      let obsPhoto = makeNewObservationPhoto(photoKey: photoKey, position: 0)
       obs.observationPhotos.add(obsPhoto)
 
       if let taxonId = self.observingTaxonId,
@@ -291,18 +309,8 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
 
 extension INatTabBarController: SoundRecorderDelegate {
    func recordedSound(recorder: SoundRecordViewController, uuidString: String) {
-      let obs = ExploreObservationRealm()
-      obs.uuid = UUID().uuidString.lowercased()
-      obs.timeCreated = Date()
-      obs.timeUpdatedLocally = Date()
-
-      // observation was made now
-      obs.timeObserved = Date()
-
-      let obsSound = ExploreObservationSoundRealm()
-      obsSound.uuid = uuidString
-      obsSound.timeUpdatedLocally = Date()
-
+      let obs = makeNewObservation(observationDate: Date(), observationTimezone: TimeZone.current)
+      let obsSound = makeNewObservationSound(uuidString: uuidString)
       obs.observationSounds.add(obsSound)
 
       if let taxonId = self.observingTaxonId,
