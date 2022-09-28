@@ -13,7 +13,6 @@ target :iNaturalist do
   pod 'FBSDKLoginKit', '14.1.0'
   pod 'Bolts', '1.9.1'
   pod 'FontAwesomeKit', '2.2.1'
-  pod 'HexColors', '2.3.0'
   pod 'BlocksKit', '2.2.5'
   pod 'GeoJSONSerialization', '0.0.4'
   pod 'AFNetworking', '3.2.0'
@@ -27,8 +26,6 @@ target :iNaturalist do
   pod 'RaptureXML', '1.0.1'
   pod 'DCRoundSwitch', '0.0.1'
   pod 'VTAcknowledgementsViewController', '0.15'
-  pod 'JDFTooltips', '1.0'
-  pod 'CustomIOSAlertView', '0.9.3'
   pod 'YLProgressBar', '3.9.0'
   pod 'PBRevealViewController'
   pod 'SDWebImage', '4.0.0'
@@ -43,6 +40,7 @@ target :iNaturalist do
   pod 'MHVideoPhotoGallery', :git => 'https://github.com/alexshepard/MHVideoPhotoGallery', :commit => '0a343f12b60c8719a280db73b1e2b6d25fef164a'
   pod 'Down', :git => 'https://github.com/ocshing/Down-gfm'
   pod 'SimpleKeychain'
+  pod 'JDFTooltips', '1.0'
 
   target :iNaturalistTests do
     inherit! :search_paths

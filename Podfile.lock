@@ -44,7 +44,6 @@ PODS:
   - Bolts/AppLinks (1.9.1):
     - Bolts/Tasks
   - Bolts/Tasks (1.9.1)
-  - CustomIOSAlertView (0.9.3)
   - DCRoundSwitch (0.0.1)
   - Down (0.6.2)
   - FBAEMKit (14.1.0):
@@ -181,7 +180,6 @@ PODS:
     - AppAuth/Core (~> 1.6)
     - GTMSessionFetcher/Core (< 3.0, >= 1.5)
   - GTMSessionFetcher/Core (2.1.0)
-  - HexColors (2.3.0)
   - ICViewPager (1.5.1)
   - JDFTooltips (1.0)
   - JDStatusBarNotification (1.5.2)
@@ -230,7 +228,6 @@ DEPENDENCIES:
   - ARSafariActivity
   - BlocksKit (= 2.2.5)
   - Bolts (= 1.9.1)
-  - CustomIOSAlertView (= 0.9.3)
   - DCRoundSwitch (= 0.0.1)
   - Down (from `https://github.com/ocshing/Down-gfm`)
   - FBSDKCoreKit (= 14.1.0)
@@ -241,7 +238,6 @@ DEPENDENCIES:
   - Gallery
   - GeoJSONSerialization (= 0.0.4)
   - GoogleSignIn (= 6.2.4)
-  - HexColors (= 2.3.0)
   - ICViewPager (from `https://github.com/alexshepard/ICViewPager.git`, commit `4c45423b6a36fb38753af86a1050b6a3a1d548b8`)
   - JDFTooltips (= 1.0)
   - JDStatusBarNotification (= 1.5.2)
@@ -273,7 +269,6 @@ SPEC REPOS:
     - Base64
     - BlocksKit
     - Bolts
-    - CustomIOSAlertView
     - DCRoundSwitch
     - FBAEMKit
     - FBSDKCoreKit
@@ -295,7 +290,6 @@ SPEC REPOS:
     - GoogleUtilities
     - GTMAppAuth
     - GTMSessionFetcher
-    - HexColors
     - JDFTooltips
     - JDStatusBarNotification
     - JWT
@@ -358,7 +352,6 @@ SPEC CHECKSUMS:
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   BlocksKit: 8639b2848dd51c35c957af4d9fbdc7a769a1fc12
   Bolts: 8c1e8aab2f603387b8b9924f57d1d64f43d3ffdc
-  CustomIOSAlertView: 94d2401e34fcfb0ac0134679d6947f5e251b0446
   DCRoundSwitch: 86d348f35be4d6ef18dbc9331c682aab6f85e980
   Down: 19deac4611bfbc1cabdf8f9657870a44d34ac7fa
   FBAEMKit: a899515e45476027f73aef377b5cffadcd56ca3a
@@ -381,7 +374,6 @@ SPEC CHECKSUMS:
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   GTMAppAuth: 0ff230db599948a9ad7470ca667337803b3fc4dd
   GTMSessionFetcher: ffbb25ec00ebcb5201adab0a56d808f6f1902d9f
-  HexColors: 6ad3947c3447a055a3aa8efa859def096351fe5f
   ICViewPager: 74e83c8bebd572b3baebac5959875d0fb5e70000
   JDFTooltips: 439e3f1010b5e689e8438f66fce8448726e59897
   JDStatusBarNotification: a36d09ccbb047217572b074a61e7ca10dddc5f0a
@@ -408,6 +400,6 @@ SPEC CHECKSUMS:
   VTAcknowledgementsViewController: 575f5841fb47b7d9c852ccb406104ea68de07b21
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 4c14b06da21b809c4ccea4ee4a123457a3cce8aa
+PODFILE CHECKSUM: c31ebfc7f528ac33587c171940930edd33c87d8c
 
 COCOAPODS: 1.11.3
