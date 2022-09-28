@@ -10,13 +10,11 @@
 @import BlocksKit;
 @import SVPullToRefresh;
 @import PDKTStickySectionHeadersCollectionViewLayout;
-@import UIColor_HTMLColors;
 
 #import "ExploreGridViewController.h"
 #import "ExploreObservationPhoto.h"
 #import "ExploreObservation.h"
 #import "ExploreGridCell.h"
-#import "UIColor+ExploreColors.h"
 #import "RestrictedCollectionHeader.h"
 #import "ObsDetailV2ViewController.h"
 
@@ -32,7 +30,7 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.view.backgroundColor = [UIColor whiteColor];
     
     self.observationsCollectionView = ({
