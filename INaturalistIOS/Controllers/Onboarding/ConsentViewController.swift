@@ -12,27 +12,18 @@ import UIKit
 class ConsentViewController: UIViewController {
     @objc public var user: ExploreUserRealm?
 
-    private var piConsentView: ConsentView?
-    private var dtConsentView: ConsentView?
+    let learnMore = NSLocalizedString("Learn More", comment: "button to learn more about inat account policies")
+    let viewPrivacyPolicy = NSLocalizedString("View Privacy Policy", comment: "button to view privacy policy")
+    let viewTermsOfUse = NSLocalizedString("View Terms of Use", comment: "button to view terms of use")
 
-    private let peopleApi = PeopleAPI()
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        self.navigationItem.title = NSLocalizedString("Privacy", comment: "title for consent screen")
-
-        let learnMore = NSLocalizedString("Learn More", comment: "button to learn more about inat account policies")
-        let viewPrivacyPolicy = NSLocalizedString("View Privacy Policy", comment: "button to view privacy policy")
-        let viewTermsOfUse = NSLocalizedString("View Terms of Use", comment: "button to view terms of use")
-
+    private var piConsentView: ConsentView {
         let piConsentLabelText = NSLocalizedString(
             // swiftlint:disable:next line_length
             "I consent to allow iNaturalist to store and process limited kinds of personal information about me in order to manage my account.",
             comment: "personal info consent checkbox label"
         )
 
-        self.piConsentView = ConsentView(
+        return ConsentView(
             labelText: piConsentLabelText,
             learnMoreText: learnMore,
             userConsent: user?.piConsent ?? false
@@ -48,12 +39,12 @@ class ConsentViewController: UIViewController {
             )
 
             let alert = UIAlertController(title: alertTitle, message: piMessage, preferredStyle: .actionSheet)
-            alert.addAction(UIAlertAction(title: viewPrivacyPolicy, style: .default, handler: { _ in
+            alert.addAction(UIAlertAction(title: self.viewPrivacyPolicy, style: .default, handler: { _ in
                 if let privacyUrl = URL(string: "https://www.inaturalist.org/pages/privacy") {
                     UIApplication.shared.open(privacyUrl, options: [:], completionHandler: nil)
                 }
             }))
-            alert.addAction(UIAlertAction(title: viewTermsOfUse, style: .default, handler: { _ in
+            alert.addAction(UIAlertAction(title: self.viewTermsOfUse, style: .default, handler: { _ in
                 if let privacyUrl = URL(string: "https://www.inaturalist.org/pages/terms") {
                     UIApplication.shared.open(privacyUrl, options: [:], completionHandler: nil)
                 }
@@ -62,12 +53,13 @@ class ConsentViewController: UIViewController {
 
             self.present(alert, animated: true)
         }
-
+    }
+    private var dtConsentView: ConsentView {
         let dtConsentLabelText = NSLocalizedString(
             "I consent to allow my personal information to be transferred to the United States of America.",
             comment: "data transfer consent checkbox label"
         )
-        self.dtConsentView = ConsentView(
+        return ConsentView(
             labelText: dtConsentLabelText,
             learnMoreText: learnMore,
             userConsent: user?.dataTransferConsent ?? false
@@ -83,12 +75,12 @@ class ConsentViewController: UIViewController {
             )
 
             let alert = UIAlertController(title: alertTitle, message: dtMessage, preferredStyle: .actionSheet)
-            alert.addAction(UIAlertAction(title: viewPrivacyPolicy, style: .default, handler: { _ in
+            alert.addAction(UIAlertAction(title: self.viewPrivacyPolicy, style: .default, handler: { _ in
                 if let privacyUrl = URL(string: "https://www.inaturalist.org/pages/privacy") {
                     UIApplication.shared.open(privacyUrl, options: [:], completionHandler: nil)
                 }
             }))
-            alert.addAction(UIAlertAction(title: viewTermsOfUse, style: .default, handler: { _ in
+            alert.addAction(UIAlertAction(title: self.viewTermsOfUse, style: .default, handler: { _ in
                 if let privacyUrl = URL(string: "https://www.inaturalist.org/pages/terms") {
                     UIApplication.shared.open(privacyUrl, options: [:], completionHandler: nil)
                 }
@@ -97,13 +89,21 @@ class ConsentViewController: UIViewController {
 
             self.present(alert, animated: true)
         }
+    }
+
+    private let peopleApi = PeopleAPI()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        self.navigationItem.title = NSLocalizedString("Privacy", comment: "title for consent screen")
 
         let doneButton = UIButton()
         doneButton.setTitle(NSLocalizedString("Done", comment: "title for done button"), for: .normal)
         doneButton.setTitleColor(.systemBlue, for: .normal)
         doneButton.addTarget(self, action: #selector(done), for: .touchUpInside)
 
-        let stack = UIStackView(arrangedSubviews: [self.piConsentView!, self.dtConsentView!, doneButton])
+        let stack = UIStackView(arrangedSubviews: [self.piConsentView, self.dtConsentView, doneButton])
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.spacing = 40
@@ -119,9 +119,7 @@ class ConsentViewController: UIViewController {
     }
 
     @objc func done(_ button: UIButton) {
-        guard let piConsentView = piConsentView,
-              let dtConsentView = dtConsentView,
-              let user = user else {
+        guard let user = user else {
             // i guess dismiss and return?
             self.dismiss(animated: true)
             return
