@@ -227,6 +227,8 @@
     appearance.backgroundColor = [UIColor whiteColor];
     self.navigationController.navigationBar.standardAppearance = appearance;
     self.navigationController.navigationBar.scrollEdgeAppearance = appearance;
+
+    [self startLookingForCurrentLocationNotify:NO];
 }
 
 - (void)presentSignupPrompt:(NSString *)reason {
