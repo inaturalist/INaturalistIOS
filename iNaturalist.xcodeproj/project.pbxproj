@@ -321,6 +321,7 @@
 		FAF73BE11E1B1FF2002456AF /* Gollum.json in Resources */ = {isa = PBXBuildFile; fileRef = FAF73BE01E1B1FF2002456AF /* Gollum.json */; };
 		FAF73BE41E1B2472002456AF /* PartnerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF73BE31E1B2472002456AF /* PartnerTests.m */; };
 		FAF7CE561A896CCF00A412CF /* TutorialSinglePageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */; };
+		FAFA2BFC28E3C3B500BD2A09 /* RecorderLevelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAFA2BFB28E3C3B500BD2A09 /* RecorderLevelView.swift */; };
 		FAFA9C9A23C40A40002E22FD /* ExploreProjectRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFA9C9923C40A40002E22FD /* ExploreProjectRealm.m */; };
 		FAFAF7021BA0D64700CCADC2 /* SubtitleDisclosureCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFAF7011BA0D64700CCADC2 /* SubtitleDisclosureCell.m */; };
 		FAFED1F31DB595C10015CCBA /* ExploreUpdate.m in Sources */ = {isa = PBXBuildFile; fileRef = FAFED1F21DB595C10015CCBA /* ExploreUpdate.m */; };
@@ -1183,6 +1184,7 @@
 		FAF73BE31E1B2472002456AF /* PartnerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PartnerTests.m; sourceTree = "<group>"; };
 		FAF7CE541A896CCF00A412CF /* TutorialSinglePageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TutorialSinglePageViewController.h; sourceTree = "<group>"; };
 		FAF7CE551A896CCF00A412CF /* TutorialSinglePageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TutorialSinglePageViewController.m; sourceTree = "<group>"; };
+		FAFA2BFB28E3C3B500BD2A09 /* RecorderLevelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecorderLevelView.swift; sourceTree = "<group>"; };
 		FAFA9C9823C40A40002E22FD /* ExploreProjectRealm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreProjectRealm.h; sourceTree = "<group>"; };
 		FAFA9C9923C40A40002E22FD /* ExploreProjectRealm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreProjectRealm.m; sourceTree = "<group>"; };
 		FAFA9C9B23C412EA002E22FD /* ProjectVisualization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProjectVisualization.h; sourceTree = "<group>"; };
@@ -2837,6 +2839,7 @@
 				FA4E72F119FACEF000A9AB5D /* ExploreSearchPredicate.m in Sources */,
 				FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */,
 				1997411115194E89006FBEA0 /* UploadManager.m in Sources */,
+				FAFA2BFC28E3C3B500BD2A09 /* RecorderLevelView.swift in Sources */,
 				FA427EEF1ECD087F003B26C3 /* ExploreTaxonPhoto.m in Sources */,
 				FAEF23541C7D2DC300208F44 /* ObserverCount.m in Sources */,
 				FA7591DA20F442930062DE7F /* SettingsVersionCell.m in Sources */,
