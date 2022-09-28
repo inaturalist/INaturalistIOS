@@ -263,11 +263,7 @@ static const int ListControlIndexNearby = 1;
     self.searchController.searchBar.placeholder = NSLocalizedString(@"Search for guide named...",
                                                                     @"placeholder for guide search field");
     self.searchController.searchResultsUpdater = self;
-    if (@available(iOS 11.0, *)) {
-        self.navigationItem.searchController = self.searchController;
-    } else {
-        self.tableView.tableHeaderView = self.searchController.searchBar;
-    }
+    self.navigationItem.searchController = self.searchController;
     self.definesPresentationContext = YES;
     
     if (!self.locationManager) {

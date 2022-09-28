@@ -291,11 +291,7 @@ static const int ListControlIndexNearby = 2;
     self.searchController.searchBar.placeholder = NSLocalizedString(@"Search for project named...",
                                                                     @"placeholder for project search field");
     self.searchController.searchResultsUpdater = self;
-    if (@available(iOS 11.0, *)) {
-        self.navigationItem.searchController = self.searchController;
-    } else {
-        self.tableView.tableHeaderView = self.searchController.searchBar;
-    }
+    self.navigationItem.searchController = self.searchController;
     self.definesPresentationContext = YES;
 
     

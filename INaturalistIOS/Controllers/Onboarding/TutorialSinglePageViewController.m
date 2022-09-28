@@ -8,7 +8,6 @@
 
 #import "TutorialSinglePageViewController.h"
 #import "UIColor+ExploreColors.h"
-#import "UIViewController+INaturalist.h"
 
 @interface TutorialLabel : UILabel
 @property UIEdgeInsets textInsets;
@@ -141,32 +140,29 @@
         button;
     });
     [self.view addSubview:neverAgainButton];
-    
-    // autolayout
-    UILayoutGuide *safeGuide = [self inat_safeLayoutGuide];
-    
+        
     // horizontal
-    [titleLabel.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
-    [titleLabel.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
-    [tutorialImageView.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
-    [tutorialImageView.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
-    [subtitleOneLabel.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
-    [subtitleOneLabel.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
-    [subtitleTwoLabel.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
-    [subtitleTwoLabel.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
-    [okButton.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
-    [okButton.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
-    [neverAgainButton.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
-    [neverAgainButton.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
+    [titleLabel.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor].active = YES;
+    [titleLabel.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor].active = YES;
+    [tutorialImageView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor].active = YES;
+    [tutorialImageView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor].active = YES;
+    [subtitleOneLabel.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor].active = YES;
+    [subtitleOneLabel.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor].active = YES;
+    [subtitleTwoLabel.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor].active = YES;
+    [subtitleTwoLabel.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor].active = YES;
+    [okButton.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor].active = YES;
+    [okButton.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor].active = YES;
+    [neverAgainButton.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor].active = YES;
+    [neverAgainButton.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor].active = YES;
     
     // vertical
-    [titleLabel.topAnchor constraintEqualToAnchor:safeGuide.topAnchor constant:22.0f].active = YES;
+    [titleLabel.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor constant:22.0f].active = YES;
     [titleLabel.bottomAnchor constraintEqualToAnchor:subtitleOneLabel.topAnchor].active = YES;
     [subtitleOneLabel.bottomAnchor constraintEqualToAnchor:tutorialImageView.topAnchor].active = YES;
     [tutorialImageView.bottomAnchor constraintEqualToAnchor:subtitleTwoLabel.topAnchor].active = YES;
     [subtitleTwoLabel.bottomAnchor constraintEqualToAnchor:okButton.topAnchor].active = YES;
     [okButton.bottomAnchor constraintEqualToAnchor:neverAgainButton.topAnchor].active = YES;
-    [neverAgainButton.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
+    [neverAgainButton.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor].active = YES;
     
     [titleLabel.heightAnchor constraintEqualToConstant:88.0f].active = YES;
     [subtitleTwoLabel.heightAnchor constraintEqualToAnchor:subtitleOneLabel.heightAnchor].active = YES;

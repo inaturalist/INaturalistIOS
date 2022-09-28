@@ -1,11 +1,10 @@
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, :deployment_target => '12.0'
+platform :ios, :deployment_target => '14.0'
 
 inhibit_all_warnings!
 use_frameworks!
 
 target :iNaturalist do
-  pod 'Gallery'
   pod 'Firebase/Analytics'
   pod 'Firebase/Crashlytics'
   pod 'JWT', '2.2.0'
@@ -57,7 +56,7 @@ post_install do |installer|
     end
   
     target.build_configurations.each do |config|
-        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
     end 
   end
 end

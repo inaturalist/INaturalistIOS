@@ -127,7 +127,6 @@ PODS:
     - FontAwesomeKit/Core
   - FontAwesomeKit/Zocial (2.2.1):
     - FontAwesomeKit/Core
-  - Gallery (2.2.2)
   - GeoJSONSerialization (0.0.4)
   - GoogleAppMeasurement (9.2.0):
     - GoogleAppMeasurement/AdIdSupport (= 9.2.0)
@@ -235,7 +234,6 @@ DEPENDENCIES:
   - Firebase/Analytics
   - Firebase/Crashlytics
   - FontAwesomeKit (= 2.2.1)
-  - Gallery
   - GeoJSONSerialization (= 0.0.4)
   - GoogleSignIn (= 6.2.4)
   - ICViewPager (from `https://github.com/alexshepard/ICViewPager.git`, commit `4c45423b6a36fb38753af86a1050b6a3a1d548b8`)
@@ -282,7 +280,6 @@ SPEC REPOS:
     - FirebaseCrashlytics
     - FirebaseInstallations
     - FontAwesomeKit
-    - Gallery
     - GeoJSONSerialization
     - GoogleAppMeasurement
     - GoogleDataTransport
@@ -366,7 +363,6 @@ SPEC CHECKSUMS:
   FirebaseCrashlytics: 9fff819edb2bfc9d3eff612225b207d41945a935
   FirebaseInstallations: 21186f0ca7849f90f4a3219fa31a5eca2e30f113
   FontAwesomeKit: 3614979b3dbb0ec3f7fac1bd760b91f66c31db67
-  Gallery: 634ea7d58b93fcb8e787a846febac73ec354e7d9
   GeoJSONSerialization: 55a3d24fe9af26508e3af76873114b39b13ba479
   GoogleAppMeasurement: 7a33224321f975d58c166657260526775d9c6b1a
   GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
@@ -400,6 +396,6 @@ SPEC CHECKSUMS:
   VTAcknowledgementsViewController: 575f5841fb47b7d9c852ccb406104ea68de07b21
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 964630988b8eab2621bfa763daa22f661780228a
+PODFILE CHECKSUM: 42b98a87f8d819dc54df9c86593f1f75af65e6fc
 
 COCOAPODS: 1.11.3

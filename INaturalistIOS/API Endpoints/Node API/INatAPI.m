@@ -10,7 +10,6 @@
 
 #import "ExploreObservation.h"
 #import "INatAPI.h"
-#import "NSLocale+INaturalist.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
 

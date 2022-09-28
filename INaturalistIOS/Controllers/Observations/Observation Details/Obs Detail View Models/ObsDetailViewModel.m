@@ -36,7 +36,6 @@
 #import "UIColor+ExploreColors.h"
 #import "INatPhoto.h"
 #import "UIImage+INaturalist.h"
-#import "NSLocale+INaturalist.h"
 #import "ExploreUserRealm.h"
 #import "MediaPageControlCell.h"
 #import "INatSound.h"
@@ -155,7 +154,7 @@
                 cell.iv.image = localImage;
             } else {
                 cell.spinner.hidden = NO;
-                cell.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleGray;
+                cell.spinner.activityIndicatorViewStyle = UIActivityIndicatorViewStyleMedium;
                 [cell.spinner startAnimating];
                 
                 __weak typeof(cell.spinner)weakSpinner = cell.spinner;

@@ -13,7 +13,6 @@
 #import "IdentifierCount.h"
 #import "SpeciesCount.h"
 #import "Analytics.h"
-#import "NSLocale+INaturalist.h"
 #import "ExploreProject.h"
 
 @implementation ProjectsAPI

@@ -150,9 +150,9 @@
     return _locationManager;
 }
 
-- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+- (void)locationManagerDidChangeAuthorization:(CLLocationManager *)manager {
     // this location manager requests authorization changes to set user tracking mode
-    switch ([CLLocationManager authorizationStatus]) {
+    switch (manager.authorizationStatus) {
         case kCLAuthorizationStatusAuthorizedAlways:
         case kCLAuthorizationStatusAuthorizedWhenInUse:
             [self.mapView setUserTrackingMode:MKUserTrackingModeFollow];
@@ -267,7 +267,8 @@
     if (self.mapView.userTrackingMode == MKUserTrackingModeFollow) {
         [self.mapView setUserTrackingMode:MKUserTrackingModeNone];
     } else {
-        switch ([CLLocationManager authorizationStatus]) {
+
+        switch (self.locationManager.authorizationStatus) {
             case kCLAuthorizationStatusAuthorizedAlways:
             case kCLAuthorizationStatusAuthorizedWhenInUse:
                 [self.mapView setUserTrackingMode:MKUserTrackingModeFollow];

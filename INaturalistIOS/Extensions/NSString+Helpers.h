@@ -9,9 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @interface NSString (Helpers)
-
-- (NSString *)underscore;
-- (NSString *)pluralize;
 - (NSString *)humanize;
 - (NSString *)stringByStrippingHTML;
 @end

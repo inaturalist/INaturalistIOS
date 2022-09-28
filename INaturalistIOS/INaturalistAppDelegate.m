@@ -91,9 +91,7 @@
 
     // required for facebook login
     [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
-    
-    [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
-    
+        
     // we need a login controller to handle google auth, can't do this in the background
     self.loginController = [[LoginController alloc] init];
 
@@ -153,7 +151,7 @@
     });
     
     UIActivityIndicatorView *spinner = ({
-        UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleLarge];
         
         view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
         view.center = CGPointMake(loadingVC.view.center.x, loadingVC.view.frame.size.height * .75);
@@ -495,25 +493,22 @@
 
 - (void)configureGlobalStyles {
     // set global styles
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        
-        [[UITabBar appearance] setBarStyle:UIBarStyleDefault];
-        
-        [[UITabBar appearance] setTintColor:[UIColor inatTint]];
-        
-        // tints for UITabBarItem images are set on the images in the VCs, via [UIImage -imageWithRenderingMode:]
-        [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor inatTint] }
-                                                             forState:UIControlStateSelected];
-        [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor inatInactiveGreyTint] }
-                                                             forState:UIControlStateNormal];
-        
-        [[UINavigationBar appearance] setBarStyle:UIBarStyleDefault];
-        [[UINavigationBar appearance] setTintColor:[UIColor inatTint]];
-        [[UISearchBar appearance] setBarStyle:UIBarStyleDefault];
-        [[UIBarButtonItem appearance] setTintColor:[UIColor inatTint]];
-        [[UISegmentedControl appearance] setTintColor:[UIColor inatTint]];
-    }
-        
+    [[UITabBar appearance] setBarStyle:UIBarStyleDefault];
+    
+    [[UITabBar appearance] setTintColor:[UIColor inatTint]];
+    
+    // tints for UITabBarItem images are set on the images in the VCs, via [UIImage -imageWithRenderingMode:]
+    [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor inatTint] }
+                                             forState:UIControlStateSelected];
+    [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor inatInactiveGreyTint] }
+                                             forState:UIControlStateNormal];
+    
+    [[UINavigationBar appearance] setBarStyle:UIBarStyleDefault];
+    [[UINavigationBar appearance] setTintColor:[UIColor inatTint]];
+    [[UISearchBar appearance] setBarStyle:UIBarStyleDefault];
+    [[UIBarButtonItem appearance] setTintColor:[UIColor inatTint]];
+    [[UISegmentedControl appearance] setTintColor:[UIColor inatTint]];
+
     [JDStatusBarNotification setDefaultStyle:^JDStatusBarStyle *(JDStatusBarStyle *style) {
         style.barColor = [UIColor colorWithHexString:@"#969696"];
         style.textColor = [UIColor whiteColor];

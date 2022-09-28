@@ -7,13 +7,11 @@
 //
 
 #import "ExploreSearchController.h"
-#import "NSLocale+INaturalist.h"
 #import "ExploreTaxon.h"
 #import "ExploreProject.h"
 #import "ExploreUser.h"
 #import "ExploreLocation.h"
 #import "INatAPI.h"
-#import "NSLocale+INaturalist.h"
 
 @interface ExploreSearchController ()
 @property (readonly) INatAPI *api;

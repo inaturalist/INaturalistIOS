@@ -15,7 +15,6 @@
 #import "ExploreUser.h"
 #import "ExploreTaxon.h"
 #import "NSURL+INaturalist.h"
-#import "NSLocale+INaturalist.h"
 #import "Analytics.h"
 #import "INatAPI.h"
 #import "ObserverCount.h"

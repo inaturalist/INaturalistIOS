@@ -135,7 +135,6 @@ extension OnboardingReauthenticateViewController: INatAuthenticationDelegate {
 }
 
 extension OnboardingReauthenticateViewController: ASAuthorizationControllerPresentationContextProviding {
-    @available(iOS 13.0, *)
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return self.view.window!
     }

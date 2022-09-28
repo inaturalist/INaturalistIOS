@@ -11,7 +11,6 @@
 #import "TaxaAPI.h"
 #import "ExploreTaxon.h"
 #import "Analytics.h"
-#import "NSLocale+INaturalist.h"
 #import "ImageStore.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"

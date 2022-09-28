@@ -54,7 +54,7 @@ static NSString *LeaderboardCellReuseID = @"LeaderboardCell";
     });
     [self.view addSubview:self.leaderboardTableView];
     
-    self.loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
     self.loadingSpinner.hidden = YES;
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.loadingSpinner];
     

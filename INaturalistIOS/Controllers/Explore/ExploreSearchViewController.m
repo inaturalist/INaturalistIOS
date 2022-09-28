@@ -92,9 +92,8 @@
                                                                action:@selector(leaderboardPressed)];
         self.navigationItem.rightBarButtonItem = self.leaderboardItem;
         
-        self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        self.spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
         self.spinnerItem = [[UIBarButtonItem alloc] initWithCustomView:self.spinner];
-        
         
         self.observationsController = [[ExploreObservationsController alloc] init];
         self.observationsController.notificationDelegate = self;
@@ -233,30 +232,11 @@
     ]];
     
     // ios 15 nav bar appearance
-    if (@available(iOS 13.0, *)) {
-        UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
-        [appearance configureWithOpaqueBackground];
-        appearance.backgroundColor = [UIColor whiteColor];
-        self.navigationController.navigationBar.standardAppearance = appearance;
-        self.navigationController.navigationBar.scrollEdgeAppearance = appearance;
-    }
-}
-
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    
-    switch ([CLLocationManager authorizationStatus]) {
-        case kCLAuthorizationStatusRestricted:
-        case kCLAuthorizationStatusDenied:
-            // do nothing
-            break;
-        case kCLAuthorizationStatusAuthorizedAlways:
-        case kCLAuthorizationStatusAuthorizedWhenInUse:
-        case kCLAuthorizationStatusNotDetermined:
-        default:
-            [self startLookingForCurrentLocationNotify:NO];
-            break;
-    }
+    UINavigationBarAppearance *appearance = [[UINavigationBarAppearance alloc] init];
+    [appearance configureWithOpaqueBackground];
+    appearance.backgroundColor = [UIColor whiteColor];
+    self.navigationController.navigationBar.standardAppearance = appearance;
+    self.navigationController.navigationBar.scrollEdgeAppearance = appearance;
 }
 
 - (void)presentSignupPrompt:(NSString *)reason {
@@ -369,7 +349,7 @@
     [self hideActiveSearch];
     
     // get observations near current location
-    switch ([CLLocationManager authorizationStatus]) {
+    switch (self.locationManager.authorizationStatus) {
         case kCLAuthorizationStatusNotDetermined:
             [self startLookingForCurrentLocationNotify:YES];
             break;
@@ -743,11 +723,11 @@
     }
 }
 
--(void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
+- (void)locationManagerDidChangeAuthorization:(CLLocationManager *)manager {
     if (self.hasFulfilledLocationFetch)
         return;
     
-    switch ([CLLocationManager authorizationStatus]) {
+    switch (manager.authorizationStatus) {
         case kCLAuthorizationStatusNotDetermined:
             return;
             break;
@@ -784,11 +764,8 @@
     
     self.isFetchingLocation = YES;
     self.locationManager = [[CLLocationManager alloc] init];
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
-        // request will start over
-        [self.locationManager requestWhenInUseAuthorization];
-    }
-    
+    [self.locationManager requestWhenInUseAuthorization];
+
     self.locationManager.delegate = self;
     self.locationManager.distanceFilter = 1000;
     [self.locationManager stopUpdatingLocation];

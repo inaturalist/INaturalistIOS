@@ -39,7 +39,6 @@
 #import "ObsDetailTaxonCell.h"
 #import "ExploreUpdateRealm.h"
 #import "INatReachability.h"
-#import "UIViewController+INaturalist.h"
 #import "CLPlacemark+INat.h"
 #import "ExploreObservationRealm.h"
 #import "ExploreDeletedRecord.h"
@@ -54,7 +53,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ConfirmObsSectionDelete,
 };
 
-@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, MediaScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, TaxaSearchViewControllerDelegate, CLLocationManagerDelegate, GalleryWrapperDelegate, MediaPickerDelegate, PHPickerViewControllerDelegate, SoundRecorderDelegate, ProjectObservationsViewControllerDelegate> {
+@interface ObsEditV2ViewController () <UITableViewDataSource, UITableViewDelegate, UITextViewDelegate, EditLocationViewControllerDelegate, MediaScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, TaxaSearchViewControllerDelegate, CLLocationManagerDelegate, MediaPickerDelegate, PHPickerViewControllerDelegate, SoundRecorderDelegate, ProjectObservationsViewControllerDelegate> {
     
     CLLocationManager *_locationManager;
 }
@@ -64,7 +63,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 @property UITapGestureRecognizer *tapDismissTextViewGesture;
 @property CLGeocoder *geoCoder;
 @property NSMutableArray *recordsToDelete;
-@property GalleryWrapper *galleryWrapper;
 @property (nonatomic, strong) SlideInPresentationManager *slideInPresentationManager;
 
 @end
@@ -83,21 +81,13 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
             [self presentViewController:picker animated:YES completion:nil];
         }];
     } else if (idx == 1) {
-        // dismiss the media picker, present the gallery
-        [self dismissViewControllerAnimated:YES completion:^{
-            if (@available(iOS 14.0, *)) {
-                PHPickerConfiguration *config = [[PHPickerConfiguration alloc] init];
-                config.selectionLimit = 4;
-                config.filter = PHPickerFilter.imagesFilter;
-                
-                PHPickerViewController *picker = [[PHPickerViewController alloc] initWithConfiguration:config];
-                picker.delegate = self;
-                [self presentViewController:picker animated:YES completion:nil];
-            } else {
-                UIViewController *gallery = self.galleryWrapper.gallery;
-                [self presentViewController:gallery animated:YES completion:nil];
-            }
-        }];
+        PHPickerConfiguration *config = [[PHPickerConfiguration alloc] init];
+        config.selectionLimit = 4;
+        config.filter = PHPickerFilter.imagesFilter;
+        
+        PHPickerViewController *picker = [[PHPickerViewController alloc] initWithConfiguration:config];
+        picker.delegate = self;
+        [self presentViewController:picker animated:YES completion:nil];
     } else if (idx == 2) {
         // dismiss the media picker, present the sound recorder
         [self dismissViewControllerAnimated:YES completion:^{
@@ -199,26 +189,24 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
                                                                                                action:@selector(saved:)];
     }
     
-    // autolayout
-    UILayoutGuide *safeGuide = [self inat_safeLayoutGuide];
     // horizontal
-    [self.tableView.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
-    [self.tableView.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
+    [self.tableView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor].active = YES;
+    [self.tableView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor].active = YES;
     
     if (self.isMakingNewObservation) {
         // horizontal
-        [self.saveButton.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
-        [self.saveButton.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
+        [self.saveButton.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor].active = YES;
+        [self.saveButton.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor].active = YES;
         
         // vertical
-        [self.tableView.topAnchor constraintEqualToAnchor:safeGuide.topAnchor].active = YES;
+        [self.tableView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = YES;
         [self.tableView.bottomAnchor constraintEqualToAnchor:self.saveButton.topAnchor].active = YES;
-        [self.saveButton.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
+        [self.saveButton.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor].active = YES;
         [self.saveButton.heightAnchor constraintEqualToConstant:47.0f].active = YES;
     } else {
         // vertical
-        [self.tableView.topAnchor constraintEqualToAnchor:safeGuide.topAnchor].active = YES;
-        [self.tableView.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
+        [self.tableView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = YES;
+        [self.tableView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor].active = YES;
     }
     
     if (!self.standaloneObservation && self.persistedObservation) {
@@ -228,8 +216,6 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     }
     
     self.recordsToDelete = [NSMutableArray array];
-    self.galleryWrapper = [[GalleryWrapper alloc] init];
-    self.galleryWrapper.wrapperDelegate = self;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -244,10 +230,8 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [super viewDidAppear:animated];
     
     if (self.shouldContinueUpdatingLocation) {
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
-            [self.locationManager requestWhenInUseAuthorization];
-        }
-        
+        [self.locationManager requestWhenInUseAuthorization];
+
         [self startUpdatingLocation];
     }
 }
@@ -702,73 +686,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-#pragma mark - GalleryWrapperDelegate methods
-
-- (void)galleryDidSelect:(NSArray<UIImage *> *)images {
-    NSInteger idx = 0;
-    ExploreObservationPhotoRealm *lastOp = [[self.standaloneObservation sortedObservationPhotos] lastObject];
-    if (lastOp) {
-        idx = lastOp.position + 1;
-    }
-    for (UIImage *image in images) {
-        ExploreObservationPhotoRealm *op = [ExploreObservationPhotoRealm new];
-        op.position = idx;
-        op.uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
-        [op setPhotoKey:[ImageStore.sharedImageStore createKey]];
-        
-        NSError *saveError = nil;
-        BOOL saved = [[ImageStore sharedImageStore] storeImage:image
-                                                        forKey:op.photoKey
-                                                         error:&saveError];
-        
-        NSString *saveErrorTitle = NSLocalizedString(@"Photo Save Error", @"Title for photo save error alert msg");
-        if (saveError) {
-            [self dismissViewControllerAnimated:YES completion:^{
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
-                                                                               message:saveError.localizedDescription
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                          style:UIAlertActionStyleDefault
-                                                        handler:nil]];
-                [self presentViewController:alert animated:YES completion:nil];
-            }];
-            return;
-        } else if (!saved) {
-            [self dismissViewControllerAnimated:YES completion:^{
-                NSString *unknownErrMsg = NSLocalizedString(@"Unknown error", @"Message body when we don't know the error");
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:saveErrorTitle
-                                                                               message:unknownErrMsg
-                                                                        preferredStyle:UIAlertControllerStyleAlert];
-                [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK", nil)
-                                                          style:UIAlertActionStyleDefault
-                                                        handler:nil]];
-                [self presentViewController:alert animated:YES completion:nil];
-            }];
-            return;
-        }
-        
-        op.timeCreated = [NSDate date];
-        op.timeUpdatedLocally = [NSDate date];
-        
-        [self.standaloneObservation.observationPhotos addObject:op];
-        
-        idx++;
-    }
-    
-    [self.tableView reloadData];
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)galleryDidCancel {
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-
 #pragma mark - CLLocationManagerDelegate
 
-- (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
-    
-    switch (status) {
+- (void)locationManagerDidChangeAuthorization:(CLLocationManager *)manager {
+    switch (manager.authorizationStatus) {
         case kCLAuthorizationStatusAuthorizedAlways:
         case kCLAuthorizationStatusAuthorizedWhenInUse:
             if (self.shouldContinueUpdatingLocation) {

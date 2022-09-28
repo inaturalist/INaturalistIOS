@@ -346,6 +346,4 @@ extension SoundRecordViewController: AVAudioRecorderDelegate {
     func audioRecorderEncodeErrorDidOccur(_ recorder: AVAudioRecorder, error: Error?) {
         finishRecording(success: false, error: error)
     }
-
 }
-

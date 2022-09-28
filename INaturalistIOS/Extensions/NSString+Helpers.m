@@ -40,35 +40,12 @@
     return builder;
 }
 
-+ (NSArray *)uncountableWords {
-	static NSArray *_uncountableWords = nil;
-    
-	if (_uncountableWords == nil)
-		_uncountableWords = [NSArray arrayWithObjects:
-                             @"equipment",@"information",@"rice",@"money",@"species",@"series",
-                             @"fish",@"sheep",@"jeans",@"moose",@"deer",nil];
-    
-	return _uncountableWords;
-}
-
-// obviously this is dumb.  Consider forking https://github.com/adamelliot/Inflections 
-// and replacing RegexKitLite with NSRegularExpression
-- (NSString *)pluralize
-{
-    if ([self.lowercaseString isEqualToString:@"taxon"] || [self.lowercaseString isEqualToString:@"listed_taxon"]) {
-        return [self stringByReplacingOccurrencesOfString:@"axon" withString:@"axa"];
-    } else {
-        return [self stringByAppendingString:@"s"];
-    }
-}
-
-- (NSString *)humanize
-{
+- (NSString *)humanize {
     return [self.underscore stringByReplacingOccurrencesOfString:@"_" withString:@" "];
 }
 
 // http://stackoverflow.com/a/4886998/720268
--(NSString *) stringByStrippingHTML {
+- (NSString *)stringByStrippingHTML {
     NSRange r;
     NSString *s = [self copy];
     while ((r = [s rangeOfString:@"<[^>]+>" options:NSRegularExpressionSearch]).location != NSNotFound)

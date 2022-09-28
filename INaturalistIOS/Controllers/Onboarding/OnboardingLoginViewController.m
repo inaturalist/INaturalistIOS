@@ -324,23 +324,21 @@
     }
     
     
-    if (@available(iOS 13.0, *)) {
-        // make some room for the apple button
-        [self.googleButton setStyle:kGIDSignInButtonStyleIconOnly];
-        
-        // add the apple button
-        self.signinWithAppleButton = [[ASAuthorizationAppleIDButton alloc] init];
-        [self.signinWithAppleButton addTarget:self
-                                  action:@selector(handleAuthorizationAppleIDButtonPress)
-                        forControlEvents:UIControlEventTouchUpInside];
-        [self.externalLoginStackView insertArrangedSubview:self.signinWithAppleButton atIndex:0];
-        
-        // setup the height anchors, even though facebook for some bizarre reason
-        [self.signinWithAppleButton.heightAnchor constraintEqualToConstant:44].active = YES;
-        [self.googleButton.heightAnchor constraintEqualToConstant:44].active = YES;
-        [self.facebookButton.heightAnchor constraintEqualToConstant:44].active = YES;
-    }
-    
+    // make some room for the apple button
+    [self.googleButton setStyle:kGIDSignInButtonStyleIconOnly];
+
+    // add the apple button
+    self.signinWithAppleButton = [[ASAuthorizationAppleIDButton alloc] init];
+    [self.signinWithAppleButton addTarget:self
+                                   action:@selector(handleAuthorizationAppleIDButtonPress)
+                         forControlEvents:UIControlEventTouchUpInside];
+    [self.externalLoginStackView insertArrangedSubview:self.signinWithAppleButton atIndex:0];
+
+    // setup the height anchors, even though facebook for some bizarre reason
+    [self.signinWithAppleButton.heightAnchor constraintEqualToConstant:44].active = YES;
+    [self.googleButton.heightAnchor constraintEqualToConstant:44].active = YES;
+    [self.facebookButton.heightAnchor constraintEqualToConstant:44].active = YES;
+
     self.signupUsernameField.placeholder = NSLocalizedString(@"Username", @"The desired username during signup.");
     self.loginUsernameField.placeholder = NSLocalizedString(@"Username or email", @"users can login with their username or their email address.");
     self.loginPasswordField.rightViewMode = UITextFieldViewModeUnlessEditing;
@@ -563,18 +561,16 @@
 }
 
 - (void)handleAuthorizationAppleIDButtonPress {
-    if (@available(iOS 13.0, *)) {
-        ASAuthorizationAppleIDProvider *provider = [[ASAuthorizationAppleIDProvider alloc] init];
-        ASAuthorizationAppleIDRequest *request = [provider createRequest];
-        request.requestedScopes = @[ASAuthorizationScopeEmail, ASAuthorizationScopeFullName];
-        
-        ASAuthorizationController *authController = [[ASAuthorizationController alloc] initWithAuthorizationRequests:@[ request ]];
-        
-        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
-        authController.delegate = appDelegate.loginController;
-        authController.presentationContextProvider = self;
-        [authController performRequests];
-    }
+    ASAuthorizationAppleIDProvider *provider = [[ASAuthorizationAppleIDProvider alloc] init];
+    ASAuthorizationAppleIDRequest *request = [provider createRequest];
+    request.requestedScopes = @[ASAuthorizationScopeEmail, ASAuthorizationScopeFullName];
+    
+    ASAuthorizationController *authController = [[ASAuthorizationController alloc] initWithAuthorizationRequests:@[ request ]];
+    
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
+    authController.delegate = appDelegate.loginController;
+    authController.presentationContextProvider = self;
+    [authController performRequests];
 }
 
 #pragma mark - Actions

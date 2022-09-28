@@ -65,10 +65,8 @@ static UIImage *briefcase;
     [self.refreshControl addTarget:self action:@selector(loadNewNews) forControlEvents:UIControlEventValueChanged];
     
     // Add Refresh Control to Table View
-    if (@available(iOS 10, *)) {
-        self.tableView.refreshControl = self.refreshControl;
-    }
-    
+    self.tableView.refreshControl = self.refreshControl;
+
     // hide empty cell divider lines
     self.tableView.tableFooterView = [UIView new];
     
@@ -187,11 +185,9 @@ static UIImage *briefcase;
     
     __weak typeof(self)weakSelf = self;
     INatAPIFetchCompletionCountHandler finished = ^void(NSArray *results, NSInteger count, NSError *error) {
-        if (@available(iOS 10, *)) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf.tableView.refreshControl endRefreshing];
-            });
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [weakSelf.tableView.refreshControl endRefreshing];
+        });
 
 
         // extract excerpt and post image url

@@ -236,7 +236,7 @@ static const int GutterWidth  = 5;
     UIView *oldRightView;
     if (searchField) {
         // this entire strategy seems excessive, and doesn't seem to work in iOS 7
-        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleMedium];
         CGRect f = searchField.rightView.frame;
         [spinner setFrame:CGRectMake(10, 0, f.size.height, f.size.height)];
         [spinner setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleRightMargin];
@@ -500,11 +500,11 @@ static const int GutterWidth  = 5;
     if (self.keyboardHeight > 0) {
         h = h + 22;
     }
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0.5f];
-    self.noContent.frame = CGRectMake(0, h, CGRectGetWidth(self.collectionView.frame), 44);
-    [self.noContent setHidden:(self.items.count != 0)];
-    [UIView commitAnimations];
+
+    [UIView animateWithDuration:0.5f animations:^{
+        self.noContent.frame = CGRectMake(0, h, CGRectGetWidth(self.collectionView.frame), 44);
+        [self.noContent setHidden:(self.items.count != 0)];
+    }];
 }
 @end
 
@@ -548,7 +548,6 @@ static const int GutterWidth  = 5;
 - (void) connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
     self.lastStatusCode = httpResponse.statusCode;
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
     if (self.progress) {
         self.progress.hidden = NO;
     }
@@ -565,8 +564,6 @@ static const int GutterWidth  = 5;
 }
 
 - (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    
     dispatch_async(dispatch_get_main_queue(), ^{
         [MBProgressHUD hideAllHUDsForView:self.controller.view animated:YES];
     });
@@ -591,8 +588,6 @@ static const int GutterWidth  = 5;
 }
 
 - (void) connectionDidFinishLoading:(NSURLConnection *)connection {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    
     dispatch_async(dispatch_get_main_queue(), ^{
         [MBProgressHUD hideAllHUDsForView:self.controller.view animated:YES];
     });

@@ -16,7 +16,7 @@ import WebKit
 
 class ForgotPasswordController: UIViewController {
     let webView = WKWebView()
-    let activity = UIActivityIndicatorView(style: .gray)
+    let activity = UIActivityIndicatorView(style: .medium)
     var isPostingEmailAddress = false
 
     @objc public weak var delegate: ForgotPasswordDelegate?

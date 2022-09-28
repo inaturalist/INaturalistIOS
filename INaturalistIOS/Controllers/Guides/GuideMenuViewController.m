@@ -378,7 +378,7 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 - (void) connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
     self.lastStatusCode = httpResponse.statusCode;
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+
     if (self.progress) {
         self.progress.hidden = NO;
     }
@@ -395,7 +395,6 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 }
 
 - (void) connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Failed to download guide", @"title of alert when a guide download fails. a localized error message provided by iOS or the server follows.")
                                                                    message:error.localizedDescription
                                                             preferredStyle:UIAlertControllerStyleAlert];
@@ -413,7 +412,6 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
 }
 
 - (void) connectionDidFinishLoading:(NSURLConnection *)connection {
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     NSError *error;
     if (self.progress) {
         self.progress.hidden = YES;

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Gallery
 import FontAwesomeKit
 import Photos
 import PhotosUI
@@ -41,13 +40,6 @@ class INatTabBarController: UITabBarController {
 
       // default to me tab
       self.selectedIndex = 3
-
-      // our gallery controller doesn't support video
-      Gallery.Config.tabsToShow = [.imageTab, .cameraTab]
-      Gallery.Config.initialTab = .cameraTab
-
-      Gallery.Config.Camera.recordLocation = true
-      Gallery.Config.Camera.imageLimit = 4
    }
 
    func showCamera() {
@@ -105,23 +97,12 @@ class INatTabBarController: UITabBarController {
    }
 
    func showCameraRoll() {
-      if #available(iOS 14, *) {
-         var config = PHPickerConfiguration()
-         config.filter = .images
-         config.selectionLimit = 4
-         let picker = PHPickerViewController(configuration: config)
-         picker.delegate = self
-         present(picker, animated: true, completion: nil)
-      } else {
-         let gallery = GalleryController()
-         Gallery.Config.tabsToShow = [.imageTab]
-         Gallery.Config.initialTab = .imageTab
-         gallery.delegate = self
-         let galleryNav = UINavigationController(rootViewController: gallery)
-         galleryNav.navigationBar.isHidden = true
-
-         self.present(galleryNav, animated: true, completion: nil)
-      }
+      var config = PHPickerConfiguration()
+      config.filter = .images
+      config.selectionLimit = 4
+      let picker = PHPickerViewController(configuration: config)
+      picker.delegate = self
+      present(picker, animated: true, completion: nil)
    }
 
    func showSoundRecorder() {
@@ -193,31 +174,6 @@ extension INatTabBarController: UITabBarControllerDelegate {
       }
 
       return true
-   }
-}
-
-extension INatTabBarController: GalleryControllerDelegate {
-   func galleryController(_ controller: GalleryController, didSelectImages images: [Image]) {
-      let confirm = ConfirmPhotoViewController()
-      confirm.assets = images.map { $0.asset }
-      if let taxonId = self.observingTaxonId,
-         let taxon = ExploreTaxonRealm.object(forPrimaryKey: NSNumber(value: taxonId)) {
-         confirm.taxon = taxon
-      }
-      controller.navigationController?.pushViewController(confirm, animated: true)
-   }
-
-   func galleryController(_ controller: GalleryController, didSelectVideo video: Video) {
-      controller.dismiss(animated: true, completion: nil)
-   }
-
-   func galleryController(_ controller: GalleryController, requestLightbox images: [Image]) {
-      // do nothing
-      return
-   }
-
-   func galleryControllerDidCancel(_ controller: GalleryController) {
-      controller.dismiss(animated: true, completion: nil)
    }
 }
 
@@ -372,7 +328,6 @@ extension INatTabBarController: SoundRecorderDelegate {
 extension INatTabBarController: UINavigationControllerDelegate { }
 
 extension INatTabBarController: PHPickerViewControllerDelegate {
-   @available(iOS 14, *)
    // disabling until we can refactor
    // swiftlint:disable cyclomatic_complexity
    // swiftlint:disable function_body_length

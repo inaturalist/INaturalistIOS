@@ -26,7 +26,6 @@
 #import "CLLocation+EXIFGPSDictionary.h"
 #import "UIImage+INaturalist.h"
 #import "NSData+INaturalist.h"
-#import "UIViewController+INaturalist.h"
 #import "ExploreObservationRealm.h"
 
 #define CHICLETWIDTH 100.0f
@@ -194,24 +193,23 @@
     });
     [self.view addSubview:confirm];
     
-    UILayoutGuide *safeGuide = [self inat_safeLayoutGuide];
 
     // horizontal
-    [self.multiImageView.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
-    [self.multiImageView.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
+    [self.multiImageView.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor].active = YES;
+    [self.multiImageView.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor].active = YES;
     
-    [retake.leadingAnchor constraintEqualToAnchor:safeGuide.leadingAnchor].active = YES;
+    [retake.leadingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.leadingAnchor].active = YES;
     [retake.trailingAnchor constraintEqualToAnchor:confirm.leadingAnchor].active = YES;
-    [confirm.trailingAnchor constraintEqualToAnchor:safeGuide.trailingAnchor].active = YES;
+    [confirm.trailingAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.trailingAnchor].active = YES;
     
     [retake.widthAnchor constraintEqualToAnchor:confirm.widthAnchor].active = YES;
     
     // vertical
-    [self.multiImageView.topAnchor constraintEqualToAnchor:safeGuide.topAnchor].active = YES;
+    [self.multiImageView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor].active = YES;
     [self.multiImageView.bottomAnchor constraintEqualToAnchor:confirm.topAnchor].active = YES;
     
-    [confirm.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
-    [retake.bottomAnchor constraintEqualToAnchor:safeGuide.bottomAnchor].active = YES;
+    [confirm.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor].active = YES;
+    [retake.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor].active = YES;
     
     [confirm.heightAnchor constraintEqualToConstant:48.0f].active = YES;
     [retake.heightAnchor constraintEqualToConstant:48.0f].active = YES;
