@@ -67,17 +67,7 @@
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
         
-        self.navigationController.tabBarItem.image = ({
-            FAKIcon *compassInactive = [FAKIonIcons androidCompassIconWithSize:30];
-            [compassInactive addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
-            [[compassInactive imageWithSize:CGSizeMake(30, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        });
-        
-        self.navigationController.tabBarItem.selectedImage =({
-            FAKIcon *compassInactive = [FAKIonIcons androidCompassIconWithSize:30];
-            [compassInactive addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
-            [[compassInactive imageWithSize:CGSizeMake(30, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        });
+        self.navigationController.tabBarItem.image = [UIImage systemImageNamed:@"safari.fill"];
         
         self.navigationController.tabBarItem.title = NSLocalizedString(@"Explore", nil);
         
