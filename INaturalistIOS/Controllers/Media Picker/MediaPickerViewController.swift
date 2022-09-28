@@ -207,7 +207,6 @@ extension MediaPickerViewController: UICollectionViewDelegateFlowLayout {
 
         let leftInset = (collectionView.frame.size.width - CGFloat(totalCellWidth + totalSpacingWidth)) / 2
         let rightInset = leftInset
-        print("left inset \(leftInset)")
         return UIEdgeInsets(top: 10, left: leftInset - 60, bottom: 0, right: rightInset - 60)
     }
 }
