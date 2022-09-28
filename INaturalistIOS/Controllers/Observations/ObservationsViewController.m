@@ -9,7 +9,6 @@
 @import ImageIO;
 @import FontAwesomeKit;
 @import BlocksKit;
-@import CustomIOSAlertView;
 @import JDStatusBarNotification;
 @import UIColor_HTMLColors;
 @import AFNetworking;
@@ -521,70 +520,6 @@
             [realm commitWriteTransaction];
         }];
     }
-}
-
-- (BOOL)autoLaunchNewFeatures
-{
-    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
-    NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
-    NSString *versionString = [info objectForKey:@"CFBundleShortVersionString"];
-    NSString *lastVersionString = [settings objectForKey:@"lastVersion"];
-    if ([lastVersionString isEqualToString:versionString]) {
-        return NO;
-    }
-    [[NSUserDefaults standardUserDefaults] setValue:versionString forKey:@"lastVersion"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    CustomIOSAlertView *alertView = [[CustomIOSAlertView alloc] init];
-    CGFloat screenWidth = [UIScreen mainScreen].bounds.size.width;
-    CGFloat screenHeight = [UIScreen mainScreen].bounds.size.height;
-    UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
-    if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
-        CGFloat tmp = screenWidth;
-        screenWidth = screenHeight;
-        screenHeight = tmp;
-    }
-    CGFloat widthFraction = 0.9;
-    CGFloat heightFraction = 0.6;
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        widthFraction = 0.7;
-        heightFraction = 0.4;
-    }
-    UIView *popup = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth*widthFraction, screenHeight*heightFraction)];
-    popup.backgroundColor = [UIColor clearColor];
-    
-    WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectMake(10,10, popup.bounds.size.width-20, popup.bounds.size.height-20)];
-    NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
-    NSString *changesFilePath = [[NSBundle mainBundle] pathForResource:[NSString stringWithFormat:@"changes.%@", language]
-                                                                ofType:@"html"
-                                                           inDirectory:@"www"];
-    if (!changesFilePath) {
-        // if we don't have changes files for this user's preferred language,
-        // default to english
-        changesFilePath = [[NSBundle mainBundle] pathForResource:@"changes.en"
-                                                          ofType:@"html"
-                                                     inDirectory:@"www"];
-    }
-    
-    // be defensive
-    if (changesFilePath) {
-        NSURL *url = [NSURL fileURLWithPath:changesFilePath];
-        [webView loadRequest:[NSURLRequest requestWithURL:url]];
-        [popup addSubview:webView];
-        [alertView setContainerView:popup];
-        [alertView setButtonTitles:[NSMutableArray arrayWithObjects:NSLocalizedString(@"OK",nil), nil]];
-        [alertView setOnButtonTouchUpInside:^(CustomIOSAlertView *alertView, int buttonIndex) {
-            [alertView close];
-        }];
-        [alertView setUseMotionEffects:true];
-        [alertView show];
-        [settings setObject:versionString forKey:@"lastVersion"];
-        [settings synchronize];
-        
-        return YES;
-    } else {
-        return NO;
-    }
-    
 }
 
 - (IBAction)tappedActivity:(id)sender event:(UIEvent *)event {
