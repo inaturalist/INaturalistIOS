@@ -198,7 +198,6 @@
 		FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7AAF0D1A96949D00188B83 /* ExploreLeaderboardHeader.m */; };
 		FA7BC8CB1C59D2460032E709 /* NewsItem.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7BC8CA1C59D2460032E709 /* NewsItem.m */; };
 		FA7C53511BCD9D3100A0D5AA /* ProjectObsFieldViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7C53501BCD9D3100A0D5AA /* ProjectObsFieldViewController.m */; };
-		FA7FF84A1BAB622200885034 /* UIAlertController+IOS9_Autorotate.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */; };
 		FA81DF0E1E6F73A9006E7132 /* ObsDetailViewModelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */; };
 		FA822FD428D81BC0006CA0F6 /* OnboardingReauthenticateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA822FD328D81BC0006CA0F6 /* OnboardingReauthenticateViewController.swift */; };
 		FA822FDB28D84D4C006CA0F6 /* ExploreObservationPhoto+BestAvailableURL.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */; };
@@ -844,8 +843,6 @@
 		FA7BC8CA1C59D2460032E709 /* NewsItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsItem.m; sourceTree = "<group>"; };
 		FA7C534F1BCD9D3100A0D5AA /* ProjectObsFieldViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectObsFieldViewController.h; sourceTree = "<group>"; };
 		FA7C53501BCD9D3100A0D5AA /* ProjectObsFieldViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectObsFieldViewController.m; sourceTree = "<group>"; };
-		FA7FF8481BAB622200885034 /* UIAlertController+IOS9_Autorotate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIAlertController+IOS9_Autorotate.h"; sourceTree = "<group>"; };
-		FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIAlertController+IOS9_Autorotate.m"; sourceTree = "<group>"; };
 		FA81DF0D1E6F73A9006E7132 /* ObsDetailViewModelTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailViewModelTests.m; sourceTree = "<group>"; };
 		FA822FD328D81BC0006CA0F6 /* OnboardingReauthenticateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingReauthenticateViewController.swift; sourceTree = "<group>"; };
 		FA822FDC28D84D67006CA0F6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -1571,8 +1568,6 @@
 				19D04793150FFDAE00BB5DBC /* NSString+Helpers.m */,
 				FA9BC3751B332BEC003375A2 /* NSURL+INaturalist.h */,
 				FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */,
-				FA7FF8481BAB622200885034 /* UIAlertController+IOS9_Autorotate.h */,
-				FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */,
 				FA4E72CE19FACE0000A9AB5D /* UIColor+ExploreColors.h */,
 				FA4E72CF19FACE0000A9AB5D /* UIColor+ExploreColors.m */,
 				196E4E1D18D23C21009CE429 /* UIColor+INaturalist.h */,
@@ -2960,7 +2955,6 @@
 				197FD41C17FE13CE0099BDE6 /* GuideTaxonXML.m in Sources */,
 				FAB341F6247B70C300992A80 /* MediaPickerSegue.swift in Sources */,
 				191426EB180DC20F005165D8 /* GuidePageViewController.m in Sources */,
-				FA7FF84A1BAB622200885034 /* UIAlertController+IOS9_Autorotate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
