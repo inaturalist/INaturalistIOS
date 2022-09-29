@@ -15,14 +15,6 @@
 
 @implementation ImageStoreTests
 
-- (void)setUp {
-    [super setUp];
-}
-
-- (void)tearDown {
-    [super tearDown];
-}
-
 - (void)testCutdown {
     ImageStore *is = [ImageStore sharedImageStore];
     NSString *baseKey = [is createKey];

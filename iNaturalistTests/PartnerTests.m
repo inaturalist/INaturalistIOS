@@ -16,10 +16,6 @@
 
 @implementation PartnerTests
 
-- (void)setUp {
-    [super setUp];
-}
-
 - (void)testPartnerNamesByMCC {
     [[self allValidPartners] enumerateKeysAndObjectsUsingBlock:^(NSString *  _Nonnull countryCode, Partner *  _Nonnull partner, BOOL * _Nonnull stop) {
         XCTAssertTrue([[partner name] isEqualToString:[self allValidNames][countryCode]],

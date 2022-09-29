@@ -16,15 +16,6 @@
 
 @implementation ExploreObservationTests
 
-- (void)setUp {
-    [super setUp];
-}
-
-- (void)tearDown {
-    [super tearDown];
-}
-
-
 - (void)testRelationships {
     ExploreObservation *willet = [MantleHelpers willetFixture];
     

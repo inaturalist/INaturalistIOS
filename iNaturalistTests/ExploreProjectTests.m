@@ -17,15 +17,7 @@
 
 @implementation ExploreProjectTests
 
-- (void)setUp {
-
-}
-
-- (void)tearDown {
-
-}
-
-- (void)testProjectDescription {
+- (void)testProjectDescriptionNotNil {
     ExploreProject *cnc = [MantleHelpers cnc2018ProjectFixture];
     XCTAssertNotNil(cnc.description);
 }
