@@ -14,19 +14,6 @@
 
 @implementation GuideMenuViewController
 
-@synthesize guide = _guide;
-@synthesize delegate = _delegate;
-@synthesize tagPredicates = _tagNames;
-@synthesize tagsByPredicate = _tagsByPredicate;
-@synthesize tagCounts = _tagCounts;
-
-@synthesize ngzDownloadConnection = _ngzDownloadConnection;
-@synthesize lastStatusCode = _lastStatusCode;
-@synthesize progress = _progress;
-@synthesize expectedBytes = _expectedBytes;
-@synthesize receivedData = _receivedData;
-@synthesize ngzFilePath = _ngzFilePath;
-
 static int TextCellTextViewTag = 101;
 static int ProgressViewTag = 102;
 static int ProgressLabelTag = 103;

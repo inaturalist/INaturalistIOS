@@ -10,21 +10,13 @@
 #import <QuartzCore/QuartzCore.h>
 
 @implementation EditLocationAnnoView
-@synthesize color = _color;
-@synthesize textColor = _textColor;
 
-- (void)setColor:(UIColor *)color
-{
-    _color = color;
-    [self setNeedsDisplay];
-}
-
-- (UIColor *)color
-{
-    if (!_color) {
-        _color = [[UIColor alloc] initWithRed:1 green:1 blue:1 alpha:0.75];
+- (instancetype)initWithCoder:(NSCoder *)coder {
+    if (self = [super initWithCoder:coder]) {
+        self.color = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.75];
     }
-    return _color;
+
+    return self;
 }
 
 - (UIColor *)textColor

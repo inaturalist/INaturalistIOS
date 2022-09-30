@@ -11,8 +11,6 @@
 
 @implementation GuideViewController
 
-@synthesize guide = _guide;
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];

@@ -12,9 +12,6 @@
 #import "UIColor+INaturalist.h"
 
 @implementation GuidePageViewController
-@synthesize guide = _guide;
-@synthesize currentPosition = _currentPosition;
-@synthesize currentXPath = _currentXPath;
 
 - (void)viewDidLoad
 {

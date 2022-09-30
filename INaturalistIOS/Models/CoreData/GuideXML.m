@@ -10,18 +10,6 @@
 #import "RXMLElement+Helpers.h"
 
 @implementation GuideXML
-@synthesize title = _title;
-@synthesize desc = _desc;
-@synthesize compiler = _compiler;
-@synthesize license = _license;
-@synthesize dirPath = _dirPath;
-@synthesize xmlPath = _xmlPath;
-@synthesize xmlURL = _xmlURL;
-@synthesize ngzPath = _ngzPath;
-@synthesize ngzURL = _ngzURL;
-@synthesize filePath = _filePath;
-@synthesize identifier = _identifier;
-
 
 + (id)elementFromXMLFilePath:(NSString *)fullPath {
     return [[GuideXML alloc] initFromXMLFilePath:fullPath];

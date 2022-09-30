@@ -20,7 +20,6 @@ enum {
 #define radians( degrees ) ( degrees * M_PI / 180 )
 
 @interface ImageStore : NSObject
-@property (nonatomic, strong) NSMutableDictionary *dictionary;
 + (ImageStore *)sharedImageStore;
 - (UIImage *)find:(NSString *)key forSize:(int)size;
 - (BOOL)storeImage:(UIImage *)image forKey:(NSString *)key error:(NSError **)error;

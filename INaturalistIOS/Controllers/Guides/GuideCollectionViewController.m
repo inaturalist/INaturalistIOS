@@ -509,13 +509,6 @@ static const int GutterWidth  = 5;
 @end
 
 @implementation XMLDownloadDelegate
-@synthesize progress = _progress;
-@synthesize receivedData = _receivedData;
-@synthesize expectedBytes = _expectedBytes;
-@synthesize lastStatusCode = _lastStatusCode;
-@synthesize filePath = _filePath;
-@synthesize controller = _controller;
-@synthesize quiet = _quiet;
 
 - (id)init
 {

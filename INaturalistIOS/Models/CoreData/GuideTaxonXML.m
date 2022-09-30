@@ -10,12 +10,6 @@
 #import "GuideImageXML.h"
 
 @implementation GuideTaxonXML
-@synthesize guide = _guide;
-@synthesize xml = _xml;
-@synthesize guidePhotos = _guidePhotos;
-@synthesize name = _name;
-@synthesize displayName = _displayName;
-@synthesize taxonID = _taxonID;
 
 - (id)initWithGuide:(GuideXML *)guide andXML:(RXMLElement *)xml
 {

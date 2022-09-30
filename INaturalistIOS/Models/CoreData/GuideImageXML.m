@@ -9,8 +9,6 @@
 #import "GuideImageXML.h"
 
 @implementation GuideImageXML
-@synthesize guideTaxon = _guideTaxon;
-@synthesize xml = _xml;
 
 - (id)initWithGuideTaxon:(GuideTaxonXML *)guideTaxon andXML:(RXMLElement *)xml
 {

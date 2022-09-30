@@ -11,9 +11,6 @@
 
 @implementation CrossHairView
 
-@synthesize xLabel = _xLabel;
-@synthesize yLabel = _yLabel;
-
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     self = [super initWithCoder:aDecoder];

@@ -402,11 +402,6 @@
 @end
 
 @implementation INatLocation
-@synthesize latitude = _latitude;
-@synthesize longitude = _longitude;
-@synthesize accuracy = _accuracy;
-@synthesize updatedAt = _updatedAt;
-@synthesize positioningMethod = _positioningMethod;
 
 - (id)initWithLatitude:(NSNumber *)latitude longitude:(NSNumber *)longitude accuracy:(NSNumber *)accuracy
 {

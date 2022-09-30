@@ -11,13 +11,11 @@
 
 @implementation AccuracyCircleView
 
-@synthesize radius = _radius;
-@synthesize label = _label;
-
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     self = [super initWithCoder:aDecoder];
     if (self) {
+        self.radius = 0.0;
         self.label = [[UILabel alloc] init];
         self.label.text = @"Acc: ???";
         [self addSubview:[self makeLabelView:self.label 
@@ -28,20 +26,6 @@
                                roundedCorner:UIRectCornerTopLeft]];
     }
     return self;
-}
-
-- (void)setRadius:(float)radius
-{
-    _radius = radius;
-    [self setNeedsDisplay];
-}
-
-- (float)radius
-{
-    if (!_radius) {
-        _radius = 0.0;
-    }
-    return _radius;
 }
 
 - (void)layoutSubviews

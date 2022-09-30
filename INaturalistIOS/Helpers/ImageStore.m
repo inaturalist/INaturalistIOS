@@ -24,7 +24,6 @@
 @end
 
 @implementation ImageStore
-@synthesize dictionary;
 
 // singleton
 + (ImageStore *)sharedImageStore {
@@ -48,18 +47,6 @@
              @(PHAssetCollectionSubtypeAlbumCloudShared),
              @(PHAssetCollectionSubtypeAlbumSyncedAlbum),
              ];
-}
-
-- (instancetype)init {
-    if (self = [super init]) {
-        [self setDictionary:[[NSMutableDictionary alloc] init]];
-        
-        [NSNotificationCenter.defaultCenter addObserver:self
-                                               selector:@selector(clearMemoryCache:)
-                                                   name:UIApplicationDidReceiveMemoryWarningNotification
-                                                 object:nil];
-    }
-    return self;
 }
 
 - (UIImage *)find:(NSString *)key {
@@ -157,12 +144,10 @@
     if (!baseKey) {
         return;
     }
-    [self.dictionary removeObjectForKey:baseKey];
     [[NSFileManager defaultManager] removeItemAtPath:[self pathForKey:baseKey] error:nil];
     
     for (int size = 1; size <= ImageStoreLargeSize; size++) {
         NSString *sizedKey = [self keyForKey:baseKey forSize:size];
-        [self.dictionary removeObjectForKey:sizedKey];
         [self deleteFromNonExpiringCacheSizedKey:sizedKey];
         [self deleteFromExpiringCacheSizedKey:sizedKey];
     }
@@ -228,17 +213,7 @@
 
 #pragma mark - cache clearing methods
 
-- (void)clearMemoryCache {
-    [dictionary removeAllObjects];
-}
-
-- (void)clearMemoryCache:(NSNotification *)note {
-    [self clearMemoryCache];
-}
-
 - (void)clearEntireStore {
-    [self clearMemoryCache];
-    
     // clear the expiring cache
     [[SDImageCache sharedImageCache] clearDiskOnCompletion:nil];
     

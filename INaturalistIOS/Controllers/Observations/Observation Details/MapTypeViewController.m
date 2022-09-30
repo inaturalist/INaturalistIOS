@@ -11,10 +11,6 @@
 
 @implementation MapTypeViewController
 
-@synthesize mapTypeControl = _mapTypeControl;
-@synthesize delegate = _delegate;
-@synthesize mapType = _mapType;
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
