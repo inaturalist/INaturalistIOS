@@ -36,6 +36,7 @@ struct AboutView: View {
             Section {
                 // swiftlint:disable:next line_length
                 Text("iNaturalist is a joint initiative of the California Academy of Sciences and the National Geographic Society")
+                Text("https://www.inaturalist.org")
                 Image("cas-ngs-logos")
             }
 

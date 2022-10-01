@@ -9,16 +9,11 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var autocompleteNames = false
-    @State private var autoUpload = false
-    @State private var suggestSpecies = false
-    @State private var showCommonNames = false
-    @State private var showScientificNamesFirst = false
-    @State private var preferNoTrack = false
+
+    @ObservedObject var viewModel = ViewModel()
 
     var body: some View {
         List {
-
             Section {
                 HStack {
                     Text("Username")
@@ -52,7 +47,7 @@ struct SettingsView: View {
                 )
 
                 HStack {
-                    Toggle("Autocomplete names", isOn: $autocompleteNames)
+                    Toggle("Autocomplete names", isOn: $viewModel.autocompleteNames)
                     Button {
                         print("tapped")
                     } label: {
@@ -62,7 +57,7 @@ struct SettingsView: View {
                 }
 
                 HStack {
-                    Toggle("Automatic upload", isOn: $autoUpload)
+                    Toggle("Automatic upload", isOn: $viewModel.autoUpload)
                     Button {
                         print("tapped")
                     } label: {
@@ -72,7 +67,7 @@ struct SettingsView: View {
                 }
 
                 HStack {
-                    Toggle("Suggest species", isOn: $suggestSpecies)
+                    Toggle("Suggest species", isOn: $viewModel.suggestSpecies)
                     Button {
                         print("tapped")
                     } label: {
@@ -82,7 +77,7 @@ struct SettingsView: View {
                 }
 
                 HStack {
-                    Toggle("Show common names", isOn: $showCommonNames)
+                    Toggle("Show common names", isOn: $viewModel.showCommonNames)
                     Button {
                         print("tapped")
                     } label: {
@@ -92,7 +87,7 @@ struct SettingsView: View {
                 }
 
                 HStack {
-                    Toggle("Show scientific names first", isOn: $showScientificNamesFirst)
+                    Toggle("Show scientific names first", isOn: $viewModel.showScientificNamesFirst)
                     Button {
                         print("tapped")
                     } label: {
@@ -102,7 +97,7 @@ struct SettingsView: View {
                 }
 
                 HStack {
-                    Toggle("Prefer No Tracking", isOn: $preferNoTrack)
+                    Toggle("Prefer No Tracking", isOn: $viewModel.preferNoTrack)
                     Button {
                         print("tapped")
                     } label: {
@@ -122,6 +117,10 @@ struct SettingsView: View {
                 Button(
                     "Contact support",
                     action: contactSupport
+                )
+                Button(
+                    "Visit forums",
+                    action: visitForums
                 )
                 Button(
                     "Love iNat? Rate us",
@@ -146,18 +145,12 @@ struct SettingsView: View {
             }
 
             Section {
-                if #available(iOS 15.0, *) {
-                    Button(
-                        "Delete Account",
-                        role: .destructive,
-                        action: deleteAccount
-                    )
-                } else {
-                    Button(
-                        "Delete Account",
-                        action: deleteAccount
-                    )
-                }
+                Button(
+                    "Delete Account",
+                    action: deleteAccount
+                )
+                .foregroundColor(.red)
+
             } header: {
                 Text("Danger Zone")
             }
@@ -186,6 +179,10 @@ struct SettingsView: View {
 
     }
 
+    func visitForums() {
+
+    }
+
     func rate() {
 
     }
@@ -193,6 +190,7 @@ struct SettingsView: View {
     func shop() {
 
     }
+
     func donate() {
 
     }
