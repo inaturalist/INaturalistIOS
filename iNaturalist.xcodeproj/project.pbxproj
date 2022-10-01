@@ -92,6 +92,11 @@
 		FA0F1B051BBB561600533ED5 /* ObservationViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1B041BBB561600533ED5 /* ObservationViewCell.m */; };
 		FA176D9122FBBCF600A5560E /* CLPlacemark+INat.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEA0A4D229224EF004111A1 /* CLPlacemark+INat.m */; };
 		FA1F26291C20E25300CE73A8 /* ObsDetailDataQualityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1F26281C20E25300CE73A8 /* ObsDetailDataQualityCell.m */; };
+		FA21565828E7956600950634 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA21565728E7956600950634 /* SettingsView.swift */; };
+		FA21565A28E7957000950634 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA21565928E7957000950634 /* SettingsViewModel.swift */; };
+		FA21565E28E7B14700950634 /* Pods-iNaturalist-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA21565D28E7B14700950634 /* Pods-iNaturalist-acknowledgements.plist */; };
+		FA21566028E7B1B400950634 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA21565F28E7B1B400950634 /* AboutView.swift */; };
+		FA21566228E7BBC400950634 /* AboutViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA21566128E7BBC400950634 /* AboutViewModel.swift */; };
 		FA2552101D1F49A8005D2128 /* ExploreTaxonRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */; };
 		FA2552131D1F4D62005D2128 /* TaxaAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2552121D1F4D62005D2128 /* TaxaAPI.m */; };
 		FA2A07991C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2A07981C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m */; };
@@ -526,6 +531,11 @@
 		FA1B37C51AD88EF3002A00A5 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FA1F26271C20E25300CE73A8 /* ObsDetailDataQualityCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailDataQualityCell.h; sourceTree = "<group>"; };
 		FA1F26281C20E25300CE73A8 /* ObsDetailDataQualityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailDataQualityCell.m; sourceTree = "<group>"; };
+		FA21565728E7956600950634 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		FA21565928E7957000950634 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		FA21565D28E7B14700950634 /* Pods-iNaturalist-acknowledgements.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = "Pods-iNaturalist-acknowledgements.plist"; path = "Pods/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-acknowledgements.plist"; sourceTree = SOURCE_ROOT; };
+		FA21565F28E7B1B400950634 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		FA21566128E7BBC400950634 /* AboutViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewModel.swift; sourceTree = "<group>"; };
 		FA25520E1D1F49A8005D2128 /* ExploreTaxonRealm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreTaxonRealm.h; sourceTree = "<group>"; };
 		FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreTaxonRealm.m; sourceTree = "<group>"; };
 		FA2552111D1F4D62005D2128 /* TaxaAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaxaAPI.h; sourceTree = "<group>"; };
@@ -1309,6 +1319,7 @@
 		1927513E14E9CCC9000ABAC4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				FA21565D28E7B14700950634 /* Pods-iNaturalist-acknowledgements.plist */,
 				FA3759CE23EB467E0053F783 /* iNaturalist-Bridging-Header.h */,
 				893FE7171B525BFD00BC7CC4 /* config.h.example */,
 				1904E5F117FB7DAC00725804 /* guides */,
@@ -1693,6 +1704,10 @@
 				FA822FE828D8515B006CA0F6 /* Settings Cells */,
 				190AF2D514FC258F00F73F2B /* SettingsViewController.h */,
 				190AF2D614FC258F00F73F2B /* SettingsViewController.m */,
+				FA21565F28E7B1B400950634 /* AboutView.swift */,
+				FA21566128E7BBC400950634 /* AboutViewModel.swift */,
+				FA21565728E7956600950634 /* SettingsView.swift */,
+				FA21565928E7957000950634 /* SettingsViewModel.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -2446,6 +2461,7 @@
 				FABCAD1423C6BEA4006479CA /* AnonHeaderView.xib in Resources */,
 				FAB6214D1D7397A70026FDC6 /* Onboarding.storyboard in Resources */,
 				60EBAD4F16E5C65B00BFCDAF /* InfoPlist.strings in Resources */,
+				FA21565E28E7B14700950634 /* Pods-iNaturalist-acknowledgements.plist in Resources */,
 				FADD57EA19FEFF2500E141C9 /* Images.xcassets in Resources */,
 				FA753DBE1B7AC40E00EC13B7 /* LaunchScreenRebrand.xib in Resources */,
 				FA8A0E5125E1D98F006CA8A4 /* TaxaRanks.strings in Resources */,
@@ -2489,6 +2505,7 @@
 				"${PODS_ROOT}/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
 				"${BUILT_PRODUCTS_DIR}/ARSafariActivity/ARSafariActivity.framework",
+				"${BUILT_PRODUCTS_DIR}/AcknowList/AcknowList.framework",
 				"${BUILT_PRODUCTS_DIR}/ActionSheetPicker-3.0/ActionSheetPicker_3_0.framework",
 				"${BUILT_PRODUCTS_DIR}/AppAuth/AppAuth.framework",
 				"${BUILT_PRODUCTS_DIR}/Base64/Base64.framework",
@@ -2542,6 +2559,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ARSafariActivity.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AcknowList.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ActionSheetPicker_3_0.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AppAuth.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Base64.framework",
@@ -2722,6 +2740,7 @@
 				19AE897318DD08A100505918 /* Comment.m in Sources */,
 				1985521814EC97C200DB55C5 /* INaturalist.xcdatamodeld in Sources */,
 				FAFFFBEE1BFFD6B5003B7B7B /* Fave.m in Sources */,
+				FA21566028E7B1B400950634 /* AboutView.swift in Sources */,
 				899A00D41B53AADD0079162F /* ProjectTableViewCell.m in Sources */,
 				1985521E14ECA3CD00DB55C5 /* Observation.m in Sources */,
 				19AE897918DD08CC00505918 /* User.m in Sources */,
@@ -2768,6 +2787,7 @@
 				FABCAD1123C6BA2C006479CA /* AnonHeaderView.m in Sources */,
 				FAF16A1A24733E5C00209D96 /* DownWrapper.swift in Sources */,
 				FAC415EC25E2539A002814C7 /* MediaPageControlCell.m in Sources */,
+				FA21565A28E7957000950634 /* SettingsViewModel.swift in Sources */,
 				191B0B351500A8D900F2508E /* EditLocationAnnoView.m in Sources */,
 				FA6D69591B06A6CD000983F8 /* LoginController.m in Sources */,
 				FA724AE01AB150BD00D01773 /* MeHeaderView.m in Sources */,
@@ -2911,6 +2931,7 @@
 				FAD0DE24283551C100CD51F1 /* OnboardingSettingView.swift in Sources */,
 				FADD58661A00662200E141C9 /* UIFont+ExploreFonts.m in Sources */,
 				FA3F1F8D1A12AFF500928102 /* ExploreProject+SearchResultsHelper.m in Sources */,
+				FA21565828E7956600950634 /* SettingsView.swift in Sources */,
 				196E4E1F18D23C22009CE429 /* UIColor+INaturalist.m in Sources */,
 				FAEF232E1C7CD80300208F44 /* ProjectDetailV2ViewController.m in Sources */,
 				FAC9A8531F9EC0F2008E75EC /* NSData+INaturalist.m in Sources */,
@@ -2946,6 +2967,7 @@
 				FA60EA1423EA453D0026F7A3 /* PostsAPI.m in Sources */,
 				FA7C53511BCD9D3100A0D5AA /* ProjectObsFieldViewController.m in Sources */,
 				FACACA1E1BFD0CF7002223D7 /* PhotosPageControlCell.m in Sources */,
+				FA21566228E7BBC400950634 /* AboutViewModel.swift in Sources */,
 				FAA6EB171C90C15400F43552 /* TaxonPhotoCell.m in Sources */,
 				197FD41917FD2DAE0099BDE6 /* GuideImageXML.m in Sources */,
 				FA930525268CF596004B690E /* ForgotPasswordController.swift in Sources */,

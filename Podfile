@@ -25,6 +25,7 @@ target :iNaturalist do
   pod 'RaptureXML', '1.0.1'
   pod 'DCRoundSwitch', '0.0.1'
   pod 'VTAcknowledgementsViewController', '0.15'
+  pod 'AcknowList'
   pod 'YLProgressBar', '3.9.0'
   pod 'PBRevealViewController'
   pod 'SDWebImage', '4.0.0'

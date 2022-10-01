@@ -13,6 +13,7 @@
 @import UIColor_HTMLColors;
 @import AFNetworking;
 @import MBProgressHUD;
+@import SwiftUI;
 
 #import "ObservationsViewController.h"
 #import "LoginController.h"
@@ -1379,9 +1380,14 @@
 }
 
 - (void)settings {
-    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
-    UIViewController *vc = [storyBoard instantiateViewControllerWithIdentifier:@"Settings"];
+    UIViewController *vc = [SettingsViewFactory makeSettingsView];
+    //vc.title = NSLocalizedString(@"Settings", nil);
     [self.navigationController pushViewController:vc animated:YES];
+
+    
+//    UIStoryboard *storyBoard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+//    UIViewController *vc = [storyBoard instantiateViewControllerWithIdentifier:@"Settings"];
+//    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void)guides {
