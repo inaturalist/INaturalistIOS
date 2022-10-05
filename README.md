@@ -8,7 +8,7 @@ Setup
 
 We use cocoapods for dependencies. Install it with: `gem install cocoapods`, then do `pod install` in this directory to install the INaturalistIOS dependencies. If you run into the build error *Class 'RK_FIX_CATEGORY_BUGSNDictionary_RKAdditions' defined without specifying a base class*, then you will need to set the clang warning **Unintentional Root Class** to be something other than **Yes (Error)** for the RestKit target in the Pods project. We are moving away from RestKit in 2019 so hopefully this won't be an issue for long.
 
-You'll also need to copy `config.h.example` to `config.h` and fill in your details.
+You'll also need to copy `config.h.example` to `INaturalistIOS/config.h` and fill in your details.
 
 That should get you set up for local development with the Simulator. If you want to test on actual devices you'll need to get a provisioning profile from Apple and configure the project to use it: https://developer.apple.com/ios/manage/overview/index.action.
 

@@ -57,7 +57,7 @@
                 NSLocalizedString(@"Ecuador: Instituto Nacional de Biodiversidad (INABIO) supporting iNaturalist Ecuador (ecuador.inaturalist.org).",
                                   @"ecuador partner")];
     bodyText = [bodyText stringByAppendingFormat:@"%@\n",
-                NSLocalizedString(@"Finland: Finnish Museum of Naturalist History (Luomus) supporting iNaturalist Finland (https://inaturalist.laji.fi).",
+                NSLocalizedString(@"Finland: Finnish Museum of Natural History (Luomus) supporting iNaturalist Finland (https://inaturalist.laji.fi).",
                                   @"finland partner")];
     bodyText = [bodyText stringByAppendingFormat:@"%@\n",
                 NSLocalizedString(@"Greece: iSea supporting iNaturalist Greece (greece.iNaturalist.org).",
