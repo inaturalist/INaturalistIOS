@@ -133,7 +133,7 @@
                             });
                         }
                     } else if ([json valueForKey:@"message"]) {
-                        NSArray *message = [json valueForKey:@"message"];
+                        NSString *message = [json valueForKey:@"message"];
                         NSDictionary *userInfo = @{
                                                    NSLocalizedDescriptionKey: message,
                                                    };
