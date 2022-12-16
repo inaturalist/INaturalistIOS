@@ -33,7 +33,7 @@
                           NSLocalizedString(@"Credits",
                                             @"intro to credits section.")];
     bodyText = [bodyText stringByAppendingFormat:@"%@\n\n",
-                NSLocalizedString(@"iNaturalist exists thanks to every single person who participates in our community. The people who build the software, design the interfaces, maintain our infrastructure, support the community, and foster collaborations are Yaron Budowski, Amanda Bullington, Tony Iwane, Patrick Leary, Scott Loarie, Abhas Misraraj, Carrie Seltzer, Alex Shepard, and Ken-ichi Ueda.",
+                NSLocalizedString(@"iNaturalist exists thanks to every single person who participates in our community. The people who build the software, design the interfaces, maintain our infrastructure, support the community, and foster collaborations are Yaron Budowski, Amanda Bullington, Tony Iwane, Johannes Klein, Patrick Leary, Scott Loarie, Abhas Misraraj, Carrie Seltzer, Alex Shepard, Angie Ta, and Ken-ichi Ueda.",
                                   @"inat core team, alphabetically")];
     bodyText = [bodyText stringByAppendingFormat:@"%@\n\n",
                 NSLocalizedString(@"CalTech and Cornell Tech helped develop the computer vision system that suggests identifications from photographs. We thank Grant Van Horn, Serge Belongie, and Pietro Perona for advancing the computer vision research. More information can be found at visipedia.org. Special thanks to NVIDIA for additional assistance.",
