@@ -315,7 +315,7 @@
         <!--Login-->
         <scene sceneID="ra1-kR-4iz">
             <objects>
-                <viewController storyboardIdentifier="onboarding-login" useStoryboardIdentifierAsRestorationIdentifier="YES" id="j80-yK-ZbF" userLabel="Login" customClass="OnboardingLoginViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="onboarding-login" modalPresentationStyle="fullScreen" useStoryboardIdentifierAsRestorationIdentifier="YES" id="j80-yK-ZbF" userLabel="Login" customClass="OnboardingLoginViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="sOT-vv-oc9">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
