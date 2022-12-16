@@ -520,8 +520,7 @@
                         <viewLayoutGuide key="safeArea" id="e79-gd-sFv"/>
                         <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.93725490196078431" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="31y-8d-eUf" firstAttribute="centerY" secondItem="sOT-vv-oc9" secondAttribute="centerY" constant="-100" id="4oF-Vb-jIf"/>
-                            <constraint firstItem="LMC-dJ-pka" firstAttribute="top" secondItem="31y-8d-eUf" secondAttribute="bottom" constant="30" id="OBM-m4-LvD"/>
+                            <constraint firstItem="31y-8d-eUf" firstAttribute="centerY" secondItem="sOT-vv-oc9" secondAttribute="centerY" id="4oF-Vb-jIf"/>
                             <constraint firstAttribute="trailingMargin" secondItem="MC0-kW-bph" secondAttribute="trailing" id="Q8t-4Y-DFP"/>
                             <constraint firstItem="e79-gd-sFv" firstAttribute="bottom" secondItem="LMC-dJ-pka" secondAttribute="bottom" id="RCr-J3-NA6"/>
                             <constraint firstItem="31y-8d-eUf" firstAttribute="centerX" secondItem="e79-gd-sFv" secondAttribute="centerX" id="SrQ-g6-qx6"/>
@@ -534,14 +533,12 @@
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="4oF-Vb-jIf"/>
-                                <exclude reference="OBM-m4-LvD"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=regular-widthClass=regular">
                             <mask key="constraints">
                                 <include reference="4oF-Vb-jIf"/>
                                 <exclude reference="khz-cV-7nr"/>
-                                <include reference="OBM-m4-LvD"/>
                             </mask>
                         </variation>
                     </view>
