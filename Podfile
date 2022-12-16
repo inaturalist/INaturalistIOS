@@ -42,7 +42,7 @@ target :iNaturalist do
   pod 'M13ProgressSuite', :git => 'https://github.com/rogerioth/M13ProgressSuite.git'
   pod 'MHVideoPhotoGallery', :git => 'https://github.com/alexshepard/MHVideoPhotoGallery', :commit => '0a343f12b60c8719a280db73b1e2b6d25fef164a'
   pod 'Down', :git => 'https://github.com/ocshing/Down-gfm'
-  pod 'SimpleKeychain'
+  pod 'SimpleKeychain', '0.12.5'
 
   target :iNaturalistTests do
     inherit! :search_paths
@@ -59,10 +59,7 @@ post_install do |installer|
     end
   
     target.build_configurations.each do |config|
-        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '11.0'
-        config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
-        config.build_settings['EXCLUDED_ARCHS[sdk=watchsimulator*]'] = 'arm64'
-        config.build_settings['EXCLUDED_ARCHS[sdk=appletvsimulator*]'] = 'arm64'
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
     end 
   end
 end
