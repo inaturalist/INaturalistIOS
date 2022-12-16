@@ -9,6 +9,19 @@
 import SwiftUI
 
 struct SettingsView: View {
+    enum SettingsKeys: String {
+        case userPrefAKey
+    }
+
+    @State private var userPrefA: Bool {
+        didSet {
+            UserDefaults.standard.set(userPrefA, forKey: SettingsKeys.userPrefAKey.rawValue)
+        }
+    }
+
+    init() {
+        userPrefA = UserDefaults.standard.bool(forKey: SettingsKeys.userPrefAKey.rawValue)
+    }
 
     @ObservedObject var viewModel = ViewModel()
 
@@ -46,114 +59,132 @@ struct SettingsView: View {
                     action: changeEmail
                 )
 
-                HStack {
-                    Toggle("Autocomplete names", isOn: $viewModel.autocompleteNames)
-                    Button {
-                        print("tapped")
-                    } label: {
-                        Image(systemName: "info.circle")
-                            .imageScale(.large)
-                    }
-                }
+                Toggle("User Pref A", isOn: $userPrefA)
 
-                HStack {
-                    Toggle("Automatic upload", isOn: $viewModel.autoUpload)
-                    Button {
-                        print("tapped")
-                    } label: {
-                        Image(systemName: "info.circle")
-                            .imageScale(.large)
-                    }
-                }
-
-                HStack {
-                    Toggle("Suggest species", isOn: $viewModel.suggestSpecies)
-                    Button {
-                        print("tapped")
-                    } label: {
-                        Image(systemName: "info.circle")
-                            .imageScale(.large)
-                    }
-                }
-
-                HStack {
-                    Toggle("Show common names", isOn: $viewModel.showCommonNames)
-                    Button {
-                        print("tapped")
-                    } label: {
-                        Image(systemName: "info.circle")
-                            .imageScale(.large)
-                    }
-                }
-
-                HStack {
-                    Toggle("Show scientific names first", isOn: $viewModel.showScientificNamesFirst)
-                    Button {
-                        print("tapped")
-                    } label: {
-                        Image(systemName: "info.circle")
-                            .imageScale(.large)
-                    }
-                }
-
-                HStack {
-                    Toggle("Prefer No Tracking", isOn: $viewModel.preferNoTrack)
-                    Button {
-                        print("tapped")
-                    } label: {
-                        Image(systemName: "info.circle")
-                            .imageScale(.large)
-                    }
-                }
+//                HStack {
+//                    Toggle("Autocomplete names", isOn: $viewModel.autocompleteNames)
+//                    Button {
+//                        print("tapped")
+//                    } label: {
+//                        Image(systemName: "info.circle")
+//                            .imageScale(.large)
+//                    }
+//                }
+//
+//                HStack {
+//                    Toggle("Automatic upload", isOn: $viewModel.autoUpload)
+//                    Button {
+//                        print("tapped")
+//                    } label: {
+//                        Image(systemName: "info.circle")
+//                            .imageScale(.large)
+//                    }
+//                }
+//
+//                HStack {
+//                    Toggle("Suggest species", isOn: $viewModel.suggestSpecies)
+//                    Button {
+//                        print("tapped")
+//                    } label: {
+//                        Image(systemName: "info.circle")
+//                            .imageScale(.large)
+//                    }
+//                }
+//
+//                HStack {
+//                    Toggle("Show common names", isOn: $viewModel.showCommonNames)
+//                    Button {
+//                        print("tapped")
+//                    } label: {
+//                        Image(systemName: "info.circle")
+//                            .imageScale(.large)
+//                    }
+//                }
+//
+//                HStack {
+//                    Toggle("Show scientific names first", isOn: $viewModel.showScientificNamesFirst)
+//                    Button {
+//                        print("tapped")
+//                    } label: {
+//                        Image(systemName: "info.circle")
+//                            .imageScale(.large)
+//                    }
+//                }
+//
+//                HStack {
+//                    Toggle("Prefer No Tracking", isOn: $viewModel.preferNoTrack)
+//                    Button {
+//                        print("tapped")
+//                    } label: {
+//                        Image(systemName: "info.circle")
+//                            .imageScale(.large)
+//                    }
+//                }
             } header: {
                 Text("App Settings")
             }
 
-            Section {
-                Button(
-                    "Video Tutorial",
-                    action: videoTutorial
-                )
-                Button(
-                    "Contact support",
-                    action: contactSupport
-                )
-                Button(
-                    "Visit forums",
-                    action: visitForums
-                )
-                Button(
-                    "Love iNat? Rate us",
-                    action: rate
-                )
-                Button(
-                    "Shop the iNat Store",
-                    action: shop
-                )
-                Button(
-                    "Donate to iNaturalist",
-                    action: donate
-                )
-            } header: {
-                Text("Help")
-            }
-
-            Section {
-
-            } header: {
-                Text("Version")
-            }
-
-            Section {
-                Button(
-                    "Delete Account",
-                    action: deleteAccount
-                )
-                .foregroundColor(.red)
-
-            } header: {
-                Text("Danger Zone")
-            }
+//            Section {
+//                if let url = URL.tutorialURL {
+//                    Link(
+//                        "Video Tutorial",
+//                        destination: url
+//                    )
+//                }
+//
+//                Button(
+//                    "Contact support",
+//                    action: contactSupport
+//                )
+//
+//                if let url = URL.forumsURL {
+//                    Link(
+//                        "Visit forums",
+//                        destination: url
+//                    )
+//                }
+//
+//                if let url = URL.rateURL {
+//                    Link(
+//                        "Love iNat? Rate us",
+//                        destination: url
+//                    )
+//                }
+//
+//                if let url = URL.storeURL {
+//                    Link(
+//                        "Shop the iNat Store",
+//                        destination: url
+//                    )
+//                }
+//
+//                if let url = URL.donateURL {
+//                    Link(
+//                        "Donate to iNaturalist",
+//                        destination: url
+//                    )
+//                }
+//
+//            } header: {
+//                Text("Help")
+//            }
+//
+//            Section {
+//                Text(viewModel.versionInfo)
+//            } header: {
+//                Text("Version")
+//            }
+//
+//            Section {
+//                Button(
+//                    "Delete Account",
+//                    action: deleteAccount
+//                )
+//                .foregroundColor(.red)
+//
+//            } header: {
+//                Text("Danger Zone")
+//            }
         }
         .navigationTitle("Settings")
         .toolbar {

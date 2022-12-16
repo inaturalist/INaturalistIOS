@@ -11,6 +11,18 @@ import SwiftUI
 
 extension SettingsView {
     class ViewModel: ObservableObject {
+        var versionInfo: String {
+            guard let info = Bundle.main.infoDictionary else {
+                return ""
+            }
+
+            let shortVersion = info["CFBundleShortVersionString"] ?? "unknown version"
+            let buildVersion = info["CFBundleVersion"] ?? "unknown build"
+            let iOSVersion = UIDevice.current.systemVersion
+
+            return "\(shortVersion), build \(buildVersion), iOS \(iOSVersion)"
+        }
+
         @Published var autocompleteNames: Bool {
             didSet {
                 UserDefaults.standard.set(autocompleteNames, forKey: kINatAutocompleteNamesPrefKey)
