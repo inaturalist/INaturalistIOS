@@ -800,15 +800,29 @@
         alertMsg = NSLocalizedString(@"Failed to log in to iNaturalist. Please try again.",
                                      @"Unknown iNat login error");
     }
+
     UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
                                                                    message:alertMsg
                                                             preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
                                               style:UIAlertActionStyleCancel
                                             handler:nil]];
-    [self presentViewController:alert animated:YES completion:nil];
-    [self.loginPasswordField setText:@""];
-    [self.signupPasswordField setText:@""];
+
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+    if (![appDelegate.window.rootViewController isKindOfClass:[OnboardingViewController class]] &&
+        [error.domain isEqualToString:@"org.inaturalist.api.http"] &&
+        error.code == 201)
+    {
+        UIViewController *vc = self.presentingViewController;
+        // we're not in the onboarding flow, but the user has created a new account
+        [self dismissViewControllerAnimated:YES completion:^{
+            [vc presentViewController:alert animated:YES completion:nil];
+        }];
+    } else {
+        [self presentViewController:alert animated:YES completion:nil];
+        [self.loginPasswordField setText:@""];
+        [self.signupPasswordField setText:@""];
+    }
 }
 
 - (void)loginSuccess {
