@@ -782,6 +782,11 @@
     NSString *alertTitle = NSLocalizedString(@"Oops", @"Title error with oops text.");
     NSString *alertMsg;
     if (error) {
+        if ([error.domain isEqualToString:@"org.inaturalist.api.http"] && error.code == 201) {
+            // this is not really an error, so don't say it is
+            alertTitle = NSLocalizedString(@"Check your email", @"title of email confirmation needed alert.");
+        }
+
         if ([error.domain isEqualToString:NXOAuth2HTTPErrorDomain] && error.code == 401) {
             alertMsg = NSLocalizedString(@"Incorrect username or password.",
                                          @"Error msg when we get a 401 from the server");
