@@ -322,7 +322,9 @@
 - (UIImage *)controlIcon {
     FAKIcon *map = [FAKIonIcons mapIconWithSize:22.0f];
     [map addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-    return [map imageWithSize:CGSizeMake(25.0f, 25.0f)];
+    UIImage *image = [map imageWithSize:CGSizeMake(25.0f, 25.0f)];
+    image.accessibilityLabel = NSLocalizedString(@"Map", @"Map layout on explore tab");
+    return image;
 }
 
 #pragma mark - Allow location search to update map location

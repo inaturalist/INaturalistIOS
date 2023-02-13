@@ -195,7 +195,9 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
 - (UIImage *)controlIcon {
     FAKIcon *grid = [FAKFoundationIcons thumbnailsIconWithSize:22.0f];
     [grid addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-    return [grid imageWithSize:CGSizeMake(25.0f, 25.0f)];
+    UIImage *image = [grid imageWithSize:CGSizeMake(25.0f, 25.0f)];
+    image.accessibilityLabel = NSLocalizedString(@"Grid", @"Grid layout on explore tab");
+    return image;
 }
 
 @end

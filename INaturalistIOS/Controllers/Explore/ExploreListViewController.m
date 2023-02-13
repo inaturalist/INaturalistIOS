@@ -154,10 +154,12 @@ static NSString *ExploreListHeaderId = @"ExploreListHeader";
         RestrictedListHeader *header = (RestrictedListHeader *)[tableView dequeueReusableHeaderFooterViewWithIdentifier:ExploreListHeaderId];
     
         header.titleLabel.text = NSLocalizedString(@"Restricted to current map area", nil);
+        header.clearButton.accessibilityLabel = NSLocalizedString(@"Remove current map area filter", nil);
+
         [header.clearButton addTarget:self
                                action:@selector(tappedClearMapRestriction:)
                      forControlEvents:UIControlEventTouchUpInside];
-    
+
         return header;
     } else {
         return nil;
@@ -175,7 +177,9 @@ static NSString *ExploreListHeaderId = @"ExploreListHeader";
 - (UIImage *)controlIcon {
     FAKIcon *list = [FAKFoundationIcons listIconWithSize:22.0f];
     [list addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-    return [list imageWithSize:CGSizeMake(25.0f, 25.0f)];
+    UIImage *image = [list imageWithSize:CGSizeMake(25.0f, 25.0f)];
+    image.accessibilityLabel = NSLocalizedString(@"List", @"List layout on explore tab");
+    return image;
 }
 
 @end
