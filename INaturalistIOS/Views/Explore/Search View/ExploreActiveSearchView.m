@@ -47,6 +47,7 @@
                 UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
                 button.translatesAutoresizingMaskIntoConstraints = NO;
                 button.frame = CGRectZero;
+                button.accessibilityLabel = NSLocalizedString(@"Remove active search filters", nil);
                 
                 [button setAttributedTitle:close.attributedString forState:UIControlStateNormal];
                 button;

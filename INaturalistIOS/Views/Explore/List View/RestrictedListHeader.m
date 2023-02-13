@@ -36,11 +36,12 @@
             FAKIcon *clear = [FAKIonIcons iosCloseEmptyIconWithSize:30.0f];
             [clear addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
             [button setAttributedTitle:clear.attributedString forState:UIControlStateNormal];
-            
+            clear.accessibilityLabel = NSLocalizedString(@"Remove active search filters", nil);
+
             button.frame = CGRectZero;
             // use autolayout
             button.translatesAutoresizingMaskIntoConstraints = NO;
-            
+
             button;
         });
         [self.contentView addSubview:self.clearButton];

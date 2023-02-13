@@ -26,6 +26,9 @@
                   value:[UIColor whiteColor]];
     [self.shareButton setAttributedTitle:share.attributedString
                                 forState:UIControlStateNormal];
+
+    self.shareButton.hidden = YES;
+    self.shareButton.accessibilityLabel = NSLocalizedString(@"Share", nil);
 }
 
 - (void)prepareForReuse {
@@ -42,6 +45,10 @@
                             action:NULL
                   forControlEvents:UIControlEventAllEvents];
     [self.spinner stopAnimating];
+}
+
+- (UIAccessibilityTraits)accessibilityTraits {
+    return UIAccessibilityTraitButton;
 }
 
 @end

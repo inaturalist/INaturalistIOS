@@ -26,6 +26,7 @@
                   value:[UIColor whiteColor]];
     [self.shareButton setAttributedTitle:share.attributedString
                                 forState:UIControlStateNormal];
+    self.shareButton.accessibilityLabel = NSLocalizedString(@"Share", nil);
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

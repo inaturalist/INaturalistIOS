@@ -80,8 +80,11 @@ extension MediaPickerViewController: UICollectionViewDataSource {
     
     func noPhotoCellForItemAt(indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MediaPickerCell", for: indexPath) as! MediaPickerCell
-        cell.titleLabel.text = NSLocalizedString("No Photo", comment: "Title for No Photo button in media picker")
-        
+        cell.titleLabel.text = NSLocalizedString("No Media", comment: "Title for No Media button in media picker")
+        cell.isAccessibilityElement = true
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = NSLocalizedString("No Media", comment: "Title for No Media button in media picker")
+
         if let composeIcon = FAKIonIcons.composeIcon(withSize: 50),
             let circleOutline = FAKIonIcons.iosCircleOutlineIcon(withSize: 80)
         {
@@ -95,7 +98,10 @@ extension MediaPickerViewController: UICollectionViewDataSource {
     func cameraCellForItemAt(indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MediaPickerCell", for: indexPath) as! MediaPickerCell
         cell.titleLabel.text = NSLocalizedString("Camera", comment: "Title for Camera button in media picker")
-        
+        cell.isAccessibilityElement = true
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = NSLocalizedString("Camera", comment: "Title for Camera button in media picker")
+
         if let cameraIcon = FAKIonIcons.cameraIcon(withSize: 50),
             let circleOutline = FAKIonIcons.iosCircleOutlineIcon(withSize: 80)
         {
@@ -109,7 +115,10 @@ extension MediaPickerViewController: UICollectionViewDataSource {
     func photoLibraryCellForItemAt(indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MediaPickerCell", for: indexPath) as! MediaPickerCell
         cell.titleLabel.text = NSLocalizedString("Photo Library", comment: "Title for Photo Library button in media picker")
-        
+        cell.isAccessibilityElement = true
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = NSLocalizedString("Photo Library", comment: "Title for Photo Library button in media picker")
+
         if let imagesIcon = FAKIonIcons.imagesIcon(withSize: 50),
             let circleOutline = FAKIonIcons.iosCircleOutlineIcon(withSize: 80)
         {
@@ -122,8 +131,11 @@ extension MediaPickerViewController: UICollectionViewDataSource {
     
     func recordSoundCellForItemAt(indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MediaPickerCell", for: indexPath) as! MediaPickerCell
-        cell.titleLabel.text = NSLocalizedString("Record Sound", comment: "Title for Camera button in media picker")
-        
+        cell.titleLabel.text = NSLocalizedString("Record Sound", comment: "Title for Record sound button in media picker")
+        cell.isAccessibilityElement = true
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = NSLocalizedString("Record Sound", comment: "Title for Record sound button in media picker")
+
         if let micIcon = FAKIonIcons.micAIcon(withSize: 50),
             let circleOutline = FAKIonIcons.iosCircleOutlineIcon(withSize: 80)
         {

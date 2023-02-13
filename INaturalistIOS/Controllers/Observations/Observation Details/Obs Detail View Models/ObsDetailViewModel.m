@@ -138,9 +138,27 @@
     // photos and audio
     
     MediaPageControlCell *cell = [tableView dequeueReusableCellWithIdentifier:@"media"];
-    
+
     if (self.observation.observationMedia.count > 0) {
-        
+
+        cell.isAccessibilityElement = NO;
+        cell.iv.isAccessibilityElement = YES;
+        cell.iv.accessibilityTraits = UIAccessibilityTraitButton;
+
+        if (self.observation.observationMedia.count > 1) {
+            cell.accessibilityElements = @[
+                cell.iv,
+                cell.shareButton,
+                cell.pageControl,
+            ];
+
+        } else {
+            cell.accessibilityElements = @[
+                cell.iv,
+                cell.shareButton,
+            ];
+        }
+
         if (self.viewingMedia + 1 > self.observation.observationMedia.count) {
             // user was viewing and deleted the last media item in the observation
             self.viewingMedia = self.observation.observationMedia.count - 1;
@@ -148,7 +166,9 @@
         
         id mediaItem = self.observation.observationMedia[self.viewingMedia];
         if ([mediaItem conformsToProtocol:@protocol(INatPhoto)]) {
-            
+
+            cell.iv.accessibilityLabel = @"Photo";
+
             id <INatPhoto> op = (id <INatPhoto>) mediaItem;
             UIImage *localImage = [[ImageStore sharedImageStore] find:op.photoKey forSize:ImageStoreSmallSize];
             if (localImage) {
@@ -171,7 +191,6 @@
             }
 
         } else if ([mediaItem conformsToProtocol:@protocol(INatSound)]) {
-            
             FAKIonIcons *soundIcon = [FAKIonIcons iosVolumeHighIconWithSize:200];
             
             [soundIcon addAttribute:NSForegroundColorAttributeName
@@ -180,6 +199,7 @@
             cell.iv.image = [soundIcon imageWithSize:CGSizeMake(200, 200)];
             cell.iv.contentMode = UIViewContentModeCenter;  // don't scale
 
+            cell.iv.accessibilityLabel = @"Sound";
         }
     } else {
         // show iconic taxon image
@@ -188,9 +208,18 @@
         
         [taxonIcon addAttribute:NSForegroundColorAttributeName
                           value:[UIColor lightGrayColor]];
-        
+
         cell.iv.image = [taxonIcon imageWithSize:CGSizeMake(200, 200)];
         cell.iv.contentMode = UIViewContentModeCenter;  // don't scale
+
+        cell.isAccessibilityElement = NO;
+        cell.iv.isAccessibilityElement = YES;
+        cell.iv.accessibilityLabel = @"No Media";
+        cell.iv.accessibilityTraits = UIAccessibilityTraitStaticText;
+
+        cell.accessibilityElements = @[
+            cell.shareButton,
+        ];
     }
     
     if (self.observation.observationMedia.count > 1) {
@@ -296,7 +325,12 @@
             cell.taxonNameLabel.text = NSLocalizedString(@"Unknown", @"unknown taxon");
         }
     }
-    
+
+    cell.accessibilityLabel = [NSString stringWithFormat:NSLocalizedString(@"Taxon %@ %@", nil),
+                               cell.taxonNameLabel.text ?: @"",
+                               cell.taxonSecondaryNameLabel.text ?: @""
+    ];
+
     return cell;
 }
 
@@ -329,10 +363,13 @@
         
         if (self.sectionType == ObsDetailSectionInfo) {
             selector.infoButton.enabled = NO;
+            selector.infoButton.accessibilityTraits = UIAccessibilityTraitButton|UIAccessibilityTraitSelected;
         } else if (self.sectionType == ObsDetailSectionActivity) {
             selector.activityButton.enabled = NO;
+            selector.activityButton.accessibilityTraits = UIAccessibilityTraitButton|UIAccessibilityTraitSelected;
         } else if (self.sectionType == ObsDetailSectionFaves) {
             selector.favesButton.enabled = NO;
+            selector.favesButton.accessibilityTraits = UIAccessibilityTraitButton|UIAccessibilityTraitSelected;
         }
 
         return selector;
@@ -453,6 +490,7 @@
 
 
 - (void)selectedInfo:(UIButton *)button {
+    button.selected = YES;
     [self.delegate selectedSection:ObsDetailSectionInfo];
 }
 

@@ -170,6 +170,8 @@
         ObsDetailDataQualityCell *cell = [tableView dequeueReusableCellWithIdentifier:@"dataQuality"];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         cell.dataQuality = self.observation.dataQuality;
+        cell.isAccessibilityElement = TRUE;
+        cell.accessibilityLabel = [self.observation qualityGrade];
         
         return cell;
     }

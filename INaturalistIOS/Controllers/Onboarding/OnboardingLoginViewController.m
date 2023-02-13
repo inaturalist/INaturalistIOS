@@ -170,6 +170,7 @@
                       value:[UIColor colorWithHexString:@"#4a4a4a"]];
     [self.closeButton setAttributedTitle:closeIcon.attributedString
                                 forState:UIControlStateNormal];
+    self.closeButton.accessibilityLabel = NSLocalizedString(@"Close", nil);
     
     self.closeButton.hidden = self.skippable;
     
@@ -323,7 +324,9 @@
     if ([GIDSignIn.sharedInstance hasPreviousSignIn]) {
         [GIDSignIn.sharedInstance signOut];
     }
-    
+
+    self.googleButton.accessibilityLabel = NSLocalizedString(@"Sign in with Google", nil);
+    self.facebookButton.accessibilityLabel = NSLocalizedString(@"Sign in with Facebook", nil);
     
     if (@available(iOS 13.0, *)) {
         // make some room for the apple button

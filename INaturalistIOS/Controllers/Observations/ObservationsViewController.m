@@ -761,6 +761,7 @@
     [cell.uploadButton addTarget:self
                           action:@selector(uploadOneObservation:)
                 forControlEvents:UIControlEventTouchUpInside];
+    cell.uploadButton.accessibilityLabel = NSLocalizedString(@"Upload this observation", nil);
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     UploadManager *uploader = appDelegate.loginController.uploadManager;
@@ -815,6 +816,17 @@
     } else {
         cell.dateLabel.text = nil;
     }
+
+    cell.isAccessibilityElement = true;
+    NSString *accessibilityLabelText = [NSString stringWithFormat:NSLocalizedString(@"Observation %@ %@ %@ %@ %@", @"accessibility label for obs (date, title, subtitle, media, new activity)"),
+                                        cell.dateLabel.text ?: @"",
+                                        cell.titleLabel.text ?: @"",
+                                        cell.subtitleLabel.text ?: @"",
+                                        o.observationSounds.count > 0 ? NSLocalizedString(@"Has Sounds", nil): (o.observationPhotos.count > 0 ? NSLocalizedString(@"Has Photos", nil) : NSLocalizedString(@"No Media", nil)),
+                                        o.hasUnviewedActivityBool ? NSLocalizedString(@"new activity", nil) : @""
+    ];
+    cell.accessibilityLabel = accessibilityLabelText;
+
 }
 
 
