@@ -580,8 +580,13 @@ didSignInForUser:(GIDGoogleUser *)user
                 dispatch_async(dispatch_get_main_queue(), ^{
                     NSString *errorDesc = nil;
                     if ([httpResponse statusCode] == 401) {
-                        errorDesc = NSLocalizedString(@"You need to log in to do that.",
-                                                      @"401 unauthorized message");
+                        if (strongSelf.isLoggedIn) {
+                            errorDesc = NSLocalizedString(@"Your login credentials appear to have changed. Please go to Settings to sign out and then sign in again.",
+                                                          @"401 unauthorized message when signed in");
+                        } else {
+                            errorDesc = NSLocalizedString(@"You need to log in to do that.",
+                                                          @"401 unauthorized message when signed out");
+                        }
                     } else if ([httpResponse statusCode] == 403) {
                         errorDesc = NSLocalizedString(@"You don't have permission to do that. Your account may have been suspended. Please contact help@inaturalist.org",
                                                       @"403 forbidden message");
