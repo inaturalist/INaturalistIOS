@@ -9,7 +9,6 @@
 @import AuthenticationServices;
 
 #import <Foundation/Foundation.h>
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 @class ExploreUserRealm;
 @class Partner;
@@ -31,7 +30,7 @@ extern NSInteger INatMinPasswordLength;
 typedef void (^LoginSuccessBlock)(NSDictionary *info);
 typedef void (^LoginErrorBlock)(NSError *error);
 
-@interface LoginController : NSObject <FBSDKLoginButtonDelegate, ASAuthorizationControllerDelegate>
+@interface LoginController : NSObject <ASAuthorizationControllerDelegate>
 
 @property (nonatomic, weak) id <INatAuthenticationDelegate> delegate;
 

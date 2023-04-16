@@ -15,7 +15,6 @@
 @import JDStatusBarNotification;
 @import MBProgressHUD;
 @import Realm;
-@import FBSDKLoginKit;
 @import SafariServices;
 
 #import "SettingsViewController.h"
@@ -528,13 +527,7 @@ static const int ChangePartnerMinimumInterval = 86400;
     if ([GIDSignIn.sharedInstance hasPreviousSignIn]) {
         [GIDSignIn.sharedInstance signOut];
     }
-    
-    // clear facebook login
-    if ([FBSDKAccessToken currentAccessToken]) {
-        FBSDKLoginManager *fb = [[FBSDKLoginManager alloc] init];
-        [fb logOut];
-    }
-    
+        
     // clear any oauth login info
     for (NXOAuth2Account *account in [[NXOAuth2AccountStore sharedStore] accounts]) {
         [[NXOAuth2AccountStore sharedStore] removeAccount:account];

@@ -15,7 +15,6 @@
 @import NXOAuth2Client;
 @import BlocksKit;
 @import GoogleSignIn;
-@import FBSDKLoginKit;
 
 #import <objc/runtime.h>
 
@@ -55,7 +54,6 @@
 @property IBOutlet UILabel *reasonLabel;
 @property IBOutlet UILabel *orLabel;
 @property IBOutlet UIStackView *externalLoginStackView;
-@property IBOutlet FBSDKLoginButton *facebookButton;
 @property IBOutlet GIDSignInButton *googleButton;
 
 @property IBOutlet UILabel *termsLabel;
@@ -309,13 +307,7 @@
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     appDelegate.loginController.delegate = self;
-    self.facebookButton.delegate = appDelegate.loginController;
-    // ensure we're unauthenticated from facebook
-    if ([FBSDKAccessToken currentAccessToken]) {
-        FBSDKLoginManager *fb = [[FBSDKLoginManager alloc] init];
-        [fb logOut];
-    }
-    
+
     [self.googleButton addTarget:self
                           action:@selector(handleAuthorizationGoogleButtonPress)
                 forControlEvents:UIControlEventTouchUpInside];
@@ -326,8 +318,7 @@
     }
 
     self.googleButton.accessibilityLabel = NSLocalizedString(@"Sign in with Google", nil);
-    self.facebookButton.accessibilityLabel = NSLocalizedString(@"Sign in with Facebook", nil);
-    
+
     if (@available(iOS 13.0, *)) {
         // make some room for the apple button
         [self.googleButton setStyle:kGIDSignInButtonStyleIconOnly];
@@ -342,7 +333,6 @@
         // setup the height anchors, even though facebook for some bizarre reason
         [self.signinWithAppleButton.heightAnchor constraintEqualToConstant:44].active = YES;
         [self.googleButton.heightAnchor constraintEqualToConstant:44].active = YES;
-        [self.facebookButton.heightAnchor constraintEqualToConstant:44].active = YES;
     }
     
     self.signupUsernameField.placeholder = NSLocalizedString(@"Username", @"The desired username during signup.");

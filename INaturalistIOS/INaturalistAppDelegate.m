@@ -9,11 +9,9 @@
 @import Firebase;
 @import FirebaseCrashlytics;
 @import Realm;
-@import FBSDKCoreKit;
 @import GoogleSignIn;
 @import UIColor_HTMLColors;
 @import JDStatusBarNotification;
-@import FBSDKCoreKit;
 @import SDWebImage;
 
 #import "INaturalistAppDelegate.h"
@@ -74,26 +72,11 @@
             openURL:(NSURL *)url
             options:(NSDictionary<NSString *, id> *)options {
     
-    BOOL handled = [[FBSDKApplicationDelegate sharedInstance] application:application
-                                                                    openURL:url
-                                                          sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
-                                                                 annotation:options[UIApplicationOpenURLOptionsAnnotationKey]
-                      ];
-    
-    if (!handled) {
-        handled = [GIDSignIn.sharedInstance handleURL:url];
-    }
-    
+    BOOL handled = [GIDSignIn.sharedInstance handleURL:url];
     return handled;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
-    // never log any events with facebook analytics
-    [FBSDKSettings setCodelessDebugLogEnabled:@(NO)];
-    [FBSDKSettings setAutoLogAppEventsEnabled:@(NO)];
-
-    // required for facebook login
-    [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
     
     [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
     

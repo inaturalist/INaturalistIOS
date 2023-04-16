@@ -38,19 +38,9 @@ PODS:
   - BlocksKit/UIKit (2.2.5):
     - BlocksKit/Core
     - BlocksKit/DynamicDelegate
-  - Bolts (1.9.0):
-    - Bolts/AppLinks (= 1.9.0)
-    - Bolts/Tasks (= 1.9.0)
-  - Bolts/AppLinks (1.9.0):
-    - Bolts/Tasks
-  - Bolts/Tasks (1.9.0)
   - CustomIOSAlertView (0.9.3)
   - DCRoundSwitch (0.0.1)
   - Down (0.6.2)
-  - FBSDKCoreKit (4.37.0):
-    - Bolts (~> 1.7)
-  - FBSDKLoginKit (4.37.0):
-    - FBSDKCoreKit
   - Firebase/Analytics (9.6.0):
     - Firebase/Core
   - Firebase/Core (9.6.0):
@@ -225,12 +215,9 @@ DEPENDENCIES:
   - AFNetworking (= 3.2.0)
   - ARSafariActivity
   - BlocksKit (= 2.2.5)
-  - Bolts (= 1.9.0)
   - CustomIOSAlertView (= 0.9.3)
   - DCRoundSwitch (= 0.0.1)
   - Down (from `https://github.com/ocshing/Down-gfm`)
-  - FBSDKCoreKit (= 4.37.0)
-  - FBSDKLoginKit (= 4.37.0)
   - Firebase/Analytics
   - Firebase/Crashlytics
   - FontAwesomeKit (= 2.2.1)
@@ -268,11 +255,8 @@ SPEC REPOS:
     - ARSafariActivity
     - Base64
     - BlocksKit
-    - Bolts
     - CustomIOSAlertView
     - DCRoundSwitch
-    - FBSDKCoreKit
-    - FBSDKLoginKit
     - Firebase
     - FirebaseAnalytics
     - FirebaseCore
@@ -351,12 +335,9 @@ SPEC CHECKSUMS:
   ARSafariActivity: eccf8d928f242a6a290437afd27ed7178b7eadcc
   Base64: cecfb41a004124895a7bcee567a89bae5a89d49b
   BlocksKit: 8639b2848dd51c35c957af4d9fbdc7a769a1fc12
-  Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   CustomIOSAlertView: 94d2401e34fcfb0ac0134679d6947f5e251b0446
   DCRoundSwitch: 86d348f35be4d6ef18dbc9331c682aab6f85e980
   Down: 19deac4611bfbc1cabdf8f9657870a44d34ac7fa
-  FBSDKCoreKit: fe5f3474499a81963e11e3f3a5c753d0a95ca2b4
-  FBSDKLoginKit: 2f7249686d1e30ce8a5ef5400eedf50b3e3df332
   Firebase: 5ae8b7cf8efce559a653aef0ad95bab3f427c351
   FirebaseAnalytics: 89ad762c6c3852a685794174757e2c60a36b6a82
   FirebaseCore: 2082fffcd855f95f883c0a1641133eb9bbe76d40
@@ -400,6 +381,6 @@ SPEC CHECKSUMS:
   VTAcknowledgementsViewController: 575f5841fb47b7d9c852ccb406104ea68de07b21
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 3fbb571fa1889a670c058a2deb9802a0323a5ca5
+PODFILE CHECKSUM: abd649ca32b2f72d5627fd0e804c312176e6f116
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0

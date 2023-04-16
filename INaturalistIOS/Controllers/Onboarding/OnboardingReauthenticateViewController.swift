@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import FBSDKLoginKit
 import GoogleSignIn
 
 @objc
@@ -20,8 +19,7 @@ class OnboardingReauthenticateViewController: UIViewController {
     @IBOutlet weak var loginButton: UIButton!
     
     @IBOutlet weak var googleLoginButton: GIDSignInButton!
-    @IBOutlet weak var facebookLoginButton: FBSDKLoginButton!
-    
+
     @IBOutlet weak var stackview: UIStackView!
     
     @objc var loginAction: (() -> Void)?
@@ -36,7 +34,6 @@ class OnboardingReauthenticateViewController: UIViewController {
         {
             usernameField.text = login.meUserLocal().login
             login.delegate = self
-            self.facebookLoginButton.delegate = login
         }
         
         let cancel = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))

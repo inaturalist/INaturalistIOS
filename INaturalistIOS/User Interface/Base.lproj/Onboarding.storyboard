@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="zUI-iq-68M">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="zUI-iq-68M">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -26,7 +26,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Efo-ex-SWT">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <connections>
                                     <segue destination="TEN-rg-PsD" kind="embed" id="fAt-6x-BPT"/>
                                 </connections>
@@ -321,7 +321,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MC0-kW-bph">
-                                <rect key="frame" x="329" y="8" width="30" height="30"/>
+                                <rect key="frame" x="329" y="28" width="30" height="30"/>
                                 <state key="normal">
                                     <color key="titleColor" red="0.29019607843137252" green="0.29019607843137252" blue="0.29019607843137252" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
@@ -330,7 +330,7 @@
                                 </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="31y-8d-eUf">
-                                <rect key="frame" x="27.5" y="20" width="320" height="339"/>
+                                <rect key="frame" x="27.5" y="40" width="320" height="339"/>
                                 <subviews>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Dev-h9-HS2">
                                         <rect key="frame" x="92.5" y="0.0" width="135" height="32"/>
@@ -463,27 +463,13 @@
                                         <rect key="frame" x="0.0" y="50.5" width="290" height="50"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="JNh-8M-Acy" customClass="GIDSignInButton">
-                                                <rect key="frame" x="0.0" y="0.0" width="140" height="50"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="290" height="50"/>
                                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <connections>
                                                     <action selector="googlePressed:" destination="j80-yK-ZbF" eventType="valueChanged" id="gDJ-ON-Yxe"/>
                                                 </connections>
                                             </view>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u2t-rU-mF6" customClass="FBSDKLoginButton">
-                                                <rect key="frame" x="150" y="7" width="140" height="36"/>
-                                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="36" id="cdl-8D-La0"/>
-                                                    <constraint firstAttribute="width" priority="750" constant="140" id="eXN-im-CZK"/>
-                                                </constraints>
-                                                <connections>
-                                                    <action selector="facebookPressed:" destination="j80-yK-ZbF" eventType="valueChanged" id="1j7-eL-N8o"/>
-                                                </connections>
-                                            </view>
                                         </subviews>
-                                        <constraints>
-                                            <constraint firstItem="u2t-rU-mF6" firstAttribute="width" secondItem="JNh-8M-Acy" secondAttribute="width" id="8Ps-fm-yc9"/>
-                                        </constraints>
                                     </stackView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YtY-We-SSc">
                                         <rect key="frame" x="0.0" y="110.5" width="290" height="0.0"/>
@@ -547,7 +533,6 @@
                         <outlet property="closeButton" destination="MC0-kW-bph" id="hFk-nF-RRT"/>
                         <outlet property="externalLoginStackView" destination="dfE-eN-x9k" id="OZD-of-e4h"/>
                         <outlet property="extraLoginInfoStackView" destination="LMC-dJ-pka" id="gnX-nz-X8o"/>
-                        <outlet property="facebookButton" destination="u2t-rU-mF6" id="Ze9-Lz-HUy"/>
                         <outlet property="forgotButton" destination="sZe-lG-yg8" id="jPp-SK-2N8"/>
                         <outlet property="googleButton" destination="JNh-8M-Acy" id="Zq5-Ly-3Gw"/>
                         <outlet property="iNatAuthStackView" destination="31y-8d-eUf" id="myS-QY-yb4"/>
@@ -646,7 +631,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="5VN-hc-Du2">
-                                <rect key="frame" x="16" y="64" width="343" height="346"/>
+                                <rect key="frame" x="16" y="64" width="343" height="316"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TIr-IJ-Q9Z">
                                         <rect key="frame" x="0.0" y="0.0" width="343" height="0.0"/>
@@ -706,11 +691,6 @@
                                             <action selector="googleLoginPressed:" destination="UJ1-a0-AKB" eventType="touchUpInside" id="YJP-SA-dcM"/>
                                         </connections>
                                     </view>
-                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qQZ-rz-tQI" customClass="FBSDKLoginButton">
-                                        <rect key="frame" x="0.0" y="332" width="343" height="14"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain"/>
-                                    </button>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="5WV-jN-UjN" firstAttribute="width" secondItem="5VN-hc-Du2" secondAttribute="width" id="Fht-2J-hrz"/>
@@ -727,7 +707,6 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="facebookLoginButton" destination="qQZ-rz-tQI" id="iy1-ra-1MJ"/>
                         <outlet property="infoLabel" destination="TIr-IJ-Q9Z" id="p4B-fs-IzZ"/>
                         <outlet property="loginButton" destination="DO1-al-HTc" id="tIm-h4-clN"/>
                         <outlet property="passwordField" destination="Bpg-fN-eOX" id="Rah-SP-aKi"/>

@@ -6,8 +6,6 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <NXOAuth2Client/NXOAuth2.h>
 #import <GoogleSignIn/GoogleSignIn.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
@@ -87,26 +85,6 @@ NSInteger INatMinPasswordLength = 6;
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kINatAuthService];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kInatCustomBaseURLStringKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
-#pragma mark - Facebook
-
-- (void)loginButton:(FBSDKLoginButton *)loginButton didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result error:(NSError *)error {
-    
-    if (error || !result.token) {
-        [self.delegate loginFailedWithError:error];
-    } else {
-        self.externalAccessToken = [[result.token tokenString] copy];
-        self.accountType = kINatAuthServiceExtToken;
-        [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:self.accountType
-                                                             assertionType:[NSURL URLWithString:@"http://facebook.com"]
-                                                                 assertion:self.externalAccessToken];
-    }
-}
-
-- (void)loginButtonDidLogOut:(FBSDKLoginButton *)loginButton {
-    // do nothing
-    // seem to need to
 }
 
 #pragma mark - INat OAuth Login
