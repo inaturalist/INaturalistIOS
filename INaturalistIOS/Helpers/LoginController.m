@@ -86,6 +86,7 @@ NSInteger INatMinPasswordLength = 6;
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kINatAuthServiceExtToken];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kINatAuthService];
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kInatCustomBaseURLStringKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 #pragma mark - Facebook
