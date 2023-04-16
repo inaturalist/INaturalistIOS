@@ -411,6 +411,10 @@ didSignInForUser:(GIDGoogleUser *)user
     [realm commitWriteTransaction];
 }
 
+- (NSInteger)meUserId {
+    return [[[NSUserDefaults standardUserDefaults] valueForKey:kINatUserIdPrefKey] intValue];
+}
+
 - (ExploreUserRealm *)meUserLocal {
     NSNumber *userId = nil;
     NSString *username = nil;

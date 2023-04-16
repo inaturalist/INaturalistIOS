@@ -50,6 +50,7 @@ typedef void (^LoginErrorBlock)(NSError *error);
 
 // return the local me user
 - (ExploreUserRealm *)meUserLocal;
+- (NSInteger)meUserId;
 
 // if the me user was very recently fetched and not made dirty
 // (see -dirtyLocalMeUser) then return the local me user

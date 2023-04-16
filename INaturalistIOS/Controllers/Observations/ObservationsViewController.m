@@ -1059,14 +1059,18 @@
         
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         LoginController *login = appDelegate.loginController;
-        RLMSortDescriptor *createdAtSort = [RLMSortDescriptor sortDescriptorWithKeyPath:@"timeCreated" ascending:FALSE];
-        self.myObservations = [[ExploreObservationRealm observationsFor:login.meUserLocal.userId] sortedResultsUsingDescriptors:@[ createdAtSort ]];
 
-        // update the UI
-        [self.tableView reloadData];
-        
-        // request the users' observations from iNat
-        [self refreshRequestedNotify:YES];
+        if (login.isLoggedIn && login.meUserId != 0) {
+            RLMSortDescriptor *createdAtSort = [RLMSortDescriptor sortDescriptorWithKeyPath:@"timeCreated" ascending:FALSE];
+
+            self.myObservations = [[ExploreObservationRealm observationsFor:login.meUserId] sortedResultsUsingDescriptors:@[ createdAtSort ]];
+
+            // update the UI
+            [self.tableView reloadData];
+
+            // request the users' observations from iNat
+            [self refreshRequestedNotify:YES];
+        }
     });
 }
 
@@ -1167,8 +1171,8 @@
     
     RLMSortDescriptor *createdAtSort = [RLMSortDescriptor sortDescriptorWithKeyPath:@"timeCreated" ascending:FALSE];
 
-    if (login.isLoggedIn) {
-        self.myObservations = [[ExploreObservationRealm observationsFor:login.meUserLocal.userId] sortedResultsUsingDescriptors:@[ createdAtSort ]];
+    if (login.isLoggedIn && login.meUserId != 0) {
+        self.myObservations = [[ExploreObservationRealm observationsFor:login.meUserId] sortedResultsUsingDescriptors:@[ createdAtSort ]];
     } else {
         self.myObservations = [[ExploreObservationRealm unuploadedObservations] sortedResultsUsingDescriptors:@[ createdAtSort ]];
     }
