@@ -12,6 +12,8 @@ You'll also need to copy `config.h.example` to `INaturalistIOS/config.h` and fil
 
 That should get you set up for local development with the Simulator. If you want to test on actual devices you'll need to get a provisioning profile from Apple and configure the project to use it: https://developer.apple.com/ios/manage/overview/index.action.
 
+If you run into errors with cocoapods, xcode 14.3, and rsync, follow the instructions [here](https://github.com/CocoaPods/CocoaPods/issues/11808#issuecomment-1509261607)
+
 Translations
 ------------
 
