@@ -622,7 +622,13 @@
         
     NSString *license = self.licenseDataConsentView.userConsent ? @"CC-BY-NC" : @"";
     NSInteger selectedPartnerId = self.selectedPartner ? self.selectedPartner.identifier : 1;
-        
+
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Logging in...",
+                                      @"Notice while we're logging in");
+    hud.dimBackground = YES;
+    hud.removeFromSuperViewOnHide = YES;
+
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     [appDelegate.loginController createAccountWithEmail:self.signupEmailField.text
                                                password:self.signupPasswordField.text
@@ -670,7 +676,13 @@
         [self presentViewController:alert animated:YES completion:nil];
         return;
     }
-            
+
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = NSLocalizedString(@"Logging in...",
+                                      @"Notice while we're logging in");
+    hud.dimBackground = YES;
+    hud.removeFromSuperViewOnHide = YES;
+
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
     [appDelegate.loginController loginWithUsername:self.loginUsernameField.text
                                           password:self.loginPasswordField.text];
