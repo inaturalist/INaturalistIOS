@@ -2,19 +2,19 @@
 "0HC-89-zFL.text" = "การสังเกต";
 
 /* Class = "UITextField"; placeholder = "Email"; ObjectID = "2e2-wM-KPk"; */
-"2e2-wM-KPk.placeholder" = "อีเมล์";
+"2e2-wM-KPk.placeholder" = "อีเมล";
 
 /* Class = "UILabel"; text = "Discuss"; ObjectID = "2hB-WM-pN1"; */
 "2hB-WM-pN1.text" = "การพูดคุย";
 
 /* Class = "UILabel"; text = "Or Log in with:"; ObjectID = "Bfj-77-C1k"; */
-"Bfj-77-C1k.text" = "เข้าสู่ระบบด้วย";
+"Bfj-77-C1k.text" = "หรือเข้าสู่ระบบด้วย:";
 
 /* Class = "UITextField"; placeholder = "Password"; ObjectID = "FZ5-km-oDo"; */
 "FZ5-km-oDo.placeholder" = "รหัสผ่าน";
 
 /* Class = "UIButton"; normalTitle = "Skip >"; ObjectID = "J6N-uD-ctb"; */
-"J6N-uD-ctb.normalTitle" = "ข้าม";
+"J6N-uD-ctb.normalTitle" = "ข้าม >";
 
 /* Class = "UIButton"; normalTitle = "Sign Up"; ObjectID = "LVz-7N-QYA"; */
 "LVz-7N-QYA.normalTitle" = "ลงทะเบียน";
@@ -56,7 +56,7 @@
 "uop-S8-3lF.normalTitle" = "มีบัญชีอยู่แล้ว?";
 
 /* Class = "UILabel"; text = "Identify"; ObjectID = "vCH-CP-6hM"; */
-"vCH-CP-6hM.text" = "การระบุ";
+"vCH-CP-6hM.text" = "จำแนกชนิด";
 
 /* Class = "UILabel"; text = "Yes, license my content so scientists can use my data! Learn More"; ObjectID = "xUc-8o-XIN"; */
 "xUc-8o-XIN.text" = "ใช่!! อนุญาตเนื้อหาของฉันเพื่อให้นักวิทยาศาสตร์ใช้ข้อมูลของฉันได้ เรียนรู้เพิ่มเติม";

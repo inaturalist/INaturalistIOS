@@ -1,5 +1,5 @@
 /* Localized versions of Info.plist keys */
 // TODO figure out how to use ${PRODUCT_NAME} here
 
-"NSLocationWhenInUseUsageDescription" = "เพิ่มพิกัด GPS ให้กับสิ่งที่สังเกต แสดงสถานที่บนแผนที่และอื่น ๆ";
-"NSPhotoLibraryUsageDescription" = "ส่งรูปภาพ iNaturalist ไปยังห้องสมุดของผู้ใช้ และนำเข้าจากห้องสมุดผู้ใช้";
+"NSLocationWhenInUseUsageDescription" = "เพิ่มพิกัด GPS ให้กับการสังเกต แสดงตำแหน่งของคุณบนแผนที่ และอื่น ๆ";
+"NSPhotoLibraryUsageDescription" = "ส่งออกและนำเข้ารูปภาพจากห้องสมุดของคุณ";

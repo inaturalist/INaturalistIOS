@@ -6,7 +6,7 @@
 /* phylum rank in tree of life */
 "phylum" = "phylum";
 /* subphylum rank in tree of life */
-"subphylum" = "subphylum";
+"subphylum" = "亜門";
 
 /* superclass rank in tree of life */
 "superclass" = "superclass";

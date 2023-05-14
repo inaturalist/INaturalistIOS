@@ -1,53 +1,53 @@
 /* kingdom rank in tree of life */
-"kingdom" = "kingdom";
+"kingdom" = "kuningas";
 /* subkingdom rank in tree of life */
-"subkingdom" = "subkingdom";
+"subkingdom" = "alakuningaskunta";
 
 /* phylum rank in tree of life */
-"phylum" = "phylum";
+"phylum" = "pääjakso";
 /* subphylum rank in tree of life */
-"subphylum" = "subphylum";
+"subphylum" = "sivujakso";
 
 /* superclass rank in tree of life */
-"superclass" = "superclass";
+"superclass" = "yläluokka";
 /* class rank in tree of life */
-"class" = "class";
+"class" = "luokka";
 /* subclass rank in tree of life */
-"subclass" = "subclass";
+"subclass" = "alaluokka";
 /* infraclass rank in tree of life */
-"infraclass" = "infraclass";
+"infraclass" = "osaluokka";
 
 /* superorder rank in tree of life */
-"superorder" = "superorder";
+"superorder" = "ylälahko";
 /* order rank in tree of life */
-"order" = "order";
+"order" = "lahko";
 /* suborder rank in tree of life */
-"suborder" = "suborder";
+"suborder" = "alalahko";
 /* infraorder rank in tree of life */
-"infraorder" = "infraorder";
+"infraorder" = "osalahko";
 /* parvorder rank in tree of life */
-"parvorder" = "parvorder";
+"parvorder" = "parvolahko";
 
 /* zoosection rank in tree of life */
-"zoosection" = "zoosection";
+"zoosection" = "tarhasektio";
 /* zoosubsection rank in tree of life */
-"zoosubsection" = "zoosubsection";
+"zoosubsection" = "tarha-alasektio";
 
 /* superfamily rank in tree of life */
-"superfamily" = "superfamily";
+"superfamily" = "yläheimo";
 /* epifamily rank in tree of life */
-"epifamily" = "epifamily";
+"epifamily" = "epiheimo";
 /* family rank in tree of life */
-"family" = "family";
+"family" = "heimo";
 /* subfamily rank in tree of life */
-"subfamily" = "subfamily";
+"subfamily" = "alaheimo";
 
 /* supertribe rank in tree of life */
-"supertribe" = "supertribe";
+"supertribe" = "yläsuku";
 /* tribe rank in tree of life */
-"tribe" = "tribe";
+"tribe" = "suku";
 /* subtribe rank in tree of life */
-"subtribe" = "subtribe";
+"subtribe" = "alasuku";
 
 /* epifamily rank in tree of life */
 "genus" = "genus";

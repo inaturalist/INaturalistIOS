@@ -1,76 +1,76 @@
 /* kingdom rank in tree of life */
-"kingdom" = "kingdom";
+"kingdom" = "ממלכה";
 /* subkingdom rank in tree of life */
-"subkingdom" = "subkingdom";
+"subkingdom" = "תת-ממלכה";
 
 /* phylum rank in tree of life */
-"phylum" = "phylum";
+"phylum" = "מערכה";
 /* subphylum rank in tree of life */
-"subphylum" = "subphylum";
+"subphylum" = "תת-מערכה";
 
 /* superclass rank in tree of life */
-"superclass" = "superclass";
+"superclass" = "על-מחלקה";
 /* class rank in tree of life */
-"class" = "class";
+"class" = "מחלקה";
 /* subclass rank in tree of life */
-"subclass" = "subclass";
+"subclass" = "תת-מחלקה";
 /* infraclass rank in tree of life */
-"infraclass" = "infraclass";
+"infraclass" = "אינפרא-מחלקה";
 
 /* superorder rank in tree of life */
-"superorder" = "superorder";
+"superorder" = "על-סדרה";
 /* order rank in tree of life */
-"order" = "order";
+"order" = "סדרה";
 /* suborder rank in tree of life */
-"suborder" = "suborder";
+"suborder" = "תת-סדרה";
 /* infraorder rank in tree of life */
-"infraorder" = "infraorder";
+"infraorder" = "אינפרא-סדרה";
 /* parvorder rank in tree of life */
-"parvorder" = "parvorder";
+"parvorder" = "תת-אינפרא-סדרה";
 
 /* zoosection rank in tree of life */
-"zoosection" = "zoosection";
+"zoosection" = "זואוסקציה";
 /* zoosubsection rank in tree of life */
-"zoosubsection" = "zoosubsection";
+"zoosubsection" = "זואו-תת-סקציה";
 
 /* superfamily rank in tree of life */
-"superfamily" = "superfamily";
+"superfamily" = "על-משפחה";
 /* epifamily rank in tree of life */
-"epifamily" = "epifamily";
+"epifamily" = "אפי-משפחה";
 /* family rank in tree of life */
-"family" = "family";
+"family" = "משפחה";
 /* subfamily rank in tree of life */
-"subfamily" = "subfamily";
+"subfamily" = "תת-משפחה";
 
 /* supertribe rank in tree of life */
-"supertribe" = "supertribe";
+"supertribe" = "על-שבט";
 /* tribe rank in tree of life */
-"tribe" = "tribe";
+"tribe" = "שבט";
 /* subtribe rank in tree of life */
-"subtribe" = "subtribe";
+"subtribe" = "תת-שבט";
 
 /* epifamily rank in tree of life */
-"genus" = "genus";
+"genus" = "סוג";
 /* genushybrid rank in tree of life */
-"genushybrid" = "genushybrid";
+"genushybrid" = "היבריד ברמת סוג";
 /* subgenus rank in tree of life */
-"subgenus" = "subgenus";
+"subgenus" = "תת-סוג";
 
 /* section rank in tree of life */
-"section" = "section";
+"section" = "סקציה";
 /* subsection rank in tree of life */
-"subsection" = "subsection";
+"subsection" = "תת-סקציה";
 
 /* species rank in tree of life */
-"species" = "species";
+"species" = "מין";
 /* hybrid rank in tree of life */
-"hybrid" = "hybrid";
+"hybrid" = "היבריד";
 
 /* subspecies rank in tree of life */
-"subspecies" = "subspecies";
+"subspecies" = "תת-מין";
 /* variety rank in tree of life */
-"variety" = "variety";
+"variety" = "זן";
 /* form rank in tree of life */
-"form" = "form";
+"form" = "צורה";
 /* infrahybrid rank in tree of life */
-"infrahybrid" = "infrahybrid";
+"infrahybrid" = "אינפרא-היבריד";

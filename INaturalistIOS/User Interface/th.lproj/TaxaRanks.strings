@@ -18,7 +18,7 @@
 "infraclass" = "ชั้นฐาน";
 
 /* superorder rank in tree of life */
-"superorder" = "อันดับใหญ่ (Superorder)";
+"superorder" = "อันดับใหญ่";
 /* order rank in tree of life */
 "order" = "อันดับ";
 /* suborder rank in tree of life */
@@ -29,14 +29,14 @@
 "parvorder" = "อนุอันดับ";
 
 /* zoosection rank in tree of life */
-"zoosection" = "หมู่สัตว์";
+"zoosection" = "ส่วน";
 /* zoosubsection rank in tree of life */
-"zoosubsection" = "หมู่ย่อยสัตว์";
+"zoosubsection" = "ส่วนย่อย";
 
 /* superfamily rank in tree of life */
 "superfamily" = "วงศ์ใหญ่";
 /* epifamily rank in tree of life */
-"epifamily" = "อันดับระหว่างครอบครัว (Epifamily)";
+"epifamily" = "วงศ์บน";
 /* family rank in tree of life */
 "family" = "วงศ์";
 /* subfamily rank in tree of life */
@@ -57,9 +57,9 @@
 "subgenus" = "สกุลย่อย";
 
 /* section rank in tree of life */
-"section" = "หมู่";
+"section" = "ส่วน";
 /* subsection rank in tree of life */
-"subsection" = "หมู่ย่อย";
+"subsection" = "ส่วนย่อย";
 
 /* species rank in tree of life */
 "species" = "ชนิด";
