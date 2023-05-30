@@ -839,15 +839,6 @@
         ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
         self.navigationItem.title = me.login;
         [self configureHeaderView:self.meHeader forUser:me];
-        
-        // and try to fetch the user from the server just in case
-        __weak typeof(self)weakSelf = self;
-        [appDelegate.loginController meUserRemoteCompletion:^(ExploreUserRealm *me) {
-            if (me) {
-                weakSelf.navigationItem.title = me.login;
-                [weakSelf configureHeaderView:self.meHeader forUser:me];
-            }
-        }];
     } else {
         self.navigationItem.title = NSLocalizedString(@"Me", @"Placeholder text for not logged title on me tab.");
     }
@@ -1029,13 +1020,6 @@
         
         ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
         self.navigationItem.title = me.login;
-        
-        if ([[INatReachability sharedClient] isNetworkReachable]) {
-            __weak typeof(self)weakSelf = self;
-            [appDelegate.loginController meUserRemoteCompletion:^(ExploreUserRealm *me) {
-                [weakSelf.tableView reloadData];
-            }];
-        }
     } else {
         self.navigationItem.title = NSLocalizedString(@"Me", @"Placeholder text for not logged title on me tab.");
     }
