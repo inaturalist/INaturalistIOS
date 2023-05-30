@@ -168,7 +168,12 @@ static const int ChangePartnerMinimumInterval = 86400;
     // fetch the me user from the server to populate login and email address fields
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     LoginController *login = appDelegate.loginController;
-    if (login.isLoggedIn) {
+    if (login.isLoggedIn && [[INatReachability sharedClient] isNetworkReachable]) {
+        // settings screen wants the most current me user since we show relevant
+        // preferences & such that aren't fetched by the me user in other contexts
+        // (like attached to my observations)
+        [login dirtyLocalMeUser];
+
         __weak typeof(self)weakSelf = self;
         [login meUserRemoteCompletion:^(ExploreUserRealm *me) {
             [weakSelf.tableView reloadData];
