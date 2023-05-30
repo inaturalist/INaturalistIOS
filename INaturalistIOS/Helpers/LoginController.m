@@ -428,8 +428,8 @@ didSignInForUser:(GIDGoogleUser *)user
         [[self peopleApi] fetchMeHandler:^(NSArray *results, NSInteger count, NSError *error) {
             // results firstobject should contain a prefersNoTracking variable
             // we don't stash this on the realm user because it'll get clobbered when
-            // the user is fetched in other contexts and this value isn't returned
-            // by the server.
+            // the user is fetched in other contexts and in those contexts, these value
+            // aren't returned by the server.
             // we'll also stash some other variables for user preferences around common
             // names and such
             if (results.firstObject) {
@@ -440,6 +440,13 @@ didSignInForUser:(GIDGoogleUser *)user
                                                         forKey:kINatShowCommonNamesPrefKey];
                 [[NSUserDefaults standardUserDefaults] setBool:euMe.showScientificNamesFirst
                                                         forKey:kINatShowScientificNamesFirstPrefKey];
+
+                // just in case, don't ever try to stash a garbage me user id
+                if (euMe.userId > 0) {
+                    // we have a me user, stash the userid in userdefaults
+                    [[NSUserDefaults standardUserDefaults] setValue:@(euMe.userId)
+                                                             forKey:kINatUserIdPrefKey];
+                }
 
                 [[NSUserDefaults standardUserDefaults] synchronize];
             }
@@ -458,12 +465,7 @@ didSignInForUser:(GIDGoogleUser *)user
                 [realm addOrUpdateObject:me];
             }
             [realm commitWriteTransaction];
-            
-            // we have a me user, stash the userid in userdefaults
-            [[NSUserDefaults standardUserDefaults] setValue:@(me.userId)
-                                                     forKey:kINatUserIdPrefKey];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            
+
             completion(me);
         }];
     }
