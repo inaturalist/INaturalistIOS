@@ -416,29 +416,7 @@ didSignInForUser:(GIDGoogleUser *)user
             return me;
         }
     }
-    
-    // if we can't find the me user in realm,
-    // try to fetch from core data
-    User *meFromCoreData = [self fetchMeFromCoreData];
-    if (meFromCoreData) {
-        ExploreUserRealm *me = [[ExploreUserRealm alloc] init];
-        me.login = meFromCoreData.login;
-        me.userId = meFromCoreData.recordID.integerValue;
-        me.name = meFromCoreData.name;
-        me.userIconString = meFromCoreData.userIconURL;
-        me.email = nil;
-        me.observationsCount = meFromCoreData.observationsCount.integerValue;
-        me.siteId = meFromCoreData.siteId.integerValue;
-        me.syncedAt = [NSDate distantPast];
-        
-        RLMRealm *realm = [RLMRealm defaultRealm];
-        [realm beginWriteTransaction];
-        [realm addOrUpdateObject:me];
-        [realm commitWriteTransaction];
-        
-        return me;
-    }
-    
+
     return nil;
 }
 
@@ -489,10 +467,6 @@ didSignInForUser:(GIDGoogleUser *)user
             completion(me);
         }];
     }
-}
-
-- (User *)fetchMeFromCoreData {
-    return nil;
 }
 
 - (BOOL)isLoggedIn {
