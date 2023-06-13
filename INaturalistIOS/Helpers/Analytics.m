@@ -18,6 +18,14 @@
 @implementation Analytics
 
 + (BOOL)canTrack {
+    NSString *path = [[NSBundle mainBundle] pathForResource: @"GoogleService-Info"
+                                                     ofType: @"plist"];
+    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: path];
+    NSString *googleAppId = [[dict objectForKey: @"GOOGLE_APP_ID"] stringValue];
+    if (!googleAppId || [googleAppId isEqualToString:@"Google-App-Id-Placeholder"]) {
+        return NO;
+    }
+
     BOOL prefersNoTrack = [[NSUserDefaults standardUserDefaults] boolForKey:kINatPreferNoTrackPrefKey];
     if (prefersNoTrack) {
         return NO;
