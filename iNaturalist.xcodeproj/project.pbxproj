@@ -95,6 +95,10 @@
 		FA0F1B011BBB412C00533ED5 /* ObservationViewErrorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1B001BBB412C00533ED5 /* ObservationViewErrorCell.m */; };
 		FA0F1B051BBB561600533ED5 /* ObservationViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1B041BBB561600533ED5 /* ObservationViewCell.m */; };
 		FA176D9122FBBCF600A5560E /* CLPlacemark+INat.m in Sources */ = {isa = PBXBuildFile; fileRef = FAEA0A4D229224EF004111A1 /* CLPlacemark+INat.m */; };
+		FA18C5C32A38F7E000F071C6 /* AnnouncementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18C5C22A38F7E000F071C6 /* AnnouncementView.swift */; };
+		FA18C5C52A39075E00F071C6 /* AnnouncementsAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA18C5C42A39075E00F071C6 /* AnnouncementsAPI.swift */; };
+		FA18C5CA2A394DAF00F071C6 /* ExploreAnnouncement.m in Sources */ = {isa = PBXBuildFile; fileRef = FA18C5C92A394DAF00F071C6 /* ExploreAnnouncement.m */; };
+		FA1CEB2E2A40D1B300A570BC /* DismissAnnouncementCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1CEB2D2A40D1B300A570BC /* DismissAnnouncementCellView.swift */; };
 		FA1F26291C20E25300CE73A8 /* ObsDetailDataQualityCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA1F26281C20E25300CE73A8 /* ObsDetailDataQualityCell.m */; };
 		FA2552101D1F49A8005D2128 /* ExploreTaxonRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA25520F1D1F49A8005D2128 /* ExploreTaxonRealm.m */; };
 		FA2552131D1F4D62005D2128 /* TaxaAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA2552121D1F4D62005D2128 /* TaxaAPI.m */; };
@@ -532,6 +536,10 @@
 		FA0F1B031BBB561600533ED5 /* ObservationViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationViewCell.h; sourceTree = "<group>"; };
 		FA0F1B041BBB561600533ED5 /* ObservationViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationViewCell.m; sourceTree = "<group>"; };
 		FA11A7741CBDCE090039481B /* INaturalist2.14.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.14.xcdatamodel; sourceTree = "<group>"; };
+		FA18C5C22A38F7E000F071C6 /* AnnouncementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementView.swift; sourceTree = "<group>"; };
+		FA18C5C42A39075E00F071C6 /* AnnouncementsAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnouncementsAPI.swift; sourceTree = "<group>"; };
+		FA18C5C82A394DAF00F071C6 /* ExploreAnnouncement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreAnnouncement.h; sourceTree = "<group>"; };
+		FA18C5C92A394DAF00F071C6 /* ExploreAnnouncement.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreAnnouncement.m; sourceTree = "<group>"; };
 		FA1B37BA1AD88BBC002A00A5 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA1B37BB1AD88BCF002A00A5 /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA1B37BC1AD88BE2002A00A5 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -541,6 +549,7 @@
 		FA1B37C21AD88EDC002A00A5 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA1B37C41AD88EED002A00A5 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
 		FA1B37C51AD88EF3002A00A5 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA1CEB2D2A40D1B300A570BC /* DismissAnnouncementCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DismissAnnouncementCellView.swift; sourceTree = "<group>"; };
 		FA1F26271C20E25300CE73A8 /* ObsDetailDataQualityCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailDataQualityCell.h; sourceTree = "<group>"; };
 		FA1F26281C20E25300CE73A8 /* ObsDetailDataQualityCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailDataQualityCell.m; sourceTree = "<group>"; };
 		FA25520E1D1F49A8005D2128 /* ExploreTaxonRealm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreTaxonRealm.h; sourceTree = "<group>"; };
@@ -1535,6 +1544,8 @@
 				FAEF23531C7D2DC300208F44 /* ObserverCount.m */,
 				FAEF23551C7D2DCD00208F44 /* SpeciesCount.h */,
 				FAEF23561C7D2DCD00208F44 /* SpeciesCount.m */,
+				FA18C5C82A394DAF00F071C6 /* ExploreAnnouncement.h */,
+				FA18C5C92A394DAF00F071C6 /* ExploreAnnouncement.m */,
 			);
 			path = Mantle;
 			sourceTree = "<group>";
@@ -1992,6 +2003,8 @@
 				FA0F1AF91BBB410000533ED5 /* ObservationViewUploadingCell.h */,
 				FA0F1AFA1BBB410000533ED5 /* ObservationViewUploadingCell.m */,
 				FA0F1AFC1BBB411300533ED5 /* ObservationViewWaitingUploadCell.h */,
+				FA18C5C22A38F7E000F071C6 /* AnnouncementView.swift */,
+				FA1CEB2D2A40D1B300A570BC /* DismissAnnouncementCellView.swift */,
 				FA0F1AFD1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m */,
 				FA6B45041BC73F3700EDDD42 /* ObsFieldLongTextValueCell.h */,
 				FA6B45051BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m */,
@@ -2212,6 +2225,7 @@
 				FA9437821C869AA400CB10F3 /* ProjectsAPI.m */,
 				FA2552111D1F4D62005D2128 /* TaxaAPI.h */,
 				FA2552121D1F4D62005D2128 /* TaxaAPI.m */,
+				FA18C5C42A39075E00F071C6 /* AnnouncementsAPI.swift */,
 			);
 			path = "Node API";
 			sourceTree = "<group>";
@@ -2813,6 +2827,7 @@
 				FACCFE2E1A082139001A9684 /* DisambiguationCell.m in Sources */,
 				1997411115194E89006FBEA0 /* UploadManager.m in Sources */,
 				FA427EEF1ECD087F003B26C3 /* ExploreTaxonPhoto.m in Sources */,
+				FA1CEB2E2A40D1B300A570BC /* DismissAnnouncementCellView.swift in Sources */,
 				FAEF23541C7D2DC300208F44 /* ObserverCount.m in Sources */,
 				FA7591DA20F442930062DE7F /* SettingsVersionCell.m in Sources */,
 				FAD0890A23E4AD4F002D9F3C /* ExploreObservationRealm.m in Sources */,
@@ -2884,6 +2899,7 @@
 				FA4E730519FAD14E00A9AB5D /* ExploreGridViewController.m in Sources */,
 				FAB341F3247B531800992A80 /* MediaPickerViewController.swift in Sources */,
 				897569FF1B4557B500F0BFAD /* ObservationViewNormalCell.m in Sources */,
+				FA18C5CA2A394DAF00F071C6 /* ExploreAnnouncement.m in Sources */,
 				FA97666620D1E28F00D172DC /* AboutViewController.m in Sources */,
 				FA4E730619FAD14E00A9AB5D /* ExploreListViewController.m in Sources */,
 				FAC59DF520D9D8C2000A6558 /* UploadObservationOperation.m in Sources */,
@@ -2933,6 +2949,7 @@
 				FAFED1F91DB5A25C0015CCBA /* ExploreUserRealm.m in Sources */,
 				19D8342D17E7BBDC000A5C35 /* GuideTaxonViewController.m in Sources */,
 				FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */,
+				FA18C5C32A38F7E000F071C6 /* AnnouncementView.swift in Sources */,
 				FA0F1AFE1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m in Sources */,
 				19570CC417EB92D8000C800A /* GuideViewController.m in Sources */,
 				FACACA241BFD27D6002223D7 /* ObsDetailActivityViewModel.m in Sources */,
@@ -2951,6 +2968,7 @@
 				FA930F6D244FA582001B9D81 /* ExploreProjectObservation.m in Sources */,
 				FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */,
 				FAC415F625E2FB44002814C7 /* ExploreObservationSoundRealm.m in Sources */,
+				FA18C5C52A39075E00F071C6 /* AnnouncementsAPI.swift in Sources */,
 				FA60EA1423EA453D0026F7A3 /* PostsAPI.m in Sources */,
 				FA7C53511BCD9D3100A0D5AA /* ProjectObsFieldViewController.m in Sources */,
 				FACACA1E1BFD0CF7002223D7 /* PhotosPageControlCell.m in Sources */,
@@ -3414,7 +3432,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 679;
+				CURRENT_PROJECT_VERSION = 680;
 				DEVELOPMENT_TEAM = N5J7L4P93Z;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -3453,7 +3471,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 679;
+				CURRENT_PROJECT_VERSION = 680;
 				DEVELOPMENT_TEAM = N5J7L4P93Z;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

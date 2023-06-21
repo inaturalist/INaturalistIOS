@@ -48,7 +48,7 @@
 #import "iNaturalist-Swift.h"
 #import "Analytics.h"
 
-@interface ObservationsViewController () <UploadManagerNotificationDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, MFMailComposeViewControllerDelegate>
+@interface ObservationsViewController () <UploadManagerNotificationDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, MFMailComposeViewControllerDelegate, WKNavigationDelegate, WKUIDelegate>
 
 @property MeHeaderView *meHeader;
 @property AnonHeaderView *anonHeader;
@@ -61,6 +61,9 @@
 // this is kind of a hack because updates aren't directly attached to observations
 @property RLMResults *myUpdates;
 @property RLMNotificationToken *myUpdatesNoteToken;
+
+@property CGFloat calculatedAnnouncementWebViewHeight;
+@property ExploreAnnouncement *announcement;
 
 @end
 
@@ -80,6 +83,15 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _api = [[PeopleAPI alloc] init];
+    });
+    return _api;
+}
+
+- (AnnouncementsAPI *)announcementsApi {
+    static AnnouncementsAPI *_api = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _api = [[AnnouncementsAPI alloc] init];
     });
     return _api;
 }
@@ -617,16 +629,119 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // side effect in fetch sections - show or hide background/default view
     tableView.backgroundView.hidden = self.myObservations.count != 0;
-    return 1;
+
+    return 2;
 }
 
-# pragma mark TableViewController methods
+# pragma mark - Announcements
+
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+    if (self.calculatedAnnouncementWebViewHeight != 0.0f) { return; }
+
+    [webView evaluateJavaScript:@"document.readyState" completionHandler:^(id ready, NSError *error) {
+        if (ready != nil) {
+            [webView evaluateJavaScript:@"document.documentElement.scrollHeight" completionHandler:^(id height, NSError * error) {
+
+                dispatch_after(0.5f, dispatch_get_main_queue(), ^{
+                    self.calculatedAnnouncementWebViewHeight = [height floatValue];
+                    NSIndexPath *ip = [NSIndexPath indexPathForRow:0 inSection:0];
+                    [self.tableView reloadRowsAtIndexPaths:@[ ip ]
+                                          withRowAnimation:UITableViewRowAnimationTop];
+                });
+            }];
+        }
+
+    }];
+}
+
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+
+    if ([navigationAction.request.URL.absoluteString isEqualToString:@"about:blank"]) {
+        decisionHandler(WKNavigationActionPolicyAllow);
+    } else {
+        decisionHandler(WKNavigationActionPolicyCancel);
+
+        if ([[UIApplication sharedApplication] canOpenURL:navigationAction.request.URL]) {
+            [[UIApplication sharedApplication] openURL:navigationAction.request.URL
+                                               options:@{}
+                                     completionHandler:nil];
+        }
+    }
+}
+
+- (void)dismissActiveAnnouncement {
+    [[self announcementsApi] dismissAnnouncementWithId:self.announcement.announcementId done:^(NSArray *results, NSInteger count, NSError *error) {
+        [self fetchAnnouncements];
+    }];
+
+    // remove the announcmenet
+    self.announcement = nil;
+    // clear the announcement web view height
+    self.calculatedAnnouncementWebViewHeight= 0.0f;
+    // reload the table view
+    [self.tableView reloadData];
+}
+
+- (BOOL)showAnnouncementDismissButton {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+
+    return self.announcement != nil && appDelegate.loginController.isLoggedIn;
+}
+
+# pragma mark - TableViewController methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.myObservations.count;
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+
+    if (section == 0) {
+        if (self.announcement) {
+            if ([self showAnnouncementDismissButton]) {
+                return 2;
+            } else {
+                return 1;
+            }
+        } else {
+            return 0;
+        }
+    } else {
+        return self.myObservations.count;
+    }
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    if (section == 0) {
+        return 0;
+    } else {
+        return 10;
+    }
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+
+    if (indexPath.section == 0) {
+        if ([self showAnnouncementDismissButton] && indexPath.row == 0) {
+            DismissAnnouncementCellView *cell = [tableView dequeueReusableCellWithIdentifier:@"DismissAnnouncementCell"];
+
+            [cell.dismissButton setTitle:@"Dismiss" forState:UIControlStateNormal];
+            [cell.dismissButton addTarget:self
+                                   action:@selector(dismissActiveAnnouncement)
+                         forControlEvents:UIControlEventTouchUpInside];
+
+            cell.tintColor = [UIColor inatTint];
+            return cell;
+        } else {
+            AnnouncementView *cell = [tableView dequeueReusableCellWithIdentifier:@"AnnouncementCell"];
+
+            NSString *webContent = @"<head><meta name='viewport' content='width=device-width, shrink-to-fit=YES' initial-scale='1.0' maximum-scale='1.0' minimum-scale='1.0' user-scalable='no'></head>";
+            webContent = [webContent stringByAppendingString:self.announcement.body];
+            [cell.webView loadHTMLString:webContent baseURL:nil];
+            cell.contentView.backgroundColor = [UIColor whiteColor];
+            cell.webView.navigationDelegate = self;
+            return cell;
+        }
+    }
+
     ExploreObservationRealm *o;
     @try {
         o = [self.myObservations objectAtIndex:indexPath.item];
@@ -635,7 +750,6 @@
         return [tableView dequeueReusableCellWithIdentifier:@"ObservationNormalCell"];
     }
     
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     UploadManager *uploader = appDelegate.loginController.uploadManager;
     
     if (o.validationErrorMsg && o.validationErrorMsg.length > 0 && uploader.state == UploadManagerStateIdle) {
@@ -664,8 +778,29 @@
 
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.section == 1) {
+        return 54.0f;
+    } else {
+        if (self.announcement) {
+            if (self.announcement.dismissible) {
+                if (indexPath.row == 0) {
+                    return 44;
+                } else {
+                    return self.calculatedAnnouncementWebViewHeight + 10;
+                }
+            } else {
+                return self.calculatedAnnouncementWebViewHeight + 10;
+            }
+        } else {
+            return 0;
+        }
+    }
+}
+
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 54.0f;
 }
+
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -682,15 +817,23 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 100;
+    if (section == 0) {
+        return 100;
+    } else {
+        return 0;
+    }
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-    if (appDelegate.loggedIn) {
-        return self.meHeader;
+    if (section == 0) {
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if (appDelegate.loggedIn) {
+            return self.meHeader;
+        } else {
+            return self.anonHeader;
+        }
     } else {
-        return self.anonHeader;
+        return nil;
     }
 }
 
@@ -1038,6 +1181,9 @@
     // this notification can come in off the main thread
     // update the ui for the logged in user on the main thread
     dispatch_async(dispatch_get_main_queue(), ^{
+        self.announcement = nil;
+        [self fetchAnnouncements];
+
         // configure the header for this new user
         [self configureHeaderForLoggedInUser];
         
@@ -1062,6 +1208,9 @@
     // this notification can come in off the main thread
     // update the ui to reflect the logged out state
     dispatch_async(dispatch_get_main_queue(), ^{
+        self.announcement = nil;
+        [self fetchAnnouncements];
+
         self.navigationItem.title = NSLocalizedString(@"Me", @"Placeholder text for not logged title on me tab.");
         
         RLMSortDescriptor *createdAtSort = [RLMSortDescriptor sortDescriptorWithKeyPath:@"timeCreated" ascending:FALSE];
@@ -1141,6 +1290,7 @@
         self.navigationController.tabBarItem.title = NSLocalizedString(@"Me", nil);
         
         self.uploadProgress = [[NSMutableDictionary alloc] init];
+        self.calculatedAnnouncementWebViewHeight = 0.0f;
     }
     
     return self;
@@ -1187,7 +1337,7 @@
     [self.meHeader.iconButton addTarget:self
                                  action:@selector(meTapped:)
                        forControlEvents:UIControlEventTouchUpInside];
-    
+
     [self configureHeaderForLoggedInUser];
     
     self.tableView.backgroundView = ({
@@ -1457,6 +1607,21 @@
         self.navigationController.navigationBar.standardAppearance = appearance;
         self.navigationController.navigationBar.scrollEdgeAppearance = appearance;
     }
+
+    [self fetchAnnouncements];
+}
+
+- (void)fetchAnnouncements {
+    [[self announcementsApi] announcementsForUserWithDone:^(NSArray *results, NSInteger count, NSError *error) {
+        if ([results count] > 0) {
+            // TODO: per the spec we should filter by placement=mobile-home, but none of the examples have that, so no filtering for now
+            NSSortDescriptor *startDateSort = [[NSSortDescriptor alloc] initWithKey:@"startDate" ascending:YES];
+            NSArray *sortedResults = [results sortedArrayUsingDescriptors:@[ startDateSort ]];
+
+            self.announcement = [sortedResults firstObject];
+            [self.tableView reloadData];
+        }
+    }];
 }
 
 - (void)login {
