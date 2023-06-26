@@ -691,8 +691,6 @@
 
 # pragma mark - TableViewController methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-
     if (section == 0) {
         if (self.announcement) {
             if ([self showAnnouncementDismissButton]) {
