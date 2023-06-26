@@ -689,6 +689,11 @@
     return self.announcement != nil && self.announcement.dismissible && appDelegate.loginController.isLoggedIn;
 }
 
+- (void)clearActiveAnnouncements {
+    self.announcement = nil;
+    self.calculatedAnnouncementWebViewHeight = 0.0f;
+}
+
 # pragma mark - TableViewController methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (section == 0) {
@@ -1179,7 +1184,7 @@
     // this notification can come in off the main thread
     // update the ui for the logged in user on the main thread
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.announcement = nil;
+        [self clearActiveAnnouncements];
         [self fetchAnnouncements];
 
         // configure the header for this new user
@@ -1206,7 +1211,7 @@
     // this notification can come in off the main thread
     // update the ui to reflect the logged out state
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.announcement = nil;
+        [self clearActiveAnnouncements];
         [self fetchAnnouncements];
 
         self.navigationItem.title = NSLocalizedString(@"Me", @"Placeholder text for not logged title on me tab.");
