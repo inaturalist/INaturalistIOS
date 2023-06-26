@@ -686,7 +686,7 @@
 - (BOOL)showAnnouncementDismissButton {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 
-    return self.announcement != nil && appDelegate.loginController.isLoggedIn;
+    return self.announcement != nil && self.announcement.dismissible && appDelegate.loginController.isLoggedIn;
 }
 
 # pragma mark - TableViewController methods
