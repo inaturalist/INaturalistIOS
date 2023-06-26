@@ -780,7 +780,7 @@
         return 54.0f;
     } else {
         if (self.announcement) {
-            if (self.announcement.dismissible) {
+            if ([self showAnnouncementDismissButton]) {
                 if (indexPath.row == 0) {
                     return 44;
                 } else {
