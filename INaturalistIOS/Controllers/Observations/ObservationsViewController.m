@@ -797,10 +797,10 @@
                 if (indexPath.row == 0) {
                     return 44;
                 } else {
-                    return self.calculatedAnnouncementWebViewHeight + 10;
+                    return self.calculatedAnnouncementWebViewHeight;
                 }
             } else {
-                return self.calculatedAnnouncementWebViewHeight + 10;
+                return self.calculatedAnnouncementWebViewHeight;
             }
         } else {
             return 0;
