@@ -720,7 +720,8 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (section == 0) {
-        return 0;
+        // zero gives unexpected results
+        return 0.001;
     } else {
         return 10;
     }
@@ -811,7 +812,6 @@
     return 54.0f;
 }
 
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
@@ -830,7 +830,8 @@
     if (section == 0) {
         return 100;
     } else {
-        return 0;
+        // zero gives unexpected results
+        return 0.001f;
     }
 }
 
@@ -845,6 +846,10 @@
     } else {
         return nil;
     }
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    return nil;
 }
 
 #pragma mark - TableViewCell helpers
