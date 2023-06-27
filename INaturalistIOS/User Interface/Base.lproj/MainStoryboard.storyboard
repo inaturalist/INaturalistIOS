@@ -267,7 +267,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VIb-1P-Nif">
-                                            <rect key="frame" x="20" y="5" width="374" height="44"/>
+                                            <rect key="frame" x="-8" y="0.0" width="430" height="54"/>
                                             <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <wkWebViewConfiguration key="configuration">
                                                 <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
@@ -277,10 +277,10 @@
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
-                                        <constraint firstItem="VIb-1P-Nif" firstAttribute="top" secondItem="CtN-rC-Ric" secondAttribute="top" constant="5" id="Rot-lT-8XW"/>
-                                        <constraint firstItem="VIb-1P-Nif" firstAttribute="leading" secondItem="CtN-rC-Ric" secondAttribute="leading" constant="20" symbolic="YES" id="gZZ-p6-W4I"/>
-                                        <constraint firstAttribute="trailing" secondItem="VIb-1P-Nif" secondAttribute="trailing" constant="20" symbolic="YES" id="mV9-sN-xS3"/>
-                                        <constraint firstAttribute="bottom" secondItem="VIb-1P-Nif" secondAttribute="bottom" constant="5" id="uS6-1L-XzE"/>
+                                        <constraint firstItem="VIb-1P-Nif" firstAttribute="top" secondItem="CtN-rC-Ric" secondAttribute="top" id="Rot-lT-8XW"/>
+                                        <constraint firstItem="VIb-1P-Nif" firstAttribute="leading" secondItem="CtN-rC-Ric" secondAttribute="leadingMargin" constant="-28" id="gZZ-p6-W4I"/>
+                                        <constraint firstAttribute="trailing" secondItem="VIb-1P-Nif" secondAttribute="trailingMargin" id="mV9-sN-xS3"/>
+                                        <constraint firstAttribute="bottom" secondItem="VIb-1P-Nif" secondAttribute="bottom" id="uS6-1L-XzE"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
@@ -1162,7 +1162,7 @@
                             </connections>
                         </containerView>
                         <view key="tableFooterView" contentMode="scaleToFill" id="f67-4z-7Ei">
-                            <rect key="frame" x="0.0" y="685.33333015441906" width="414" height="65"/>
+                            <rect key="frame" x="0.0" y="685.33333015441895" width="414" height="65"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
                                 <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xXw-vv-sTU">
