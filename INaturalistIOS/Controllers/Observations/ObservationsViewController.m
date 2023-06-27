@@ -635,6 +635,18 @@
 
 # pragma mark - Announcements
 
+- (void)fetchAnnouncements {
+    [[self announcementsApi] announcementsForUserWithDone:^(NSArray *results, NSInteger count, NSError *error) {
+        if ([results count] > 0) {
+            // TODO: per the spec we should filter by placement=mobile-home, but none of the examples have that, so no filtering for now
+            NSSortDescriptor *startDateSort = [[NSSortDescriptor alloc] initWithKey:@"startDate" ascending:YES];
+            NSArray *sortedResults = [results sortedArrayUsingDescriptors:@[ startDateSort ]];
+
+            self.announcement = [sortedResults firstObject];
+            [self.tableView reloadData];
+        }
+    }];
+}
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     if (self.calculatedAnnouncementWebViewHeight != 0.0f) { return; }
@@ -1612,19 +1624,6 @@
     }
 
     [self fetchAnnouncements];
-}
-
-- (void)fetchAnnouncements {
-    [[self announcementsApi] announcementsForUserWithDone:^(NSArray *results, NSInteger count, NSError *error) {
-        if ([results count] > 0) {
-            // TODO: per the spec we should filter by placement=mobile-home, but none of the examples have that, so no filtering for now
-            NSSortDescriptor *startDateSort = [[NSSortDescriptor alloc] initWithKey:@"startDate" ascending:YES];
-            NSArray *sortedResults = [results sortedArrayUsingDescriptors:@[ startDateSort ]];
-
-            self.announcement = [sortedResults firstObject];
-            [self.tableView reloadData];
-        }
-    }];
 }
 
 - (void)login {
