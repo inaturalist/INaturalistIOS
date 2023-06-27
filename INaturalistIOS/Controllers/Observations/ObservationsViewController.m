@@ -446,14 +446,11 @@
 - (void)refreshData {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     if ([appDelegate.loginController isLoggedIn]) {
-        
         ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
         // fetch 10, quickly
         __weak typeof(self)weakSelf = self;
         [[self obsApi] observationsForUserId:me.userId count:10 handler:^(NSArray *results, NSInteger count, NSError *error) {
-            
-            [weakSelf.refreshControl endRefreshing];
-            
+
             RLMRealm *realm = [RLMRealm defaultRealm];
             [realm beginWriteTransaction];
             for (ExploreObservation *eo in results) {
@@ -462,26 +459,24 @@
                 [obs setSyncedForSelfAndChildrenAt:[NSDate date]];
             }
             [realm commitWriteTransaction];
+
+            // fetch 200 as well
+            [[weakSelf obsApi] observationsForUserId:me.userId count:200 handler:^(NSArray *results, NSInteger count, NSError *error) {
+                [weakSelf.refreshControl endRefreshing];
+
+                RLMRealm *realm = [RLMRealm defaultRealm];
+                [realm beginWriteTransaction];
+                for (ExploreObservation *eo in results) {
+                    id value = [ExploreObservationRealm valueForMantleModel:eo];
+                    ExploreObservationRealm *obs = [ExploreObservationRealm createOrUpdateInRealm:realm withValue:value];
+                    [obs setSyncedForSelfAndChildrenAt:[NSDate date]];
+                }
+                [realm commitWriteTransaction];
+
+                [weakSelf checkNewActivity];
+            }];
         }];
-        
-        
-        // fetch 200 as well
-        [[self obsApi] observationsForUserId:me.userId count:200 handler:^(NSArray *results, NSInteger count, NSError *error) {
-            
-            [weakSelf.refreshControl endRefreshing];
-            
-            RLMRealm *realm = [RLMRealm defaultRealm];
-            [realm beginWriteTransaction];
-            for (ExploreObservation *eo in results) {
-                id value = [ExploreObservationRealm valueForMantleModel:eo];
-                ExploreObservationRealm *obs = [ExploreObservationRealm createOrUpdateInRealm:realm withValue:value];
-                [obs setSyncedForSelfAndChildrenAt:[NSDate date]];
-            }
-            [realm commitWriteTransaction];
-            
-            [weakSelf checkNewActivity];
-        }];
-        
+
         [self loadUserForHeader];
         self.lastRefreshAt = [NSDate date];
     }
