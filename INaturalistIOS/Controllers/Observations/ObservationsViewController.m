@@ -67,6 +67,12 @@
 
 @end
 
+typedef NS_ENUM(NSInteger, ObservationsViewControllerSection) {
+    ObservationsViewControllerSectionAnnouncements = 0,
+    ObservationsViewControllerSectionObservations
+};
+
+
 @implementation ObservationsViewController
 
 - (ObservationAPI *)obsApi {
@@ -652,7 +658,8 @@
 
                 dispatch_after(0.5f, dispatch_get_main_queue(), ^{
                     self.calculatedAnnouncementWebViewHeight = [height floatValue];
-                    NSIndexPath *ip = [NSIndexPath indexPathForRow:0 inSection:0];
+                    NSIndexPath *ip = [NSIndexPath indexPathForRow:0
+                                                         inSection:ObservationsViewControllerSectionAnnouncements];
                     [self.tableView reloadRowsAtIndexPaths:@[ ip ]
                                           withRowAnimation:UITableViewRowAnimationTop];
                 });
@@ -703,7 +710,7 @@
 
 # pragma mark - TableViewController methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) {
+    if (section == ObservationsViewControllerSectionAnnouncements) {
         if (self.announcement) {
             if ([self showAnnouncementDismissButton]) {
                 return 2;
@@ -719,7 +726,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    if (section == 0) {
+    if (section == ObservationsViewControllerSectionAnnouncements) {
         // zero gives unexpected results
         return 0.001;
     } else {
@@ -827,7 +834,7 @@
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    if (section == 0) {
+    if (section == ObservationsViewControllerSectionAnnouncements) {
         return 100;
     } else {
         // zero gives unexpected results
@@ -836,7 +843,7 @@
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    if (section == 0) {
+    if (section == ObservationsViewControllerSectionAnnouncements) {
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
         if (appDelegate.loggedIn) {
             return self.meHeader;
@@ -1758,7 +1765,7 @@
     
     ExploreObservationRealm *o = [ExploreObservationRealm objectForPrimaryKey:observationUUID];
     NSIndexPath *ip = [NSIndexPath indexPathForItem:[self.myObservations indexOfObject:o]
-                                          inSection:0];
+                                          inSection:ObservationsViewControllerSectionObservations];
     if (ip) {
         [self.tableView reloadRowsAtIndexPaths:@[ ip ]
                               withRowAnimation:UITableViewRowAnimationNone];
@@ -1774,7 +1781,7 @@
     
     ExploreObservationRealm *o = [ExploreObservationRealm objectForPrimaryKey:observationUUID];
     NSIndexPath *ip = [NSIndexPath indexPathForItem:[self.myObservations indexOfObject:o]
-                                          inSection:0];
+                                          inSection:ObservationsViewControllerSectionObservations];
     if (ip) {
         [self.tableView reloadRowsAtIndexPaths:@[ ip ]
                               withRowAnimation:UITableViewRowAnimationNone];
@@ -1791,7 +1798,7 @@
     
     ExploreObservationRealm *o = [ExploreObservationRealm objectForPrimaryKey:observationUUID];
     NSIndexPath *ip = [NSIndexPath indexPathForItem:[self.myObservations indexOfObject:o]
-                                          inSection:0];
+                                          inSection:ObservationsViewControllerSectionObservations];
     
     if (ip && [self.tableView.indexPathsForVisibleRows containsObject:ip]) {
         [self.tableView reloadRowsAtIndexPaths:@[ ip ]
