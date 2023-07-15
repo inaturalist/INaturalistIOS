@@ -3,7 +3,7 @@
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -64,7 +64,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="Nvg-kJ-bxo">
-                                <rect key="frame" x="20" y="161.5" width="335" height="244.5"/>
+                                <rect key="frame" x="20" y="250" width="335" height="167.5"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img-logo" translatesAutoresizingMaskIntoConstraints="NO" id="287-Kd-BHQ">
                                         <rect key="frame" x="0.0" y="0.0" width="335" height="63"/>
@@ -81,9 +81,6 @@
                                         <color key="textColor" red="0.45490196078431372" green="0.67450980392156867" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cas-ngs-logos" translatesAutoresizingMaskIntoConstraints="NO" id="xY9-2P-uSM">
-                                        <rect key="frame" x="31.5" y="197.5" width="272" height="47"/>
-                                    </imageView>
                                 </subviews>
                             </stackView>
                         </subviews>
@@ -92,10 +89,8 @@
                         <constraints>
                             <constraint firstItem="nUh-hj-WsX" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="287-Kd-BHQ" secondAttribute="trailing" constant="20" id="H1b-7N-Rn6"/>
                             <constraint firstItem="Nvg-kJ-bxo" firstAttribute="centerX" secondItem="nUh-hj-WsX" secondAttribute="centerX" id="Rh8-cK-FaU"/>
-                            <constraint firstItem="nUh-hj-WsX" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="xY9-2P-uSM" secondAttribute="trailing" constant="35" id="UhX-n9-CtK"/>
-                            <constraint firstItem="Nvg-kJ-bxo" firstAttribute="centerY" secondItem="ZSy-K5-emj" secondAttribute="centerY" constant="-50" id="u8O-nP-tcv"/>
+                            <constraint firstItem="Nvg-kJ-bxo" firstAttribute="centerY" secondItem="ZSy-K5-emj" secondAttribute="centerY" id="u8O-nP-tcv"/>
                             <constraint firstItem="287-Kd-BHQ" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="nUh-hj-WsX" secondAttribute="leading" constant="20" id="z5D-Ii-VQf"/>
-                            <constraint firstItem="xY9-2P-uSM" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="nUh-hj-WsX" secondAttribute="leading" constant="35" id="zUM-hg-VPC"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -720,7 +715,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="cas-ngs-logos" width="272" height="47"/>
         <image name="img-contribute" width="304" height="290"/>
         <image name="img-discuss" width="304" height="290"/>
         <image name="img-identify" width="304" height="290"/>
