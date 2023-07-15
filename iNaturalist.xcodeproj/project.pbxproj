@@ -86,7 +86,7 @@
 		893FE7181B525BFD00BC7CC4 /* config.h.example in Resources */ = {isa = PBXBuildFile; fileRef = 893FE7171B525BFD00BC7CC4 /* config.h.example */; };
 		897569FF1B4557B500F0BFAD /* ObservationViewNormalCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 897569FE1B4557B500F0BFAD /* ObservationViewNormalCell.m */; };
 		899A00D41B53AADD0079162F /* ProjectTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 899A00D31B53AADD0079162F /* ProjectTableViewCell.m */; };
-		A2622E4CB5BC08A30E072B34 /* Pods_iNaturalistTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 408F4BA3E82F358A110997B1 /* Pods_iNaturalistTests.framework */; };
+		D6A1515879F073EBBF292015 /* Pods_iNaturalistTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA81680C3DE6F050FA603C19 /* Pods_iNaturalistTests.framework */; };
 		FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */; };
 		FA067F601DBACF0A00CBA5EF /* UpdatesItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA067F5F1DBACF0A00CBA5EF /* UpdatesItemCell.m */; };
 		FA0F1AF81BBB2E9600533ED5 /* ObservationValidationErrorView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */; };
@@ -344,7 +344,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		FADE28B61B02D9AA00CA55FF /* PBXContainerItemProxy */ = {
+		FA5ED3302A622801001DB731 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1927512A14E9CCC8000ABAC4 /* Project object */;
 			proxyType = 1;
@@ -482,9 +482,6 @@
 		19F8749A152684DF00A65F9A /* TaxonOneNameTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TaxonOneNameTableViewCell.xib; sourceTree = "<group>"; };
 		19F8749C1526850100A65F9A /* TaxonTwoNameTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TaxonTwoNameTableViewCell.xib; sourceTree = "<group>"; };
 		19FFA16F191D82CE000A6EBA /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
-		27F578FDE9FB0194B5FA7570 /* Pods-iNaturalistTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNaturalistTests.debug.xcconfig"; path = "Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests.debug.xcconfig"; sourceTree = "<group>"; };
-		38D9B4ACB70AA7FFA70A3FDB /* Pods-iNaturalistTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNaturalistTests.release.xcconfig"; path = "Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests.release.xcconfig"; sourceTree = "<group>"; };
-		408F4BA3E82F358A110997B1 /* Pods_iNaturalistTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iNaturalistTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4685D6B71187C541838D8E2A /* Pods-iNaturalist.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNaturalist.debug.xcconfig"; path = "Target Support Files/Pods-iNaturalist/Pods-iNaturalist.debug.xcconfig"; sourceTree = "<group>"; };
 		6098FD1416F3BE270053987E /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		6098FD1616F3BE4C0053987E /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
@@ -503,6 +500,9 @@
 		899A00D31B53AADD0079162F /* ProjectTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectTableViewCell.m; sourceTree = "<group>"; };
 		8B1A5574197F758EC529C057 /* Pods-iNaturalist.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNaturalist.release.xcconfig"; path = "Target Support Files/Pods-iNaturalist/Pods-iNaturalist.release.xcconfig"; sourceTree = "<group>"; };
 		9D3C51632D83AE64C4C0A2EB /* Pods_iNaturalist.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iNaturalist.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA81680C3DE6F050FA603C19 /* Pods_iNaturalistTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iNaturalistTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B93F2A5F006C2E07398D7D83 /* Pods-iNaturalistTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNaturalistTests.release.xcconfig"; path = "Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests.release.xcconfig"; sourceTree = "<group>"; };
+		BE735E1A6BFFE471B3AD72E1 /* Pods-iNaturalistTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iNaturalistTests.debug.xcconfig"; path = "Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests.debug.xcconfig"; sourceTree = "<group>"; };
 		CAF65CB214F5CAC9003D63BB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		FA0069211A0C51F600C64F28 /* MKMapView+ZoomLevel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MKMapView+ZoomLevel.h"; sourceTree = "<group>"; };
 		FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "MKMapView+ZoomLevel.m"; sourceTree = "<group>"; };
@@ -764,6 +764,7 @@
 		FA5BC6F91C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailQualityDetailsFooter.h; sourceTree = "<group>"; };
 		FA5BC6FA1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailQualityDetailsFooter.m; sourceTree = "<group>"; };
 		FA5DF20A28483E9400F2B014 /* ConsentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentViewController.swift; sourceTree = "<group>"; };
+		FA5ED3322A6228BA001DB731 /* iNaturalist.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = iNaturalist.xctestplan; path = ../iNaturalist.xctestplan; sourceTree = "<group>"; };
 		FA60A4441B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITapGestureRecognizer+InatHelpers.h"; sourceTree = "<group>"; };
 		FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITapGestureRecognizer+InatHelpers.m"; sourceTree = "<group>"; };
 		FA60EA0F23EA3F7F0026F7A3 /* ExplorePost.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExplorePost.h; sourceTree = "<group>"; };
@@ -897,7 +898,6 @@
 		FA89FF221AFD4A8B00B0611A /* INatPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatPhoto.h; sourceTree = "<group>"; };
 		FA8A0E0A25E1C3F9006CA8A4 /* NSDate+INaturalist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDate+INaturalist.h"; sourceTree = "<group>"; };
 		FA8A0E0B25E1C3F9006CA8A4 /* NSDate+INaturalist.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDate+INaturalist.m"; sourceTree = "<group>"; };
-		FA8A0E5225E1D98F006CA8A4 /* English */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/TaxaRanks.strings; sourceTree = "<group>"; };
 		FA8A0E5625E1D99A006CA8A4 /* ca-ES */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ca-ES"; path = "ca-ES.lproj/TaxaRanks.strings"; sourceTree = "<group>"; };
 		FA8A0E5725E1D99B006CA8A4 /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/TaxaRanks.strings; sourceTree = "<group>"; };
 		FA8A0E5825E1D99B006CA8A4 /* zh-Hant-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant-HK"; path = "zh-Hant-HK.lproj/TaxaRanks.strings"; sourceTree = "<group>"; };
@@ -1263,7 +1263,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A2622E4CB5BC08A30E072B34 /* Pods_iNaturalistTests.framework in Frameworks */,
+				D6A1515879F073EBBF292015 /* Pods_iNaturalistTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1283,6 +1283,7 @@
 		1927512814E9CCC8000ABAC4 = {
 			isa = PBXGroup;
 			children = (
+				FA5ED3322A6228BA001DB731 /* iNaturalist.xctestplan */,
 				FA0600691DCEE1700025473C /* iNaturalist.entitlements */,
 				1927513D14E9CCC9000ABAC4 /* INaturalist */,
 				FADE28B11B02D9AA00CA55FF /* iNaturalistTests */,
@@ -1325,7 +1326,7 @@
 				1927513914E9CCC9000ABAC4 /* Foundation.framework */,
 				1927513B14E9CCC9000ABAC4 /* CoreGraphics.framework */,
 				9D3C51632D83AE64C4C0A2EB /* Pods_iNaturalist.framework */,
-				408F4BA3E82F358A110997B1 /* Pods_iNaturalistTests.framework */,
+				AA81680C3DE6F050FA603C19 /* Pods_iNaturalistTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1383,8 +1384,8 @@
 			children = (
 				4685D6B71187C541838D8E2A /* Pods-iNaturalist.debug.xcconfig */,
 				8B1A5574197F758EC529C057 /* Pods-iNaturalist.release.xcconfig */,
-				27F578FDE9FB0194B5FA7570 /* Pods-iNaturalistTests.debug.xcconfig */,
-				38D9B4ACB70AA7FFA70A3FDB /* Pods-iNaturalistTests.release.xcconfig */,
+				BE735E1A6BFFE471B3AD72E1 /* Pods-iNaturalistTests.debug.xcconfig */,
+				B93F2A5F006C2E07398D7D83 /* Pods-iNaturalistTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -2366,15 +2367,16 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = FADE28B81B02D9AA00CA55FF /* Build configuration list for PBXNativeTarget "iNaturalistTests" */;
 			buildPhases = (
-				71CE36812E5763A842EFE7C4 /* [CP] Check Pods Manifest.lock */,
+				04F9B1A48CD2B0A3C2EE8CEC /* [CP] Check Pods Manifest.lock */,
 				FADE28AC1B02D9AA00CA55FF /* Sources */,
 				FADE28AD1B02D9AA00CA55FF /* Frameworks */,
 				FADE28AE1B02D9AA00CA55FF /* Resources */,
+				53628B6B4DEDB7F3704CE453 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				FADE28B71B02D9AA00CA55FF /* PBXTargetDependency */,
+				FA5ED3312A622801001DB731 /* PBXTargetDependency */,
 			);
 			name = iNaturalistTests;
 			productName = iNaturalistTests;
@@ -2387,7 +2389,8 @@
 		1927512A14E9CCC8000ABAC4 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1250;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
 				ORGANIZATIONNAME = iNaturalist;
 				TargetAttributes = {
 					1927513214E9CCC9000ABAC4 = {
@@ -2411,10 +2414,9 @@
 			};
 			buildConfigurationList = 1927512D14E9CCC8000ABAC4 /* Build configuration list for PBXProject "iNaturalist" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				es,
 				Base,
@@ -2520,6 +2522,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		04F9B1A48CD2B0A3C2EE8CEC /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-iNaturalistTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		11CB1AEAC0AE6F2A3C48C7F6 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2632,26 +2656,22 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iNaturalist/Pods-iNaturalist-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		71CE36812E5763A842EFE7C4 /* [CP] Check Pods Manifest.lock */ = {
+		53628B6B4DEDB7F3704CE453 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
+				"${PODS_ROOT}/Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/OCMock/OCMock.framework",
 			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-iNaturalistTests-checkManifestLockResult.txt",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OCMock.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iNaturalistTests/Pods-iNaturalistTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		8853FDCD18D757A1AB83E5F8 /* [CP] Check Pods Manifest.lock */ = {
@@ -3005,10 +3025,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		FADE28B71B02D9AA00CA55FF /* PBXTargetDependency */ = {
+		FA5ED3312A622801001DB731 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1927513214E9CCC9000ABAC4 /* iNaturalist */;
-			targetProxy = FADE28B61B02D9AA00CA55FF /* PBXContainerItemProxy */;
+			targetProxy = FA5ED3302A622801001DB731 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -3242,7 +3262,6 @@
 		FA8A0E5325E1D98F006CA8A4 /* TaxaRanks.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				FA8A0E5225E1D98F006CA8A4 /* English */,
 				FA8A0E5625E1D99A006CA8A4 /* ca-ES */,
 				FA8A0E5725E1D99B006CA8A4 /* bg */,
 				FA8A0E5825E1D99B006CA8A4 /* zh-Hant-HK */,
@@ -3503,98 +3522,27 @@
 		};
 		FADE28B91B02D9AA00CA55FF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 27F578FDE9FB0194B5FA7570 /* Pods-iNaturalistTests.debug.xcconfig */;
+			baseConfigurationReference = BE735E1A6BFFE471B3AD72E1 /* Pods-iNaturalistTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = iNaturalistTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.inaturalist.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iNaturalist.app/iNaturalist";
+				PRODUCT_NAME = iNaturalistTests;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iNaturalist.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/iNaturalist";
 			};
 			name = Debug;
 		};
 		FADE28BA1B02D9AA00CA55FF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 38D9B4ACB70AA7FFA70A3FDB /* Pods-iNaturalistTests.release.xcconfig */;
+			baseConfigurationReference = B93F2A5F006C2E07398D7D83 /* Pods-iNaturalistTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = iNaturalistTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.inaturalist.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iNaturalist.app/iNaturalist";
+				PRODUCT_NAME = iNaturalistTests;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iNaturalist.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/iNaturalist";
 			};
 			name = Release;
 		};

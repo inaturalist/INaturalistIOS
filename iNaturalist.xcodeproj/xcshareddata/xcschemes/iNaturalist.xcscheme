@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1250"
+   LastUpgradeVersion = "1430"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -36,13 +36,19 @@
             ReferencedContainer = "container:iNaturalist.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
+      <TestPlans>
+         <TestPlanReference
+            reference = "container:../iNaturalist.xctestplan"
+            default = "YES">
+         </TestPlanReference>
+      </TestPlans>
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FADE28AF1B02D9AA00CA55FF"
-               BuildableName = "iNaturalistTests.xctest"
+               BuildableName = ".xctest"
                BlueprintName = "iNaturalistTests"
                ReferencedContainer = "container:iNaturalist.xcodeproj">
             </BuildableReference>
