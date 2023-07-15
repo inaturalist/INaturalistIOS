@@ -446,14 +446,11 @@
 - (void)refreshData {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
     if ([appDelegate.loginController isLoggedIn]) {
-        
         ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
         // fetch 10, quickly
         __weak typeof(self)weakSelf = self;
         [[self obsApi] observationsForUserId:me.userId count:10 handler:^(NSArray *results, NSInteger count, NSError *error) {
-            
-            [weakSelf.refreshControl endRefreshing];
-            
+
             RLMRealm *realm = [RLMRealm defaultRealm];
             [realm beginWriteTransaction];
             for (ExploreObservation *eo in results) {
@@ -462,26 +459,24 @@
                 [obs setSyncedForSelfAndChildrenAt:[NSDate date]];
             }
             [realm commitWriteTransaction];
+
+            // fetch 200 as well
+            [[weakSelf obsApi] observationsForUserId:me.userId count:200 handler:^(NSArray *results, NSInteger count, NSError *error) {
+                [weakSelf.refreshControl endRefreshing];
+
+                RLMRealm *realm = [RLMRealm defaultRealm];
+                [realm beginWriteTransaction];
+                for (ExploreObservation *eo in results) {
+                    id value = [ExploreObservationRealm valueForMantleModel:eo];
+                    ExploreObservationRealm *obs = [ExploreObservationRealm createOrUpdateInRealm:realm withValue:value];
+                    [obs setSyncedForSelfAndChildrenAt:[NSDate date]];
+                }
+                [realm commitWriteTransaction];
+
+                [weakSelf checkNewActivity];
+            }];
         }];
-        
-        
-        // fetch 200 as well
-        [[self obsApi] observationsForUserId:me.userId count:200 handler:^(NSArray *results, NSInteger count, NSError *error) {
-            
-            [weakSelf.refreshControl endRefreshing];
-            
-            RLMRealm *realm = [RLMRealm defaultRealm];
-            [realm beginWriteTransaction];
-            for (ExploreObservation *eo in results) {
-                id value = [ExploreObservationRealm valueForMantleModel:eo];
-                ExploreObservationRealm *obs = [ExploreObservationRealm createOrUpdateInRealm:realm withValue:value];
-                [obs setSyncedForSelfAndChildrenAt:[NSDate date]];
-            }
-            [realm commitWriteTransaction];
-            
-            [weakSelf checkNewActivity];
-        }];
-        
+
         [self loadUserForHeader];
         self.lastRefreshAt = [NSDate date];
     }
@@ -635,6 +630,18 @@
 
 # pragma mark - Announcements
 
+- (void)fetchAnnouncements {
+    [[self announcementsApi] announcementsForUserWithDone:^(NSArray *results, NSInteger count, NSError *error) {
+        if ([results count] > 0) {
+            // TODO: per the spec we should filter by placement=mobile-home, but none of the examples have that, so no filtering for now
+            NSSortDescriptor *startDateSort = [[NSSortDescriptor alloc] initWithKey:@"startDate" ascending:YES];
+            NSArray *sortedResults = [results sortedArrayUsingDescriptors:@[ startDateSort ]];
+
+            self.announcement = [sortedResults firstObject];
+            [self.tableView reloadData];
+        }
+    }];
+}
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     if (self.calculatedAnnouncementWebViewHeight != 0.0f) { return; }
@@ -686,13 +693,16 @@
 - (BOOL)showAnnouncementDismissButton {
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
 
-    return self.announcement != nil && appDelegate.loginController.isLoggedIn;
+    return self.announcement != nil && self.announcement.dismissible && appDelegate.loginController.isLoggedIn;
+}
+
+- (void)clearActiveAnnouncements {
+    self.announcement = nil;
+    self.calculatedAnnouncementWebViewHeight = 0.0f;
 }
 
 # pragma mark - TableViewController methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
-
     if (section == 0) {
         if (self.announcement) {
             if ([self showAnnouncementDismissButton]) {
@@ -710,7 +720,8 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
     if (section == 0) {
-        return 0;
+        // zero gives unexpected results
+        return 0.001;
     } else {
         return 10;
     }
@@ -782,14 +793,14 @@
         return 54.0f;
     } else {
         if (self.announcement) {
-            if (self.announcement.dismissible) {
+            if ([self showAnnouncementDismissButton]) {
                 if (indexPath.row == 0) {
                     return 44;
                 } else {
-                    return self.calculatedAnnouncementWebViewHeight + 10;
+                    return self.calculatedAnnouncementWebViewHeight;
                 }
             } else {
-                return self.calculatedAnnouncementWebViewHeight + 10;
+                return self.calculatedAnnouncementWebViewHeight;
             }
         } else {
             return 0;
@@ -800,7 +811,6 @@
 - (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 54.0f;
 }
-
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -820,7 +830,8 @@
     if (section == 0) {
         return 100;
     } else {
-        return 0;
+        // zero gives unexpected results
+        return 0.001f;
     }
 }
 
@@ -835,6 +846,10 @@
     } else {
         return nil;
     }
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    return nil;
 }
 
 #pragma mark - TableViewCell helpers
@@ -1181,7 +1196,7 @@
     // this notification can come in off the main thread
     // update the ui for the logged in user on the main thread
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.announcement = nil;
+        [self clearActiveAnnouncements];
         [self fetchAnnouncements];
 
         // configure the header for this new user
@@ -1208,7 +1223,7 @@
     // this notification can come in off the main thread
     // update the ui to reflect the logged out state
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.announcement = nil;
+        [self clearActiveAnnouncements];
         [self fetchAnnouncements];
 
         self.navigationItem.title = NSLocalizedString(@"Me", @"Placeholder text for not logged title on me tab.");
@@ -1609,19 +1624,6 @@
     }
 
     [self fetchAnnouncements];
-}
-
-- (void)fetchAnnouncements {
-    [[self announcementsApi] announcementsForUserWithDone:^(NSArray *results, NSInteger count, NSError *error) {
-        if ([results count] > 0) {
-            // TODO: per the spec we should filter by placement=mobile-home, but none of the examples have that, so no filtering for now
-            NSSortDescriptor *startDateSort = [[NSSortDescriptor alloc] initWithKey:@"startDate" ascending:YES];
-            NSArray *sortedResults = [results sortedArrayUsingDescriptors:@[ startDateSort ]];
-
-            self.announcement = [sortedResults firstObject];
-            [self.tableView reloadData];
-        }
-    }];
 }
 
 - (void)login {

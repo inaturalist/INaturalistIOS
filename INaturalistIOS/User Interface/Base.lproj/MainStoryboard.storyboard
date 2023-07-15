@@ -3,7 +3,7 @@
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -267,7 +267,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VIb-1P-Nif">
-                                            <rect key="frame" x="20" y="5" width="374" height="44"/>
+                                            <rect key="frame" x="-8" y="0.0" width="430" height="54"/>
                                             <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <wkWebViewConfiguration key="configuration">
                                                 <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
@@ -277,10 +277,10 @@
                                     </subviews>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
-                                        <constraint firstItem="VIb-1P-Nif" firstAttribute="top" secondItem="CtN-rC-Ric" secondAttribute="top" constant="5" id="Rot-lT-8XW"/>
-                                        <constraint firstItem="VIb-1P-Nif" firstAttribute="leading" secondItem="CtN-rC-Ric" secondAttribute="leading" constant="20" symbolic="YES" id="gZZ-p6-W4I"/>
-                                        <constraint firstAttribute="trailing" secondItem="VIb-1P-Nif" secondAttribute="trailing" constant="20" symbolic="YES" id="mV9-sN-xS3"/>
-                                        <constraint firstAttribute="bottom" secondItem="VIb-1P-Nif" secondAttribute="bottom" constant="5" id="uS6-1L-XzE"/>
+                                        <constraint firstItem="VIb-1P-Nif" firstAttribute="top" secondItem="CtN-rC-Ric" secondAttribute="top" id="Rot-lT-8XW"/>
+                                        <constraint firstItem="VIb-1P-Nif" firstAttribute="leading" secondItem="CtN-rC-Ric" secondAttribute="leadingMargin" constant="-28" id="gZZ-p6-W4I"/>
+                                        <constraint firstAttribute="trailing" secondItem="VIb-1P-Nif" secondAttribute="trailingMargin" id="mV9-sN-xS3"/>
+                                        <constraint firstAttribute="bottom" secondItem="VIb-1P-Nif" secondAttribute="bottom" id="uS6-1L-XzE"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
