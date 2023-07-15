@@ -166,6 +166,7 @@
 		FA5BC6F61C3C7FD0008FCD43 /* NSFileManager+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5BC6F51C3C7FD0008FCD43 /* NSFileManager+INaturalist.m */; };
 		FA5BC6FB1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5BC6FA1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m */; };
 		FA5DF20B28483E9400F2B014 /* ConsentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5DF20A28483E9400F2B014 /* ConsentViewController.swift */; };
+		FA5ED3342A623637001DB731 /* LocaleExtensionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5ED3332A623637001DB731 /* LocaleExtensionTests.m */; };
 		FA60A4461B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */; };
 		FA60EA1123EA3F7F0026F7A3 /* ExplorePost.m in Sources */ = {isa = PBXBuildFile; fileRef = FA60EA1023EA3F7F0026F7A3 /* ExplorePost.m */; };
 		FA60EA1423EA453D0026F7A3 /* PostsAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = FA60EA1323EA453D0026F7A3 /* PostsAPI.m */; };
@@ -765,6 +766,7 @@
 		FA5BC6FA1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailQualityDetailsFooter.m; sourceTree = "<group>"; };
 		FA5DF20A28483E9400F2B014 /* ConsentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentViewController.swift; sourceTree = "<group>"; };
 		FA5ED3322A6228BA001DB731 /* iNaturalist.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = iNaturalist.xctestplan; path = ../iNaturalist.xctestplan; sourceTree = "<group>"; };
+		FA5ED3332A623637001DB731 /* LocaleExtensionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocaleExtensionTests.m; sourceTree = "<group>"; };
 		FA60A4441B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITapGestureRecognizer+InatHelpers.h"; sourceTree = "<group>"; };
 		FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITapGestureRecognizer+InatHelpers.m"; sourceTree = "<group>"; };
 		FA60EA0F23EA3F7F0026F7A3 /* ExplorePost.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExplorePost.h; sourceTree = "<group>"; };
@@ -2335,6 +2337,7 @@
 			children = (
 				FAF73BE31E1B2472002456AF /* PartnerTests.m */,
 				FA6F81D81E733ECE00135C5E /* ImageStoreTests.m */,
+				FA5ED3332A623637001DB731 /* LocaleExtensionTests.m */,
 			);
 			name = Misc;
 			sourceTree = "<group>";
@@ -3013,6 +3016,7 @@
 				FA81DF0E1E6F73A9006E7132 /* ObsDetailViewModelTests.m in Sources */,
 				FA3D1E8B21DA94AA00673936 /* ExploreProjectTests.m in Sources */,
 				FAF73BE41E1B2472002456AF /* PartnerTests.m in Sources */,
+				FA5ED3342A623637001DB731 /* LocaleExtensionTests.m in Sources */,
 				FA6513371E04A03B0059FD70 /* NewsItemTests.m in Sources */,
 				FA6F81D11E7241F000135C5E /* ExploreObservationTests.m in Sources */,
 				FAEB5C132069A5B400BA3132 /* LoginSwitchContextButtonTests.m in Sources */,

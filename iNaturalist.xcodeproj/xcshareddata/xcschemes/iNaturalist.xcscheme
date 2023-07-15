@@ -48,7 +48,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FADE28AF1B02D9AA00CA55FF"
-               BuildableName = ".xctest"
+               BuildableName = "iNaturalistTests.xctest"
                BlueprintName = "iNaturalistTests"
                ReferencedContainer = "container:iNaturalist.xcodeproj">
             </BuildableReference>
@@ -60,8 +60,8 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       enableASanStackUseAfterReturn = "YES"
-      language = "en"
-      region = "US"
+      language = "zh-Hans"
+      region = "SG"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
