@@ -190,6 +190,7 @@ PODS:
   - nanopb/encode (2.30909.0)
   - NSString_stripHtml (0.1.0)
   - NXOAuth2Client (1.2.8)
+  - OCMock (3.9.1)
   - PBRevealViewController (1.3.5):
     - PBRevealViewController/ObjC (= 1.3.5)
   - PBRevealViewController/ObjC (1.3.5)
@@ -235,6 +236,7 @@ DEPENDENCIES:
   - MHVideoPhotoGallery (from `https://github.com/alexshepard/MHVideoPhotoGallery`, commit `0a343f12b60c8719a280db73b1e2b6d25fef164a`)
   - NSString_stripHtml (= 0.1.0)
   - NXOAuth2Client (from `https://github.com/inaturalist/OAuth2Client`, branch `iNat`)
+  - OCMock
   - PBRevealViewController
   - PDKTStickySectionHeadersCollectionViewLayout (= 0.1)
   - RaptureXML (= 1.0.1)
@@ -282,6 +284,7 @@ SPEC REPOS:
     - MBProgressHUD
     - nanopb
     - NSString_stripHtml
+    - OCMock
     - PBRevealViewController
     - PDKTStickySectionHeadersCollectionViewLayout
     - PromisesObjC
@@ -367,6 +370,7 @@ SPEC CHECKSUMS:
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   NSString_stripHtml: ba10acfb1c0f7f687055f8e4300a8a78e142f1ea
   NXOAuth2Client: 89ea741e47b810597314ea425560e50d5aa1364b
+  OCMock: 9491e4bec59e0b267d52a9184ff5605995e74be8
   PBRevealViewController: dea8c21b8ca00d4aed0f8bfb102882eead6e5c18
   PDKTStickySectionHeadersCollectionViewLayout: bedcfc09fa44ae3e232eab421c31286e3d2856ed
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
@@ -381,6 +385,6 @@ SPEC CHECKSUMS:
   VTAcknowledgementsViewController: 575f5841fb47b7d9c852ccb406104ea68de07b21
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: abd649ca32b2f72d5627fd0e804c312176e6f116
+PODFILE CHECKSUM: ce861caca790e756a62c38b91d15fd98fbe6cced
 
 COCOAPODS: 1.12.0
