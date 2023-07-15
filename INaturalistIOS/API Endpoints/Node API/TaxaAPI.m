@@ -131,9 +131,7 @@
     components.path = [NSString stringWithFormat:@"/v1/computervision/score_observation/%ld", (long)observationId];;
     
     // add locale to the request
-    NSString *localeIdentifier = [[NSLocale currentLocale] localeIdentifier];
-    // node expects locales like fr-FR not fr_FR
-    NSString *serverLocaleIdentifier = [localeIdentifier stringByReplacingOccurrencesOfString:@"_" withString:@"-"];
+    NSString *serverLocaleIdentifier = [[NSLocale currentLocale] inat_serverFormattedLocale];
     NSURLQueryItem *localeQueryItem = [NSURLQueryItem queryItemWithName:@"locale" value:serverLocaleIdentifier];
     if (components.queryItems) {
         components.queryItems = [components.queryItems arrayByAddingObject:localeQueryItem];
@@ -212,9 +210,7 @@
     NSData *imageData = UIImageJPEGRepresentation(thumb, 0.9);
     
     // add locale to the request
-    NSString *localeIdentifier = [[NSLocale currentLocale] localeIdentifier];
-    // node expects locales like fr-FR not fr_FR
-    NSString *serverLocaleIdentifier = [localeIdentifier stringByReplacingOccurrencesOfString:@"_" withString:@"-"];
+    NSString *serverLocaleIdentifier = [[NSLocale currentLocale] inat_serverFormattedLocale];
     params[@"locale"] = serverLocaleIdentifier;
     
     // use afnetworking to deal with icky multi-part forms

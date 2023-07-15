@@ -23,6 +23,7 @@
 #import "PeopleAPI.h"
 #import "ExploreUserRealm.h"
 #import "ExploreTaxonRealm.h"
+#import "NSLocale+INaturalist.h"
 
 static const NSTimeInterval LocalMeUserValidTimeInterval = 600;
 
@@ -94,10 +95,9 @@ NSInteger INatMinPasswordLength = 6;
                       username:(NSString *)username
                           site:(NSInteger)siteId
                        license:(NSString *)license {
-    
-    NSString *localeString = [[NSLocale currentLocale] localeIdentifier];
-    // format for rails
-    localeString = [localeString stringByReplacingOccurrencesOfString:@"_" withString:@"-"];
+
+    NSString *localeString = [[NSLocale currentLocale] inat_serverFormattedLocale];
+
     // default to english
     if (!localeString) { localeString = @"en-US"; }
 

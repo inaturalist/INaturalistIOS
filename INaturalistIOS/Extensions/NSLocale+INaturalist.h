@@ -10,6 +10,6 @@
 
 @interface NSLocale (INaturalist)
 
-+ (NSString *)inat_serverFormattedLocale;
+- (NSString *)inat_serverFormattedLocale;
 
 @end

@@ -44,9 +44,7 @@
         components.query = query;
     }
     
-    NSString *localeIdentifier = [[NSLocale currentLocale] localeIdentifier];
-    // node expects locales like fr-FR not fr_FR
-    NSString *serverLocaleIdentifier = [localeIdentifier stringByReplacingOccurrencesOfString:@"_" withString:@"-"];
+    NSString *serverLocaleIdentifier = [[NSLocale currentLocale] inat_serverFormattedLocale];
     NSURLQueryItem *localeQueryItem = [NSURLQueryItem queryItemWithName:@"locale" value:serverLocaleIdentifier];
     if (components.queryItems) {
         components.queryItems = [components.queryItems arrayByAddingObject:localeQueryItem];
