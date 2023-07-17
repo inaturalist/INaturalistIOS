@@ -1,23 +1,23 @@
 {
   "images" : [
     {
+      "filename" : "iOS-SplashScreen-Bird.png",
       "idiom" : "universal",
-      "filename" : "iOS-Tutorial-JointInitiative.png",
       "scale" : "1x"
     },
     {
+      "filename" : "iOS-SplashScreen-Bird@2x.png",
       "idiom" : "universal",
-      "filename" : "iOS-Tutorial-JointInitiative@2x.png",
       "scale" : "2x"
     },
     {
+      "filename" : "iOS-SplashScreen-Bird@3x.png",
       "idiom" : "universal",
-      "filename" : "iOS-Tutorial-JointInitiative@3x.png",
       "scale" : "3x"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }

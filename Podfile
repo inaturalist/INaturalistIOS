@@ -41,8 +41,9 @@ target :iNaturalist do
   pod 'Down', :git => 'https://github.com/ocshing/Down-gfm'
   pod 'SimpleKeychain', '0.12.5'
 
-  target :iNaturalistTests do
+  target 'iNaturalistTests' do
     inherit! :search_paths
+    pod 'OCMock'
   end
 end
 

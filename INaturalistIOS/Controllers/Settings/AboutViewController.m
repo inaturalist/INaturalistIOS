@@ -27,13 +27,13 @@
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     AboutHeaderView *header = [AboutHeaderView fromXib];
 
-    header.headerTitleLabel.text = NSLocalizedString(@"iNaturalist is a joint initiative of the California Academy of Sciences and the National Geographic Society", @"inat joint initiative statement");
+    header.headerTitleLabel.text = NSLocalizedString(@"iNaturalist is an independent 501(c)(3) nonprofit based in the United States (EIN 92-1296468)", @"inat independent org statement");
     
     NSString *bodyText = [NSString stringWithFormat:@"%@\n\n",
                           NSLocalizedString(@"Credits",
                                             @"intro to credits section.")];
     bodyText = [bodyText stringByAppendingFormat:@"%@\n\n",
-                NSLocalizedString(@"iNaturalist exists thanks to every single person who participates in our community. The people who build the software, design the interfaces, maintain our infrastructure, support the community, and foster collaborations are Yaron Budowski, Amanda Bullington, Tony Iwane, Johannes Klein, Patrick Leary, Scott Loarie, Abhas Misraraj, Carrie Seltzer, Alex Shepard, Angie Ta, and Ken-ichi Ueda.",
+                NSLocalizedString(@"iNaturalist exists thanks to every single person who participates in our community. The people who build the software, design the interfaces, maintain our infrastructure, support the community, and foster collaborations are Yaron Budowski, Amanda Bullington, Tony Iwane, Johannes Klein, Patrick Leary, Scott Loarie, Abhas Misraraj, Sylvain Morin, Carrie Seltzer, Alex Shepard, Angie Ta, and Ken-ichi Ueda.",
                                   @"inat core team, alphabetically")];
     bodyText = [bodyText stringByAppendingFormat:@"%@\n\n",
                 NSLocalizedString(@"CalTech and Cornell Tech helped develop the computer vision system that suggests identifications from photographs. We thank Grant Van Horn, Serge Belongie, and Pietro Perona for advancing the computer vision research. More information can be found at visipedia.org. Special thanks to NVIDIA for additional assistance.",

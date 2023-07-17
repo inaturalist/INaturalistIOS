@@ -987,8 +987,8 @@ typedef NS_ENUM(NSInteger, ObservationsViewControllerSection) {
                                         cell.dateLabel.text ?: @"",
                                         cell.titleLabel.text ?: @"",
                                         cell.subtitleLabel.text ?: @"",
-                                        o.observationSounds.count > 0 ? NSLocalizedString(@"Has Sounds", nil): (o.observationPhotos.count > 0 ? NSLocalizedString(@"Has Photos", nil) : NSLocalizedString(@"No Media", nil)),
-                                        o.hasUnviewedActivityBool ? NSLocalizedString(@"new activity", nil) : @""
+                                        o.observationSounds.count > 0 ? NSLocalizedString(@"Has Sounds", @"Part of the text summarizing an observation spoken by a screen reader indicating whether an observation has sounds"): (o.observationPhotos.count > 0 ? NSLocalizedString(@"Has Photos", @"Part of the text summarizing an observation spoken by a screen reader indicating whether an observation has photos") : NSLocalizedString(@"No Media", nil)),
+                                        o.hasUnviewedActivityBool ? NSLocalizedString(@"new activity", @"Part of the text summarizing an observation spoken by a screen reader indicating whether an observation has new activity") : @""
     ];
     cell.accessibilityLabel = accessibilityLabelText;
 
