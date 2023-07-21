@@ -39,6 +39,7 @@ ios_to_crowdin_lang_mappings = {
     "zh-Hant-HK": "zh-HK",  # traditional chinese (hong kong)
     "zh-Hant-TW": "zh-TW",  # traditional chinese (taiwan)
     "zh-Hant": "zh-TW",     # traditional chinese (other)
+    "kk": "kk",             # kazakh
 }
 
 parser = argparse.ArgumentParser()
