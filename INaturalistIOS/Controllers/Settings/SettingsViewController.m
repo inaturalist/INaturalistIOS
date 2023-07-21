@@ -8,7 +8,6 @@
 
 @import MessageUI;
 @import VTAcknowledgementsViewController;
-@import BlocksKit;
 @import MHVideoPhotoGallery;
 @import GoogleSignIn;
 @import ActionSheetPicker_3_0;
@@ -702,6 +701,32 @@ static const int ChangePartnerMinimumInterval = 86400;
     return;
 }
 
+- (void)switcherChanged:(UISwitch *)switcher {
+    switch (switcher.tag) {
+        case SettingsAppCellAutocompleteNames:
+            [self settingChanged:kINatAutocompleteNamesPrefKey newValue:switcher.isOn];
+            break;
+        case SettingsAppCellAutomaticUpload:
+            [self settingChanged:kInatAutouploadPrefKey newValue:switcher.isOn];
+            break;
+        case SettingsAppCellSuggestSpecies:
+            [self settingChanged:kINatSuggestionsPrefKey newValue:switcher.isOn];
+            break;
+        case SettingsAppCellShowCommonNames:
+            [self settingChanged:kINatShowCommonNamesPrefKey newValue:switcher.isOn];
+            break;
+        case SettingsAppCellShowScientficNamesFirst:
+            [self settingChanged:kINatShowScientificNamesFirstPrefKey newValue:switcher.isOn];
+            break;
+        case SettingsAppCellPreferNoTracking:
+            [self settingChanged:kINatPreferNoTrackPrefKey newValue:switcher.isOn];
+            break;
+        default:
+            // do nothing
+            break;
+    }
+}
+
 - (void)settingChanged:(NSString *)key newValue:(BOOL)newValue {
     [[NSUserDefaults standardUserDefaults] setBool:newValue forKey:key];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -819,11 +844,12 @@ static const int ChangePartnerMinimumInterval = 86400;
         INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[UIApplication sharedApplication].delegate;
         ExploreUserRealm *me = [appDelegate.loginController meUserLocal];
         if (!me) { return; }
-        
-        NSArray *partnerNames = [self.partnerController.partners bk_map:^id(Partner *p) {
-            return p.name;
-        }];
-        
+
+        NSMutableArray *partnerNames = [NSMutableArray array];
+        for (Partner *p in self.partnerController.partners) {
+            [partnerNames addObject:p.name];
+        }
+
         Partner *currentPartner = [self.partnerController partnerForSiteId:me.siteId];
         
         __weak typeof(self) weakSelf = self;
@@ -1151,10 +1177,12 @@ static const int ChangePartnerMinimumInterval = 86400;
                                                                forIndexPath:indexPath];
     cell.switchLabel.text = NSLocalizedString(@"Autocomplete names", @"label for autocomplete names switch in settings");
     cell.switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatAutocompleteNamesPrefKey];
-    __weak typeof(self)weakSelf = self;
-    [cell.switcher bk_addEventHandler:^(UISwitch *sender) {
-        [weakSelf settingChanged:kINatAutocompleteNamesPrefKey newValue:sender.isOn];
-    } forControlEvents:UIControlEventValueChanged];
+
+    cell.switcher.tag = SettingsAppCellAutocompleteNames;
+    [cell.switcher addTarget:self
+                      action:@selector(switcherChanged:)
+            forControlEvents:UIControlEventValueChanged];
+
     return cell;
 }
 
@@ -1163,10 +1191,12 @@ static const int ChangePartnerMinimumInterval = 86400;
                                                                forIndexPath:indexPath];
     cell.switchLabel.text = NSLocalizedString(@"Automatic upload", @"label for auto upload switch in settings");
     cell.switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kInatAutouploadPrefKey];
-    __weak typeof(self)weakSelf = self;
-    [cell.switcher bk_addEventHandler:^(UISwitch *sender) {
-        [weakSelf settingChanged:kInatAutouploadPrefKey newValue:sender.isOn];
-    } forControlEvents:UIControlEventValueChanged];
+
+    cell.switcher.tag = SettingsAppCellAutomaticUpload;
+    [cell.switcher addTarget:self
+                      action:@selector(switcherChanged:)
+            forControlEvents:UIControlEventValueChanged];
+
     return cell;
 }
 
@@ -1175,10 +1205,12 @@ static const int ChangePartnerMinimumInterval = 86400;
                                                                forIndexPath:indexPath];
     cell.switchLabel.text = NSLocalizedString(@"Suggest species", @"label for suggest species switch in settings");
     cell.switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatSuggestionsPrefKey];
-    __weak typeof(self)weakSelf = self;
-    [cell.switcher bk_addEventHandler:^(UISwitch *sender) {
-        [weakSelf settingChanged:kINatSuggestionsPrefKey newValue:sender.isOn];
-    } forControlEvents:UIControlEventValueChanged];
+
+    cell.switcher.tag = SettingsAppCellSuggestSpecies;
+    [cell.switcher addTarget:self
+                      action:@selector(switcherChanged:)
+            forControlEvents:UIControlEventValueChanged];
+
     return cell;
 }
 
@@ -1187,10 +1219,11 @@ static const int ChangePartnerMinimumInterval = 86400;
                                                                forIndexPath:indexPath];
     cell.switchLabel.text = NSLocalizedString(@"Show common names", @"label for show common names switch in settings");
     cell.switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatShowCommonNamesPrefKey];
-    __weak typeof(self)weakSelf = self;
-    [cell.switcher bk_addEventHandler:^(UISwitch *sender) {
-        [weakSelf settingChanged:kINatShowCommonNamesPrefKey newValue:sender.isOn];
-    } forControlEvents:UIControlEventValueChanged];
+
+    cell.switcher.tag = SettingsAppCellShowCommonNames;
+    [cell.switcher addTarget:self
+                      action:@selector(switcherChanged:)
+            forControlEvents:UIControlEventValueChanged];
     return cell;
 }
 
@@ -1199,10 +1232,12 @@ static const int ChangePartnerMinimumInterval = 86400;
                                                                forIndexPath:indexPath];
     cell.switchLabel.text = NSLocalizedString(@"Show scientific names first", @"label for scientific names shown first switch in settings");
     cell.switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatShowScientificNamesFirstPrefKey];
-    __weak typeof(self)weakSelf = self;
-    [cell.switcher bk_addEventHandler:^(UISwitch *sender) {
-        [weakSelf settingChanged:kINatShowScientificNamesFirstPrefKey newValue:sender.isOn];
-    } forControlEvents:UIControlEventValueChanged];
+
+    cell.switcher.tag = SettingsAppCellShowScientficNamesFirst;
+    [cell.switcher addTarget:self
+                      action:@selector(switcherChanged:)
+            forControlEvents:UIControlEventValueChanged];
+
     return cell;
 }
 
@@ -1215,10 +1250,11 @@ static const int ChangePartnerMinimumInterval = 86400;
     
     cell.switcher.on = [[NSUserDefaults standardUserDefaults] boolForKey:kINatPreferNoTrackPrefKey];
     
-    __weak typeof(self)weakSelf = self;
-    [cell.switcher bk_addEventHandler:^(UISwitch *sender) {
-        [weakSelf settingChanged:kINatPreferNoTrackPrefKey newValue:sender.isOn];
-    } forControlEvents:UIControlEventValueChanged];
+    cell.switcher.tag = SettingsAppCellPreferNoTracking;
+    [cell.switcher addTarget:self
+                      action:@selector(switcherChanged:)
+            forControlEvents:UIControlEventValueChanged];
+
     return cell;
 }
 
