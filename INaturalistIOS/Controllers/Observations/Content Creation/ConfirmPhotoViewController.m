@@ -60,6 +60,7 @@
             o.uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
             o.timeCreated = [NSDate date];
             o.timeSynced = nil;
+            o.geoprivacy = @"open";
             o.timeUpdatedLocally = [NSDate date];
             
             if (strongSelf.obsLocation) {

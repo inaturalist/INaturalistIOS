@@ -116,6 +116,7 @@ class INatTabBarController: UITabBarController {
       o.uuid = UUID().uuidString.lowercased()
       o.timeCreated = Date()
       o.timeUpdatedLocally = Date()
+      o.geoprivacy = "open"
       // photoless observation defaults to now
       o.timeObserved = Date()
       o.observedTimeZone = TimeZone.current.identifier;
@@ -279,6 +280,7 @@ extension INatTabBarController: UIImagePickerControllerDelegate {
       o.uuid = UUID().uuidString.lowercased()
       o.timeCreated = Date()
       o.timeUpdatedLocally = Date()
+      o.geoprivacy = "open"
       
       // photo was taken now
       o.timeObserved = Date()
@@ -316,6 +318,7 @@ extension INatTabBarController: SoundRecorderDelegate {
       o.uuid = UUID().uuidString.lowercased()
       o.timeCreated = Date()
       o.timeUpdatedLocally = Date()
+      o.geoprivacy = "open"
       
       // observation was made now
       o.timeObserved = Date()
@@ -528,6 +531,7 @@ extension INatTabBarController: PHPickerViewControllerDelegate {
                      o.uuid = UUID().uuidString.lowercased()
                      o.timeCreated = Date()
                      o.timeUpdatedLocally = Date()
+                     o.geoprivacy = "open"
                      
                      if let latitude = takenLatitudeForObs {
                         o.latitude = latitude
