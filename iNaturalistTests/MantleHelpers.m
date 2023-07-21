@@ -75,7 +75,6 @@
     XCTAssertNil(deserializeError,
                  @"failed to parse WilletObservationNode.json: %@",
                  deserializeError.localizedDescription);
-    NSLog(@"JSON: %@", json);
     
     NSDictionary *fixtureJson;
     if ([json isKindOfClass:NSArray.class]) {
