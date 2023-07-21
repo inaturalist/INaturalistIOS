@@ -29,6 +29,11 @@ def main():
     valid_match = re.compile(r'%\d\$\.\df|%@|%\d\$@|%\.\df')
 
     for language in os.listdir(translations_basedir):
+        if language in ["iNaturalist", ".DS_Store"]:
+            # non-language directories that ended up in the root of 
+            # the crowdin export
+            continue
+
         lang_basedir = os.path.join(translations_basedir, language)
         lang_iosdir = os.path.join(lang_basedir, "iOS")
 
