@@ -660,6 +660,14 @@
 		FA49C2CC25CA178E00B7D627 /* lv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lv; path = lv.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA4B096421116F5600E942B3 /* UserVisualization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserVisualization.h; sourceTree = "<group>"; };
 		FA4BC3DD2A6B0C81002325EB /* iNaturalist.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = iNaturalist.xctestplan; sourceTree = "<group>"; };
+		FA4BC3DE2A6B2715002325EB /* kk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = kk; path = kk.lproj/Activity.strings; sourceTree = "<group>"; };
+		FA4BC3DF2A6B2715002325EB /* kk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = kk; path = kk.lproj/Guides.strings; sourceTree = "<group>"; };
+		FA4BC3E02A6B2715002325EB /* kk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = kk; path = kk.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		FA4BC3E12A6B2715002325EB /* kk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = kk; path = kk.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FA4BC3E22A6B2715002325EB /* kk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = kk; path = kk.lproj/Projects.strings; sourceTree = "<group>"; };
+		FA4BC3E32A6B2715002325EB /* kk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = kk; path = kk.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA4BC3E42A6B2716002325EB /* kk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = kk; path = kk.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FA4BC3E52A6B2716002325EB /* kk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = kk; path = kk.lproj/TaxaRanks.strings; sourceTree = "<group>"; };
 		FA4C195F1B30EDB70066CA22 /* partners.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = partners.plist; sourceTree = "<group>"; };
 		FA4C19621B30EE890066CA22 /* Partner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Partner.h; sourceTree = "<group>"; };
 		FA4C19631B30EE890066CA22 /* Partner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Partner.m; sourceTree = "<group>"; };
@@ -2455,6 +2463,7 @@
 				si,
 				ar,
 				th,
+				kk,
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -3075,6 +3084,7 @@
 				FAAE356225CA193E0068AA12 /* si */,
 				FA03D5A3261B8D3C005F2B66 /* ar */,
 				FA03D5AB261B8D45005F2B66 /* th */,
+				FA4BC3E02A6B2715002325EB /* kk */,
 			);
 			name = MainStoryboard.storyboard;
 			sourceTree = "<group>";
@@ -3116,6 +3126,7 @@
 				FA03D5A8261B8D3D005F2B66 /* ar */,
 				FA03D5B0261B8D73005F2B66 /* th */,
 				FA82300828D85F4E006CA0F6 /* pt-BR */,
+				FA4BC3E32A6B2715002325EB /* kk */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -3157,6 +3168,7 @@
 				FA03D5A9261B8D3D005F2B66 /* ar */,
 				FA03D5B1261B8D73005F2B66 /* th */,
 				FA82300928D85F72006CA0F6 /* pt-BR */,
+				FA4BC3E42A6B2716002325EB /* kk */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -3199,6 +3211,7 @@
 				FAAE356425CA193F0068AA12 /* si */,
 				FA03D5A5261B8D3D005F2B66 /* ar */,
 				FA03D5AD261B8D72005F2B66 /* th */,
+				FA4BC3E22A6B2715002325EB /* kk */,
 			);
 			name = Projects.storyboard;
 			sourceTree = "<group>";
@@ -3217,6 +3230,7 @@
 				FAAE356525CA193F0068AA12 /* si */,
 				FA03D5A6261B8D3D005F2B66 /* ar */,
 				FA03D5AE261B8D73005F2B66 /* th */,
+				FA4BC3DE2A6B2715002325EB /* kk */,
 			);
 			name = Activity.storyboard;
 			sourceTree = "<group>";
@@ -3259,6 +3273,7 @@
 				FAAE356625CA193F0068AA12 /* si */,
 				FA03D5A7261B8D3D005F2B66 /* ar */,
 				FA03D5AF261B8D73005F2B66 /* th */,
+				FA4BC3DF2A6B2715002325EB /* kk */,
 			);
 			name = Guides.storyboard;
 			sourceTree = "<group>";
@@ -3300,6 +3315,7 @@
 				FA8A0E7525E1D9BF006CA8A4 /* tr */,
 				FA03D5AA261B8D3E005F2B66 /* ar */,
 				FA03D5B2261B8D73005F2B66 /* th */,
+				FA4BC3E52A6B2716002325EB /* kk */,
 			);
 			name = TaxaRanks.strings;
 			sourceTree = "<group>";
@@ -3342,6 +3358,7 @@
 				FAAE356325CA193F0068AA12 /* si */,
 				FA03D5A4261B8D3C005F2B66 /* ar */,
 				FA03D5AC261B8D45005F2B66 /* th */,
+				FA4BC3E12A6B2715002325EB /* kk */,
 			);
 			name = Onboarding.storyboard;
 			sourceTree = "<group>";
