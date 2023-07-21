@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "5358F6EF-E732-4D8B-AA70-65873C3CA5DE",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:iNaturalist.xcodeproj",
+        "identifier" : "FADE28AF1B02D9AA00CA55FF",
+        "name" : "iNaturalistTests"
+      }
+    }
+  ],
+  "version" : 1
+}

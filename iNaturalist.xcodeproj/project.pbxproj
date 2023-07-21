@@ -659,6 +659,7 @@
 		FA49C2CB25CA178E00B7D627 /* lv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lv; path = lv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FA49C2CC25CA178E00B7D627 /* lv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lv; path = lv.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FA4B096421116F5600E942B3 /* UserVisualization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserVisualization.h; sourceTree = "<group>"; };
+		FA4BC3DD2A6B0C81002325EB /* iNaturalist.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = iNaturalist.xctestplan; sourceTree = "<group>"; };
 		FA4C195F1B30EDB70066CA22 /* partners.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = partners.plist; sourceTree = "<group>"; };
 		FA4C19621B30EE890066CA22 /* Partner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Partner.h; sourceTree = "<group>"; };
 		FA4C19631B30EE890066CA22 /* Partner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Partner.m; sourceTree = "<group>"; };
@@ -765,7 +766,6 @@
 		FA5BC6F91C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailQualityDetailsFooter.h; sourceTree = "<group>"; };
 		FA5BC6FA1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailQualityDetailsFooter.m; sourceTree = "<group>"; };
 		FA5DF20A28483E9400F2B014 /* ConsentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentViewController.swift; sourceTree = "<group>"; };
-		FA5ED3322A6228BA001DB731 /* iNaturalist.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = iNaturalist.xctestplan; path = ../iNaturalist.xctestplan; sourceTree = "<group>"; };
 		FA5ED3332A623637001DB731 /* LocaleExtensionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocaleExtensionTests.m; sourceTree = "<group>"; };
 		FA60A4441B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITapGestureRecognizer+InatHelpers.h"; sourceTree = "<group>"; };
 		FA60A4451B154A3100C2B9C6 /* UITapGestureRecognizer+InatHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITapGestureRecognizer+InatHelpers.m"; sourceTree = "<group>"; };
@@ -1285,7 +1285,7 @@
 		1927512814E9CCC8000ABAC4 = {
 			isa = PBXGroup;
 			children = (
-				FA5ED3322A6228BA001DB731 /* iNaturalist.xctestplan */,
+				FA4BC3DD2A6B0C81002325EB /* iNaturalist.xctestplan */,
 				FA0600691DCEE1700025473C /* iNaturalist.entitlements */,
 				1927513D14E9CCC9000ABAC4 /* INaturalist */,
 				FADE28B11B02D9AA00CA55FF /* iNaturalistTests */,
@@ -3455,7 +3455,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 687;
+				CURRENT_PROJECT_VERSION = 688;
 				DEVELOPMENT_TEAM = N5J7L4P93Z;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -3466,7 +3466,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.9;
+				MARKETING_VERSION = 3.2.10;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-lsqlite3.0",
@@ -3494,7 +3494,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 687;
+				CURRENT_PROJECT_VERSION = 688;
 				DEVELOPMENT_TEAM = N5J7L4P93Z;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -3505,7 +3505,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.9;
+				MARKETING_VERSION = 3.2.10;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-lsqlite3.0",

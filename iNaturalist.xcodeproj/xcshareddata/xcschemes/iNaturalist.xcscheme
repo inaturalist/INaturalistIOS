@@ -38,7 +38,7 @@
       </MacroExpansion>
       <TestPlans>
          <TestPlanReference
-            reference = "container:../iNaturalist.xctestplan"
+            reference = "container:iNaturalist.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>
