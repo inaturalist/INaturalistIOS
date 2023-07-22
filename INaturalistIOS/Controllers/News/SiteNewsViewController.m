@@ -6,6 +6,7 @@
 //  Copyright © 2016 iNaturalist. All rights reserved.
 //
 
+@import CoreData;
 @import NSString_stripHtml;
 
 #import <AFNetworking/UIImageView+AFNetworking.h>

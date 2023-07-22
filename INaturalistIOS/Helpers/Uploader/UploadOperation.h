@@ -6,11 +6,12 @@
 //  Copyright © 2018 iNaturalist. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <AFNetworking/AFNetworking.h>
+@import AFNetworking;
+@import CoreData;
+@import Foundation;
 
-#import "UploadManagerNotificationDelegate.h"
 #import "ObservationAPI.h"
+#import "UploadManagerNotificationDelegate.h"
 
 @interface UploadOperation : NSOperation
 @property AFHTTPSessionManager *nodeSessionManager;
