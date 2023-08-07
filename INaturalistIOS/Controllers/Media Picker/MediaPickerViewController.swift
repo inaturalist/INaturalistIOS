@@ -189,6 +189,7 @@ class MediaPickerCell: UICollectionViewCell {
         let titleLabel = UILabel(frame: .zero)
         titleLabel.numberOfLines = 2
         titleLabel.textAlignment = .center
+        titleLabel.adjustsFontSizeToFitWidth = true
         
         let stack = UIStackView(arrangedSubviews: [iconImageView, titleLabel])
         stack.translatesAutoresizingMaskIntoConstraints = false
