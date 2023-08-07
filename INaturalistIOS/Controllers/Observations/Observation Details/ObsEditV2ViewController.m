@@ -997,13 +997,23 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         
         // time to make deleted records for our stuff
         // would be nice to make this an inherited or protocol method
-        
         [realm beginWriteTransaction];
         for (RLMObject<Uploadable> *recordToDelete in self.recordsToDelete) {
-                [realm addOrUpdateObject:[recordToDelete deletedRecordForModel]];
-                [realm deleteObject:recordToDelete];
+            [realm addOrUpdateObject:[recordToDelete deletedRecordForModel]];
         }
         [realm commitWriteTransaction];
+
+        // purge from realm
+        // have to do this carefully since the handle we have on realm might
+        // not be the realm handle where the deleted record was made
+        for (RLMObject<Uploadable> *recordToDelete in self.recordsToDelete) {
+            if ([recordToDelete realm]) {
+                RLMRealm *realm = [recordToDelete realm];
+                [realm beginWriteTransaction];
+                [realm deleteObject:recordToDelete];
+                [realm commitWriteTransaction];
+            }
+        }
     }
     
     [self.view.window.rootViewController dismissViewControllerAnimated:YES completion:^{
