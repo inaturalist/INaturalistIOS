@@ -154,12 +154,24 @@ extension MediaPickerViewController: UICollectionViewDelegate {
 }
 
 extension MediaPickerViewController: UICollectionViewDelegateFlowLayout {
+    var cellWidth: CGFloat {
+        if UIScreen.main.traitCollection.horizontalSizeClass == .regular && UIScreen.main.traitCollection.verticalSizeClass == .regular {
+            return 120.0
+        } else {
+            return 70.0
+        }
+    }
+
+    var cellSpacing: CGFloat {
+        10.0
+    }
+
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 60, height: 150)
+        return CGSize(width: cellWidth, height: 150)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 1.0
+        return cellSpacing
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -167,13 +179,15 @@ extension MediaPickerViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let totalCellWidth = 60 * (showsNoPhotoOption ? 3 : 2)
-        let totalSpacingWidth = 1 * ((showsNoPhotoOption ? 3 : 2) - 1)
 
-        let leftInset = (collectionView.frame.size.width - CGFloat(totalCellWidth + totalSpacingWidth)) / 2
-        let rightInset = leftInset
-        print("left inset \(leftInset)")
-        return UIEdgeInsets(top: 10, left: leftInset - 60, bottom: 0, right: rightInset - 60)
+        let totalCellWidth: CGFloat = cellWidth * (showsNoPhotoOption ? 4 : 3)
+        let totalSpacingWidth: CGFloat = cellSpacing * ((showsNoPhotoOption ? 4 : 3) - 1)
+        let contentWidth = totalCellWidth + totalSpacingWidth
+        let totalInset = collectionView.frame.size.width - contentWidth
+        let leadingInset = (totalInset / 2)
+        let trailingInset = leadingInset
+
+        return UIEdgeInsets(top: 10, left: leadingInset, bottom: 0, right: trailingInset)
     }
 }
 
