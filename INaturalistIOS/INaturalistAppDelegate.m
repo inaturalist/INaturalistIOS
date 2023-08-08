@@ -55,6 +55,7 @@
 }
 
 @property UIBackgroundTaskIdentifier backgroundFetchTask;
+@property LoadingViewController *loadingVC;
 
 @end
 
@@ -84,10 +85,8 @@
     self.loginController = [[LoginController alloc] init];
 
     [self showLoadingScreen];
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self configureApplicationInBackground];
-    });
+
+    [self configureApplication];
 
     // Use Crashlytics for crash reporting
     if ([Analytics canTrack]) {
@@ -118,61 +117,17 @@
 }
 
 - (void)showLoadingScreen {
-    UIViewController *loadingVC = [[UIViewController alloc] initWithNibName:nil bundle:nil];
-    loadingVC.view.backgroundColor = [UIColor inatTint];
-    
-    UIImageView *launchImageView = ({
-        UIImageView *iv = [[UIImageView alloc] initWithFrame:loadingVC.view.bounds];
-        iv.image = [UIImage imageNamed:@"inat-white-logo"];
-        iv.contentMode = UIViewContentModeScaleAspectFit;
-        
-        iv;
-    });
- 
-    UILabel *updatingDatabaseLabel = ({
-        UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-        label.text = NSLocalizedString(@"Updating database...", @"Title for progress view when migrating db");
-        label.textColor = [UIColor whiteColor];
-        label.numberOfLines = 0;
-
-        label;
-    });
-    
-    UIActivityIndicatorView *spinner = ({
-        UIActivityIndicatorView *view = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        
-        view.autoresizingMask = UIViewAutoresizingFlexibleHeight|UIViewAutoresizingFlexibleWidth;
-        view.center = CGPointMake(loadingVC.view.center.x, loadingVC.view.frame.size.height * .75);
-        [view startAnimating];
-        
-        view;
-    });
-    
-    UIStackView *stack = [[UIStackView alloc] initWithArrangedSubviews:@[ launchImageView, updatingDatabaseLabel, spinner ]];
-    stack.translatesAutoresizingMaskIntoConstraints = NO;
-    stack.axis = UILayoutConstraintAxisVertical;
-    stack.spacing = 50.0f;
-    stack.alignment = UIStackViewAlignmentCenter;
-    
-    [loadingVC.view addSubview:stack];
-
-    [stack.centerYAnchor constraintEqualToAnchor:loadingVC.view.centerYAnchor].active = YES;
-    [stack.centerXAnchor constraintEqualToAnchor:loadingVC.view.centerXAnchor].active = YES;
-    [launchImageView.widthAnchor constraintEqualToConstant:200.0f].active = YES;
-    [launchImageView.heightAnchor constraintEqualToConstant:200.0f].active = YES;
-    
-    [self.window setRootViewController:loadingVC];
+    self.loadingVC = [[LoadingViewController alloc] init];
+    [self.window setRootViewController:self.loadingVC];
 }
 
-- (void)configureApplicationInBackground {
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self configureOAuth2Client];
-        [self configureGlobalStyles];
-    });
+- (void)configureApplication {
+    [self configureOAuth2Client];
 
-	RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
-    NSLog(@"config file URL %@", config.fileURL);
+    dispatch_queue_t queue = dispatch_queue_create("migration.queue", DISPATCH_QUEUE_SERIAL);
+
+    RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
+    
     config.schemaVersion = 26;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
         if (oldSchemaVersion < 1) {
@@ -359,23 +314,31 @@
                 newObject[@"dataTransferConsent"] = @(NO);
             }];
         }
-
     };
-    
-    [RLMRealmConfiguration setDefaultConfiguration:config];
-    
-    // on every launch, do some housekeeping of deleted records
-    [self cleanupDeletedRecords];
-    
-    if (![self.loginController isLoggedIn]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showInitialSignupUI];
-        });
-    } else {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];            
-        });
-    }
+
+    [RLMRealm asyncOpenWithConfiguration:config callbackQueue:queue callback:^(RLMRealm * _Nullable realm, NSError * _Nullable error) {
+
+        [RLMRealmConfiguration setDefaultConfiguration:config];
+
+        if (error) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.loadingVC alertWithError:error];
+            });
+        } else {
+            // on every launch, do some housekeeping of deleted records
+            [self cleanupDeletedRecords];
+            
+            if (![self.loginController isLoggedIn]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showInitialSignupUI];
+                });
+            } else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [((INaturalistAppDelegate *)[UIApplication sharedApplication].delegate) showMainUI];
+                });
+            }
+        }
+    }];
 }
 
 - (void)cleanupDeletedRecords {
@@ -477,34 +440,6 @@
     [store cleanupStoreWithValidMediaKeys:validSoundKeys
                           syncedMediaKeys:syncedSoundKeys
                               allowedTime:allowedExecutionSeconds-elapsedAfterList];
-}
-
-- (void)configureGlobalStyles {
-    // set global styles
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-        
-        [[UITabBar appearance] setBarStyle:UIBarStyleDefault];
-        
-        [[UITabBar appearance] setTintColor:[UIColor inatTint]];
-        
-        // tints for UITabBarItem images are set on the images in the VCs, via [UIImage -imageWithRenderingMode:]
-        [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor inatTint] }
-                                                             forState:UIControlStateSelected];
-        [[UITabBarItem appearance] setTitleTextAttributes:@{ NSForegroundColorAttributeName: [UIColor inatInactiveGreyTint] }
-                                                             forState:UIControlStateNormal];
-        
-        [[UINavigationBar appearance] setBarStyle:UIBarStyleDefault];
-        [[UINavigationBar appearance] setTintColor:[UIColor inatTint]];
-        [[UISearchBar appearance] setBarStyle:UIBarStyleDefault];
-        [[UIBarButtonItem appearance] setTintColor:[UIColor inatTint]];
-        [[UISegmentedControl appearance] setTintColor:[UIColor inatTint]];
-    }
-        
-    [JDStatusBarNotification setDefaultStyle:^JDStatusBarStyle *(JDStatusBarStyle *style) {
-        style.barColor = [UIColor colorWithHexString:@"#969696"];
-        style.textColor = [UIColor whiteColor];
-        return style;
-    }];
 }
 
 -(void) configureOAuth2Client{

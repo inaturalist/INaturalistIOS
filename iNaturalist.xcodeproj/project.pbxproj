@@ -89,6 +89,7 @@
 		D56C7CC5C4725D29E31895D9 /* Pods_iNaturalistTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB40B6CB5092A03E10B318E3 /* Pods_iNaturalistTests.framework */; };
 		FA0069231A0C51F600C64F28 /* MKMapView+ZoomLevel.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0069221A0C51F600C64F28 /* MKMapView+ZoomLevel.m */; };
 		FA067F601DBACF0A00CBA5EF /* UpdatesItemCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA067F5F1DBACF0A00CBA5EF /* UpdatesItemCell.m */; };
+		FA0933D62A82B22200C98F85 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0933D52A82B22200C98F85 /* LoadingViewController.swift */; };
 		FA0F1AF81BBB2E9600533ED5 /* ObservationValidationErrorView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */; };
 		FA0F1AFB1BBB410000533ED5 /* ObservationViewUploadingCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1AFA1BBB410000533ED5 /* ObservationViewUploadingCell.m */; };
 		FA0F1AFE1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1AFD1BBB411300533ED5 /* ObservationViewWaitingUploadCell.m */; };
@@ -526,6 +527,7 @@
 		FA0600691DCEE1700025473C /* iNaturalist.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = iNaturalist.entitlements; path = iNaturalist/iNaturalist.entitlements; sourceTree = "<group>"; };
 		FA067F5E1DBACF0A00CBA5EF /* UpdatesItemCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdatesItemCell.h; sourceTree = "<group>"; };
 		FA067F5F1DBACF0A00CBA5EF /* UpdatesItemCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdatesItemCell.m; sourceTree = "<group>"; };
+		FA0933D52A82B22200C98F85 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		FA0F1AF61BBB2E9600533ED5 /* ObservationValidationErrorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationValidationErrorView.h; sourceTree = "<group>"; };
 		FA0F1AF71BBB2E9600533ED5 /* ObservationValidationErrorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObservationValidationErrorView.m; sourceTree = "<group>"; };
 		FA0F1AF91BBB410000533ED5 /* ObservationViewUploadingCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObservationViewUploadingCell.h; sourceTree = "<group>"; };
@@ -1656,6 +1658,7 @@
 				FA822FF028D85367006CA0F6 /* Explore */,
 				FA822FEB28D851C0006CA0F6 /* Guides */,
 				FA3759CF23EB467E0053F783 /* INatTabBarController.swift */,
+				FA0933D52A82B22200C98F85 /* LoadingViewController.swift */,
 				FA822FE228D85100006CA0F6 /* Media Picker */,
 				FA822FE328D8510D006CA0F6 /* News */,
 				FA822FED28D85253006CA0F6 /* Observations */,
@@ -2799,6 +2802,7 @@
 				FAA20BBA1C5079830075EF2C /* NewsItemCell.m in Sources */,
 				FA60EA1123EA3F7F0026F7A3 /* ExplorePost.m in Sources */,
 				FA97666B20D1E45900D172DC /* AboutHeaderView.m in Sources */,
+				FA0933D62A82B22200C98F85 /* LoadingViewController.swift in Sources */,
 				FA5BC6FB1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m in Sources */,
 				FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */,
 				FA5BC6F61C3C7FD0008FCD43 /* NSFileManager+INaturalist.m in Sources */,
@@ -3472,7 +3476,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 691;
+				CURRENT_PROJECT_VERSION = 693;
 				DEVELOPMENT_TEAM = N5J7L4P93Z;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -3511,7 +3515,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 691;
+				CURRENT_PROJECT_VERSION = 693;
 				DEVELOPMENT_TEAM = N5J7L4P93Z;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
