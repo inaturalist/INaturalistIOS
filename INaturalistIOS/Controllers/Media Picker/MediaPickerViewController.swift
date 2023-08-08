@@ -43,6 +43,10 @@ class MediaPickerViewController: UIViewController {
     }
 }
 
+func isRegularScreen() -> Bool {
+    return UIScreen.main.traitCollection.horizontalSizeClass == .regular && UIScreen.main.traitCollection.verticalSizeClass == .regular
+}
+
 extension MediaPickerViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -155,10 +159,10 @@ extension MediaPickerViewController: UICollectionViewDelegate {
 
 extension MediaPickerViewController: UICollectionViewDelegateFlowLayout {
     var cellWidth: CGFloat {
-        if UIScreen.main.traitCollection.horizontalSizeClass == .regular && UIScreen.main.traitCollection.verticalSizeClass == .regular {
+        if isRegularScreen() {
             return 120.0
         } else {
-            return 70.0
+            return 80
         }
     }
 
@@ -201,7 +205,7 @@ class MediaPickerCell: UICollectionViewCell {
         let iconImageView = UIImageView(frame: .zero)
         iconImageView.contentMode = .center
         let titleLabel = UILabel(frame: .zero)
-        titleLabel.numberOfLines = 2
+        titleLabel.numberOfLines = isRegularScreen() ? 1 : 2
         titleLabel.textAlignment = .center
         titleLabel.adjustsFontSizeToFitWidth = true
         
