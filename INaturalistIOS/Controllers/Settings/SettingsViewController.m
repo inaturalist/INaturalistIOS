@@ -97,7 +97,6 @@ static NSString * const LastChangedPartnerDateKey = @"org.inaturalist.lastChange
 static const int ChangePartnerMinimumInterval = 86400;
 
 @interface SettingsViewController () <MFMailComposeViewControllerDelegate>
-@property (nonatomic, strong) NSString *versionText;
 @property PartnerController *partnerController;
 @end
 
@@ -148,11 +147,7 @@ static const int ChangePartnerMinimumInterval = 86400;
     [super viewDidLoad];
     
     NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
-    self.versionText = [NSString stringWithFormat:NSLocalizedString(@"%@, build %@, iOS %@",nil),
-                        [info objectForKey:@"CFBundleShortVersionString"] ?: @"unknown version",
-                        [info objectForKey:@"CFBundleVersion"] ?: @"unknown version",
-                        [[UIDevice currentDevice] systemVersion]];
-    
+
     self.partnerController = [[PartnerController alloc] init];
     
     self.title = NSLocalizedString(@"Settings", @"Title for the settings screen.");
@@ -588,7 +583,7 @@ static const int ChangePartnerMinimumInterval = 86400;
     }
     
     NSString *supportTitle = [NSString stringWithFormat:@"iNaturalist iPhone help - (version %@ %@)",
-                              self.versionText, supportUserInfo];
+                              [[NSBundle mainBundle] versionString], supportUserInfo];
         
     // try built in mail client
     if ([MFMailComposeViewController canSendMail]) {
@@ -1316,7 +1311,7 @@ static const int ChangePartnerMinimumInterval = 86400;
     SettingsVersionCell *cell = [tableView dequeueReusableCellWithIdentifier:@"version"
                                                                 forIndexPath:indexPath];
     cell.versionLabel.text = [NSString stringWithFormat:@"%@ - %@",
-                              self.versionText,
+                              [[NSBundle mainBundle] versionString],
                               [[ImageStore sharedImageStore] usageStatsString]];
     cell.versionLabel.textAlignment = NSTextAlignmentNatural;
     return cell;

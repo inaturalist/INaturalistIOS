@@ -105,13 +105,7 @@ class LoadingViewController: UIViewController {
         if MFMailComposeViewController.canSendMail() {
             let composeVC = MFMailComposeViewController()
 
-            var versionText = "unknown version info"
-            if let info = Bundle.main.infoDictionary {
-                let buildNumber = info["CFBundleVersion"] ?? "unknown build"
-                let appVersion = info["CFBundleShortVersionString"] ?? "unknown version"
-                let systemVersion = UIDevice.current.systemVersion
-                versionText = "app version \(appVersion), build \(buildNumber), iOS \(systemVersion)"
-            }
+            let versionText = Bundle.main.versionString()
 
             composeVC.mailComposeDelegate = self
             composeVC.setToRecipients([ supportEmailAddress ])

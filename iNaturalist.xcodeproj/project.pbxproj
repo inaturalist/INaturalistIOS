@@ -223,6 +223,7 @@
 		FA8A0E5125E1D98F006CA8A4 /* TaxaRanks.strings in Resources */ = {isa = PBXBuildFile; fileRef = FA8A0E5325E1D98F006CA8A4 /* TaxaRanks.strings */; };
 		FA8B8DD523CE7266007FBA63 /* ExploreObsFieldRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8B8DD423CE7266007FBA63 /* ExploreObsFieldRealm.m */; };
 		FA8B8DD823CE7279007FBA63 /* ExploreProjectObsFieldRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8B8DD723CE7279007FBA63 /* ExploreProjectObsFieldRealm.m */; };
+		FA8CC92B2A8454A200D8FFFF /* Bundle_VersionString.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8CC92A2A8454A200D8FFFF /* Bundle_VersionString.swift */; };
 		FA8EBCE4230DC6E100C1D789 /* UIImage+MapAnnotations.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8EBCE3230DC6E100C1D789 /* UIImage+MapAnnotations.m */; };
 		FA8EBCE7230DE48400C1D789 /* ExploreDeletedRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8EBCE6230DE48400C1D789 /* ExploreDeletedRecord.m */; };
 		FA9249821EF85FD000E0C387 /* ExploreTaxonScore.m in Sources */ = {isa = PBXBuildFile; fileRef = FA9249811EF85FD000E0C387 /* ExploreTaxonScore.m */; };
@@ -947,6 +948,7 @@
 		FA8B8DD623CE7279007FBA63 /* ExploreProjectObsFieldRealm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreProjectObsFieldRealm.h; sourceTree = "<group>"; };
 		FA8B8DD723CE7279007FBA63 /* ExploreProjectObsFieldRealm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreProjectObsFieldRealm.m; sourceTree = "<group>"; };
 		FA8BC5E21D5011BB001355F5 /* INaturalist2.15.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.15.xcdatamodel; sourceTree = "<group>"; };
+		FA8CC92A2A8454A200D8FFFF /* Bundle_VersionString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle_VersionString.swift; sourceTree = "<group>"; };
 		FA8EBCE2230DC6E100C1D789 /* UIImage+MapAnnotations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+MapAnnotations.h"; sourceTree = "<group>"; };
 		FA8EBCE3230DC6E100C1D789 /* UIImage+MapAnnotations.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+MapAnnotations.m"; sourceTree = "<group>"; };
 		FA8EBCE5230DE48400C1D789 /* ExploreDeletedRecord.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreDeletedRecord.h; sourceTree = "<group>"; };
@@ -1648,6 +1650,7 @@
 				19C26202160CF42B005565F8 /* UIView+UIViewHelpers.m */,
 				FAB7028621431BD600462F62 /* UIViewController+INaturalist.h */,
 				FAB7028721431BD600462F62 /* UIViewController+INaturalist.m */,
+				FA8CC92A2A8454A200D8FFFF /* Bundle_VersionString.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -3015,6 +3018,7 @@
 				FA9437861C869B7300CB10F3 /* ObservationAPI.m in Sources */,
 				FA0F1B051BBB561600533ED5 /* ObservationViewCell.m in Sources */,
 				FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */,
+				FA8CC92B2A8454A200D8FFFF /* Bundle_VersionString.swift in Sources */,
 				197FD41C17FE13CE0099BDE6 /* GuideTaxonXML.m in Sources */,
 				FAB341F6247B70C300992A80 /* MediaPickerSegue.swift in Sources */,
 				191426EB180DC20F005165D8 /* GuidePageViewController.m in Sources */,
