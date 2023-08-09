@@ -146,8 +146,6 @@ static const int ChangePartnerMinimumInterval = 86400;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
-
     self.partnerController = [[PartnerController alloc] init];
     
     self.title = NSLocalizedString(@"Settings", @"Title for the settings screen.");
