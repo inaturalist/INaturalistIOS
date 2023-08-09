@@ -27,8 +27,8 @@ class LoadingViewController: UIViewController {
 
         launchImageView.image = UIImage(named: "inat-white-logo")
         launchImageView.contentMode = .scaleAspectFit
-
-        statusLabel.text = "Updating database..."
+        
+        statusLabel.text = NSLocalizedString("Updating database...", comment: "Title for progress view when migrating db")
         statusLabel.textColor = .white
         statusLabel.numberOfLines = 0
 
@@ -55,11 +55,6 @@ class LoadingViewController: UIViewController {
         stack.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
     }
 
-
-    override func viewDidAppear(_ animated: Bool) {
-
-    }
-
     func configureGlobalStyles() {
         UITabBar.appearance().barStyle = .default
         UINavigationBar.appearance().barStyle = .default
@@ -81,16 +76,20 @@ class LoadingViewController: UIViewController {
     }
 
     @objc func alert(error: NSError) {
-        let alert = UIAlertController(title: "Error", message: "There was an error launching iNaturalist", preferredStyle: .alert)
-        
-        let okAction = UIAlertAction(title: "Contact iNat Support", style: .default) { action in
+        let errorTitle = NSLocalizedString("Error", comment: "Title for error alert")
+        let errorMessage = NSLocalizedString("There was an error launching iNaturalist", comment: "Message when app fails to launch, the alert will have recovery suggestions")
+        let alert = UIAlertController(title: errorTitle, message: errorMessage, preferredStyle: .alert)
+
+        let contactSupport = NSLocalizedString("Contact Support", comment: "Button to contact support when app has failed to launch.")
+        let okAction = UIAlertAction(title: contactSupport, style: .default) { action in
             self.dismiss(animated: true, completion: {
                 self.contactSupport(error: error)
             })
         }
         alert.addAction(okAction)
 
-        let updateAction = UIAlertAction(title: "Delete Local Database and Try Again", style: .destructive) { action in
+        let deleteDb = NSLocalizedString("Delete Local Database and Try Again", comment: "Button to delete the database. This will appear in red as a destructive action.")
+        let updateAction = UIAlertAction(title: deleteDb, style: .destructive) { action in
             self.deleteDatabase()
         }
         alert.addAction(updateAction)
@@ -123,7 +122,8 @@ class LoadingViewController: UIViewController {
 
             self.present(composeVC, animated: true)
         } else {
-            self.statusLabel.text = "Can't send crash support email - please contact help@inaturalist.org."
+
+            self.statusLabel.text = NSLocalizedString("Can't send crash support email - please contact help@inaturalist.org.", comment: "Status message when email is not configured on the phone so we can't send email on a user's behalf.")
             spinner.stopAnimating()
         }
     }
@@ -140,8 +140,8 @@ class LoadingViewController: UIViewController {
             for url in realmURLs {
                 do {
                     try FileManager.default.removeItem(at: url)
-                } catch let error {
-                    statusLabel.text = "Failed to delete \(url): \(error.localizedDescription). Please contact help@inaturalist.org."
+                } catch {
+                    self.statusLabel.text = NSLocalizedString("Failed to delete database. Please contact help@inaturalist.org.", comment: "Status message when the user tries to delete the DB but it fails.")
                 }
             }
 
@@ -154,10 +154,10 @@ class LoadingViewController: UIViewController {
                     appDelegate.showMainUI()
                 }
             } else {
-                statusLabel.text = "App is fatally misconfigured. Please contact help@inaturalist.org"
+                statusLabel.text = NSLocalizedString("App is fatally misconfigured. Please contact help@inaturalist.org.", comment: "Status message when the database is unavailable and large parts of the app aren't working. Shouldn't happen, but fallback in case it ever does.")
             }
         } else {
-            statusLabel.text = "Can't find realm database. Please contact help@inaturalist.org"
+            statusLabel.text = NSLocalizedString("Can't find realm database, can't continue. Please contact help@inaturalist.org.", comment: "Status message when the app can't start due to a corrupt database but the database doesn't exist. Shouldn't happen, but fallback in case it ever does.")
         }
     }
 }
@@ -166,9 +166,9 @@ extension LoadingViewController: MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
 
         if result == .sent {
-            self.statusLabel.text = "Thank you for contacting iNat support. We'll get back to you as soon as we can."
+            self.statusLabel.text = NSLocalizedString("Thank you for contacting iNat support. We'll get back to you as soon as we can.", comment: "Status message after a user sends info to iNat support after the database crashes early on launch.")
         } else {
-            self.statusLabel.text = "You can contact help@inaturalist.org for more help with this issue."
+            self.statusLabel.text = NSLocalizedString("Didn't send crash support email - please contact help@inaturalist.org.", comment: "Status message when the user tapped contact support but then chose to not allow us to send a support email on their behalf.")
         }
 
         spinner.stopAnimating()
