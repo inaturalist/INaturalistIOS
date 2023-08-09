@@ -99,7 +99,7 @@ class LoadingViewController: UIViewController {
     }
 
     func contactSupport(error: NSError) {
-        let supportEmailAddress = "alexshepard@me.com"
+        let supportEmailAddress = "help@inaturalist.org"
         let subject = "iPhone App Crash At Launch"
 
         if MFMailComposeViewController.canSendMail() {
