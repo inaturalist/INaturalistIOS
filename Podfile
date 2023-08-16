@@ -32,7 +32,7 @@ target :iNaturalist do
   pod 'JDStatusBarNotification', '1.5.2'
   pod 'MBProgressHUD', '0.9.1'
   pod 'NSString_stripHtml', '0.1.0'
-  pod 'Mantle', '2.2.0'
+  pod 'Mantle', '1.5.8'
   pod 'ICViewPager', :git => 'https://github.com/alexshepard/ICViewPager.git', :commit => '4c45423b6a36fb38753af86a1050b6a3a1d548b8'
   pod 'Realm', '~>10'
   pod 'ARSafariActivity'
