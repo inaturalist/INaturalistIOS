@@ -18,19 +18,24 @@
 @implementation Analytics
 
 + (BOOL)canTrack {
-    NSString *path = [[NSBundle mainBundle] pathForResource: @"GoogleService-Info"
-                                                     ofType: @"plist"];
-    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: path];
-    NSString *googleAppId = [[dict objectForKey: @"GOOGLE_APP_ID"] stringValue];
-    if (!googleAppId || [googleAppId isEqualToString:@"Google-App-Id-Placeholder"]) {
-        return NO;
-    }
+    // firebase analytics stuff (even checking for it) crashes on ios 12
+    if (@available(iOS 13.0, *)) {
+        NSString *path = [[NSBundle mainBundle] pathForResource: @"GoogleService-Info"
+                                                         ofType: @"plist"];
+        NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: path];
+        NSString *googleAppId = [[dict objectForKey: @"GOOGLE_APP_ID"] stringValue];
+        if (!googleAppId || [googleAppId isEqualToString:@"Google-App-Id-Placeholder"]) {
+            return NO;
+        }
 
-    BOOL prefersNoTrack = [[NSUserDefaults standardUserDefaults] boolForKey:kINatPreferNoTrackPrefKey];
-    if (prefersNoTrack) {
-        return NO;
+        BOOL prefersNoTrack = [[NSUserDefaults standardUserDefaults] boolForKey:kINatPreferNoTrackPrefKey];
+        if (prefersNoTrack) {
+            return NO;
+        } else {
+            return YES;
+        }
     } else {
-        return YES;
+        return NO;
     }
 }
 
