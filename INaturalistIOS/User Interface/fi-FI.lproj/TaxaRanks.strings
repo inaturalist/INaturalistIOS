@@ -52,9 +52,9 @@
 /* epifamily rank in tree of life */
 "genus" = "genus";
 /* genushybrid rank in tree of life */
-"genushybrid" = "genushybrid";
+"genushybrid" = "sukuristeymä";
 /* subgenus rank in tree of life */
-"subgenus" = "subgenus";
+"subgenus" = "alasuku";
 
 /* section rank in tree of life */
 "section" = "section";
@@ -62,14 +62,14 @@
 "subsection" = "subsection";
 
 /* species rank in tree of life */
-"species" = "species";
+"species" = "laji";
 /* hybrid rank in tree of life */
-"hybrid" = "hybrid";
+"hybrid" = "risteymä";
 
 /* subspecies rank in tree of life */
-"subspecies" = "subspecies";
+"subspecies" = "alalaji";
 /* variety rank in tree of life */
-"variety" = "variety";
+"variety" = "muunnos";
 /* form rank in tree of life */
 "form" = "form";
 /* infrahybrid rank in tree of life */

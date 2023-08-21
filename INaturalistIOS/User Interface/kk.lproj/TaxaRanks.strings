@@ -1,80 +1,76 @@
 /* kingdom rank in tree of life */
-"kingdom" = "kingdom";
+"kingdom" = "патшалық";
 /* subkingdom rank in tree of life */
-"subkingdom" = "subkingdom";
+"subkingdom" = "субпатшалық";
 
 /* phylum rank in tree of life */
-"phylum" = "phylum";
+"phylum" = "тип";
 /* subphylum rank in tree of life */
-"subphylum" = "subphylum";
+"subphylum" = "субтип";
 
 /* superclass rank in tree of life */
-"superclass" = "superclass";
+"superclass" = "суперкласс";
 /* class rank in tree of life */
-"class" = "class";
+"class" = "класс";
 /* subclass rank in tree of life */
-"subclass" = "subclass";
+"subclass" = "субкласс";
 /* infraclass rank in tree of life */
-"infraclass" = "infraclass";
+"infraclass" = "инфракласс";
 
 /* superorder rank in tree of life */
-"superorder" = "superorder";
+"superorder" = "супержасақ";
 /* order rank in tree of life */
-"order" = "order";
+"order" = "жасақ";
 /* suborder rank in tree of life */
-"suborder" = "suborder";
+"suborder" = "субжасақ";
 /* infraorder rank in tree of life */
-"infraorder" = "infraorder";
+"infraorder" = "инфражасақ";
 /* parvorder rank in tree of life */
-"parvorder" = "parvorder";
+"parvorder" = "парвжасақ";
 
 /* zoosection rank in tree of life */
-"zoosection" = "zoosection";
+"zoosection" = "зоосекция";
 /* zoosubsection rank in tree of life */
-"zoosubsection" = "zoosubsection";
+"zoosubsection" = "зоосубсекция";
 
 /* superfamily rank in tree of life */
-"superfamily" = "superfamily";
+"superfamily" = "суперотбасы";
 /* epifamily rank in tree of life */
-"epifamily" = "epifamily";
+"epifamily" = "эпиотбасы";
 /* family rank in tree of life */
-"family" = "family";
+"family" = "тұқымдас";
 /* subfamily rank in tree of life */
-"subfamily" = "subfamily";
+"subfamily" = "суботбасы";
 
 /* supertribe rank in tree of life */
-"supertribe" = "supertribe";
+"supertribe" = "супертайпа";
 /* tribe rank in tree of life */
-"tribe" = "tribe";
+"tribe" = "тайпа";
 /* subtribe rank in tree of life */
-"subtribe" = "subtribe";
+"subtribe" = "субтайпа";
 
 /* epifamily rank in tree of life */
-"genus" = "genus";
+"genus" = "тұқымдас";
 /* genushybrid rank in tree of life */
-"genushybrid" = "genushybrid";
+"genushybrid" = "тұқымдасгибрид";
 /* subgenus rank in tree of life */
-"subgenus" = "subgenus";
+"subgenus" = "субтұқымдас";
 
 /* section rank in tree of life */
-"section" = "section";
+"section" = "секция";
 /* subsection rank in tree of life */
-"subsection" = "subsection";
+"subsection" = "субсекция";
 
 /* species rank in tree of life */
-"species" = "species";
+"species" = "түр";
 /* hybrid rank in tree of life */
-"hybrid" = "hybrid";
+"hybrid" = "гибрид";
 
 /* subspecies rank in tree of life */
-"subspecies" = "subspecies";
+"subspecies" = "түрше";
 /* variety rank in tree of life */
-"variety" = "variety";
+"variety" = "вариация";
 /* form rank in tree of life */
-"form" = "form";
+"form" = "форма";
 /* infrahybrid rank in tree of life */
-"infrahybrid" = "infrahybrid";
-
-
-
-
+"infrahybrid" = "инфагибрид";
