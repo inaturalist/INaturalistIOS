@@ -25,8 +25,7 @@
 #import "PostsAPI.h"
 #import "ExplorePost.h"
 #import "NSDate+INaturalist.h"
-
-static UIImage *briefcase;
+#import "UIImage+INaturalist.h"
 
 @interface SiteNewsViewController () <NSFetchedResultsControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 @property IBOutlet UITableView *tableView;
@@ -45,19 +44,6 @@ static UIImage *briefcase;
     return _api;
 }
 
-
-- (instancetype)initWithCoder:(NSCoder *)aDecoder {
-    if (self = [super initWithCoder:aDecoder]) {
-        
-        briefcase = ({
-            FAKIcon *briefcaseOutline = [FAKIonIcons iosBriefcaseOutlineIconWithSize:35];
-            [briefcaseOutline addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
-            [briefcaseOutline imageWithSize:CGSizeMake(34, 45)];
-        });
-    }
-    
-    return self;
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -132,14 +118,14 @@ static UIImage *briefcase;
         if (self.project.iconUrl) {
             [cell.newsCategoryImageView setImageWithURL:self.project.iconUrl];
         } else {
-            cell.newsCategoryImageView.image = briefcase;
+            cell.newsCategoryImageView.image = [UIImage inat_defaultProjectImage];
         }
     } else {
         cell.newsCategoryTitle.text = post.parentTitleText;
         if (post.parentIconUrl) {
             [cell.newsCategoryImageView setImageWithURL:post.parentIconUrl];
         } else {
-            cell.newsCategoryImageView.image = briefcase;
+            cell.newsCategoryImageView.image = [UIImage inat_defaultProjectImage];
         }
     }
     
