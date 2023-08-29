@@ -400,6 +400,7 @@ static const int ListControlIndexNearby = 2;
     id <ProjectVisualization> project = [self.projects objectAtIndex:indexPath.row];
     cell.titleLabel.text = project.title;
     [cell.projectImage cancelImageDownloadTask];
+
     [cell.projectImage setImageWithURL:[project iconUrl]
                       placeholderImage:[UIImage inat_defaultProjectImage]];
         
