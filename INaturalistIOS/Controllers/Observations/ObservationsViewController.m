@@ -1297,17 +1297,22 @@ typedef NS_ENUM(NSInteger, ObservationsViewControllerSection) {
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
-        self.navigationController.tabBarItem.image = ({
-            FAKIcon *meInactive = [FAKIonIcons iosPersonIconWithSize:40];
-            [meInactive addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
-            [[meInactive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        });
-        
-        self.navigationController.tabBarItem.selectedImage = ({
-            FAKIcon *meActive = [FAKIonIcons iosPersonIconWithSize:40];
-            [meActive addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
-            [[meActive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        });
+
+        if (@available(iOS 13.0, *)) {
+            self.navigationController.tabBarItem.image = [UIImage systemImageNamed:@"person.fill"];
+        } else {
+            self.navigationController.tabBarItem.image = ({
+                FAKIcon *meInactive = [FAKIonIcons iosPersonIconWithSize:40];
+                [meInactive addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
+                [[meInactive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            });
+
+            self.navigationController.tabBarItem.selectedImage = ({
+                FAKIcon *meActive = [FAKIonIcons iosPersonIconWithSize:40];
+                [meActive addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
+                [[meActive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            });
+        }
         
         self.navigationController.tabBarItem.title = NSLocalizedString(@"Me", nil);
         

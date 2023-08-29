@@ -26,16 +26,24 @@ class INatTabBarController: UITabBarController {
       self.delegate = self
       
       // configure camera VC
-      if let cameraIcon = FAKIonIcons.iosCameraIcon(withSize: 45) {
-         cameraIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.lightGray)
-         let cameraImg = cameraIcon.image(with: CGSize(width: 34, height: 45))?.withRenderingMode(.alwaysOriginal)
+      if #available(iOS 13.0, *) {
          if let vcs = self.viewControllers {
             let observeVC = vcs[2]
-            observeVC.tabBarItem.image = cameraImg
+            observeVC.tabBarItem.image = UIImage(systemName: "camera.fill")
             observeVC.tabBarItem.title = NSLocalizedString("Observe", comment: "Title for New Observation Tab Bar Button")
          }
+      } else {
+         if let cameraIcon = FAKIonIcons.iosCameraIcon(withSize: 45) {
+            cameraIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.lightGray)
+            let cameraImg = cameraIcon.image(with: CGSize(width: 34, height: 45))?.withRenderingMode(.alwaysOriginal)
+            if let vcs = self.viewControllers {
+               let observeVC = vcs[2]
+               observeVC.tabBarItem.image = cameraImg
+               observeVC.tabBarItem.title = NSLocalizedString("Observe", comment: "Title for New Observation Tab Bar Button")
+            }
+         }
       }
-      
+
       // default to me tab
       self.selectedIndex = 3
       
