@@ -1586,25 +1586,32 @@ typedef NS_ENUM(NSInteger, ObservationsViewControllerSection) {
 
     
     self.navigationItem.leftBarButtonItem = nil;
-    FAKIcon *settings = [FAKIonIcons iosGearOutlineIconWithSize:30];
-    UIImage *settingsImage = [settings imageWithSize:CGSizeMake(30, 30)];
-    settings.iconFontSize = 20;
-    UIImage *settingsLandscapeImage = [settings imageWithSize:CGSizeMake(20, 20)];
-    
+
+    UIImage *settingsImage = nil;
+    if (@available(iOS 14.0, *)) {
+        settingsImage = [UIImage systemImageNamed:@"gearshape"];
+    } else if (@available(iOS 13.0, *)) {
+        settingsImage = [UIImage systemImageNamed:@"gear"];
+    } else {
+        FAKIcon *settings = [FAKIonIcons iosGearOutlineIconWithSize:30];
+        settingsImage = [settings imageWithSize:CGSizeMake(30, 30)];
+    }
+
     UIBarButtonItem *settingsBarButton = [[UIBarButtonItem alloc] initWithImage:settingsImage
-                                                            landscapeImagePhone:settingsLandscapeImage
                                                                           style:UIBarButtonItemStylePlain
                                                                          target:self
                                                                          action:@selector(settings)];
     settingsBarButton.accessibilityLabel = NSLocalizedString(@"Settings", @"accessibility label for settings button");
-    
-    FAKIcon *book = [FAKIonIcons iosBookOutlineIconWithSize:30];
-    UIImage *bookImage = [book imageWithSize:CGSizeMake(30, 30)];
-    book.iconFontSize = 20;
-    UIImage *bookLandscapeImage = [book imageWithSize:CGSizeMake(20, 20)];
-    
+
+    UIImage *bookImage = nil;
+    if (@available(iOS 13.0, *)) {
+        bookImage = [UIImage systemImageNamed:@"book"];
+    } else {
+        FAKIcon *book = [FAKIonIcons iosBookOutlineIconWithSize:30];
+        bookImage = [book imageWithSize:CGSizeMake(30, 30)];
+    }
+
     UIBarButtonItem *guidesBarButton = [[UIBarButtonItem alloc] initWithImage:bookImage
-                                                          landscapeImagePhone:bookLandscapeImage
                                                                         style:UIBarButtonItemStylePlain
                                                                        target:self
                                                                        action:@selector(guides)];
@@ -1614,8 +1621,7 @@ typedef NS_ENUM(NSInteger, ObservationsViewControllerSection) {
         settingsBarButton,
         guidesBarButton,
     ];
-    //self.navigationItem.rightBarButtonItem = settingsBarButton;
-    
+
     [appDelegate.loginController.uploadManager setDelegate:self];
     
     [self.anonHeader.loginButton addTarget:self
