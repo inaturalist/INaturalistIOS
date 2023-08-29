@@ -320,11 +320,16 @@
 #pragma mark - ExploreViewControllerControlIcon
 
 - (UIImage *)controlIcon {
-    FAKIcon *map = [FAKIonIcons mapIconWithSize:22.0f];
-    [map addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-    UIImage *image = [map imageWithSize:CGSizeMake(25.0f, 25.0f)];
-    image.accessibilityLabel = NSLocalizedString(@"Map", @"Map layout on explore tab");
-    return image;
+    UIImage *controlImage = nil;
+    if (@available(iOS 13.0, *)) {
+        controlImage = [UIImage systemImageNamed:@"map"];
+    } else {
+        FAKIcon *map = [FAKIonIcons mapIconWithSize:22.0f];
+        [map addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+        controlImage = [map imageWithSize:CGSizeMake(25.0f, 25.0f)];
+    }
+    controlImage.accessibilityLabel = NSLocalizedString(@"Map", @"Map layout on explore tab");
+    return controlImage;
 }
 
 #pragma mark - Allow location search to update map location

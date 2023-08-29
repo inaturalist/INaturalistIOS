@@ -193,11 +193,16 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
 #pragma mark - ExploreViewControllerControlIcon
 
 - (UIImage *)controlIcon {
-    FAKIcon *grid = [FAKFoundationIcons thumbnailsIconWithSize:22.0f];
-    [grid addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-    UIImage *image = [grid imageWithSize:CGSizeMake(25.0f, 25.0f)];
-    image.accessibilityLabel = NSLocalizedString(@"Grid", @"Grid layout on explore tab");
-    return image;
+    UIImage *controlImage = nil;
+    if (@available(iOS 13.0, *)) {
+        controlImage = [UIImage systemImageNamed:@"square.grid.3x3"];
+    } else {
+        FAKIcon *grid = [FAKFoundationIcons thumbnailsIconWithSize:22.0f];
+        [grid addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+        controlImage = [grid imageWithSize:CGSizeMake(25.0f, 25.0f)];
+    }
+    controlImage.accessibilityLabel = NSLocalizedString(@"Grid", @"Grid layout on explore tab");
+    return controlImage;
 }
 
 @end

@@ -175,11 +175,16 @@ static NSString *ExploreListHeaderId = @"ExploreListHeader";
 #pragma mark - ExploreViewControllerControlIcon
 
 - (UIImage *)controlIcon {
-    FAKIcon *list = [FAKFoundationIcons listIconWithSize:22.0f];
-    [list addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-    UIImage *image = [list imageWithSize:CGSizeMake(25.0f, 25.0f)];
-    image.accessibilityLabel = NSLocalizedString(@"List", @"List layout on explore tab");
-    return image;
+    UIImage *controlImage = nil;
+    if (@available(iOS 13.0, *)) {
+        controlImage = [UIImage systemImageNamed:@"list.dash"];
+    } else {
+        FAKIcon *list = [FAKFoundationIcons listIconWithSize:22.0f];
+        [list addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
+        controlImage = [list imageWithSize:CGSizeMake(25.0f, 25.0f)];
+    }
+    controlImage.accessibilityLabel = NSLocalizedString(@"List", @"List layout on explore tab");
+    return controlImage;
 }
 
 @end
