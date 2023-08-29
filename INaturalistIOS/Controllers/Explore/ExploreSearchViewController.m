@@ -66,8 +66,16 @@
 // since we're coming out of a storyboard, -initWithCoder: is the initializer
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
-
-        if (@available(iOS 13.0, *)) {
+        if (@available(iOS 16.0, *)) {
+            NSArray *choices = @[
+                @"globe.central.south.asia.fill",
+                @"globe.europe.africa.fill",
+                @"globe.asia.australia.fill",
+                @"globe.americas.fill",
+            ];
+            NSUInteger randomIndex = arc4random() % choices.count;
+            self.navigationController.tabBarItem.image = [UIImage systemImageNamed:choices[randomIndex]];
+        } else if (@available(iOS 13.0, *)) {
             self.navigationController.tabBarItem.image = [UIImage systemImageNamed:@"map.fill"];
         } else {
             FAKIcon *compassInactive = [FAKIonIcons androidCompassIconWithSize:30];
@@ -804,7 +812,7 @@
     }
     
     self.locationFetchTimer = [NSTimer bk_scheduledTimerWithTimeInterval:15.0f
-                                                              block:^(NSTimer *timer) {
+                                                                   block:^(NSTimer *timer) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideAllHUDsForView:self.view animated:YES];
         });
@@ -821,7 +829,7 @@
         self.locationManager = nil;
         self.isFetchingLocation = NO;
     }
-                                                            repeats:NO];
+                                                                 repeats:NO];
 }
 
 
