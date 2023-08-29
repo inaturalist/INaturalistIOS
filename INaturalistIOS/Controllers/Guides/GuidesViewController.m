@@ -231,20 +231,7 @@ static const int ListControlIndexNearby = 1;
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
-        
         self.title = NSLocalizedString(@"Guides", nil);
-
-        self.tabBarItem.image = ({
-            FAKIcon *bookInactive = [FAKIonIcons iosBookIconWithSize:35];
-            [bookInactive addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
-            [[bookInactive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        });
-        
-        self.tabBarItem.selectedImage = ({
-            FAKIcon *bookActive = [FAKIonIcons iosBookIconWithSize:35];
-            [bookActive addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
-            [[bookActive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        });        
     }
     
     return self;
