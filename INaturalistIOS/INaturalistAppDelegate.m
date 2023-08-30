@@ -13,6 +13,7 @@
 @import UIColor_HTMLColors;
 @import JDStatusBarNotification;
 @import SDWebImage;
+@import SimpleKeychain;
 
 #import "INaturalistAppDelegate.h"
 #import "Observation.h"
@@ -122,6 +123,10 @@
 }
 
 - (void)configureApplication {
+    // always start without a JWT, unsafe to trust one from previous app launch
+    // since it might have been a previous app _install_
+    [[A0SimpleKeychain keychain] deleteEntryForKey:INatJWTPrefKey];
+
     [self configureOAuth2Client];
 
     dispatch_queue_t queue = dispatch_queue_create("migration.queue", DISPATCH_QUEUE_SERIAL);
