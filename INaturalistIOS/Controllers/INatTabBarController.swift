@@ -171,6 +171,24 @@ class INatTabBarController: UITabBarController {
 extension INatTabBarController: UITabBarControllerDelegate {
    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
       if let vcs = tabBarController.viewControllers {
+         if selectedIndex == 0 && vcs.firstIndex(of: viewController) == 0 {
+            // user selected explore, already on explore tab, cycle the explore icon
+            if #available(iOS 16, *) {
+               let choices = [
+                  "globe.central.south.asia.fill",
+                  "globe.europe.africa.fill",
+                  "globe.asia.australia.fill",
+                  "globe.americas.fill",
+               ]
+
+               var newImage = UIImage(systemName: choices.randomElement()!)
+               while viewController.tabBarItem.image == newImage {
+                  newImage = UIImage(systemName: choices.randomElement()!)
+               }
+               viewController.tabBarItem.image = newImage
+            }
+         }
+
          if vcs.firstIndex(of: viewController) == 2 {
             DispatchQueue.main.async {
                self.triggerNewObservationFlow()
