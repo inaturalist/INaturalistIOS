@@ -6,9 +6,6 @@
 //  Copyright (c) 2015 iNaturalist. All rights reserved.
 //
 
-@import FontAwesomeKit;
-@import UIColor_HTMLColors;
-
 #import "ObservationViewNormalCell.h"
 #import "UIColor+INaturalist.h"
 

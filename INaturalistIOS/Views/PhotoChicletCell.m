@@ -6,9 +6,8 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <FontAwesomeKit/FAKIonIcons.h>
-
 #import "PhotoChicletCell.h"
+#import "INaturalist-Swift.h"
 
 @implementation PhotoChicletCell
 
@@ -32,8 +31,10 @@
             button.frame = CGRectZero;
 
             button.layer.cornerRadius = 11;
-            FAKIcon *close = [FAKIonIcons closeIconWithSize:10];
-            [button setAttributedTitle:close.attributedString forState:UIControlStateNormal];
+
+            [button setImage:[UIImage iconImageWithSystemName:@"xmark" size:IconImageSizeXsmall]
+                    forState:UIControlStateNormal];
+
             button.tintColor = [UIColor whiteColor];
             button.backgroundColor = [UIColor grayColor];
 

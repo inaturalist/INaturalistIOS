@@ -11,7 +11,6 @@
 
 #import <BlocksKit/BlocksKit.h>
 #import <BlocksKit/UIBarButtonItem+BlocksKit.h>
-#import <FontAwesomeKit/FAKIonIcons.h>
 #import <GeoJSONSerialization/GeoJSONSerialization.h>
 
 #import "ExploreMapViewController.h"
@@ -25,6 +24,7 @@
 #import "ExploreContainerViewController.h"
 #import "ObsDetailV2ViewController.h"
 #import "UIImage+MapAnnotations.h"
+#import "INaturalist-Swift.h"
 
 @interface ExploreMapViewController () <MKMapViewDelegate, CLLocationManagerDelegate>
 
@@ -320,14 +320,7 @@
 #pragma mark - ExploreViewControllerControlIcon
 
 - (UIImage *)controlIcon {
-    UIImage *controlImage = nil;
-    if (@available(iOS 13.0, *)) {
-        controlImage = [UIImage systemImageNamed:@"map"];
-    } else {
-        FAKIcon *map = [FAKIonIcons mapIconWithSize:22.0f];
-        [map addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-        controlImage = [map imageWithSize:CGSizeMake(25.0f, 25.0f)];
-    }
+    UIImage *controlImage = [UIImage iconImageWithSystemName:@"map" size:IconImageSizeSmall];
     controlImage.accessibilityLabel = NSLocalizedString(@"Map", @"Map layout on explore tab");
     return controlImage;
 }

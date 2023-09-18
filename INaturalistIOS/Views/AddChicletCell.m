@@ -6,49 +6,32 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-
-#import <FontAwesomeKit/FAKIonIcons.h>
-
 #import "AddChicletCell.h"
+#import "INaturalist-Swift.h"
 
 @implementation AddChicletCell
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        
-        UILabel *plusLabel = ({
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-            label.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            label.layer.borderColor = [UIColor grayColor].CGColor;
-            label.layer.borderWidth = 1.0f;
-            label.tintColor = [UIColor grayColor];
-            FAKIcon *plus = [FAKIonIcons iosPlusEmptyIconWithSize:25];
-            label.attributedText = plus.attributedString;
-            label.textAlignment = NSTextAlignmentCenter;
-            
-            label;
+        UIImageView *plusImageView = ({
+            UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
+            iv.translatesAutoresizingMaskIntoConstraints = NO;
+
+            iv.layer.borderColor = [UIColor grayColor].CGColor;
+            iv.layer.borderWidth = 1.0f;
+            iv.tintColor = [UIColor grayColor];
+
+            iv.image = [UIImage iconImageWithSystemName:@"plus" size:IconImageSizeSmall];
+            iv.contentMode = UIViewContentModeCenter;
+
+            iv;
         });
-        [self.self.contentView addSubview:plusLabel];
-        
-        NSDictionary *views = @{ @"plus": plusLabel };
-        
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-9-[plus]-9-|"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        
-        [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-9-[plus]"
-                                                                     options:0
-                                                                     metrics:0
-                                                                       views:views]];
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:plusLabel
-                                                         attribute:NSLayoutAttributeHeight
-                                                         relatedBy:NSLayoutRelationEqual
-                                                            toItem:plusLabel
-                                                         attribute:NSLayoutAttributeWidth
-                                                        multiplier:1.0f
-                                                          constant:0.0f]];
+        [self.contentView addSubview:plusImageView];
+
+        [plusImageView.heightAnchor constraintEqualToAnchor:plusImageView.widthAnchor].active = YES;
+        [plusImageView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:9].active = YES;
+        [plusImageView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-9].active = YES;
+        [plusImageView.topAnchor constraintEqualToAnchor:self.topAnchor constant:9].active = YES;
     }
     
 

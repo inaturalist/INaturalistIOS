@@ -7,7 +7,6 @@
 //
 
 @import AFNetworking;
-@import FontAwesomeKit;
 @import UIColor_HTMLColors;
 
 #import "NewsItemCell.h"

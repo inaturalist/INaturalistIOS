@@ -7,7 +7,6 @@
 //
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
-#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ProjectsViewController.h"
 #import "TutorialSinglePageViewController.h"
@@ -24,6 +23,7 @@
 #import "ProjectsAPI.h"
 #import "ExploreProject.h"
 #import "ExploreProjectRealm.h"
+#import "INaturalist-Swift.h"
 
 static const int ListControlIndexUser = 0;
 static const int ListControlIndexFeatured = 1;
@@ -259,24 +259,8 @@ static const int ListControlIndexNearby = 2;
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
-        
         self.title = NSLocalizedString(@"Projects", nil);
-
-        if (@available(iOS 13.0, *)) {
-            self.tabBarItem.image = [UIImage systemImageNamed:@"briefcase.fill"];
-        } else {
-            self.tabBarItem.image = ({
-                FAKIcon *briefcaseInactive = [FAKIonIcons iosBriefcaseIconWithSize:35];
-                [briefcaseInactive addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
-                [[briefcaseInactive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-            });
-
-            self.tabBarItem.selectedImage = ({
-                FAKIcon *briefcaseActive = [FAKIonIcons iosBriefcaseIconWithSize:35];
-                [briefcaseActive addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
-                [[briefcaseActive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-            });
-        }
+        self.tabBarItem.image = [UIImage iconImageWithSystemName:@"briefcase.fill" size:IconImageSizeMedium];
     }
     
     return self;

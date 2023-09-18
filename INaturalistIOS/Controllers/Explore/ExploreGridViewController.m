@@ -6,7 +6,6 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-@import FontAwesomeKit;
 @import BlocksKit;
 @import SVPullToRefresh;
 @import PDKTStickySectionHeadersCollectionViewLayout;
@@ -19,6 +18,7 @@
 #import "UIColor+ExploreColors.h"
 #import "RestrictedCollectionHeader.h"
 #import "ObsDetailV2ViewController.h"
+#import "INaturalist-Swift.h"
 
 static NSString *ExploreGridCellId = @"ExploreCell";
 static NSString *ExploreGridHeaderId = @"ExploreHeader";
@@ -193,14 +193,7 @@ static NSString *ExploreGridHeaderId = @"ExploreHeader";
 #pragma mark - ExploreViewControllerControlIcon
 
 - (UIImage *)controlIcon {
-    UIImage *controlImage = nil;
-    if (@available(iOS 13.0, *)) {
-        controlImage = [UIImage systemImageNamed:@"square.grid.3x3"];
-    } else {
-        FAKIcon *grid = [FAKFoundationIcons thumbnailsIconWithSize:22.0f];
-        [grid addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-        controlImage = [grid imageWithSize:CGSizeMake(25.0f, 25.0f)];
-    }
+    UIImage *controlImage = [UIImage iconImageWithSystemName:@"square.grid.3x3" size:IconImageSizeSmall];
     controlImage.accessibilityLabel = NSLocalizedString(@"Grid", @"Grid layout on explore tab");
     return controlImage;
 }

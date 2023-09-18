@@ -7,7 +7,6 @@
 //
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
-#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "ExploreListTableViewCell.h"
 #import "ExploreObservation.h"
@@ -17,6 +16,7 @@
 #import "UIColor+ExploreColors.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
 #import "UIFont+ExploreFonts.h"
+#import "INaturalist-Swift.h"
 
 static NSDateFormatter *shortFormatter;
 
@@ -341,6 +341,8 @@ static NSDateFormatter *shortFormatter;
     [observationImageView cancelImageDownloadTask];
     observationImageView.layer.borderColor = [UIColor clearColor].CGColor;
     observationImageView.layer.borderWidth = 0.0f;
+    observationImageView.contentMode = UIViewContentModeScaleAspectFill;
+
     commonNameLabel.text = nil;
     scientificNameLabel.text = nil;
     observerNameLabel.text = nil;
@@ -357,18 +359,18 @@ static NSDateFormatter *shortFormatter;
     
     if (observation.observationPhotos.count > 0) {
         ExploreObservationPhoto *photo = (ExploreObservationPhoto *)observation.observationPhotos.firstObject;
-        
+
         NSString *mediumUrlString = [photo.url stringByReplacingOccurrencesOfString:@"square"
                                                                          withString:@"medium"];
         
         [observationImageView setImageWithURL:[NSURL URLWithString:mediumUrlString]];
     } else if (observation.observationSounds.count > 0) {
-        FAKIonIcons *soundIcon = [FAKIonIcons iosVolumeHighIconWithSize:40];
-        
-        [soundIcon addAttribute:NSForegroundColorAttributeName
-                          value:[UIColor lightGrayColor]];
-        
-        observationImageView.image = [soundIcon imageWithSize:CGSizeMake(40, 40)];
+        observationImageView.image = [UIImage iconImageWithSystemName:@"speaker.wave.3.fill"
+                                                                 size:IconImageSizeMedium];
+        observationImageView.tintColor = [UIColor lightGrayColor];
+        // photos are intended to fill and clip,
+        // but we want this icon to fit in the cell frame
+        observationImageView.contentMode = UIViewContentModeScaleAspectFit;
     }
     
     commonNameLabel.text = observation.taxon.displayFirstName;

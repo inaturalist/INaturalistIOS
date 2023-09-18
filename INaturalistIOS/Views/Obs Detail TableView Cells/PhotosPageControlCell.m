@@ -6,33 +6,22 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-@import FontAwesomeKit;
 @import AFNetworking;
 
 #import "PhotosPageControlCell.h"
+#import "INaturalist-Swift.h"
 
 @implementation PhotosPageControlCell
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-    // Initialization code
-    
-    self.shareButton.layer.cornerRadius = 31.0 / 2;
-    self.shareButton.clipsToBounds = YES;
-    self.shareButton.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.8f];
-    
-    FAKIcon *share = [FAKIonIcons iosUploadOutlineIconWithSize:20];
-    [share addAttribute:NSForegroundColorAttributeName
-                  value:[UIColor whiteColor]];
-    [self.shareButton setAttributedTitle:share.attributedString
-                                forState:UIControlStateNormal];
+
+    [self.shareButton setImage:[UIImage iconImageWithSystemName:@"square.and.arrow.up.circle.fill" size:IconImageSizeLarge]
+                      forState:UIControlStateNormal];
+    self.shareButton.tintColor = UIColor.blackColor;
+    self.shareButton.backgroundColor = [UIColor clearColor];
+
     self.shareButton.accessibilityLabel = NSLocalizedString(@"Share", nil);
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
 }
 
 - (void)prepareForReuse {

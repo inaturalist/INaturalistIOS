@@ -10,7 +10,6 @@
 //
 
 #import <AssetsLibrary/AssetsLibrary.h>
-#import <FontAwesomeKit/FAKIonIcons.h>
 #import <SDWebImage/SDImageCache.h>
 #import <ImageIO/ImageIO.h>
 #import <Photos/Photos.h>

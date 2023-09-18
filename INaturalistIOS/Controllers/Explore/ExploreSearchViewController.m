@@ -6,8 +6,6 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <FontAwesomeKit/FAKFoundationIcons.h>
-#import <FontAwesomeKit/FAKIonIcons.h>
 #import <BlocksKit/BlocksKit.h>
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <CoreLocation/CoreLocation.h>
@@ -39,6 +37,7 @@
 #import "INatReachability.h"
 #import "ExploreUserRealm.h"
 #import "ExploreActiveSearchView.h"
+#import "INaturalist-Swift.h"
 
 @interface ExploreSearchViewController () <CLLocationManagerDelegate, ActiveSearchTextDelegate>
 @property CLLocationManager *locationManager;
@@ -66,30 +65,10 @@
 // since we're coming out of a storyboard, -initWithCoder: is the initializer
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
-        if (@available(iOS 16.0, *)) {
-            NSArray *choices = @[
-                @"globe.central.south.asia.fill",
-                @"globe.europe.africa.fill",
-                @"globe.asia.australia.fill",
-                @"globe.americas.fill",
-            ];
-            NSUInteger randomIndex = arc4random() % choices.count;
-            self.navigationController.tabBarItem.image = [UIImage systemImageNamed:choices[randomIndex]];
-        } else if (@available(iOS 13.0, *)) {
-            self.navigationController.tabBarItem.image = [UIImage systemImageNamed:@"map.fill"];
-        } else {
-            FAKIcon *compassInactive = [FAKIonIcons androidCompassIconWithSize:30];
-            [compassInactive addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
-            self.navigationController.tabBarItem.image = [[compassInactive imageWithSize:CGSizeMake(30, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-
-            FAKIcon *compassActive = [FAKIonIcons androidCompassIconWithSize:30];
-            [compassActive addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
-            self.navigationController.tabBarItem.selectedImage = [[compassActive imageWithSize:CGSizeMake(30, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-
-        }
-        
+        self.navigationController.tabBarItem.image = [UIImage iconImageWithSystemName:@"globe-random"
+                                                                                 size:IconImageSizeMedium];
         self.navigationController.tabBarItem.title = NSLocalizedString(@"Explore", nil);
-        
+
         UIBarButtonItem *search = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
                                                                                 target:self
                                                                                 action:@selector(searchPressed)];

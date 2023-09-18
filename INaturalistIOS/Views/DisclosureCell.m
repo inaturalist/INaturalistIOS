@@ -70,7 +70,7 @@
                                                                                           metrics:0
                                                                                             views:views]];
         
-        [self.cellConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[iv]-15-[title]-[secondary]-|"
+        [self.cellConstraints addObjectsFromArray:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-15-[iv(==29)]-15-[title]-[secondary]-|"
                                                                                           options:0
                                                                                           metrics:0
                                                                                             views:views]];

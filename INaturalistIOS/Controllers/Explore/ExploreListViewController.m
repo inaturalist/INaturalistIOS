@@ -7,7 +7,6 @@
 //
 
 @import BlocksKit;
-@import FontAwesomeKit;
 @import SVPullToRefresh;
 @import UIColor_HTMLColors;
 
@@ -18,6 +17,7 @@
 #import "UIColor+ExploreColors.h"
 #import "RestrictedListHeader.h"
 #import "ObsDetailV2ViewController.h"
+#import "INaturalist-Swift.h"
 
 static NSString *ExploreListCellId = @"ExploreListCell";
 static NSString *ExploreListHeaderId = @"ExploreListHeader";
@@ -175,14 +175,7 @@ static NSString *ExploreListHeaderId = @"ExploreListHeader";
 #pragma mark - ExploreViewControllerControlIcon
 
 - (UIImage *)controlIcon {
-    UIImage *controlImage = nil;
-    if (@available(iOS 13.0, *)) {
-        controlImage = [UIImage systemImageNamed:@"list.dash"];
-    } else {
-        FAKIcon *list = [FAKFoundationIcons listIconWithSize:22.0f];
-        [list addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-        controlImage = [list imageWithSize:CGSizeMake(25.0f, 25.0f)];
-    }
+    UIImage *controlImage = [UIImage iconImageWithSystemName:@"list.dash" size:IconImageSizeSmall];
     controlImage.accessibilityLabel = NSLocalizedString(@"List", @"List layout on explore tab");
     return controlImage;
 }

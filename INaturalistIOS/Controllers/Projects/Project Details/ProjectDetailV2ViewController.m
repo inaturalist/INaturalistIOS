@@ -7,7 +7,6 @@
 //
 
 @import AFNetworking;
-@import FontAwesomeKit;
 @import MBProgressHUD;
 @import UIColor_HTMLColors;
 
@@ -26,6 +25,7 @@
 #import "ExploreProjectRealm.h"
 #import "LoginController.h"
 #import "ExploreUserRealm.h"
+#import "INaturalist-Swift.h"
 
 @interface ProjectDetailV2ViewController ()
 
@@ -103,22 +103,15 @@
     }
     
     self.projectNameLabel.text = self.project.title;
-    
-    FAKIcon *backIcon = [FAKIonIcons iosArrowBackIconWithSize:25];
-    [backIcon addAttribute:NSForegroundColorAttributeName
-                     value:[UIColor whiteColor]];
-    FAKIcon *circle = [FAKIonIcons recordIconWithSize:40];
-    [circle addAttribute:NSForegroundColorAttributeName
-                   value:[[UIColor whiteColor] colorWithAlphaComponent:0.4f]];
-    
-    UIImage *backImage = [[UIImage imageWithStackedIcons:@[ backIcon, circle ]
-                                               imageSize:CGSizeMake(40, 40)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-    
+
+    UIImage *backImage = [UIImage iconImageWithSystemName:@"chevron.backward.circle.fill" size:IconImageSizeMedium];
+
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:backImage
                                                                              style:UIBarButtonItemStyleDone
                                                                             target:self
                                                                             action:@selector(myBack)];
-    
+    self.navigationItem.leftBarButtonItem.tintColor = [UIColor colorWithWhite:1.0 alpha:0.4];
+
     [self.joinButton addTarget:self
                         action:@selector(joinTapped:)
               forControlEvents:UIControlEventTouchUpInside];

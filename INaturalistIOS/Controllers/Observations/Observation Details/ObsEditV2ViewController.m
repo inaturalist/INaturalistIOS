@@ -27,7 +27,6 @@
 #import "TextViewCell.h"
 #import "EditLocationViewController.h"
 #import "SubtitleDisclosureCell.h"
-#import "ObsCameraOverlay.h"
 #import "ConfirmPhotoViewController.h"
 #import "FAKINaturalist.h"
 #import "ObservationFieldValue.h"
@@ -1490,11 +1489,10 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
     ObsDetailTaxonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"taxonFromNib"];
     
     UIButton *deleteButton = ({
-        FAKIcon *deleteIcon = [FAKIonIcons iosCloseIconWithSize:29];
-        [deleteIcon addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
-        
         UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 44, 44)];
-        [button setAttributedTitle:deleteIcon.attributedString forState:UIControlStateNormal];
+        button.imageView.tintColor = [UIColor lightGrayColor];
+        [button setImage:[UIImage iconImageWithSystemName:@"xmark.circle.fill" size:IconImageSizeSmall]
+                forState:UIControlStateNormal];
         [button addTarget:self action:@selector(taxonDeleted:) forControlEvents:UIControlEventTouchUpInside];
         button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
         

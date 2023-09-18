@@ -6,10 +6,9 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <FontAwesomeKit/FAKIonIcons.h>
-
 #import "ExploreActiveSearchView.h"
 #import "UIColor+ExploreColors.h"
+#import "INaturalist-Swift.h"
 
 @interface ExploreActiveSearchView () {
     UIView *activeSearchTextContainerView;
@@ -41,15 +40,16 @@
             [view addSubview:self.activeSearchLabel];
 
             self.removeActiveSearchButton = ({
-                FAKIcon *close = [FAKIonIcons iosCloseEmptyIconWithSize:30.0f];
-                [close addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-                
                 UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+
+                [button setImage:[UIImage iconImageWithSystemName:@"xmark" size:IconImageSizeSmall]
+                        forState:UIControlStateNormal];
+                button.tintColor = [UIColor whiteColor];
+
                 button.translatesAutoresizingMaskIntoConstraints = NO;
                 button.frame = CGRectZero;
                 button.accessibilityLabel = NSLocalizedString(@"Remove active search filters", nil);
                 
-                [button setAttributedTitle:close.attributedString forState:UIControlStateNormal];
                 button;
             });
             [view addSubview:self.removeActiveSearchButton];

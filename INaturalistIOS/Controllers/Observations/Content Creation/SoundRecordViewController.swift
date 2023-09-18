@@ -8,7 +8,6 @@
 
 import UIKit
 import AVFoundation
-import FontAwesomeKit
 
 @objc protocol SoundRecorderDelegate {
     func recordedSound(recorder: SoundRecordViewController, uuidString: String)
@@ -26,8 +25,8 @@ class SoundRecordViewController: UIViewController {
     var timer: Timer?
     var soundUUIDString: String!
         
-    var micImage: UIImage?
-    var pauseImage: UIImage?
+    let micImage = UIImage.iconImage(systemName: "mic.circle", size: .xlarge)
+    var pauseImage = UIImage.iconImage(systemName: "pause.circle", size: .xlarge)
     
     @objc weak var recorderDelegate: SoundRecorderDelegate?
     
@@ -46,21 +45,7 @@ class SoundRecordViewController: UIViewController {
         timerLabel.text = ""
         timerLabel.font = UIFont.boldSystemFont(ofSize: 19)
         timerLabel.textColor = UIColor.inatTint()
-        
-        if let mic = FAKIonIcons.micAIcon(withSize: 50),
-           let pause = FAKIonIcons.pauseIcon(withSize: 50),
-           let circle = FAKIonIcons.recordIcon(withSize: 75)
-        {
-            mic.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.white)
-            pause.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.white)
-            circle.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
-            
-            self.micImage = UIImage(stackedIcons: [circle, mic], imageSize: CGSize(width: 75, height: 75))?
-                .withRenderingMode(.alwaysOriginal)
-            self.pauseImage = UIImage(stackedIcons: [circle, pause], imageSize: CGSize(width: 75, height: 75))?
-                .withRenderingMode(.alwaysOriginal)
-        }
-        
+
         meter = RecorderLevelView()
         meter.accessibilityTraits = [.updatesFrequently]
         
@@ -70,7 +55,7 @@ class SoundRecordViewController: UIViewController {
         recordButton.addTarget(self, action: #selector(recordPressed), for: .touchUpInside)
         recordButton.isEnabled = false
         recordButton.tintColor = UIColor.inatTint()
-        
+
         doneButton = UIButton(type: .system)
         doneButton.setTitle(NSLocalizedString("Save Recording", comment: "Done button for recording observation sounds"), for: .normal)
         doneButton.addTarget(self, action: #selector(donePressed), for: .touchUpInside)

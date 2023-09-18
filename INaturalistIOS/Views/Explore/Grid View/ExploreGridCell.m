@@ -6,7 +6,6 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <FontAwesomeKit/FAKIonIcons.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
 
 #import "ExploreGridCell.h"
@@ -15,6 +14,7 @@
 #import "ExploreTaxon.h"
 #import "UIColor+ExploreColors.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
+#import "INaturalist-Swift.h"
 
 @interface ExploreGridCell () {
     ExploreObservation *_observation;
@@ -105,6 +105,10 @@
     
     observationImageView.image = nil;
     [observationImageView cancelImageDownloadTask];
+
+    // in case we showed a sound icon instead of a photo previously
+    observationImageView.contentMode = UIViewContentModeScaleAspectFill;
+
     observationNameLabel.text = @"";
     observationNameLabel.font = [UIFont systemFontOfSize:observationNameLabel.font.pointSize];
 }
@@ -134,12 +138,12 @@
             [observationImageView setImageWithURL:[NSURL URLWithString:mediumUrlString]];
         }
     } else if (observation.observationSounds.count > 0) {
-        FAKIonIcons *soundIcon = [FAKIonIcons iosVolumeHighIconWithSize:40];
-        
-        [soundIcon addAttribute:NSForegroundColorAttributeName
-                          value:[UIColor lightGrayColor]];
-        
-        observationImageView.image = [soundIcon imageWithSize:CGSizeMake(40, 40)];
+        observationImageView.image = [UIImage iconImageWithSystemName:@"speaker.wave.3.fill"
+                                                                 size:IconImageSizeMedium];
+        observationImageView.tintColor = [UIColor lightGrayColor];
+        // photos are intended to fill and clip,
+        // but we want this icon to fit in the cell frame
+        observationImageView.contentMode = UIViewContentModeScaleAspectFit;
     }
     
     if ([observation taxon]) {

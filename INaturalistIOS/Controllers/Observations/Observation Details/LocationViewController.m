@@ -8,8 +8,6 @@
 
 @import MapKit;
 
-#import <FontAwesomeKit/FAKIonIcons.h>
-
 #import "LocationViewController.h"
 #import "ObservationVisualization.h"
 #import "UIColor+INaturalist.h"

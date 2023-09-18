@@ -7,7 +7,6 @@
 //
 
 @import UIColor_HTMLColors;
-@import FontAwesomeKit;
 
 #import "NewsPagerViewController.h"
 #import "UIColor+INaturalist.h"
@@ -15,6 +14,7 @@
 #import "UpdatesViewController.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
+#import "INaturalist-Swift.h"
 
 @interface NewsPagerViewController () <ViewPagerDelegate, ViewPagerDataSource>
 @end
@@ -24,21 +24,7 @@
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
         self.navigationController.tabBarItem.title = NSLocalizedString(@"Activity", nil);
-
-        if (@available(iOS 13.0, *)) {
-            self.navigationController.tabBarItem.image = [UIImage systemImageNamed:@"bell.fill"];
-        } else {
-            self.tabBarItem.image = ({
-                FAKIcon *newsInactive = [FAKIonIcons iosBellIconWithSize:35];
-                [newsInactive addAttribute:NSForegroundColorAttributeName value:[UIColor lightGrayColor]];
-                [[newsInactive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-            });
-            self.tabBarItem.selectedImage = ({
-                FAKIcon *newsActive = [FAKIonIcons iosBellIconWithSize:35];
-                [newsActive addAttribute:NSForegroundColorAttributeName value:[UIColor inatTint]];
-                [[newsActive imageWithSize:CGSizeMake(34, 45)] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-            });
-        }
+        self.navigationController.tabBarItem.image = [UIImage iconImageWithSystemName:@"bell.fill" size:IconImageSizeMedium];
     }
     
     return self;

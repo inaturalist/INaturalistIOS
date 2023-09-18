@@ -8,7 +8,6 @@
 
 #import "MeHeaderView.h"
 #import "UIColor+INaturalist.h"
-#import <FontAwesomeKit/FAKIonIcons.h>
 
 @interface MeHeaderView ()
 @property BOOL isAnimating;

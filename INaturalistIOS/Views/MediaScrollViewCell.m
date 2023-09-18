@@ -57,7 +57,7 @@ static NSAttributedString *defaultPhotoStr, *nonDefaultPhotoStr;
                                                                      options:0
                                                                      metrics:0
                                                                        views:views]];
-        
+
         FAKIcon *check = [FAKIonIcons iosCheckmarkOutlineIconWithSize:18];
         NSMutableAttributedString *defaultPhotoMutable = [[NSMutableAttributedString alloc] initWithAttributedString:check.attributedString];
         [defaultPhotoMutable appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];

@@ -7,7 +7,6 @@
 //
 
 @import MapKit;
-@import FontAwesomeKit;
 @import UIColor_HTMLColors;
 
 #import "ObsDetailInfoViewModel.h"

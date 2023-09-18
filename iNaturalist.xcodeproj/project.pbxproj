@@ -130,6 +130,7 @@
 		FA427EF21ECD1794003B26C3 /* ExploreTaxonPhotoRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA427EF11ECD1794003B26C3 /* ExploreTaxonPhotoRealm.m */; };
 		FA4529E81A03F70200147895 /* ExploreRegion.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4529E71A03F70200147895 /* ExploreRegion.m */; };
 		FA4714F81ED7A88F00D57FDE /* TaxonSelectButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4714F71ED7A88F00D57FDE /* TaxonSelectButtonCell.m */; };
+		FA4A71732AAF9EF800F308C4 /* UIImage-IconHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA4A71722AAF9EF800F308C4 /* UIImage-IconHelper.swift */; };
 		FA4C19601B30EDB70066CA22 /* partners.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA4C195F1B30EDB70066CA22 /* partners.plist */; };
 		FA4C19641B30EE890066CA22 /* Partner.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4C19631B30EE890066CA22 /* Partner.m */; };
 		FA4C19671B30EEE60066CA22 /* PartnerController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4C19661B30EEE60066CA22 /* PartnerController.m */; };
@@ -218,7 +219,6 @@
 		FA86CC381EAAE496004D6482 /* TaxonSuggestionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA86CC371EAAE496004D6482 /* TaxonSuggestionCell.m */; };
 		FA8872571A2CFB1B00D2168E /* RestrictedCollectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872561A2CFB1B00D2168E /* RestrictedCollectionHeader.m */; };
 		FA8872711A2D048300D2168E /* RestrictedListHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8872701A2D048300D2168E /* RestrictedListHeader.m */; };
-		FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */; };
 		FA8A0E0C25E1C3F9006CA8A4 /* NSDate+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8A0E0B25E1C3F9006CA8A4 /* NSDate+INaturalist.m */; };
 		FA8A0E5125E1D98F006CA8A4 /* TaxaRanks.strings in Resources */ = {isa = PBXBuildFile; fileRef = FA8A0E5325E1D98F006CA8A4 /* TaxaRanks.strings */; };
 		FA8B8DD523CE7266007FBA63 /* ExploreObsFieldRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FA8B8DD423CE7266007FBA63 /* ExploreObsFieldRealm.m */; };
@@ -661,6 +661,7 @@
 		FA49C2CA25CA178E00B7D627 /* lv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lv; path = lv.lproj/Guides.strings; sourceTree = "<group>"; };
 		FA49C2CB25CA178E00B7D627 /* lv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lv; path = lv.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FA49C2CC25CA178E00B7D627 /* lv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = lv; path = lv.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FA4A71722AAF9EF800F308C4 /* UIImage-IconHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage-IconHelper.swift"; sourceTree = "<group>"; };
 		FA4B096421116F5600E942B3 /* UserVisualization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserVisualization.h; sourceTree = "<group>"; };
 		FA4BC3DD2A6B0C81002325EB /* iNaturalist.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = iNaturalist.xctestplan; sourceTree = "<group>"; };
 		FA4BC3DE2A6B2715002325EB /* kk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = kk; path = kk.lproj/Activity.strings; sourceTree = "<group>"; };
@@ -906,8 +907,6 @@
 		FA8872701A2D048300D2168E /* RestrictedListHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RestrictedListHeader.m; sourceTree = "<group>"; };
 		FA8872721A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ExploreObservationPhoto+BestAvailableURL.h"; sourceTree = "<group>"; };
 		FA8872731A2D332D00D2168E /* ExploreObservationPhoto+BestAvailableURL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ExploreObservationPhoto+BestAvailableURL.m"; sourceTree = "<group>"; };
-		FA88B6781AB8E1660004B4C6 /* ObsCameraOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsCameraOverlay.h; sourceTree = "<group>"; };
-		FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsCameraOverlay.m; sourceTree = "<group>"; };
 		FA89FF221AFD4A8B00B0611A /* INatPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatPhoto.h; sourceTree = "<group>"; };
 		FA8A0E0A25E1C3F9006CA8A4 /* NSDate+INaturalist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDate+INaturalist.h"; sourceTree = "<group>"; };
 		FA8A0E0B25E1C3F9006CA8A4 /* NSDate+INaturalist.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDate+INaturalist.m"; sourceTree = "<group>"; };
@@ -1943,6 +1942,7 @@
 				FA3D929B2294AF55004A1AA1 /* TextViewNoInsets.h */,
 				FA3D929C2294AF55004A1AA1 /* TextViewNoInsets.m */,
 				FA822FF228D8542B006CA0F6 /* Uploader */,
+				FA4A71722AAF9EF800F308C4 /* UIImage-IconHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -2004,8 +2004,6 @@
 				FAC0F17D1A9FDD0D000F20C4 /* MultiImageView.m */,
 				FAA20BB81C5079830075EF2C /* NewsItemCell.h */,
 				FAA20BB91C5079830075EF2C /* NewsItemCell.m */,
-				FA88B6781AB8E1660004B4C6 /* ObsCameraOverlay.h */,
-				FA88B6791AB8E1660004B4C6 /* ObsCameraOverlay.m */,
 				19E54CB1160997010036BA3B /* ObservationFieldValueDefaultCell.xib */,
 				19E4CC3116240A5A00694E5D /* ObservationFieldValueStaticCell.xib */,
 				19ADD5AB160A3D50001D886C /* ObservationFieldValueSwitchCell.xib */,
@@ -2958,6 +2956,7 @@
 				FACCEB411ED4E5B6009C9A19 /* TaxonPhotoPageViewController.m in Sources */,
 				FAEF233E1C7D092D00208F44 /* ProjectDetailObserversViewController.m in Sources */,
 				FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */,
+				FA4A71732AAF9EF800F308C4 /* UIImage-IconHelper.swift in Sources */,
 				FAD44AEA24576E2800E9DA38 /* ExploreProjectObservationRealm.m in Sources */,
 				FA2A07991C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m in Sources */,
 				FA6B45061BC73F3700EDDD42 /* ObsFieldLongTextValueCell.m in Sources */,
@@ -3017,7 +3016,6 @@
 				FA55648D1BD9BC3C0049803B /* AddChicletCell.m in Sources */,
 				FA9437861C869B7300CB10F3 /* ObservationAPI.m in Sources */,
 				FA0F1B051BBB561600533ED5 /* ObservationViewCell.m in Sources */,
-				FA88B67A1AB8E1660004B4C6 /* ObsCameraOverlay.m in Sources */,
 				FA8CC92B2A8454A200D8FFFF /* Bundle_VersionString.swift in Sources */,
 				197FD41C17FE13CE0099BDE6 /* GuideTaxonXML.m in Sources */,
 				FAB341F6247B70C300992A80 /* MediaPickerSegue.swift in Sources */,

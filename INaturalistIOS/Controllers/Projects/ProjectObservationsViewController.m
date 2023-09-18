@@ -9,7 +9,6 @@
 @import AFNetworking;
 @import UIColor_HTMLColors;
 @import ActionSheetPicker_3_0;
-@import FontAwesomeKit;
 
 #import "ProjectObservationsViewController.h"
 #import "ProjectObservationHeaderView.h"
@@ -26,6 +25,7 @@
 #import "InsetLabel.h"
 #import "ExploreProjectRealm.h"
 #import "ProjectsAPI.h"
+#import "UIImage+INaturalist.h"
 
 static NSString *SimpleFieldIdentifier = @"simple";
 static NSString *LongTextFieldIdentifier = @"longtext";
@@ -116,16 +116,6 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     });
     [self.tableView.tableHeaderView sizeToFit];
 
-    self.navigationItem.leftBarButtonItem = ({
-        FAKIcon *backIcon = [FAKIonIcons iosArrowBackIconWithSize:34];
-        UIBarButtonItem *item = [[UIBarButtonItem alloc] initWithImage:[backIcon imageWithSize:CGSizeMake(14, 34)]
-                                                                 style:UIBarButtonItemStylePlain
-                                                                target:self
-                                                                action:@selector(backPressed:)];
-        
-        item;
-    });
-    
     self.tableView.backgroundColor = [UIColor whiteColor];
     self.tableView.estimatedRowHeight = 44.0f;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
@@ -395,10 +385,7 @@ static NSString *LongTextFieldIdentifier = @"longtext";
     } else {
         // use standard projects icon
         header.projectThumbnailImageView.backgroundColor = [UIColor colorWithHexString:@"#cccccc"];
-
-        FAKIcon *briefcase = [FAKIonIcons iosBriefcaseOutlineIconWithSize:16.0f];
-        [briefcase addAttribute:NSForegroundColorAttributeName value:[UIColor whiteColor]];
-        [header.projectThumbnailImageView setImage:[briefcase imageWithSize:CGSizeMake(16, 16)]];
+        header.projectThumbnailImageView.image = [UIImage inat_defaultProjectImage];
         header.projectThumbnailImageView.contentMode = UIViewContentModeCenter;
     }
     

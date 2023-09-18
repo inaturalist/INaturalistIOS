@@ -6,10 +6,9 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <FontAwesomeKit/FAKIonIcons.h>
-
 #import "ExploreUser+SearchResultsHelper.h"
 #import "UIColor+ExploreColors.h"
+#import "UIImage+INaturalist.h"
 
 static UIImage *userIconPlaceholder;
 
@@ -36,13 +35,7 @@ static UIImage *userIconPlaceholder;
 }
 
 - (UIImage *)searchResult_PlaceholderImage {
-    if (!userIconPlaceholder) {
-        FAKIcon *person = [FAKIonIcons iosPersonIconWithSize:30.0f];
-        [person addAttribute:NSForegroundColorAttributeName value:[UIColor inatBlack]];
-        userIconPlaceholder = [person imageWithSize:CGSizeMake(30.0f, 30.0f)];
-    }
-    
-    return userIconPlaceholder;
+    return [UIImage inat_defaultUserImage];
 }
 
 @end

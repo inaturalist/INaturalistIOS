@@ -11,7 +11,6 @@
 #import <MBProgressHUD/MBProgressHUD.h>
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import <AFNetworking/AFNetworking.h>
-#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "TaxaSearchViewController.h"
 #import "ImageStore.h"

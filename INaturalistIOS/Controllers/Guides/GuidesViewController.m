@@ -7,7 +7,6 @@
 //
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
-#import <FontAwesomeKit/FAKIonIcons.h>
 
 #import "GuidesViewController.h"
 #import "GuideXML.h"

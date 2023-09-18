@@ -12,7 +12,6 @@
 #import <CoreLocation/CoreLocation.h>
 #import <BlocksKit/BlocksKit.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
-#import <FontAwesomeKit/FAKFontAwesome.h>
 #import <M13ProgressSuite/M13ProgressViewPie.h>
 
 #import "ConfirmPhotoViewController.h"

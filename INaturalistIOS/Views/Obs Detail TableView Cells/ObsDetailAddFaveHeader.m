@@ -6,16 +6,15 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <FontAwesomeKit/FAKIonIcons.h>
-
 #import "ObsDetailAddFaveHeader.h"
 #import "UIColor+INaturalist.h"
+#import "INaturalist-Swift.h"
 
 @interface ObsDetailAddFaveHeader () {
     BOOL _faved;
     NSInteger _faveCount;
 }
-@property UILabel *starLabel;
+@property UIImageView *starImageView;
 @property UILabel *faveActionLabel;
 @property UILabel *faveCountLabel;
 @end
@@ -70,18 +69,16 @@
         });
         [self.faveContainer addSubview:self.faveActionLabel];
         
-        self.starLabel = ({
-            UILabel *label = [[UILabel alloc] initWithFrame:CGRectZero];
-            label.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            label.textAlignment = NSTextAlignmentCenter;
-
-            label;
+        self.starImageView = ({
+            UIImageView *iv = [[UIImageView alloc] initWithFrame:CGRectZero];
+            iv.translatesAutoresizingMaskIntoConstraints = NO;
+            iv.contentMode = UIViewContentModeScaleAspectFit;
+            iv;
         });
-        [self.faveContainer addSubview:self.starLabel];
+        [self.faveContainer addSubview:self.starImageView];
         
         views = @{
-                  @"star": self.starLabel,
+                  @"star": self.starImageView,
                   @"label": self.faveActionLabel,
                   @"count": self.faveCountLabel,
                   };
@@ -134,8 +131,8 @@
         self.faveCountLabel.textColor = [UIColor whiteColor];
         self.faveCountLabel.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:0.2f];
 
-        self.starLabel.textColor = [UIColor whiteColor];
-        self.starLabel.attributedText = [[FAKIonIcons iosStarIconWithSize:25] attributedString];
+        self.starImageView.tintColor = [UIColor whiteColor];
+        self.starImageView.image = [[UIImage iconImageWithSystemName:@"star.fill" size:IconImageSizeMedium] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     } else {
         self.faveContainer.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.1f];
 
@@ -145,8 +142,8 @@
         self.faveCountLabel.textColor = [UIColor whiteColor];
         self.faveCountLabel.backgroundColor = [UIColor inatTint];
         
-        self.starLabel.textColor = [UIColor inatTint];
-        self.starLabel.attributedText = [[FAKIonIcons iosStarOutlineIconWithSize:25] attributedString];
+        self.starImageView.tintColor = [UIColor inatTint];
+        self.starImageView.image = [[UIImage iconImageWithSystemName:@"star" size:IconImageSizeMedium] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
     }
 }
 

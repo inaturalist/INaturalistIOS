@@ -6,11 +6,11 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-@import FontAwesomeKit;
 @import UIColor_HTMLColors;
 
 #import "RestrictedCollectionHeader.h"
 #import "UIColor+ExploreColors.h"
+#import "INaturalist-Swift.h"
 
 @implementation RestrictedCollectionHeader
 
@@ -31,12 +31,13 @@
         [self addSubview:self.titleLabel];
 
         self.clearButton = ({
+
             UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
             
-            FAKIcon *clear = [FAKIonIcons iosCloseEmptyIconWithSize:30.0f];
-            [clear addAttribute:NSForegroundColorAttributeName value:[UIColor inatGreen]];
-            [button setAttributedTitle:clear.attributedString forState:UIControlStateNormal];
-            clear.accessibilityLabel = NSLocalizedString(@"Remove active search filters", nil);
+            [button setImage:[UIImage iconImageWithSystemName:@"xmark" size:IconImageSizeSmall]
+                    forState:UIControlStateNormal];
+            button.tintColor = [UIColor inatGreen];
+            button.accessibilityLabel = NSLocalizedString(@"Remove active search filters", nil);
             
             button.frame = CGRectZero;
             button.translatesAutoresizingMaskIntoConstraints = NO;

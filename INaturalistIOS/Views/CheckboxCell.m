@@ -21,7 +21,7 @@
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
-                
+        
         checkSelected = [FAKIonIcons iosCheckmarkIconWithSize:30.0f];
         checkDeselected = [FAKIonIcons iosCheckmarkOutlineIconWithSize:30.0f];
         

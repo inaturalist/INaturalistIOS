@@ -10,7 +10,6 @@
 @import NSString_stripHtml;
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
-#import <FontAwesomeKit/FAKIonIcons.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import <Realm/Realm.h>
 

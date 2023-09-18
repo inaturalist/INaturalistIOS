@@ -8,7 +8,6 @@
 
 @import AFNetworking;
 @import UIColor_HTMLColors;
-@import FontAwesomeKit;
 @import AudioToolbox;
 @import AVFoundation;
 
@@ -40,6 +39,7 @@
 #import "ExploreUserRealm.h"
 #import "MediaPageControlCell.h"
 #import "INatSound.h"
+#import "INaturalist-Swift.h"
 
 @interface ObsDetailViewModel ()
 
@@ -191,14 +191,8 @@
             }
 
         } else if ([mediaItem conformsToProtocol:@protocol(INatSound)]) {
-            FAKIonIcons *soundIcon = [FAKIonIcons iosVolumeHighIconWithSize:200];
-            
-            [soundIcon addAttribute:NSForegroundColorAttributeName
-                              value:[UIColor lightGrayColor]];
-            
-            cell.iv.image = [soundIcon imageWithSize:CGSizeMake(200, 200)];
+            cell.iv.image = [UIImage iconImageWithSystemName:@"speaker.wave.3.fill" size:IconImageSizeLarge];
             cell.iv.contentMode = UIViewContentModeCenter;  // don't scale
-
             cell.iv.accessibilityLabel = @"Sound";
         }
     } else {

@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import FontAwesomeKit
 
 @objc protocol MediaPickerDelegate {
     func choseMediaPickerItemAtIndex(_ idx: Int)
@@ -89,13 +88,9 @@ extension MediaPickerViewController: UICollectionViewDataSource {
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString("No Media", comment: "Title for No Media button in media picker")
 
-        if let composeIcon = FAKIonIcons.composeIcon(withSize: 50),
-            let circleOutline = FAKIonIcons.iosCircleOutlineIcon(withSize: 80)
-        {
-            composeIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.lightGray)
-            circleOutline.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.lightGray)
-            cell.iconImageView.image = UIImage(stackedIcons: [composeIcon, circleOutline], imageSize: CGSize(width: 100, height: 100))
-        }
+        cell.iconImageView.image = UIImage.iconImage(systemName: "square.and.pencil.circle", size: .large)
+        cell.iconImageView.tintColor = .lightGray
+
         return cell
     }
     
@@ -106,13 +101,9 @@ extension MediaPickerViewController: UICollectionViewDataSource {
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString("Camera", comment: "Title for Camera button in media picker")
 
-        if let cameraIcon = FAKIonIcons.cameraIcon(withSize: 50),
-            let circleOutline = FAKIonIcons.iosCircleOutlineIcon(withSize: 80)
-        {
-            cameraIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
-            circleOutline.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
-            cell.iconImageView.image = UIImage(stackedIcons: [cameraIcon, circleOutline], imageSize: CGSize(width: 100, height: 100))
-        }
+        cell.iconImageView.image = UIImage.iconImage(systemName: "camera.circle", size: .large)
+        cell.iconImageView.tintColor = .inatTint()
+
         return cell
     }
     
@@ -123,13 +114,9 @@ extension MediaPickerViewController: UICollectionViewDataSource {
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString("Photo Library", comment: "Title for Photo Library button in media picker")
 
-        if let imagesIcon = FAKIonIcons.imagesIcon(withSize: 50),
-            let circleOutline = FAKIonIcons.iosCircleOutlineIcon(withSize: 80)
-        {
-            imagesIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
-            circleOutline.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
-            cell.iconImageView.image = UIImage(stackedIcons: [imagesIcon, circleOutline], imageSize: CGSize(width: 100, height: 100))
-        }
+        cell.iconImageView.image = UIImage.iconImage(systemName: "photo.circle", size: .large)
+        cell.iconImageView.tintColor = .inatTint()
+
         return cell
     }
     
@@ -140,13 +127,9 @@ extension MediaPickerViewController: UICollectionViewDataSource {
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString("Record Sound", comment: "Title for Record sound button in media picker")
 
-        if let micIcon = FAKIonIcons.micAIcon(withSize: 50),
-            let circleOutline = FAKIonIcons.iosCircleOutlineIcon(withSize: 80)
-        {
-            micIcon.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
-            circleOutline.addAttribute(NSAttributedString.Key.foregroundColor.rawValue, value: UIColor.inatTint())
-            cell.iconImageView.image = UIImage(stackedIcons: [micIcon, circleOutline], imageSize: CGSize(width: 100, height: 100))
-        }
+        cell.iconImageView.image = UIImage.iconImage(systemName: "mic.circle", size: .large)
+        cell.iconImageView.tintColor = .inatTint()
+
         return cell
     }
 }

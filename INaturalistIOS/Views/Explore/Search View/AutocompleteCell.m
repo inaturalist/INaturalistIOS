@@ -6,8 +6,6 @@
 //  Copyright (c) 2014 iNaturalist. All rights reserved.
 //
 
-#import <FontAwesomeKit/FAKIonIcons.h>
-
 #import "AutocompleteCell.h"
 #import "UIColor+ExploreColors.h"
 
