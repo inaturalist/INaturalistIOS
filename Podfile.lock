@@ -221,7 +221,7 @@ DEPENDENCIES:
   - Down (from `https://github.com/ocshing/Down-gfm`)
   - Firebase/Analytics
   - Firebase/Crashlytics
-  - FontAwesomeKit (= 2.2.1)
+  - FontAwesomeKit (from `https://github.com/alexshepard/FontAwesomeKit`, branch `main`)
   - Gallery
   - GeoJSONSerialization (= 0.0.4)
   - GoogleSignIn (= 6.2.4)
@@ -266,7 +266,6 @@ SPEC REPOS:
     - FirebaseCoreInternal
     - FirebaseCrashlytics
     - FirebaseInstallations
-    - FontAwesomeKit
     - Gallery
     - GeoJSONSerialization
     - GoogleAppMeasurement
@@ -302,6 +301,9 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Down:
     :git: https://github.com/ocshing/Down-gfm
+  FontAwesomeKit:
+    :branch: main
+    :git: https://github.com/alexshepard/FontAwesomeKit
   ICViewPager:
     :commit: 4c45423b6a36fb38753af86a1050b6a3a1d548b8
     :git: https://github.com/alexshepard/ICViewPager.git
@@ -318,6 +320,9 @@ CHECKOUT OPTIONS:
   Down:
     :commit: b889d6dac0c3e692badbfbd1e77a8059cdda9f05
     :git: https://github.com/ocshing/Down-gfm
+  FontAwesomeKit:
+    :commit: 4362e1d9e3ca810c4d26fcff3e67a6456f872242
+    :git: https://github.com/alexshepard/FontAwesomeKit
   ICViewPager:
     :commit: 4c45423b6a36fb38753af86a1050b6a3a1d548b8
     :git: https://github.com/alexshepard/ICViewPager.git
@@ -385,6 +390,6 @@ SPEC CHECKSUMS:
   VTAcknowledgementsViewController: 575f5841fb47b7d9c852ccb406104ea68de07b21
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 9be804baa2b4a2476352e300ff9e904311462459
+PODFILE CHECKSUM: 04e30183280d8809f857bea9a9cb7733c4ec27f9
 
 COCOAPODS: 1.12.1
