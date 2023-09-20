@@ -56,6 +56,21 @@
 + (instancetype)icnLocationObscuredIconWithSize:(CGFloat)size { return [self iconWithCode:@"\ue01f" size:size]; }
 + (instancetype)icnLocationPrivateIconWithSize:(CGFloat)size { return [self iconWithCode:@"\ue020" size:size]; }
 
++ (FAKINaturalist *)iconWithCode:(NSString *)code size:(CGFloat)size {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [self registerIconFontWithURL: [[NSBundle bundleForClass:[self class]] URLForResource:@"inaturalisticons" withExtension:@"ttf"]];
+    });
+
+    FAKINaturalist *icon = [[self alloc] init];
+
+    UIFont *font = [UIFont fontWithName:@"inaturalisticons" size:size];
+    NSAssert(font, @"Font must exist.");
+    
+    icon.mutableAttributedString = [[NSMutableAttributedString alloc] initWithString:code attributes:@{NSFontAttributeName: font}];
+    return icon;
+}
+
 + (NSDictionary *)allIcons {
     return @{
              @"\ue000" : @"inatWordmark",
@@ -100,7 +115,7 @@
 #ifndef DISABLE_FONTAWESOME_AUTO_REGISTRATION
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        [self registerIconFontWithURL:[[NSBundle mainBundle] URLForResource:@"inaturalisticons" withExtension:@"ttf"]];
+        [self registerIconFontWithURL:[[NSBundle bundleForClass:[self class]] URLForResource:@"inaturalisticons" withExtension:@"ttf"]];
     });
 #endif
     
