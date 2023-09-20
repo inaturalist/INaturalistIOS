@@ -9,7 +9,7 @@ target :iNaturalist do
   pod 'Firebase/Analytics'
   pod 'Firebase/Crashlytics'
   pod 'JWT', '2.2.0'
-  pod 'FontAwesomeKit', :git => 'https://github.com/alexshepard/FontAwesomeKit', :branch => 'main'
+  pod 'FontAwesomeKit', :git => 'https://github.com/alexshepard/FontAwesomeKit', :commit => '0e4f1b7133dc886214e418315a6ca11187600a7f'
   pod 'HexColors', '2.3.0'
   pod 'BlocksKit', '2.2.5'
   pod 'GeoJSONSerialization', '0.0.4'
