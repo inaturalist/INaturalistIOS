@@ -253,7 +253,6 @@
 		FAA6EB1C1C90E17000F43552 /* RoundedButtonCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAA6EB1B1C90E17000F43552 /* RoundedButtonCell.xib */; };
 		FAA851911C2368030012C09D /* ObsCenteredLabelCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA851901C2368030012C09D /* ObsCenteredLabelCell.m */; };
 		FAA872CD1B13989D00366521 /* RoundedButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CC1B13989D00366521 /* RoundedButtonCell.m */; };
-		FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA872CF1B1428C200366521 /* CheckboxCell.m */; };
 		FAA8D26023CD266400757A1E /* ExploreProjectObsField.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA8D25F23CD266400757A1E /* ExploreProjectObsField.m */; };
 		FAA8D26323CD267200757A1E /* ExploreObsField.m in Sources */ = {isa = PBXBuildFile; fileRef = FAA8D26223CD267200757A1E /* ExploreObsField.m */; };
 		FAB0B8E5237CE4E800E73681 /* ExploreGuide.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB0B8E4237CE4E800E73681 /* ExploreGuide.m */; };
@@ -1014,8 +1013,6 @@
 		FAA851901C2368030012C09D /* ObsCenteredLabelCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsCenteredLabelCell.m; sourceTree = "<group>"; };
 		FAA872CB1B13989D00366521 /* RoundedButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RoundedButtonCell.h; sourceTree = "<group>"; };
 		FAA872CC1B13989D00366521 /* RoundedButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RoundedButtonCell.m; sourceTree = "<group>"; };
-		FAA872CE1B1428C200366521 /* CheckboxCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckboxCell.h; sourceTree = "<group>"; };
-		FAA872CF1B1428C200366521 /* CheckboxCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckboxCell.m; sourceTree = "<group>"; };
 		FAA8D25E23CD266400757A1E /* ExploreProjectObsField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreProjectObsField.h; sourceTree = "<group>"; };
 		FAA8D25F23CD266400757A1E /* ExploreProjectObsField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreProjectObsField.m; sourceTree = "<group>"; };
 		FAA8D26123CD267200757A1E /* ExploreObsField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreObsField.h; sourceTree = "<group>"; };
@@ -1988,8 +1985,6 @@
 				191B0B31150015EA00F2508E /* AccuracyCircleView.m */,
 				FA55648B1BD9BC3C0049803B /* AddChicletCell.h */,
 				FA55648C1BD9BC3C0049803B /* AddChicletCell.m */,
-				FAA872CE1B1428C200366521 /* CheckboxCell.h */,
-				FAA872CF1B1428C200366521 /* CheckboxCell.m */,
 				1922D99F14FEBF58003778B2 /* CrossHairView.h */,
 				1922D9A014FEBF58003778B2 /* CrossHairView.m */,
 				FA75584A1B9A599800762D7B /* DisclosureCell.h */,
@@ -2955,7 +2950,6 @@
 				FA69822D1B2F49C900D9BD0F /* UIImage+INaturalist.m in Sources */,
 				FACCEB411ED4E5B6009C9A19 /* TaxonPhotoPageViewController.m in Sources */,
 				FAEF233E1C7D092D00208F44 /* ProjectDetailObserversViewController.m in Sources */,
-				FAA872D01B1428C200366521 /* CheckboxCell.m in Sources */,
 				FA4A71732AAF9EF800F308C4 /* UIImage-IconHelper.swift in Sources */,
 				FAD44AEA24576E2800E9DA38 /* ExploreProjectObservationRealm.m in Sources */,
 				FA2A07991C33045E006C0A41 /* ObsDetailNoInteractionHeaderFooter.m in Sources */,
