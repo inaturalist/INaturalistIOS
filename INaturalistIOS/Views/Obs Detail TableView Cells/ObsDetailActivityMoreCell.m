@@ -6,8 +6,6 @@
 //  Copyright © 2015 iNaturalist. All rights reserved.
 //
 
-#import <FontAwesomeKit/FAKIonIcons.h>
-
 #import "ObsDetailActivityMoreCell.h"
 #import "UIColor+INaturalist.h"
 
@@ -21,26 +19,9 @@
     [self.agreeButton setTitleColor:[UIColor lightGrayColor]
                            forState:UIControlStateDisabled];
     
-    NSAttributedString *agreeButtonText = ({
-        FAKIcon *agreeIcon = [FAKIonIcons iosCheckmarkOutlineIconWithSize:20];
-        NSMutableAttributedString *attr = [agreeIcon.attributedString mutableCopy];
-        
-        [attr appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
-        NSString *agreeText = NSLocalizedString(@"Agree", @"Label for a button that adds an ID of the same taxon as the current one, so the sense is 'I agree with this identification'");
-        [attr appendAttributedString:[[NSAttributedString alloc] initWithString:agreeText
-                                                                     attributes:@{
-                                                                                  NSBaselineOffsetAttributeName: @(3)
-                                                                                  }]];
-        
-        [attr addAttribute:NSForegroundColorAttributeName
-                     value:[UIColor inatTint]
-                     range:NSMakeRange(0, attr.length)];
-        
-        attr;
-    });
-    [self.agreeButton setAttributedTitle:agreeButtonText
-                                forState:UIControlStateNormal];
-    
+    NSString *agreeText = NSLocalizedString(@"Agree", @"Label for a button that adds an ID of the same taxon as the current one, so the sense is 'I agree with this identification'");
+    [self.agreeButton setTitle:agreeText
+                      forState:UIControlStateNormal];
 }
 
 - (void)prepareForReuse {
