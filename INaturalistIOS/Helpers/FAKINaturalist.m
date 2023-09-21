@@ -61,12 +61,14 @@
     dispatch_once(&onceToken, ^{
         [self registerIconFontWithURL: [[NSBundle bundleForClass:[self class]] URLForResource:@"inaturalisticons" withExtension:@"ttf"]];
     });
-
+    
     FAKINaturalist *icon = [[self alloc] init];
 
     UIFont *font = [UIFont fontWithName:@"inaturalisticons" size:size];
-    NSAssert(font, @"Font must exist.");
-    
+    if (font == nil) {
+        return nil;
+    }
+
     icon.mutableAttributedString = [[NSMutableAttributedString alloc] initWithString:code attributes:@{NSFontAttributeName: font}];
     return icon;
 }
