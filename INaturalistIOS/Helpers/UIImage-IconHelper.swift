@@ -62,9 +62,9 @@ extension UIImage {
         if systemName == "map" {
             return FAKIonIcons.mapIcon(withSize: size.iconSize).image(with: size.imageSize)
         } else if systemName == "list.dash" {
-            return FAKFoundationIcons.listIcon(withSize: size.iconSize).image(with: size.imageSize)
+            return FAKIonIcons.naviconIcon(withSize: size.iconSize).image(with: size.imageSize)
         } else if systemName == "square.grid.3x3" {
-            return FAKFoundationIcons.thumbnailsIcon(withSize: size.iconSize).image(with: size.imageSize)
+            return FAKIonIcons.gridIcon(withSize: size.iconSize).image(with: size.imageSize)
         } else if systemName == "globe-random" {
             return FAKIonIcons.androidCompassIcon(withSize: size.iconSize).image(with: size.imageSize)
         } else if systemName == "camera.fill" {
