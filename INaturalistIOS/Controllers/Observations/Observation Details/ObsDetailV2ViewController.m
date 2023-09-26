@@ -407,7 +407,8 @@
                                                                                applicationActivities:@[safariActivity]];
         
         activity.modalPresentationStyle = UIModalPresentationPageSheet;
-        
+        activity.popoverPresentationController.sourceView = (UIButton *)object;
+
         [self presentViewController:activity animated:YES completion:nil];
     } else {
         [self performSegueWithIdentifier:identifier sender:object];
