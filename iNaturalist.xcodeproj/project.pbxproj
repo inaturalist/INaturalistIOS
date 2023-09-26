@@ -3485,7 +3485,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.15;
+				MARKETING_VERSION = 3.3;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-lsqlite3.0",
@@ -3526,7 +3526,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.15;
+				MARKETING_VERSION = 3.3;
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-lsqlite3.0",
