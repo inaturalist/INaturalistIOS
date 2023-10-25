@@ -36,19 +36,17 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         ExploreObservationRealm *o = [ExploreObservationRealm objectForPrimaryKey:self.rootObjectUUID];
         // TODO: update uploader delegate for EOR/realm
-        if (o) {
-            [self.delegate uploadSessionSuccessFor:self.rootObjectUUID];
+        if (syncError != nil) {
+            [self.delegate uploadSessionFailedFor:self.rootObjectUUID error:syncError];
         } else {
-            NSError *error = nil;
-            if (syncError) {
-                error = syncError;
+            if (o) {
+                [self.delegate uploadSessionSuccessFor:self.rootObjectUUID];
             } else {
-                // TODO: what happens here? can this reasonably happen?
+                [self.delegate uploadSessionFailedFor:self.rootObjectUUID error:nil];
             }
-            [self.delegate uploadSessionFailedFor:self.rootObjectUUID error:error];
         }
     });
-    
+
     // notify NSOperationQueue via KVO about operation status
     [self markOperationCompleted];
 }
@@ -124,6 +122,34 @@
     };
     
     void (^failureBlock)(NSURLSessionDataTask *, NSError *) = ^(NSURLSessionDataTask *task, NSError * _Nonnull error) {
+        
+        if ([[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey]) {
+            NSHTTPURLResponse *response = [[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey];
+            // if it's a 401 we need to trap for it
+            if (response.statusCode == 401) {
+                NSData *data = [[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseDataErrorKey];
+                NSError *jsonDecodeError = nil;
+                id json = [NSJSONSerialization JSONObjectWithData:data
+                                                          options:NSJSONReadingAllowFragments
+                                                            error:&jsonDecodeError];
+                
+                // try to extract an underlying error message
+                id underlyingErrorMsg = json[@"error"][@"original"][@"error"];
+                if (underlyingErrorMsg) {
+                    NSDictionary *info = @{
+                        NSLocalizedDescriptionKey: underlyingErrorMsg
+                    };
+                    NSError *newError = [NSError errorWithDomain:@"org.inaturalist.ios"
+                                                            code:-1
+                                                        userInfo:info];
+                    [self syncObservationFinishedSuccess:NO syncError:newError];
+                } else {
+                    [self syncObservationFinishedSuccess:NO syncError:error];
+                }
+                return;
+            }
+        }
+        
         [self syncObservationFinishedSuccess:NO syncError:error];
     };
     
