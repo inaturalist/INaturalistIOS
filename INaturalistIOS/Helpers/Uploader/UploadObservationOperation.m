@@ -14,6 +14,7 @@
 #import "ExploreObsFieldValueRealm.h"
 #import "Analytics.h"
 #import "Uploadable.h"
+#import "NSLocale+INaturalist.h"
 
 @interface UploadObservationOperation ()
 @property NSInteger totalBytesToUpload;
@@ -153,12 +154,17 @@
         [self syncObservationFinishedSuccess:NO syncError:error];
     };
     
-    
+    NSString *serverLocaleIdentifier = [[NSLocale currentLocale] inat_serverFormattedLocale];
+    NSString *localeQuery = [NSString stringWithFormat:@"locale=%@", serverLocaleIdentifier];
+
     if ([HTTPMethod isEqualToString:@"PUT"]) {
         NSString *path = [NSString stringWithFormat:@"/v1/%@/%ld",
                           [[observation class] endpointName],
                           (long)observation.observationId
                           ];
+
+        path = [path stringByAppendingFormat:@"?%@", localeQuery];
+
         [self.nodeSessionManager PUT:path
                           parameters:[observation uploadableRepresentation]
                              success:successBlock
@@ -166,8 +172,10 @@
     } else {
         NSString *path = [NSString stringWithFormat:@"/v1/%@",
                           [[observation class] endpointName]];
+        path = [path stringByAppendingFormat:@"?%@", localeQuery];
+
         if (self.userSiteId != 0) {
-            path = [path stringByAppendingString:[NSString stringWithFormat:@"?inat_site_id=%ld",
+            path = [path stringByAppendingString:[NSString stringWithFormat:@"&inat_site_id=%ld",
                                                   (long)self.userSiteId]];
         }
         [self.nodeSessionManager POST:path
