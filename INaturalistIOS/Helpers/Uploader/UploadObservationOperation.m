@@ -306,19 +306,24 @@
         });
     };
 
+    NSString *serverLocaleIdentifier = [[NSLocale currentLocale] inat_serverFormattedLocale];
+    NSString *localeQuery = [NSString stringWithFormat:@"locale=%@", serverLocaleIdentifier];
+
     NSString *path = nil;
     if ([HTTPMethod isEqualToString:@"PUT"]) {
         path = [NSString stringWithFormat:@"/v1/%@/%ld",
                 [[child class] endpointName],
                 (long)[child recordId]];
-        
+        path = [path stringByAppendingFormat:@"?%@", localeQuery];
+
         [self.nodeSessionManager PUT:path
                           parameters:[child uploadableRepresentation]
                              success:successBlock
                              failure:failureBlock];
     } else {
         path = [NSString stringWithFormat:@"/v1/%@", [[child class] endpointName]];
-        
+        path = [path stringByAppendingFormat:@"?%@", localeQuery];
+
         if ([child respondsToSelector:@selector(fileUploadParameter)]) {
             if ([[NSFileManager defaultManager] fileExistsAtPath:[child fileUploadParameter]]) {
                 // we'll need a body block for the multi-part post
