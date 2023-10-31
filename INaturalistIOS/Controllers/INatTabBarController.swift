@@ -82,7 +82,7 @@ class INatTabBarController: UITabBarController {
       if #available(iOS 14, *) {
          var config = PHPickerConfiguration()
          config.filter = .images
-         config.selectionLimit = 4
+         config.selectionLimit = 8
          let picker = PHPickerViewController(configuration: config)
          picker.delegate = self
          present(picker, animated: true, completion: nil)

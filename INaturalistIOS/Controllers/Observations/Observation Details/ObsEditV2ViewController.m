@@ -87,7 +87,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         [self dismissViewControllerAnimated:YES completion:^{
             if (@available(iOS 14.0, *)) {
                 PHPickerConfiguration *config = [[PHPickerConfiguration alloc] init];
-                config.selectionLimit = 4;
+                config.selectionLimit = 8;
                 config.filter = PHPickerFilter.imagesFilter;
                 
                 PHPickerViewController *picker = [[PHPickerViewController alloc] initWithConfiguration:config];
