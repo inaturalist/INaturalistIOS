@@ -26,8 +26,7 @@
 		self.rankLevel = taxon.rankLevel;
 		self.iconicTaxonName = taxon.iconicTaxonName;
 		self.lastMatchedTerm = taxon.matchedTerm;
-        self.searchableLastMatchedTerm = [taxon.matchedTerm stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
-                                                                          		locale:[NSLocale currentLocale]];
+        self.searchableLastMatchedTerm = [[ExploreTaxonRealm class] cleanedSearchMatchTermFor:taxon.matchedTerm];
         self.observationCount = taxon.observationCount;
         self.isActive = taxon.isActive;
         
@@ -39,6 +38,13 @@
         self.wikipediaUrlString = [taxon.wikipediaUrl absoluteString];
 	}
 	return self;
+}
+
++ (NSString *)cleanedSearchMatchTermFor:(NSString *)term {
+    NSString *t = [term stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
+                                            locale:[NSLocale currentLocale]];
+    t = [t stringByReplacingOccurrencesOfString:@"-" withString:@" "];
+    return t;
 }
 
 + (NSDictionary *)valueForMantleModel:(ExploreTaxon *)model {
@@ -57,8 +63,7 @@
     value[@"rankLevel"] = @(model.rankLevel);
     value[@"iconicTaxonName"] = model.iconicTaxonName;
     value[@"lastMatchedTerm"] = model.matchedTerm;
-    value[@"searchableLastMatchedTerm"] = [model.matchedTerm stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
-                                                                                 locale:[NSLocale currentLocale]];
+    value[@"searchableLastMatchedTerm"] = [[ExploreTaxonRealm class] cleanedSearchMatchTermFor:model.matchedTerm];
     value[@"observationCount"] = @(model.observationCount);
     value[@"isActive"] = @(model.isActive);
     
