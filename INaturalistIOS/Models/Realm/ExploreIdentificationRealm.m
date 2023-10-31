@@ -17,7 +17,8 @@
         self.identificationBody = model.identificationBody;
         self.identificationIsCurrent = model.identificationIsCurrent;
         self.identifiedDate = model.identifiedDate;
-        
+        self.hidden = model.hidden;
+
         if (model.identifier) {
             self.identifier = [[ExploreUserRealm alloc] initWithMantleModel:model.identifier];
         }
@@ -43,6 +44,7 @@
     value[@"identificationBody"] = model.identificationBody;
     value[@"identificationIsCurrent"] = @(model.identificationIsCurrent);
     value[@"identifiedDate"] = model.identifiedDate;
+    value[@"hidden"] = @(model.hidden);
 
     if (model.identifier) {
         value[@"identifier"] = [ExploreUserRealm valueForMantleModel:model.identifier];
@@ -84,7 +86,9 @@
     if ([cdModel valueForKey:@"taxon"]) {
         value[@"taxon"] = [ExploreTaxonRealm valueForCoreDataModel:[cdModel valueForKey:@"taxon"]];
     }
-    
+
+    value[@"hidden"] = @(NO);
+
     return [NSDictionary dictionaryWithDictionary:value];
 }
 

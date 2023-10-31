@@ -17,6 +17,7 @@
     	@"commentText": @"body",
     	@"commenter": @"user",
     	@"commentedDate": @"created_at",
+        @"hidden": @"hidden",
     };
 }
 

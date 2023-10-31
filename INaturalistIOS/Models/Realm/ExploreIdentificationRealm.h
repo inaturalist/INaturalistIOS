@@ -19,6 +19,7 @@
 @property NSString *identificationBody;
 @property BOOL identificationIsCurrent;
 @property NSDate *identifiedDate;
+@property BOOL hidden;
 
 @property ExploreUserRealm *identifier;
 @property ExploreTaxonRealm *taxon;

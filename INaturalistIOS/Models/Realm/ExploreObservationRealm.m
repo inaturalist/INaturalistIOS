@@ -376,8 +376,13 @@
 - (NSArray *)sortedActivity {
     NSArray *comments = [[self comments] valueForKey:@"self"];
     NSArray *identifications = [[self identifications] valueForKey:@"self"];
-    
-    NSArray *activity = [comments arrayByAddingObjectsFromArray:identifications];
+
+    // don't show hidden content (ie content that's been moderated)
+    NSPredicate *notHiddenPredicate = [NSPredicate predicateWithFormat:@"hidden = FALSE"];
+    NSArray *unhiddenComments = [comments filteredArrayUsingPredicate:notHiddenPredicate];
+    NSArray *unhiddenIds = [identifications filteredArrayUsingPredicate:notHiddenPredicate];
+
+    NSArray *activity = [unhiddenComments arrayByAddingObjectsFromArray:unhiddenIds];
     NSSortDescriptor *createdAtSort = [NSSortDescriptor sortDescriptorWithKey:@"createdAt" ascending:YES];
     
     return [activity sortedArrayUsingDescriptors:@[ createdAtSort ]];    

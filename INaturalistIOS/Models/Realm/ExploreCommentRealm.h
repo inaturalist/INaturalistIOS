@@ -17,6 +17,7 @@
 @property NSString *commentText;
 @property ExploreUserRealm *commenter;
 @property NSDate *commentedDate;
+@property BOOL hidden;
 
 @property (readonly) RLMLinkingObjects *observations;
 

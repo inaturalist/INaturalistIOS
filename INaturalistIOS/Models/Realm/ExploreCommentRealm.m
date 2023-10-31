@@ -16,6 +16,7 @@
         self.commentId = model.commentId;
         self.commentText = model.commentText;
         self.commentedDate = model.commentedDate;
+        self.hidden = model.hidden;
         if (model.commenter) {
             self.commenter = [[ExploreUserRealm alloc] initWithMantleModel:model.commenter];
         }
@@ -35,6 +36,7 @@
     value[@"commentId"] = @(model.commentId);
     value[@"commentText"] = model.commentText;
     value[@"commentedDate"] = model.commentedDate;
+    value[@"hidden"] = @(model.hidden);
     if (model.commenter) {
         value[@"commenter"] = [ExploreUserRealm valueForMantleModel:model.commenter];
     }
@@ -64,7 +66,9 @@
     if ([cdModel valueForKey:@"user"]) {
         value[@"user"] = [ExploreUserRealm valueForCoreDataModel:[cdModel valueForKey:@"user"]];
     }
-    
+
+    value[@"hidden"] = @(NO);
+
     return [NSDictionary dictionaryWithDictionary:value];
 }
 

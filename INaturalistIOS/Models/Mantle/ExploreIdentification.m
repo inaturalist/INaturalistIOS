@@ -20,6 +20,7 @@
 		@"taxon": @"taxon",
 		@"identifiedDate": @"created_at",
 		@"identifier": @"user",
+        @"hidden": @"hidden",
 	};
 }
 

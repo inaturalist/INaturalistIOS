@@ -133,7 +133,7 @@
 
     RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
     
-    config.schemaVersion = 26;
+    config.schemaVersion = 27;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
         if (oldSchemaVersion < 1) {
             // add searchable (ie diacritic-less) taxon names
@@ -317,6 +317,18 @@
                                   block:^(RLMObject * oldObject, RLMObject *newObject) {
                 newObject[@"piConsent"] = @(NO);
                 newObject[@"dataTransferConsent"] = @(NO);
+            }];
+        }
+        if (oldSchemaVersion < 27) {
+            // added hidden bool to coments and ids
+            // assume they're negative
+            [migration enumerateObjects:ExploreCommentRealm.className
+                                  block:^(RLMObject * oldObject, RLMObject *newObject) {
+                newObject[@"hidden"] = @(NO);
+            }];
+            [migration enumerateObjects:ExploreIdentificationRealm.className
+                                  block:^(RLMObject * oldObject, RLMObject *newObject) {
+                newObject[@"hidden"] = @(NO);
             }];
         }
     };

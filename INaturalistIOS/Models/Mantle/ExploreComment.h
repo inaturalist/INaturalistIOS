@@ -20,5 +20,6 @@
 @property (nonatomic, copy) NSString *commentText;
 @property (nonatomic, retain) ExploreUser *commenter;
 @property (nonatomic, copy) NSDate *commentedDate;
+@property (nonatomic, assign) BOOL hidden;
 
 @end
