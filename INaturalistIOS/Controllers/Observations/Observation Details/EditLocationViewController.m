@@ -33,7 +33,24 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
+    if (@available(iOS 13.0, *)) {
+        UINavigationBarAppearance *navBarApp = [[UINavigationBarAppearance alloc] init];
+        [navBarApp configureWithOpaqueBackground];
+        navBarApp.backgroundColor = [UIColor whiteColor];
+        self.navigationController.navigationBar.standardAppearance = navBarApp;
+        self.navigationController.navigationBar.scrollEdgeAppearance = navBarApp;
+
+        UIToolbarAppearance *toolbarApp = [[UIToolbarAppearance alloc] init];
+        [toolbarApp configureWithOpaqueBackground];
+        toolbarApp.backgroundColor = [UIColor whiteColor];
+        self.navigationController.toolbar.standardAppearance = toolbarApp;
+        if (@available(iOS 15.0, *)) {
+            self.navigationController.toolbar.scrollEdgeAppearance = toolbarApp;
+        }
+    }
+
+
     if (!self.currentLocationButton) {
         self.currentLocationButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"current_location"]
                                                                       style:UIBarButtonItemStylePlain
