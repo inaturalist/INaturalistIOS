@@ -7,8 +7,8 @@
 //
 
 #import "TutorialSinglePageViewController.h"
-#import "UIColor+ExploreColors.h"
 #import "UIViewController+INaturalist.h"
+#import "UIColor+INaturalist.h"
 
 @interface TutorialLabel : UILabel
 @property UIEdgeInsets textInsets;
@@ -49,7 +49,7 @@
         label.numberOfLines = 0;
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont boldSystemFontOfSize:20];
-        label.backgroundColor = [UIColor inatGreen];
+        label.backgroundColor = [UIColor inatTint];
         label.textColor = [UIColor whiteColor];
         
         label;

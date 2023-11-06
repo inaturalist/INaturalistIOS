@@ -13,7 +13,6 @@
 #import "ExploreTaxon.h"
 #import "ExploreUser.h"
 #import "ExploreObservationPhoto.h"
-#import "UIColor+ExploreColors.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
 #import "UIFont+ExploreFonts.h"
 #import "INaturalist-Swift.h"

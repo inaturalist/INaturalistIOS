@@ -14,7 +14,6 @@
 #import "ExploreObservation.h"
 #import "ExploreObservationPhoto.h"
 #import "ExploreListTableViewCell.h"
-#import "UIColor+ExploreColors.h"
 #import "RestrictedListHeader.h"
 #import "ObsDetailV2ViewController.h"
 #import "INaturalist-Swift.h"

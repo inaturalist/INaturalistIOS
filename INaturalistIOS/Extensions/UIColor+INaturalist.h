@@ -15,4 +15,18 @@
 + (UIColor *)inatDarkGray;
 + (UIColor *)inatLightGray;
 + (UIColor *)inatTableViewBackgroundGray;
++ (UIColor *)inatBlack;
++ (UIColor *)inatGray;
++ (UIColor *)inatRed;
+
+// iconic taxa
++ (UIColor *)colorForIconicTaxon:(NSString *)iconicTaxon;
+
+// explore UI
++ (UIColor *)colorForResearchGradeNotice;
++ (UIColor *)secondaryColorForResearchGradeNotice;
++ (UIColor *)mapOverlayColor;
+
+// helper
+- (UIColor *)darkerColor;
 @end

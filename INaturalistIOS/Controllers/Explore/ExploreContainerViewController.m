@@ -8,7 +8,7 @@
 
 
 #import "ExploreContainerViewController.h"
-#import "UIColor+ExploreColors.h"
+#import "UIColor+INaturalist.h"
 
 @implementation ExploreContainerViewController
 
@@ -20,7 +20,7 @@
             [self.segmentedControl addTarget:self
                                       action:@selector(segmentedControlChanged:)
                             forControlEvents:UIControlEventValueChanged];
-            self.segmentedControl.tintColor = [UIColor inatGreen];
+            self.segmentedControl.tintColor = [UIColor inatTint];
             self.segmentedControl.translatesAutoresizingMaskIntoConstraints = NO;
             self.segmentedControl;
         });

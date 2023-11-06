@@ -8,9 +8,9 @@
 
 #import <FontAwesomeKit/FAKIonIcons.h>
 
+#import "UIColor+INaturalist.h"
 #import "TaxonMapViewController.h"
 #import "ExploreTaxonRealm.h"
-#import "UIColor+ExploreColors.h"
 
 @interface TaxonMapViewController () <MKMapViewDelegate>
 

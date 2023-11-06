@@ -16,7 +16,6 @@
 #import "ExploreMapViewController.h"
 #import "ExploreLocation.h"
 #import "ExploreProject.h"
-#import "UIColor+ExploreColors.h"
 #import "ExploreObservation.h"
 #import "ExploreRegion.h"
 #import "MKMapView+ZoomLevel.h"

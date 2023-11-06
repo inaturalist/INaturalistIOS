@@ -13,7 +13,6 @@
 #import "Observation.h"
 #import "DisclosureCell.h"
 #import "ObsDetailMapCell.h"
-#import "UIColor+ExploreColors.h"
 #import "ObsDetailNotesCell.h"
 #import "ObsDetailDataQualityCell.h"
 #import "ObsDetailQualityDetailsFooter.h"

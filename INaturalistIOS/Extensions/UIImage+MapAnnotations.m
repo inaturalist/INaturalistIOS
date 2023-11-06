@@ -7,9 +7,8 @@
 //
 
 #import <FontAwesomeKit/FontAwesomeKit.h>
-
+#import "UIColor+INaturalist.h"
 #import "UIImage+MapAnnotations.h"
-#import "UIColor+ExploreColors.h"
 
 @implementation UIImage (MapAnnotations)
 

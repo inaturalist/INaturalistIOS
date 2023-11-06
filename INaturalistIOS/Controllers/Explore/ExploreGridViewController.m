@@ -15,7 +15,6 @@
 #import "ExploreObservationPhoto.h"
 #import "ExploreObservation.h"
 #import "ExploreGridCell.h"
-#import "UIColor+ExploreColors.h"
 #import "RestrictedCollectionHeader.h"
 #import "ObsDetailV2ViewController.h"
 #import "INaturalist-Swift.h"

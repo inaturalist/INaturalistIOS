@@ -7,7 +7,6 @@
 //
 
 #import "AutocompleteCell.h"
-#import "UIColor+ExploreColors.h"
 
 @interface AutocompleteCell () {
     NSString *_searchText;

@@ -12,7 +12,6 @@
 #import "ExploreObservation.h"
 #import "ExploreObservationPhoto.h"
 #import "ExploreTaxon.h"
-#import "UIColor+ExploreColors.h"
 #import "UIImage+ExploreIconicTaxaImages.h"
 #import "INaturalist-Swift.h"
 

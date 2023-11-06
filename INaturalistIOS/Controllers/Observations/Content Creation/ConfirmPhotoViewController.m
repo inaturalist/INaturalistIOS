@@ -18,7 +18,6 @@
 #import "ImageStore.h"
 #import "MultiImageView.h"
 #import "TaxaSearchViewController.h"
-#import "UIColor+ExploreColors.h"
 #import "ObsEditV2ViewController.h"
 #import "UIColor+INaturalist.h"
 #import "INaturalistAppDelegate.h"
@@ -174,7 +173,7 @@
         button.translatesAutoresizingMaskIntoConstraints = NO;
         
         button.tintColor = [UIColor whiteColor];
-        button.backgroundColor = [UIColor inatGreen];
+        button.backgroundColor = [UIColor inatTint];
         
         button.layer.borderColor = [UIColor blackColor].CGColor;
         button.layer.borderWidth = 0.5f;

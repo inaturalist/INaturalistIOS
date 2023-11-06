@@ -29,7 +29,6 @@
 #import "TaxonPhotoPageViewController.h"
 #import "TaxonMapCell.h"
 #import "TaxonMapViewController.h"
-#import "UIColor+ExploreColors.h"
 #import "INatPhoto.h"
 #import "TaxonSelectButtonCell.h"
 #import "INatReachability.h"

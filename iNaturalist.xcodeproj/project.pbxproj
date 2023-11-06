@@ -145,7 +145,6 @@
 		FA4E72C319FAC93400A9AB5D /* ExploreProject.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72BB19FAC93400A9AB5D /* ExploreProject.m */; };
 		FA4E72C419FAC93400A9AB5D /* ExploreTaxon.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72BD19FAC93400A9AB5D /* ExploreTaxon.m */; };
 		FA4E72CC19FACD7700A9AB5D /* ExploreObservationPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */; };
-		FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72CF19FACE0000A9AB5D /* UIColor+ExploreColors.m */; };
 		FA4E72D319FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72D119FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m */; };
 		FA4E72E519FACE6900A9AB5D /* ExploreActiveSearchView.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72D619FACE6900A9AB5D /* ExploreActiveSearchView.m */; };
 		FA4E72E819FACE6900A9AB5D /* ExploreGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA4E72DC19FACE6900A9AB5D /* ExploreGridCell.m */; };
@@ -164,6 +163,7 @@
 		FA51BA6B1C0159C000101807 /* ObsDetailActivityMoreCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA51BA6A1C0159C000101807 /* ObsDetailActivityMoreCell.m */; };
 		FA5564871BD9A9340049803B /* MediaScrollViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5564861BD9A9340049803B /* MediaScrollViewCell.m */; };
 		FA55648D1BD9BC3C0049803B /* AddChicletCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FA55648C1BD9BC3C0049803B /* AddChicletCell.m */; };
+		FA5B3EF62AF97AB20008C289 /* ColorAddonsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5B3EF52AF97AB20008C289 /* ColorAddonsTests.swift */; };
 		FA5B6D871B4C86E1003FF325 /* NSLocale+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5B6D861B4C86E1003FF325 /* NSLocale+INaturalist.m */; };
 		FA5BC6F61C3C7FD0008FCD43 /* NSFileManager+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5BC6F51C3C7FD0008FCD43 /* NSFileManager+INaturalist.m */; };
 		FA5BC6FB1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA5BC6FA1C40A81A008FCD43 /* ObsDetailQualityDetailsFooter.m */; };
@@ -704,8 +704,6 @@
 		FA4E72BD19FAC93400A9AB5D /* ExploreTaxon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreTaxon.m; sourceTree = "<group>"; };
 		FA4E72CA19FACD7700A9AB5D /* ExploreObservationPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreObservationPhoto.h; sourceTree = "<group>"; };
 		FA4E72CB19FACD7700A9AB5D /* ExploreObservationPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreObservationPhoto.m; sourceTree = "<group>"; };
-		FA4E72CE19FACE0000A9AB5D /* UIColor+ExploreColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+ExploreColors.h"; sourceTree = "<group>"; };
-		FA4E72CF19FACE0000A9AB5D /* UIColor+ExploreColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+ExploreColors.m"; sourceTree = "<group>"; };
 		FA4E72D019FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ExploreIconicTaxaImages.h"; sourceTree = "<group>"; };
 		FA4E72D119FACE0000A9AB5D /* UIImage+ExploreIconicTaxaImages.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ExploreIconicTaxaImages.m"; sourceTree = "<group>"; };
 		FA4E72D519FACE6900A9AB5D /* ExploreActiveSearchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreActiveSearchView.h; sourceTree = "<group>"; };
@@ -770,6 +768,8 @@
 		FA59AFAC1DE645D7001D3AC8 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/Guides.strings"; sourceTree = "<group>"; };
 		FA59AFAD1DE645D7001D3AC8 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		FA59AFAE1DE645D7001D3AC8 /* es-MX */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es-MX"; path = "es-MX.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		FA5B3EF42AF97AB20008C289 /* iNaturalistTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iNaturalistTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		FA5B3EF52AF97AB20008C289 /* ColorAddonsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorAddonsTests.swift; sourceTree = "<group>"; };
 		FA5B6D851B4C86E1003FF325 /* NSLocale+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSLocale+INaturalist.h"; sourceTree = "<group>"; };
 		FA5B6D861B4C86E1003FF325 /* NSLocale+INaturalist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSLocale+INaturalist.m"; sourceTree = "<group>"; };
 		FA5BC6F41C3C7FD0008FCD43 /* NSFileManager+INaturalist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFileManager+INaturalist.h"; sourceTree = "<group>"; };
@@ -1400,6 +1400,15 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		FA5B3EF32AF97A970008C289 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				FA5B3EF52AF97AB20008C289 /* ColorAddonsTests.swift */,
+				FA5B3EF42AF97AB20008C289 /* iNaturalistTests-Bridging-Header.h */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
 		FA6513381E04A1CA0059FD70 /* Fixtures */ = {
 			isa = PBXGroup;
 			children = (
@@ -1628,8 +1637,6 @@
 				FA9BC3761B332BEC003375A2 /* NSURL+INaturalist.m */,
 				FA7FF8481BAB622200885034 /* UIAlertController+IOS9_Autorotate.h */,
 				FA7FF8491BAB622200885034 /* UIAlertController+IOS9_Autorotate.m */,
-				FA4E72CE19FACE0000A9AB5D /* UIColor+ExploreColors.h */,
-				FA4E72CF19FACE0000A9AB5D /* UIColor+ExploreColors.m */,
 				196E4E1D18D23C21009CE429 /* UIColor+INaturalist.h */,
 				196E4E1E18D23C22009CE429 /* UIColor+INaturalist.m */,
 				FADD58641A00662200E141C9 /* UIFont+ExploreFonts.h */,
@@ -2313,6 +2320,7 @@
 		FADE28B11B02D9AA00CA55FF /* iNaturalistTests */ = {
 			isa = PBXGroup;
 			children = (
+				FA5B3EF32AF97A970008C289 /* Extensions */,
 				FAEB5C112069A5A100BA3132 /* Views */,
 				FA6F81D41E72458100135C5E /* Helpers */,
 				FAF73BE21E1B245F002456AF /* Misc */,
@@ -2418,6 +2426,7 @@
 					};
 					FADE28AF1B02D9AA00CA55FF = {
 						CreatedOnToolsVersion = 6.3.1;
+						LastSwiftMigration = 1500;
 						TestTargetID = 1927513214E9CCC9000ABAC4;
 					};
 				};
@@ -2945,7 +2954,6 @@
 				FA3F1F9A1A12DFD200928102 /* ExploreSearchController.m in Sources */,
 				FA4E72BE19FAC93400A9AB5D /* ExploreComment.m in Sources */,
 				FAB71E051FDC7D530039C45B /* INatReachability.m in Sources */,
-				FA4E72D219FACE0000A9AB5D /* UIColor+ExploreColors.m in Sources */,
 				FA4C19641B30EE890066CA22 /* Partner.m in Sources */,
 				FA3F1F971A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m in Sources */,
 				FAB0B8EE237F37C000E73681 /* ExploreGuideRealm.m in Sources */,
@@ -3031,6 +3039,7 @@
 				FAF73BE41E1B2472002456AF /* PartnerTests.m in Sources */,
 				FA5ED3342A623637001DB731 /* LocaleExtensionTests.m in Sources */,
 				FA6513371E04A03B0059FD70 /* NewsItemTests.m in Sources */,
+				FA5B3EF62AF97AB20008C289 /* ColorAddonsTests.swift in Sources */,
 				FA6F81D11E7241F000135C5E /* ExploreObservationTests.m in Sources */,
 				FAEB5C132069A5B400BA3132 /* LoginSwitchContextButtonTests.m in Sources */,
 				FA9E07471E1B15D100AE7833 /* TaxonTests.m in Sources */,
@@ -3558,6 +3567,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = iNaturalistTests/Info.plist;
 				PRODUCT_NAME = iNaturalistTests;
+				SWIFT_OBJC_BRIDGING_HEADER = "iNaturalistTests/iNaturalistTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iNaturalist.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/iNaturalist";
 			};
 			name = Debug;
@@ -3571,6 +3583,8 @@
 				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = iNaturalistTests/Info.plist;
 				PRODUCT_NAME = iNaturalistTests;
+				SWIFT_OBJC_BRIDGING_HEADER = "iNaturalistTests/iNaturalistTests-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iNaturalist.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/iNaturalist";
 			};
 			name = Release;

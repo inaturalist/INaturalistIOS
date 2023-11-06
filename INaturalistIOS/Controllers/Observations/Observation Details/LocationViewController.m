@@ -11,7 +11,6 @@
 #import "LocationViewController.h"
 #import "ObservationVisualization.h"
 #import "UIColor+INaturalist.h"
-#import "UIColor+ExploreColors.h"
 #import "UIImage+MapAnnotations.h"
 
 @interface LocationViewController () <MKMapViewDelegate>

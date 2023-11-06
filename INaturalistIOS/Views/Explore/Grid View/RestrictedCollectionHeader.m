@@ -9,7 +9,6 @@
 @import UIColor_HTMLColors;
 
 #import "RestrictedCollectionHeader.h"
-#import "UIColor+ExploreColors.h"
 #import "INaturalist-Swift.h"
 
 @implementation RestrictedCollectionHeader
@@ -36,7 +35,7 @@
             
             [button setImage:[UIImage iconImageWithSystemName:@"xmark" size:IconImageSizeSmall]
                     forState:UIControlStateNormal];
-            button.tintColor = [UIColor inatGreen];
+            button.tintColor = [UIColor inatTint];
             button.accessibilityLabel = NSLocalizedString(@"Remove active search filters", nil);
             
             button.frame = CGRectZero;

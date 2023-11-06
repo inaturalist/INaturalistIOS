@@ -32,7 +32,6 @@
 #import "ObsDetailTaxonCell.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
-#import "UIColor+ExploreColors.h"
 #import "INatPhoto.h"
 #import "UIImage+INaturalist.h"
 #import "NSLocale+INaturalist.h"

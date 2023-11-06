@@ -7,7 +7,6 @@
 //
 
 #import "ExploreUser+SearchResultsHelper.h"
-#import "UIColor+ExploreColors.h"
 #import "UIImage+INaturalist.h"
 
 static UIImage *userIconPlaceholder;

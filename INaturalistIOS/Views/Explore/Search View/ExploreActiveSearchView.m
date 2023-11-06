@@ -7,7 +7,6 @@
 //
 
 #import "ExploreActiveSearchView.h"
-#import "UIColor+ExploreColors.h"
 #import "INaturalist-Swift.h"
 
 @interface ExploreActiveSearchView () {

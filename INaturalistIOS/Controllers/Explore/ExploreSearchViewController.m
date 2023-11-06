@@ -19,7 +19,6 @@
 #import "ExploreLocation.h"
 #import "ExploreProject.h"
 #import "ExploreUser.h"
-#import "UIColor+ExploreColors.h"
 #import "Taxon.h"
 #import "TaxonPhoto.h"
 #import "UIFont+ExploreFonts.h"

@@ -7,7 +7,7 @@
 //
 
 #import "DisambiguationCell.h"
-#import "UIColor+ExploreColors.h"
+#import "UIColor+INaturalist.h"
 
 @implementation DisambiguationCell
 
