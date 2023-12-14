@@ -319,7 +319,8 @@
                                                 handler:nil]];
         NSURL *supportTicketUrl = [NSURL URLWithString:INatSupportTicketURL];
         if ([[UIApplication sharedApplication] canOpenURL:supportTicketUrl]) {
-            [alert addAction:[UIAlertAction actionWithTitle:@"Contact Support"
+            NSString *contactSupportText = NSLocalizedString(@"Contact Support", @"Button to contact support.");
+            [alert addAction:[UIAlertAction actionWithTitle:contactSupportText
                                                       style:UIAlertActionStyleDefault
                                                     handler:^(UIAlertAction * _Nonnull action) {
                 [[UIApplication sharedApplication] openURL:supportTicketUrl options:@{} completionHandler:nil];
