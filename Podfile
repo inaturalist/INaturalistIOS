@@ -6,7 +6,7 @@ use_frameworks!
 
 target :iNaturalist do
   pod 'Gallery'
-  pod 'Firebase/Analytics'
+  pod 'Firebase/Analytics', '10.17.0'
   pod 'Firebase/Crashlytics'
   pod 'JWT', '2.2.0'
   pod 'FontAwesomeKit', :git => 'https://github.com/alexshepard/FontAwesomeKit', :commit => '74fe81b8a0a855e6d9cf62f29f02b47237fab25c'
