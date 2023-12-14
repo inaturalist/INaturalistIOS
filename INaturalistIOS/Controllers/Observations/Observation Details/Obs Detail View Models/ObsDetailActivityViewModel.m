@@ -87,6 +87,10 @@
             return 0;
         }
         id <ActivityVisualization> activity = [self activityForSection:section];
+        if ([activity hidden]) {
+            return 1;
+        }
+
         if ([activity conformsToProtocol:@protocol(CommentVisualization)]) {
             return 2;
         } else if ([activity conformsToProtocol:@protocol(IdentificationVisualization)]) {
@@ -192,6 +196,31 @@
     if (indexPath.section < 2) {
         return [super tableView:tableView cellForRowAtIndexPath:indexPath];
     } else {
+        id <ActivityVisualization> activity = [self activityForSection:indexPath.section];
+        if ([activity hidden]) {
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"rightDetail"];
+
+            NSString *hiddenMsg = NSLocalizedString(@"Content Hidden", "when content has been moderated");
+
+            if (@available(iOS 13.0, *)) {
+                NSTextAttachment *textAttachment = [[NSTextAttachment alloc] init];
+                textAttachment.image = [UIImage systemImageNamed:@"eye.slash"];
+                NSMutableAttributedString *labelTxt = [[NSMutableAttributedString alloc] init];
+                [labelTxt appendAttributedString:[NSAttributedString attributedStringWithAttachment:textAttachment]];
+                [labelTxt appendAttributedString:[[NSAttributedString alloc] initWithString:@" "]];
+
+                [labelTxt appendAttributedString:[[NSAttributedString alloc] initWithString:hiddenMsg]];
+
+                cell.textLabel.attributedText = labelTxt;
+
+            } else {
+                cell.textLabel.text = hiddenMsg;
+            }
+
+
+            return cell;
+        }
+
         if (indexPath.item == 0) {
             // each section starts with an author row
             return [self authorCellInTableView:tableView
@@ -253,6 +282,31 @@
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
     // second row in an identification section is a taxon row, which is selectable
+    id activity = [self activityForSection:indexPath.section];
+    if ([activity hidden]) {
+        NSDateFormatter *df = [[NSDateFormatter alloc] init];
+        df.timeStyle = NSDateFormatterNoStyle;
+        df.dateStyle = NSDateFormatterMediumStyle;
+
+        NSString *alertBodyBaseText = NSLocalizedString(@"Content hidden by %@ on %@ because: '%@'", 
+                                                        @"explanation for why a users content was moderated & hidden. First string is the moderator login, second is the date, third is the reason for the moderation.");
+        NSString *alertBody = [NSString stringWithFormat:alertBodyBaseText,
+                               [activity moderatorUsername], 
+                               [df stringFromDate:[activity moderationDate]],
+                               [activity moderationReason]];
+        NSString *alertTitle = NSLocalizedString(@"Content Hidden", @"Title for content hidden reason alert.");
+                
+        BOOL contactSupportOption = NO;
+        INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];
+
+        // only show the contact support option for users if it was their activity that was moderated
+        if (appDelegate.loginController.isLoggedIn && appDelegate.loginController.meUserId == [activity userId]) {
+            contactSupportOption = YES;
+        }
+
+        [self.delegate noticeWithTitle:alertTitle message:alertBody contactSupportOption:YES];
+    }
+
     if (indexPath.item == 1) {
         id <ActivityVisualization> activity = [self activityForSection:indexPath.section];
         if ([activity conformsToProtocol:@protocol(IdentificationVisualization)]) {

@@ -21,5 +21,7 @@
 @property (nonatomic, retain) ExploreUser *commenter;
 @property (nonatomic, copy) NSDate *commentedDate;
 @property (nonatomic, assign) BOOL hidden;
+@property (nonatomic, copy) NSArray *moderatorActions;
+
 
 @end

@@ -267,6 +267,8 @@
 		FAB6214D1D7397A70026FDC6 /* Onboarding.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FAB6214F1D7397A70026FDC6 /* Onboarding.storyboard */; };
 		FAB7028821431BD600462F62 /* UIViewController+INaturalist.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB7028721431BD600462F62 /* UIViewController+INaturalist.m */; };
 		FAB71E051FDC7D530039C45B /* INatReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB71E041FDC7D530039C45B /* INatReachability.m */; };
+		FAB7590C2B2A6EFA00CC5BC1 /* ExploreModeratorAction.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB7590B2B2A6EFA00CC5BC1 /* ExploreModeratorAction.m */; };
+		FAB7590F2B2A738400CC5BC1 /* ExploreModeratorActionRealm.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB7590E2B2A738400CC5BC1 /* ExploreModeratorActionRealm.m */; };
 		FAB8C44A1C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB8C4491C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m */; };
 		FAB8C44D1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB8C44C1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.m */; };
 		FAB95BB61A11502F009976FE /* ExploreSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FAB95BB51A11502F009976FE /* ExploreSearchViewController.m */; };
@@ -1058,6 +1060,10 @@
 		FAB7028721431BD600462F62 /* UIViewController+INaturalist.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+INaturalist.m"; sourceTree = "<group>"; };
 		FAB71E031FDC7D530039C45B /* INatReachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = INatReachability.h; sourceTree = "<group>"; };
 		FAB71E041FDC7D530039C45B /* INatReachability.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = INatReachability.m; sourceTree = "<group>"; };
+		FAB7590A2B2A6EFA00CC5BC1 /* ExploreModeratorAction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreModeratorAction.h; sourceTree = "<group>"; };
+		FAB7590B2B2A6EFA00CC5BC1 /* ExploreModeratorAction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreModeratorAction.m; sourceTree = "<group>"; };
+		FAB7590D2B2A738400CC5BC1 /* ExploreModeratorActionRealm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExploreModeratorActionRealm.h; sourceTree = "<group>"; };
+		FAB7590E2B2A738400CC5BC1 /* ExploreModeratorActionRealm.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExploreModeratorActionRealm.m; sourceTree = "<group>"; };
 		FAB8C4481C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailActivityAuthorCell.h; sourceTree = "<group>"; };
 		FAB8C4491C18F2AB00FF5E16 /* ObsDetailActivityAuthorCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ObsDetailActivityAuthorCell.m; sourceTree = "<group>"; };
 		FAB8C44B1C18F2D000FF5E16 /* ObsDetailActivityBodyCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ObsDetailActivityBodyCell.h; sourceTree = "<group>"; };
@@ -1510,6 +1516,8 @@
 		FA822FD828D84BB2006CA0F6 /* Mantle */ = {
 			isa = PBXGroup;
 			children = (
+				FA18C5C82A394DAF00F071C6 /* ExploreAnnouncement.h */,
+				FA18C5C92A394DAF00F071C6 /* ExploreAnnouncement.m */,
 				FA4E72B019FAC93400A9AB5D /* ExploreComment.h */,
 				FA4E72B119FAC93400A9AB5D /* ExploreComment.m */,
 				FAA6EB091C8F820000F43552 /* ExploreFave.h */,
@@ -1522,6 +1530,8 @@
 				FA4E72B519FAC93400A9AB5D /* ExploreLocation.m */,
 				FA3F1F951A12CACF00928102 /* ExploreLocation+SearchResultsHelper.h */,
 				FA3F1F961A12CACF00928102 /* ExploreLocation+SearchResultsHelper.m */,
+				FAB7590A2B2A6EFA00CC5BC1 /* ExploreModeratorAction.h */,
+				FAB7590B2B2A6EFA00CC5BC1 /* ExploreModeratorAction.m */,
 				FA4E72B619FAC93400A9AB5D /* ExploreObservation.h */,
 				FA4E72B719FAC93400A9AB5D /* ExploreObservation.m */,
 				FA4E72CA19FACD7700A9AB5D /* ExploreObservationPhoto.h */,
@@ -1564,8 +1574,6 @@
 				FAEF23531C7D2DC300208F44 /* ObserverCount.m */,
 				FAEF23551C7D2DCD00208F44 /* SpeciesCount.h */,
 				FAEF23561C7D2DCD00208F44 /* SpeciesCount.m */,
-				FA18C5C82A394DAF00F071C6 /* ExploreAnnouncement.h */,
-				FA18C5C92A394DAF00F071C6 /* ExploreAnnouncement.m */,
 			);
 			path = Mantle;
 			sourceTree = "<group>";
@@ -1573,6 +1581,8 @@
 		FA822FD928D84BCA006CA0F6 /* Realm */ = {
 			isa = PBXGroup;
 			children = (
+				FAB7590D2B2A738400CC5BC1 /* ExploreModeratorActionRealm.h */,
+				FAB7590E2B2A738400CC5BC1 /* ExploreModeratorActionRealm.m */,
 				FAFED1FA1DB5A2680015CCBA /* ExploreCommentRealm.h */,
 				FAFED1FB1DB5A2680015CCBA /* ExploreCommentRealm.m */,
 				FA8EBCE5230DE48400C1D789 /* ExploreDeletedRecord.h */,
@@ -2926,6 +2936,7 @@
 				FA7591D720F43A170062DE7F /* SettingsSwitchCell.m in Sources */,
 				FAFED1FF1DB5A2730015CCBA /* ExploreIdentificationRealm.m in Sources */,
 				191FB4D31601501A00C1F5DE /* ProjectObservationField.m in Sources */,
+				FAB7590F2B2A738400CC5BC1 /* ExploreModeratorActionRealm.m in Sources */,
 				FAC4160025E31157002814C7 /* SoundRecordViewController.swift in Sources */,
 				FA711AAB1D53D71500C4FFDB /* OnboardingPageViewController.m in Sources */,
 				FA4E72CC19FACD7700A9AB5D /* ExploreObservationPhoto.m in Sources */,
@@ -2991,6 +3002,7 @@
 				FACADF881CA1A731004B9D4A /* ProjectAboutViewController.m in Sources */,
 				19D8341117E7B746000A5C35 /* RXMLElement+Helpers.m in Sources */,
 				FAFED1F91DB5A25C0015CCBA /* ExploreUserRealm.m in Sources */,
+				FAB7590C2B2A6EFA00CC5BC1 /* ExploreModeratorAction.m in Sources */,
 				19D8342D17E7BBDC000A5C35 /* GuideTaxonViewController.m in Sources */,
 				FA7AAF0E1A96949D00188B83 /* ExploreLeaderboardHeader.m in Sources */,
 				FA18C5C32A38F7E000F071C6 /* AnnouncementView.swift in Sources */,

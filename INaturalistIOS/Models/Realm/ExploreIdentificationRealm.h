@@ -8,9 +8,10 @@
 
 #import <Realm/Realm.h>
 
+#import "ExploreModeratorActionRealm.h"
 #import "ExploreIdentification.h"
-#import "ExploreUserRealm.h"
 #import "ExploreTaxonRealm.h"
+#import "ExploreUserRealm.h"
 #import "IdentificationVisualization.h"
 
 @interface ExploreIdentificationRealm : RLMObject <IdentificationVisualization>
@@ -25,6 +26,8 @@
 @property ExploreTaxonRealm *taxon;
 
 @property (readonly) RLMLinkingObjects *observations;
+
+@property RLMArray<ExploreModeratorActionRealm *><ExploreModeratorActionRealm> *moderatorActions;
 
 - (instancetype)initWithMantleModel:(ExploreIdentification *)model;
 + (NSDictionary *)valueForMantleModel:(ExploreIdentification *)model;

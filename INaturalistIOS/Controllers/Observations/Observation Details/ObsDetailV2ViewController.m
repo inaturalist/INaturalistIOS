@@ -309,6 +309,29 @@
     [self presentViewController:alert animated:YES completion:nil];
 }
 
+- (void)noticeWithTitle:(NSString *)title message:(NSString *)message contactSupportOption:(BOOL)contactSupport {
+    if (contactSupport) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:title
+                                                                       message:message
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction:[UIAlertAction actionWithTitle:NSLocalizedString(@"OK",nil)
+                                                  style:UIAlertActionStyleCancel
+                                                handler:nil]];
+        NSURL *supportTicketUrl = [NSURL URLWithString:INatSupportTicketURL];
+        if ([[UIApplication sharedApplication] canOpenURL:supportTicketUrl]) {
+            [alert addAction:[UIAlertAction actionWithTitle:@"Contact Support"
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction * _Nonnull action) {
+                [[UIApplication sharedApplication] openURL:supportTicketUrl options:@{} completionHandler:nil];
+            }]];
+        }
+
+        [self presentViewController:alert animated:YES completion:nil];
+    } else {
+        [self noticeWithTitle:title message:message];
+    }
+}
+
 - (void)showProgressHud {
     dispatch_async(dispatch_get_main_queue(), ^{
         self.progressHud = [MBProgressHUD showHUDAddedTo:self.tableView animated:YES];

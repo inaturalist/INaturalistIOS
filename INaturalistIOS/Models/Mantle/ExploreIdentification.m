@@ -7,8 +7,9 @@
 //
 
 #import "ExploreIdentification.h"
-#import "ExploreUser.h"
 #import "ExploreTaxon.h"
+#import "ExploreModeratorAction.h"
+#import "ExploreUser.h"
 
 @implementation ExploreIdentification
 
@@ -21,6 +22,7 @@
 		@"identifiedDate": @"created_at",
 		@"identifier": @"user",
         @"hidden": @"hidden",
+        @"moderatorActions": @"moderator_actions",
 	};
 }
 
@@ -42,6 +44,10 @@
     return [MTLValueTransformer transformerWithBlock:^id(id dateString) {
         return [_dateFormatter dateFromString:dateString];
     }];
+}
+
++ (NSValueTransformer *)moderatorActionsJSONTransformer {
+    return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreModeratorAction.class];
 }
 
 #pragma mark - ActivityVisualziation
@@ -103,5 +109,33 @@
 - (BOOL)isCurrent {
     return self.identificationIsCurrent;
 }
+
+- (NSDate *)moderationDate {
+    ExploreModeratorAction *a = [self.moderatorActions firstObject];
+    if (a) {
+        return a.date;
+    } else {
+        return nil;
+    }
+}
+
+- (NSString *)moderationReason {
+    ExploreModeratorAction *a = [self.moderatorActions firstObject];
+    if (a) {
+        return a.reason;
+    } else {
+        return nil;
+    }
+}
+
+- (NSString *)moderatorUsername {
+    ExploreModeratorAction *a = [self.moderatorActions firstObject];
+    if (a) {
+        return a.user.login;
+    } else {
+        return nil;
+    }
+}
+
 
 @end

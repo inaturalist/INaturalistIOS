@@ -133,7 +133,7 @@
 
     RLMRealmConfiguration *config = [RLMRealmConfiguration defaultConfiguration];
     
-    config.schemaVersion = 27;
+    config.schemaVersion = 28;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {
         if (oldSchemaVersion < 1) {
             // add searchable (ie diacritic-less) taxon names
@@ -331,6 +331,20 @@
                 newObject[@"hidden"] = @(NO);
             }];
         }
+
+        if (oldSchemaVersion < 28) {
+            // added moderator actions to coments and ids
+            // assume they're empty
+            [migration enumerateObjects:ExploreCommentRealm.className
+                                  block:^(RLMObject * oldObject, RLMObject *newObject) {
+                newObject[@"moderatorActions"] = @[];
+            }];
+            [migration enumerateObjects:ExploreIdentificationRealm.className
+                                  block:^(RLMObject * oldObject, RLMObject *newObject) {
+                newObject[@"moderatorActions"] = @[];
+            }];
+        }
+
     };
 
     [RLMRealm asyncOpenWithConfiguration:config callbackQueue:queue callback:^(RLMRealm * _Nullable realm, NSError * _Nullable error) {

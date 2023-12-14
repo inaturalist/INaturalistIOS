@@ -20,6 +20,11 @@
         if (model.commenter) {
             self.commenter = [[ExploreUserRealm alloc] initWithMantleModel:model.commenter];
         }
+
+        for (ExploreModeratorAction *a in model.moderatorActions) {
+            ExploreModeratorActionRealm *ar = [[ExploreModeratorActionRealm alloc] initWithMantleModel:a];
+            [self.moderatorActions addObject:ar];
+        }
     }
     return self;
 }
@@ -40,7 +45,15 @@
     if (model.commenter) {
         value[@"commenter"] = [ExploreUserRealm valueForMantleModel:model.commenter];
     }
-    
+
+    if (model.moderatorActions) {
+        NSMutableArray *ears = [NSMutableArray array];
+        for (ExploreModeratorAction *ea in model.moderatorActions) {
+            [ears addObject:[ExploreModeratorActionRealm valueForMantleModel:ea]];
+        }
+        value[@"moderatorActions"] = [NSArray arrayWithArray:ears];
+    }
+
     return [NSDictionary dictionaryWithDictionary:value];
 }
 
@@ -97,5 +110,33 @@
 - (NSDate *)createdAt {
     return self.commentedDate;
 }
+
+- (NSDate *)moderationDate {
+    ExploreModeratorActionRealm *a = [self.moderatorActions firstObject];
+    if (a) {
+        return a.date;
+    } else {
+        return nil;
+    }
+}
+
+- (NSString *)moderationReason {
+    ExploreModeratorActionRealm *a = [self.moderatorActions firstObject];
+    if (a) {
+        return a.reason;
+    } else {
+        return nil;
+    }
+}
+
+- (NSString *)moderatorUsername {
+    ExploreModeratorActionRealm *a = [self.moderatorActions firstObject];
+    if (a) {
+        return a.moderator;
+    } else {
+        return nil;
+    }
+}
+
 
 @end

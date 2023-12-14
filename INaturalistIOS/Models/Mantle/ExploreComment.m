@@ -7,6 +7,7 @@
 //
 
 #import "ExploreComment.h"
+#import "ExploreModeratorAction.h"
 #import "ExploreUser.h"
 
 @implementation ExploreComment
@@ -18,6 +19,7 @@
     	@"commenter": @"user",
     	@"commentedDate": @"created_at",
         @"hidden": @"hidden",
+        @"moderatorActions": @"moderator_actions",
     };
 }
 
@@ -36,6 +38,11 @@
         return [_dateFormatter dateFromString:dateString];
     }];
 }
+
++ (NSValueTransformer *)moderatorActionsJSONTransformer {
+    return [NSValueTransformer mtl_JSONArrayTransformerWithModelClass:ExploreModeratorAction.class];
+}
+
 
 #pragma mark - CommentVisualization
 
@@ -57,6 +64,33 @@
 
 - (NSURL *)userIconUrl {
     return self.commenter.userIcon;
+}
+
+- (NSDate *)moderationDate {
+    ExploreModeratorAction *a = [self.moderatorActions firstObject];
+    if (a) {
+        return a.date;
+    } else {
+        return nil;
+    }
+}
+
+- (NSString *)moderationReason {
+    ExploreModeratorAction *a = [self.moderatorActions firstObject];
+    if (a) {
+        return a.reason;
+    } else {
+        return nil;
+    }
+}
+
+- (NSString *)moderatorUsername {
+    ExploreModeratorAction *a = [self.moderatorActions firstObject];
+    if (a) {
+        return a.user.login;
+    } else {
+        return nil;
+    }
 }
 
 @end

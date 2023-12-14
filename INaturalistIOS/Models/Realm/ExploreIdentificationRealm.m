@@ -27,6 +27,10 @@
             self.taxon = [[ExploreTaxonRealm alloc] initWithMantleModel:model.taxon];
         }
 
+        for (ExploreModeratorAction *a in model.moderatorActions) {
+            ExploreModeratorActionRealm *ar = [[ExploreModeratorActionRealm alloc] initWithMantleModel:a];
+            [self.moderatorActions addObject:ar];
+        }
     }
     return self;
 }
@@ -52,6 +56,14 @@
     
     if (model.taxon) {
         value[@"taxon"] = [ExploreTaxonRealm valueForMantleModel:model.taxon];
+    }
+
+    if (model.moderatorActions) {
+        NSMutableArray *ears = [NSMutableArray array];
+        for (ExploreModeratorAction *ea in model.moderatorActions) {
+            [ears addObject:[ExploreModeratorActionRealm valueForMantleModel:ea]];
+        }
+        value[@"moderatorActions"] = [NSArray arrayWithArray:ears];
     }
     
     return [NSDictionary dictionaryWithDictionary:value];
@@ -153,5 +165,33 @@
 - (NSURL *)userIconUrl {
     return self.identifier.userIcon;
 }
+
+- (NSDate *)moderationDate {
+    ExploreModeratorActionRealm *a = [self.moderatorActions firstObject];
+    if (a) {
+        return a.date;
+    } else {
+        return nil;
+    }
+}
+
+- (NSString *)moderationReason {
+    ExploreModeratorActionRealm *a = [self.moderatorActions firstObject];
+    if (a) {
+        return a.reason;
+    } else {
+        return nil;
+    }
+}
+
+- (NSString *)moderatorUsername {
+    ExploreModeratorActionRealm *a = [self.moderatorActions firstObject];
+    if (a) {
+        return a.moderator;
+    } else {
+        return nil;
+    }
+}
+
 
 @end

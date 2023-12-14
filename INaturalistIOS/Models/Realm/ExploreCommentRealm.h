@@ -7,9 +7,11 @@
 //
 
 #import <Realm/Realm.h>
+
+#import "CommentVisualization.h"
+#import "ExploreModeratorActionRealm.h"
 #import "ExploreComment.h"
 #import "ExploreUserRealm.h"
-#import "CommentVisualization.h"
 
 @interface ExploreCommentRealm : RLMObject <CommentVisualization>
 
@@ -20,6 +22,8 @@
 @property BOOL hidden;
 
 @property (readonly) RLMLinkingObjects *observations;
+
+@property RLMArray<ExploreModeratorActionRealm *><ExploreModeratorActionRealm> *moderatorActions;
 
 - (instancetype)initWithMantleModel:(ExploreComment *)model;
 + (NSDictionary *)valueForMantleModel:(ExploreComment *)model;

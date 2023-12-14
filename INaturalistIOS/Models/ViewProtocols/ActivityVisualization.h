@@ -18,4 +18,10 @@
 
 - (NSDate *)createdAt;
 
+- (BOOL)hidden;
+
+- (NSString *)moderatorUsername;
+- (NSDate *)moderationDate;
+- (NSString *)moderationReason;
+
 @end

@@ -25,5 +25,6 @@
 @property (nonatomic, retain) ExploreUser *identifier;
 @property (nonatomic, retain) ExploreTaxon *taxon;
 @property (nonatomic, assign) BOOL hidden;
+@property (nonatomic, copy) NSArray *moderatorActions;
 
 @end

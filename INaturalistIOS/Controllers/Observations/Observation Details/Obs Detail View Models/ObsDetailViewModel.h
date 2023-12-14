@@ -28,6 +28,7 @@ typedef NS_ENUM(NSInteger, ObsDetailSection) {
 - (void)showProgressHud;
 - (void)hideProgressHud;
 - (void)noticeWithTitle:(NSString *)title message:(NSString *)message;
+- (void)noticeWithTitle:(NSString *)title message:(NSString *)message contactSupportOption:(BOOL)contactSupport;
 @end
 
 @class Observation;
