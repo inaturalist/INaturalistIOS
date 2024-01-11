@@ -304,7 +304,7 @@
             contactSupportOption = YES;
         }
 
-        [self.delegate noticeWithTitle:alertTitle message:alertBody contactSupportOption:YES];
+        [self.delegate noticeWithTitle:alertTitle message:alertBody contactSupportOption:contactSupportOption];
     }
 
     if (indexPath.item == 1) {
