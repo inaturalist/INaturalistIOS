@@ -36,7 +36,7 @@
 /* superfamily rank in tree of life */
 "superfamily" = "วงศ์ใหญ่";
 /* epifamily rank in tree of life */
-"epifamily" = "วงศ์บน";
+"epifamily" = "ลำดับเหนือวงศ์";
 /* family rank in tree of life */
 "family" = "วงศ์";
 /* subfamily rank in tree of life */

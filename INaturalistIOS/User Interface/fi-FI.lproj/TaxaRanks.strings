@@ -1,7 +1,7 @@
 /* kingdom rank in tree of life */
-"kingdom" = "kuningas";
+"kingdom" = "kunta";
 /* subkingdom rank in tree of life */
-"subkingdom" = "alakuningaskunta";
+"subkingdom" = "alakunta";
 
 /* phylum rank in tree of life */
 "phylum" = "pääjakso";
