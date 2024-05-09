@@ -86,7 +86,7 @@
         CGFloat scale = 1;
         
         if (longestSide > INATURALIST_ORG_MAX_PHOTO_EDGE) {
-            scale = INATURALIST_ORG_MAX_PHOTO_EDGE / longestSide;
+            scale = longestSide / INATURALIST_ORG_MAX_PHOTO_EDGE;
         }
         
         // resize with CGImage is fast enough for us
@@ -104,7 +104,7 @@
         CGFloat scale = 1;
         
         if (longestSide > 640.0) {
-            scale = 640.0 / longestSide;
+            scale = longestSide / 640.0;
         }
         
         // resize with CGImage is fast enough for us
