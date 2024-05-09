@@ -126,15 +126,25 @@
     return YES;
 }
 
-+ (UIImage *)imageWithImage:(UIImage *)image squashedToFillSize:(CGSize)size {
-    CGRect imageRect = CGRectMake(0, 0, size.width, size.height);    
-    UIGraphicsBeginImageContextWithOptions(size, NO, 0);
++ (UIImage *)imageResizedForScoring:(UIImage *)image {
+    CGSize newSize = CGSizeZero;
+    
+    if (image.size.width > image.size.height) {
+        newSize.width = 500;
+        newSize.height = (500 / image.size.width) * image.size.height;
+    } else {
+        newSize.height = 500;
+        newSize.width = (500 / image.size.height) * image.size.width;
+    }
+
+    CGRect imageRect = CGRectMake(0, 0, newSize.width, newSize.height);
+    // select scale 1 to get 1 to 1 pixel density instead of retina
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 1);
     [image drawInRect:imageRect];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return newImage;
 }
-
 
 + (UIImage *)imageWithImage:(UIImage *)image scaledToFillSize:(CGSize)size {
     CGFloat scale = MAX(size.width/image.size.width, size.height/image.size.height);

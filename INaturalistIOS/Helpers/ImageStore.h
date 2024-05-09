@@ -34,7 +34,7 @@ enum {
 - (NSString *)usageStatsString;
 - (void)clearEntireStore;
 + (NSArray *)assetCollectionSubtypes;
-+ (UIImage *)imageWithImage:(UIImage *)image squashedToFillSize:(CGSize)size;
++ (UIImage *)imageResizedForScoring:(UIImage *)image;
 
 - (void)cleanupImageStoreUsingValidPhotoKeys:(NSArray *)validPhotoKeys
                              syncedPhotoKeys:(NSArray *)syncedPhotoKeys

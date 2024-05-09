@@ -205,8 +205,7 @@
         params[@"observed_on"] = @([observedOn timeIntervalSince1970]);
     }
     
-    UIImage *thumb = [[ImageStore class] imageWithImage:image
-                                     squashedToFillSize:CGSizeMake(299, 299)];
+    UIImage *thumb = [[ImageStore class] imageResizedForScoring:image];
     NSData *imageData = UIImageJPEGRepresentation(thumb, 0.9);
     
     // add locale to the request
