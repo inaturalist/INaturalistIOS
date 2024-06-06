@@ -1,0 +1,75 @@
+
+/* Class = "UILabel"; text = "Observe"; ObjectID = "0HC-89-zFL"; */
+"0HC-89-zFL.text" = "Observe";
+
+/* Class = "UITextField"; placeholder = "Email"; ObjectID = "2e2-wM-KPk"; */
+"2e2-wM-KPk.placeholder" = "Email";
+
+/* Class = "UILabel"; text = "Discuss"; ObjectID = "2hB-WM-pN1"; */
+"2hB-WM-pN1.text" = "Discuss";
+
+/* Class = "UITextField"; placeholder = "Username"; ObjectID = "5WV-jN-UjN"; */
+"5WV-jN-UjN.placeholder" = "Username";
+
+/* Class = "UILabel"; text = "Or Log in with:"; ObjectID = "Bfj-77-C1k"; */
+"Bfj-77-C1k.text" = "Or Log in with:";
+
+/* Class = "UITextField"; placeholder = "Password"; ObjectID = "Bpg-fN-eOX"; */
+"Bpg-fN-eOX.placeholder" = "Password";
+
+/* Class = "UITextField"; placeholder = "Username"; ObjectID = "CsX-uq-JNZ"; */
+"CsX-uq-JNZ.placeholder" = "Username";
+
+/* Class = "UIButton"; normalTitle = "Login"; ObjectID = "DO1-al-HTc"; */
+"DO1-al-HTc.normalTitle" = "Login";
+
+/* Class = "UISegmentedControl"; Dev-h9-HS2.segmentTitles[0] = "Sign Up"; ObjectID = "Dev-h9-HS2"; */
+"Dev-h9-HS2.segmentTitles[0]" = "Sign Up";
+
+/* Class = "UISegmentedControl"; Dev-h9-HS2.segmentTitles[1] = "Login"; ObjectID = "Dev-h9-HS2"; */
+"Dev-h9-HS2.segmentTitles[1]" = "Login";
+
+/* Class = "UITextField"; placeholder = "Password"; ObjectID = "FZ5-km-oDo"; */
+"FZ5-km-oDo.placeholder" = "Password";
+
+/* Class = "UIButton"; normalTitle = "Skip ›"; ObjectID = "J6N-uD-ctb"; */
+"J6N-uD-ctb.normalTitle" = "Skip ›";
+
+/* Class = "UILabel"; text = "Swipe ›"; ObjectID = "L6Y-1o-yPc"; */
+"L6Y-1o-yPc.text" = "Swipe ›";
+
+/* Class = "UIButton"; normalTitle = "Sign Up"; ObjectID = "LVz-7N-QYA"; */
+"LVz-7N-QYA.normalTitle" = "Sign Up";
+
+/* Class = "UITextField"; placeholder = "Password"; ObjectID = "Loy-OH-ug5"; */
+"Loy-OH-ug5.placeholder" = "Password";
+
+/* Class = "UILabel"; text = "iNaturalist will automatically generate suggestions based on your photo and location."; ObjectID = "Nb8-x2-D2v"; */
+"Nb8-x2-D2v.text" = "iNaturalist will automatically generate suggestions based on your photo and location.";
+
+/* Class = "UILabel"; text = "Explore and Connect with Nature"; ObjectID = "RqF-E7-mYe"; */
+"RqF-E7-mYe.text" = "Explore and Connect with Nature";
+
+/* Class = "UILabel"; text = "Get outside and observe an individual organism. Pick something wild, and take a clear, full frame photo."; ObjectID = "XWS-dF-hpb"; */
+"XWS-dF-hpb.text" = "Get outside and observe an individual organism. Pick something wild, and take a clear, full frame photo.";
+
+/* Class = "UITextField"; placeholder = "Username"; ObjectID = "dSw-gs-zGG"; */
+"dSw-gs-zGG.placeholder" = "Username";
+
+/* Class = "UILabel"; text = "Share your observation with the community to discuss and confirm your findings."; ObjectID = "ixn-0U-lJ7"; */
+"ixn-0U-lJ7.text" = "Share your observation with the community to discuss and confirm your findings.";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "oAC-8Z-BHX"; */
+"oAC-8Z-BHX.text" = "Label";
+
+/* Class = "UILabel"; text = "Your observation may be vetted as Research Grade and shared with scientists working to better understand and protect nature. "; ObjectID = "oro-uB-RY1"; */
+"oro-uB-RY1.text" = "Your observation may be vetted as Research Grade and shared with scientists working to better understand and protect nature. ";
+
+/* Class = "UILabel"; text = "Contribute"; ObjectID = "sBd-1Y-eNL"; */
+"sBd-1Y-eNL.text" = "Contribute";
+
+/* Class = "UIButton"; normalTitle = "Forgot Password?"; ObjectID = "sZe-lG-yg8"; */
+"sZe-lG-yg8.normalTitle" = "Forgot Password?";
+
+/* Class = "UILabel"; text = "Identify"; ObjectID = "vCH-CP-6hM"; */
+"vCH-CP-6hM.text" = "Identify";

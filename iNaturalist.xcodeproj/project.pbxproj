@@ -788,6 +788,22 @@
 		FA60EA1323EA453D0026F7A3 /* PostsAPI.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PostsAPI.m; sourceTree = "<group>"; };
 		FA627BA71ACB6A050079534E /* INatTooltipView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = INatTooltipView.h; sourceTree = "<group>"; };
 		FA627BA81ACB6A050079534E /* INatTooltipView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = INatTooltipView.m; sourceTree = "<group>"; };
+		FA62CAE52C126858007A5F95 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Activity.strings; sourceTree = "<group>"; };
+		FA62CAE62C126858007A5F95 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Guides.strings; sourceTree = "<group>"; };
+		FA62CAE72C126858007A5F95 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		FA62CAE82C126858007A5F95 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FA62CAE92C126858007A5F95 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Projects.strings; sourceTree = "<group>"; };
+		FA62CAEA2C126859007A5F95 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA62CAEB2C12685A007A5F95 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FA62CAEC2C12685A007A5F95 /* hu */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/TaxaRanks.strings; sourceTree = "<group>"; };
+		FA62CAED2C12685F007A5F95 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Activity.strings; sourceTree = "<group>"; };
+		FA62CAEE2C12685F007A5F95 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Guides.strings; sourceTree = "<group>"; };
+		FA62CAEF2C12685F007A5F95 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/MainStoryboard.strings; sourceTree = "<group>"; };
+		FA62CAF02C12685F007A5F95 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Onboarding.strings; sourceTree = "<group>"; };
+		FA62CAF12C12685F007A5F95 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Projects.strings; sourceTree = "<group>"; };
+		FA62CAF22C12685F007A5F95 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FA62CAF32C12685F007A5F95 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/Localizable.strings; sourceTree = "<group>"; };
+		FA62CAF42C12685F007A5F95 /* pl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pl; path = pl.lproj/TaxaRanks.strings; sourceTree = "<group>"; };
 		FA63FA1319E4CE65007306F9 /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
 		FA63FA1419E4CE65007306F9 /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
 		FA6471BB1BFFC83600B0F70C /* INaturalist2.10.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = INaturalist2.10.xcdatamodel; sourceTree = "<group>"; };
@@ -2482,6 +2498,8 @@
 				ar,
 				th,
 				kk,
+				hu,
+				pl,
 			);
 			mainGroup = 1927512814E9CCC8000ABAC4;
 			productRefGroup = 1927513414E9CCC9000ABAC4 /* Products */;
@@ -3110,6 +3128,8 @@
 				FA03D5A3261B8D3C005F2B66 /* ar */,
 				FA03D5AB261B8D45005F2B66 /* th */,
 				FA4BC3E02A6B2715002325EB /* kk */,
+				FA62CAE72C126858007A5F95 /* hu */,
+				FA62CAEF2C12685F007A5F95 /* pl */,
 			);
 			name = MainStoryboard.storyboard;
 			sourceTree = "<group>";
@@ -3152,6 +3172,8 @@
 				FA03D5B0261B8D73005F2B66 /* th */,
 				FA82300828D85F4E006CA0F6 /* pt-BR */,
 				FA4BC3E32A6B2715002325EB /* kk */,
+				FA62CAEA2C126859007A5F95 /* hu */,
+				FA62CAF22C12685F007A5F95 /* pl */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -3194,6 +3216,8 @@
 				FA03D5B1261B8D73005F2B66 /* th */,
 				FA82300928D85F72006CA0F6 /* pt-BR */,
 				FA4BC3E42A6B2716002325EB /* kk */,
+				FA62CAEB2C12685A007A5F95 /* hu */,
+				FA62CAF32C12685F007A5F95 /* pl */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -3237,6 +3261,8 @@
 				FA03D5A5261B8D3D005F2B66 /* ar */,
 				FA03D5AD261B8D72005F2B66 /* th */,
 				FA4BC3E22A6B2715002325EB /* kk */,
+				FA62CAE92C126858007A5F95 /* hu */,
+				FA62CAF12C12685F007A5F95 /* pl */,
 			);
 			name = Projects.storyboard;
 			sourceTree = "<group>";
@@ -3256,6 +3282,8 @@
 				FA03D5A6261B8D3D005F2B66 /* ar */,
 				FA03D5AE261B8D73005F2B66 /* th */,
 				FA4BC3DE2A6B2715002325EB /* kk */,
+				FA62CAE52C126858007A5F95 /* hu */,
+				FA62CAED2C12685F007A5F95 /* pl */,
 			);
 			name = Activity.storyboard;
 			sourceTree = "<group>";
@@ -3299,6 +3327,8 @@
 				FA03D5A7261B8D3D005F2B66 /* ar */,
 				FA03D5AF261B8D73005F2B66 /* th */,
 				FA4BC3DF2A6B2715002325EB /* kk */,
+				FA62CAE62C126858007A5F95 /* hu */,
+				FA62CAEE2C12685F007A5F95 /* pl */,
 			);
 			name = Guides.storyboard;
 			sourceTree = "<group>";
@@ -3341,6 +3371,8 @@
 				FA03D5AA261B8D3E005F2B66 /* ar */,
 				FA03D5B2261B8D73005F2B66 /* th */,
 				FA4BC3E52A6B2716002325EB /* kk */,
+				FA62CAEC2C12685A007A5F95 /* hu */,
+				FA62CAF42C12685F007A5F95 /* pl */,
 			);
 			name = TaxaRanks.strings;
 			sourceTree = "<group>";
@@ -3384,6 +3416,8 @@
 				FA03D5A4261B8D3C005F2B66 /* ar */,
 				FA03D5AC261B8D45005F2B66 /* th */,
 				FA4BC3E12A6B2715002325EB /* kk */,
+				FA62CAE82C126858007A5F95 /* hu */,
+				FA62CAF02C12685F007A5F95 /* pl */,
 			);
 			name = Onboarding.storyboard;
 			sourceTree = "<group>";
