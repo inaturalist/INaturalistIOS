@@ -1,80 +1,76 @@
 /* kingdom rank in tree of life */
-"kingdom" = "kingdom";
+"kingdom" = "królestwo";
 /* subkingdom rank in tree of life */
-"subkingdom" = "subkingdom";
+"subkingdom" = "podkrólestwo";
 
 /* phylum rank in tree of life */
-"phylum" = "phylum";
+"phylum" = "typ";
 /* subphylum rank in tree of life */
-"subphylum" = "subphylum";
+"subphylum" = "podtyp";
 
 /* superclass rank in tree of life */
-"superclass" = "superclass";
+"superclass" = "nadgromada";
 /* class rank in tree of life */
-"class" = "class";
+"class" = "gromada";
 /* subclass rank in tree of life */
-"subclass" = "subclass";
+"subclass" = "podgromada";
 /* infraclass rank in tree of life */
-"infraclass" = "infraclass";
+"infraclass" = "infragromada";
 
 /* superorder rank in tree of life */
-"superorder" = "superorder";
+"superorder" = "nadrząd";
 /* order rank in tree of life */
-"order" = "order";
+"order" = "rząd";
 /* suborder rank in tree of life */
-"suborder" = "suborder";
+"suborder" = "podrząd";
 /* infraorder rank in tree of life */
-"infraorder" = "infraorder";
+"infraorder" = "infrarząd";
 /* parvorder rank in tree of life */
-"parvorder" = "parvorder";
+"parvorder" = "parvrząd";
 
 /* zoosection rank in tree of life */
-"zoosection" = "zoosection";
+"zoosection" = "zoosekcja";
 /* zoosubsection rank in tree of life */
-"zoosubsection" = "zoosubsection";
+"zoosubsection" = "zoopodsekcja";
 
 /* superfamily rank in tree of life */
-"superfamily" = "superfamily";
+"superfamily" = "nadrodzina";
 /* epifamily rank in tree of life */
-"epifamily" = "epifamily";
+"epifamily" = "epirodzina";
 /* family rank in tree of life */
-"family" = "family";
+"family" = "rodzina";
 /* subfamily rank in tree of life */
-"subfamily" = "subfamily";
+"subfamily" = "podrodzina";
 
 /* supertribe rank in tree of life */
-"supertribe" = "supertribe";
+"supertribe" = "nadplemię";
 /* tribe rank in tree of life */
-"tribe" = "tribe";
+"tribe" = "plemię";
 /* subtribe rank in tree of life */
-"subtribe" = "subtribe";
+"subtribe" = "podplemię";
 
 /* epifamily rank in tree of life */
-"genus" = "genus";
+"genus" = "rodzaj";
 /* genushybrid rank in tree of life */
-"genushybrid" = "genushybrid";
+"genushybrid" = "hybryda międzyrodzajowa";
 /* subgenus rank in tree of life */
-"subgenus" = "subgenus";
+"subgenus" = "podrodzaj";
 
 /* section rank in tree of life */
-"section" = "section";
+"section" = "sekcja";
 /* subsection rank in tree of life */
-"subsection" = "subsection";
+"subsection" = "podsekcja";
 
 /* species rank in tree of life */
-"species" = "species";
+"species" = "gatunek";
 /* hybrid rank in tree of life */
-"hybrid" = "hybrid";
+"hybrid" = "hybryda";
 
 /* subspecies rank in tree of life */
-"subspecies" = "subspecies";
+"subspecies" = "podgatunek";
 /* variety rank in tree of life */
-"variety" = "variety";
+"variety" = "odmiana";
 /* form rank in tree of life */
-"form" = "form";
+"form" = "forma";
 /* infrahybrid rank in tree of life */
-"infrahybrid" = "infrahybrid";
-
-
-
-
+"infrahybrid" = "infrahybryda";
