@@ -477,7 +477,7 @@
         return CLLocationCoordinate2DMake(self.latitude.floatValue, self.longitude.floatValue);
     } else {
         // invalid location
-        return CLLocationCoordinate2DMake(-19999.0,-19999.0);
+        return kCLLocationCoordinate2DInvalid;
     }
 }
 

@@ -159,13 +159,13 @@
     if ([cdModel valueForKey:@"positionalAccuracy"]) {
         value[@"publicPositionalAccuracy"] = [cdModel valueForKey:@"positionalAccuracy"];
     } else {
-        value[@"publicPositionalAccuracy"] = @(-1);
+        value[@"publicPositionalAccuracy"] = @(0);
     }
     
     if ([cdModel valueForKey:@"privatePositionalAccuracy"]) {
         value[@"privatePositionalAccuracy"] = [cdModel valueForKey:@"privatePositionalAccuracy"];
     } else {
-        value[@"privatePositionalAccuracy"] = @(-1);
+        value[@"privatePositionalAccuracy"] = @(0);
     }
     
     if ([cdModel valueForKey:@"captive"]) {

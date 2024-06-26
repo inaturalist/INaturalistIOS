@@ -1075,7 +1075,7 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
         // nothing happens on null island
         self.standaloneObservation.latitude = kCLLocationCoordinate2DInvalid.latitude;
         self.standaloneObservation.longitude = kCLLocationCoordinate2DInvalid.longitude;
-        self.standaloneObservation.privatePositionalAccuracy = -1;
+        self.standaloneObservation.privatePositionalAccuracy = 0;
         self.standaloneObservation.placeGuess = nil;
         return;
     }
