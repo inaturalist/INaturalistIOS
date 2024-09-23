@@ -13,6 +13,7 @@
 #import "NSLocale+INaturalist.h"
 #import "INaturalistAppDelegate.h"
 #import "LoginController.h"
+#import "Analytics.h"
 
 @implementation INatAPI
 
@@ -60,6 +61,8 @@
     if (jwtToken) {
         [request addValue:jwtToken forHTTPHeaderField:@"Authorization"];
     }
+    [request addValue:[[Analytics sharedClient] installationId]
+   forHTTPHeaderField:@"X-Installation-ID"];
     
     if (params) {
         NSError *paramsErr = nil;

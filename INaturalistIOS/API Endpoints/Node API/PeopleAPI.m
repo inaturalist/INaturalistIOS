@@ -68,7 +68,9 @@
         [request addValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
        forHTTPHeaderField:@"Authorization"];
         [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-        
+        [request addValue:[[Analytics sharedClient] installationId]
+       forHTTPHeaderField:@"X-Installation-ID"];
+
         NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
         [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {\
             if (error) {
@@ -174,7 +176,9 @@
         [request addValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
        forHTTPHeaderField:@"Authorization"];
         [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-        
+        [request addValue:[[Analytics sharedClient] installationId]
+       forHTTPHeaderField:@"X-Installation-ID"];
+
         NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
         [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -199,6 +203,9 @@
         [manager.requestSerializer setValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
                          forHTTPHeaderField:@"Authorization"];
         
+        [manager.requestSerializer setValue:[[NSUserDefaults standardUserDefaults] stringForKey:[[Analytics sharedClient] installationId]]
+                         forHTTPHeaderField:@"X-Installation-ID"];
+
         NSError *error = nil;
         NSURLRequest *request = [manager.requestSerializer multipartFormRequestWithMethod:@"PUT" URLString:urlString parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
             [formData appendPartWithFileData:imageData
@@ -238,6 +245,8 @@
         [request addValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
        forHTTPHeaderField:@"Authorization"];
         [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+        [request addValue:[[Analytics sharedClient] installationId]
+       forHTTPHeaderField:@"X-Installation-ID"];
         
         NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
         [[session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {

@@ -8,6 +8,8 @@
 
 #import "INatRailsAPI.h"
 
+#import "Analytics.h"
+
 @implementation INatRailsAPI
 
 - (NSString *)apiBaseUrl {
@@ -34,6 +36,8 @@
         [request addValue:[self authToken] forHTTPHeaderField:@"Authorization"];
     }
     [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request addValue:[[Analytics sharedClient] installationId]
+   forHTTPHeaderField:@"X-Installation-ID"];
 
     // not handling params for now
     NSAssert(params == nil, @"Params must be nil in INatRailsAPI");

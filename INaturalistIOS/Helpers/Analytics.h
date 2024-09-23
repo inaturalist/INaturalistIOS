@@ -25,4 +25,6 @@
 
 - (void)logMetric:(NSString *)metricName value:(NSNumber *)metricValue;
 
+
+- (NSString *)installationId;
 @end

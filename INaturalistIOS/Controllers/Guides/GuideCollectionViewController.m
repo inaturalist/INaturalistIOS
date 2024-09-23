@@ -18,6 +18,7 @@
 #import "UIColor+INaturalist.h"
 #import "ImageStore.h"
 #import "INatReachability.h"
+#import "Analytics.h"
 
 static const int CellLabelTag = 200;
 static const int GutterWidth  = 5;
@@ -369,6 +370,10 @@ static const int GutterWidth  = 5;
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [r setValue:[defaults objectForKey:INatTokenPrefKey] forHTTPHeaderField:@"Authorization"];
     }
+    [r addValue:[[Analytics sharedClient] installationId]
+   forHTTPHeaderField:@"X-Installation-ID"];
+
+
     XMLDownloadDelegate *d = [[XMLDownloadDelegate alloc] initWithController:self];
     d.quiet = quietly;
     [[[NSURLConnection alloc] initWithRequest:r

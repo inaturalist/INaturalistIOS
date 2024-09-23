@@ -24,6 +24,7 @@
 #import "ExploreUserRealm.h"
 #import "ExploreTaxonRealm.h"
 #import "NSLocale+INaturalist.h"
+#import "Analytics.h"
 
 static const NSTimeInterval LocalMeUserValidTimeInterval = 600;
 
@@ -515,6 +516,8 @@ didSignInForUser:(GIDGoogleUser *)user
     
     [request addValue:[[NSUserDefaults standardUserDefaults] stringForKey:INatTokenPrefKey]
    forHTTPHeaderField:@"Authorization"];
+    [request addValue:[[Analytics sharedClient] installationId]
+   forHTTPHeaderField:@"X-Installation-ID"];
     
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
     __weak typeof(self)weakSelf = self;

@@ -11,6 +11,7 @@
 #import "Observation.h"
 #import "SSZipArchive.h"
 #import "UIColor+INaturalist.h"
+#import "Analytics.h"
 
 @implementation GuideMenuViewController
 
@@ -353,9 +354,13 @@ static NSString *RightDetailCellIdentifier = @"RightDetailCell";
     self.ngzFilePath = self.guide.ngzPath;
     NSString *ngzURL = self.guide.ngzURL;
     NSURL *url = [NSURL URLWithString:ngzURL];
-    NSURLRequest *theRequest = [NSURLRequest requestWithURL:url
-                                                cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
-                                            timeoutInterval:10*60];
+    NSMutableURLRequest *theRequest = [NSMutableURLRequest requestWithURL:url
+                                                              cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                                                          timeoutInterval:10*60];
+    
+    [theRequest addValue:[[Analytics sharedClient] installationId]
+      forHTTPHeaderField:@"X-Installation-ID"];
+
     self.receivedData = [[NSMutableData alloc] initWithLength:0];
     self.ngzDownloadConnection = [[NSURLConnection alloc] initWithRequest:theRequest
                                                                    delegate:self];

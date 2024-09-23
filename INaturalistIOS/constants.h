@@ -24,6 +24,7 @@
 #define kINatShowCommonNamesPrefKey @"INatShowCommonNamesPrefKey"
 #define kINatShowScientificNamesFirstPrefKey @"INatShowScientificNamesFirstPrefKey"
 #define kINatPreferNoTrackPrefKey @"INatPreferNoTrackPrefKey"
+#define kINatInstallationIDKey @"INatInstallationIDKey"
 
 #ifdef DEBUG1
     #define INatBaseURL @"http://localhost:3000"

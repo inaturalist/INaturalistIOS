@@ -92,4 +92,23 @@
     }
 }
 
+- (NSString *)installationId {
+    // should be set in app delegate did finish launching, but don't assume that it has
+    // if we have to generate it here, it's likely as a result of multiple network requests
+    // firing on app launch, so try to be safe about only generating it once.
+    static NSString *installationId = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        installationId = [[NSUserDefaults standardUserDefaults] objectForKey:kINatInstallationIDKey];
+        
+        if (installationId == nil) {
+            installationId = [[[NSUUID alloc] init] UUIDString];
+            [[NSUserDefaults standardUserDefaults] setObject:installationId
+                                                      forKey:kINatInstallationIDKey];
+        }
+    });
+    
+    return installationId;
+}
+
 @end

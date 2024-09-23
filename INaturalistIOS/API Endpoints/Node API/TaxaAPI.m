@@ -46,10 +46,14 @@
     components.query = query;
     NSURL *url = components.URL;
     
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [request addValue:[[Analytics sharedClient] installationId]
+   forHTTPHeaderField:@"X-Installation-ID"];
+
     if (url) {
         NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
         NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
-        [[session dataTaskWithRequest:[NSURLRequest requestWithURL:url]
+        [[session dataTaskWithRequest:request
                     completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                         if (error) {
                             dispatch_async(dispatch_get_main_queue(), ^{
@@ -142,7 +146,10 @@
     NSURL *url = [components URL];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    
+    [request addValue:[[Analytics sharedClient] installationId]
+   forHTTPHeaderField:@"X-Installation-ID"];
+
+
     
     
     INaturalistAppDelegate *appDelegate = (INaturalistAppDelegate *)[[UIApplication sharedApplication] delegate];

@@ -82,6 +82,8 @@
     
     [application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
     
+    [self assignInstallationId];
+
     // we need a login controller to handle google auth, can't do this in the background
     self.loginController = [[LoginController alloc] init];
 
@@ -531,6 +533,19 @@
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Onboarding" bundle:nil];
     UIViewController *onboardingVC = [storyboard instantiateInitialViewController];
     self.window.rootViewController = onboardingVC;
+}
+
+- (void)assignInstallationId {
+    // this is used for anonymous, first part analyticcs
+    
+    // assign installation id if necessary
+    NSString *installationId = [[NSUserDefaults standardUserDefaults] objectForKey:kINatInstallationIDKey];
+    
+    if (installationId == nil) {
+        installationId = [[[NSUUID alloc] init] UUIDString];
+        [[NSUserDefaults standardUserDefaults] setObject:installationId
+                                                  forKey:kINatInstallationIDKey];
+    }
 }
 
 @end
