@@ -29,7 +29,7 @@
         self.searchableLastMatchedTerm = [[ExploreTaxonRealm class] cleanedSearchMatchTermFor:taxon.matchedTerm];
         self.observationCount = taxon.observationCount;
         self.isActive = taxon.isActive;
-        
+        self.representativePhotoUrlString = [taxon.representativePhotoUrl absoluteString];
         for (ExploreTaxonPhoto *etp in [taxon taxonPhotos]) {
             ExploreTaxonPhotoRealm *etpr = [[ExploreTaxonPhotoRealm alloc] initWithMantleModel:etp];
             [self.taxonPhotos addObject:etpr];
@@ -59,6 +59,8 @@
     value[@"searchableScientificName"] = [model.scientificName stringByFoldingWithOptions:NSDiacriticInsensitiveSearch
                                                                                    locale:[NSLocale currentLocale]];
     value[@"photoUrlString"] = [model.photoUrl absoluteString];
+    value[@"representativePhotoUrlString"] = [model.representativePhotoUrl absoluteString];
+
     value[@"rankName"] = model.rankName;
     value[@"rankLevel"] = @(model.rankLevel);
     value[@"iconicTaxonName"] = model.iconicTaxonName;
@@ -158,6 +160,10 @@
 
 - (NSURL *)photoUrl {
 	return [NSURL URLWithString:self.photoUrlString];
+}
+
+- (NSURL *)representativePhotoUrl {
+    return [NSURL URLWithString:self.representativePhotoUrlString];
 }
 
 - (NSURL *)wikipediaUrl {
@@ -268,6 +274,12 @@
     } else {
         return self.scientificName;
     }
+}
+
++ (NSArray<NSString *> *)ignoredProperties {
+    return @[
+        @"representativePhotoUrlString",
+    ];
 }
 
 

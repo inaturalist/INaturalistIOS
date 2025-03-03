@@ -18,6 +18,7 @@
 		@"commonName": @"preferred_common_name",
 		@"scientificName": @"name",
 		@"photoUrl": @"default_photo.square_url",
+        @"representativePhotoUrl": @"representative_photo.square_url",
 		@"rankName": @"rank",
 		@"rankLevel": @"rank_level",
 		@"iconicTaxonName": @"iconic_taxon_name",
@@ -30,6 +31,10 @@
 }
 
 + (NSValueTransformer *)photoUrlJSONTransformer {
+    return [NSValueTransformer valueTransformerForName:MTLURLValueTransformerName];
+}
+
++ (NSValueTransformer *)representativePhotoUrlJSONTransformer {
     return [NSValueTransformer valueTransformerForName:MTLURLValueTransformerName];
 }
 
@@ -52,6 +57,8 @@
     	self.observationCount = 0;
     } else if ([key isEqualToString:@"isActive"]) {
         self.isActive = YES;
+    } else if ([key isEqualToString:@"representativePhotoUrl"]) {
+        self.representativePhotoUrl = nil;
     } else {
         [super setNilValueForKey:key];
     }

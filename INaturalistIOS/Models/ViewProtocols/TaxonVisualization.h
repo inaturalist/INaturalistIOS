@@ -14,6 +14,7 @@
 - (NSString *)commonName;
 - (NSString *)scientificName;
 - (NSURL *)photoUrl;
+- (NSURL *)representativePhotoUrl;
 - (NSString *)rankName;
 - (NSInteger)rankLevel;
 - (NSString *)iconicTaxonName;

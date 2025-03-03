@@ -476,7 +476,10 @@
         }
         
         UIImage *iconicTaxonImage = [[ImageStore sharedImageStore] iconicTaxonImageForName:taxon.iconicTaxonName];
-        if (taxon.photoUrl) {
+        if (self.showingSuggestions && taxon.representativePhotoUrl) {
+            [cell.image setImageWithURL:taxon.representativePhotoUrl
+                       placeholderImage:iconicTaxonImage];
+        } else if (taxon.photoUrl) {
             [cell.image setImageWithURL:taxon.photoUrl
                        placeholderImage:iconicTaxonImage];
         } else {
