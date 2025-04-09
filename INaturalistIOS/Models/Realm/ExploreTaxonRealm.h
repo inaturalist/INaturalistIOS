@@ -26,6 +26,8 @@
 @property NSString *searchableScientificName;
 @property NSString *photoUrlString;
 @property (readonly) NSURL *photoUrl;
+@property NSString *representativePhotoUrlString;
+@property (readonly) NSURL *representativePhotoUrl;
 @property NSString *rankName;
 @property NSInteger rankLevel;
 @property NSString *iconicTaxonName;

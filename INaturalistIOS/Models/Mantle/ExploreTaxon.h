@@ -28,6 +28,8 @@
 @property (nonatomic, copy) NSURL *wikipediaUrl;
 @property (nonatomic, assign) BOOL isActive;
 
+@property (nonatomic, copy) NSURL *representativePhotoUrl;
+
 @property (readonly) NSString *wikipediaArticleName;
 
 - (BOOL)isGenusOrLower;

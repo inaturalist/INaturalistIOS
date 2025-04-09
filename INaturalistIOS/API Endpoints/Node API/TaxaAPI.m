@@ -211,7 +211,8 @@
     if (observedOn) {
         params[@"observed_on"] = @([observedOn timeIntervalSince1970]);
     }
-    
+    params[@"include_representative_photos"] = @(YES);
+
     UIImage *thumb = [[ImageStore class] imageResizedForScoring:image];
     NSData *imageData = UIImageJPEGRepresentation(thumb, 0.9);
     

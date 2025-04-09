@@ -1577,24 +1577,28 @@ typedef NS_ENUM(NSInteger, ConfirmObsSection) {
 
 - (UITableViewCell *)dateTimeCellInTableView:(UITableView *)tableView {
     DisclosureCell *cell = [tableView dequeueReusableCellWithIdentifier:@"disclosure"];
-    
-    cell.titleLabel.text = [self.standaloneObservation observedOnShortString];
-    
-    NSDateFormatter *tzFormat = [[NSDateFormatter alloc] init];
-    tzFormat.dateFormat = @"ZZZZZ";
-    if (self.standaloneObservation.observedTimeZone) {
-        NSTimeZone *tz = [NSTimeZone timeZoneWithName:self.standaloneObservation.observedTimeZone];
-        if (tz) {
-            tzFormat.timeZone = tz;
+
+    if (self.standaloneObservation.observedOn && self.standaloneObservation.observedOnShortString) {
+        cell.titleLabel.text = [self.standaloneObservation observedOnShortString];
+
+        NSDateFormatter *tzFormat = [[NSDateFormatter alloc] init];
+        tzFormat.dateFormat = @"ZZZZZ";
+        if (self.standaloneObservation.observedTimeZone) {
+            NSTimeZone *tz = [NSTimeZone timeZoneWithName:self.standaloneObservation.observedTimeZone];
+            if (tz) {
+                tzFormat.timeZone = tz;
+            }
         }
+        NSString *tzString = [tzFormat stringFromDate:self.standaloneObservation.observedOn];
+        cell.titleLabel.text = [NSString stringWithFormat:@"%@ %@", cell.titleLabel.text, tzString];
+    } else {
+        cell.titleLabel.text = NSLocalizedString(@"Unknown", @"unknown datetime");
     }
-    NSString *tzString = [tzFormat stringFromDate:self.standaloneObservation.observedOn];
-    cell.titleLabel.text = [NSString stringWithFormat:@"%@ %@", cell.titleLabel.text, tzString];
-    
+
     FAKIcon *calendar = [FAKINaturalist iosCalendarOutlineIconWithSize:44];
     [calendar addAttribute:NSForegroundColorAttributeName value:[UIColor colorWithHexString:@"#777777"]];
     cell.cellImageView.image = [calendar imageWithSize:CGSizeMake(44, 44)];
-    
+
     cell.selectionStyle = UITableViewCellSelectionStyleDefault;
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     return cell;

@@ -305,7 +305,18 @@
         [formatter setDateStyle:NSDateFormatterShortStyle];
         [formatter setTimeStyle:NSDateFormatterShortStyle];
     }
-    return [formatter stringFromDate:self.timeObserved];
+
+    static NSDateFormatter *obscuredFormatter = nil;
+    if (!obscuredFormatter) {
+        obscuredFormatter = [[NSDateFormatter alloc] init];
+        [obscuredFormatter setLocalizedDateFormatFromTemplate:@"YYYYMMM"];
+    }
+
+    if (self.trueCoordinateVisibility == ObsTrueCoordinatePrivacyVisible) {
+        return [formatter stringFromDate:self.timeObserved];
+    } else {
+        return [obscuredFormatter stringFromDate:self.timeObserved];
+    }
 }
 
 - (NSInteger)inatRecordId {
