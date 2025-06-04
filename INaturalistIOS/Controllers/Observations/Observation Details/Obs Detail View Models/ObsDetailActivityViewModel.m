@@ -378,8 +378,13 @@
         } else {
             cell.authorImageView.image = [UIImage inat_defaultUserImage];
         }
-        
-        cell.dateLabel.text = [activity.createdAt inat_shortRelativeDateString];
+
+        if (self.observation.trueCoordinateVisibility == ObsTrueCoordinatePrivacyVisible) {
+            cell.dateLabel.text = [activity.createdAt inat_shortRelativeDateString];
+        } else {
+            cell.dateLabel.text = [activity.createdAt inat_obscuredDateString];
+        }
+
         cell.dateLabel.textColor = [UIColor lightGrayColor];
         
         if ([activity conformsToProtocol:@protocol(IdentificationVisualization)]) {

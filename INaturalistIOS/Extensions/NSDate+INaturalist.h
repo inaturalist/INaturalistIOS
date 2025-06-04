@@ -11,6 +11,7 @@
 @interface NSDate (INaturalist)
 
 - (NSString * _Nullable)inat_shortRelativeDateString;
+- (NSString * _Nullable)inat_obscuredDateString;
 
 @end
 

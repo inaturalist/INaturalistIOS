@@ -35,4 +35,15 @@
     }
 }
 
+- (NSString *)inat_obscuredDateString {
+    static NSDateFormatter *obscuredFormatter = nil;
+    if (!obscuredFormatter) {
+        obscuredFormatter = [[NSDateFormatter alloc] init];
+        [obscuredFormatter setLocalizedDateFormatFromTemplate:@"YYYYMMM"];
+    }
+
+    return [obscuredFormatter stringFromDate:self];
+}
+
+
 @end
