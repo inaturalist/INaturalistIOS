@@ -17,8 +17,6 @@
 #import "UIFont+ExploreFonts.h"
 #import "INaturalist-Swift.h"
 
-static NSDateFormatter *shortFormatter;
-
 @interface ExploreListTableViewCell () {
     UIImageView *observationImageView;
     
@@ -121,13 +119,7 @@ static NSDateFormatter *shortFormatter;
             view;
         });
         [self.contentView addSubview:separator];
-        
-        if (!shortFormatter) {
-            shortFormatter = [[NSDateFormatter alloc] init];
-            shortFormatter.dateStyle = NSDateFormatterShortStyle;
-            shortFormatter.timeStyle = NSDateFormatterNoStyle;
-        }
-        
+
         // horizontally center imageview in cell
         [self addConstraint:[NSLayoutConstraint constraintWithItem:observationImageView
                                                          attribute:NSLayoutAttributeCenterY
@@ -384,14 +376,8 @@ static NSDateFormatter *shortFormatter;
     
     observerNameLabel.text = observation.username;
     
-    NSDate *date = [observation timeObserved];
-    // looks like time_observed_at_utc can be null?
-    if (!date)
-        date = [observation dateObserved];
-    @synchronized(shortFormatter) {
-        observedOnLabel.text = [shortFormatter stringFromDate:date];
-    }
-    
+    observedOnLabel.text = observation.observedOnShortString;
+
     if ([observation.qualityGrade isEqualToString:@"research"]) {
         observationAttrLabel.text = NSLocalizedString(@"RESEARCH", nil);
         observationAttrLabel.textColor = [UIColor colorForResearchGradeNotice];
