@@ -62,7 +62,7 @@
 	<key>FacebookDisplayName</key>
 	<string>iNaturalist</string>
 	<key>FirebaseDataCollectionDefaultEnabled</key>
-	<false/>
+	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>

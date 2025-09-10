@@ -348,7 +348,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 8f581fca6478a50705d2bd2abd66d306e0f5736e
   FirebaseRemoteConfigInterop: 6c349a466490aeace3ce9c091c86be1730711634
   FirebaseSessions: 2651b464e241c93fd44112f995d5ab663c970487
-  FontAwesomeKit: 3614979b3dbb0ec3f7fac1bd760b91f66c31db67
+  FontAwesomeKit: 1b033e5bf1d592dc78546f1255147ba9be721ad7
   Gallery: b7fc1aeb68a39ad6d2c423574750196bf9b25e5c
   GeoJSONSerialization: 55a3d24fe9af26508e3af76873114b39b13ba479
   GoogleAppMeasurement: f3abf08495ef2cba7829f15318c373b8d9226491
@@ -366,7 +366,7 @@ SPEC CHECKSUMS:
   Mantle: f03b2b606c3f0cabd80214ad8a2fed6b464a7359
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
-  MHVideoPhotoGallery: aa36cdd9b75c6d5a19b48005cddb9b730c2e27e8
+  MHVideoPhotoGallery: 7ae268e00c56ba3e7e7258de08734aa6d16d6cda
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   NSString_stripHtml: ba10acfb1c0f7f687055f8e4300a8a78e142f1ea
   NXOAuth2Client: e0d95ee945b6765c58d1adb6fe930e4119c8feef
