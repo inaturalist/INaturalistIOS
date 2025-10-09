@@ -37,8 +37,8 @@ target :iNaturalist do
   pod 'Realm', '~>10'
   pod 'ARSafariActivity'
   pod 'M13ProgressSuite', :git => 'https://github.com/rogerioth/M13ProgressSuite.git'
-  pod 'Down', :git => 'https://github.com/ocshing/Down-gfm'
   pod 'MHVideoPhotoGallery', :git => 'https://github.com/inaturalist/MHVideoPhotoGallery', :commit => '0a343f12b60c8719a280db73b1e2b6d25fef164a'
+  pod 'Down', :git => 'https://github.com/ocshing/Down-gfm'
   pod 'SimpleKeychain', '0.12.5'
 
   target 'iNaturalistTests' do
