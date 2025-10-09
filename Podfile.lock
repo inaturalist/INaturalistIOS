@@ -211,19 +211,19 @@ DEPENDENCIES:
   - Down (from `https://github.com/ocshing/Down-gfm`)
   - Firebase/AnalyticsWithoutAdIdSupport
   - FirebaseCrashlytics
-  - FontAwesomeKit (from `https://github.com/alexshepard/FontAwesomeKit`, commit `74fe81b8a0a855e6d9cf62f29f02b47237fab25c`)
+  - FontAwesomeKit (from `https://github.com/inaturalist/FontAwesomeKit`, commit `74fe81b8a0a855e6d9cf62f29f02b47237fab25c`)
   - Gallery
   - GeoJSONSerialization (= 0.0.4)
   - GoogleSignIn (= 6.2.4)
   - HexColors (= 2.3.0)
-  - ICViewPager (from `https://github.com/alexshepard/ICViewPager.git`, commit `4c45423b6a36fb38753af86a1050b6a3a1d548b8`)
+  - ICViewPager (from `https://github.com/inaturalist/ICViewPager.git`, commit `4c45423b6a36fb38753af86a1050b6a3a1d548b8`)
   - JDFTooltips (= 1.0)
   - JDStatusBarNotification (= 1.5.2)
   - JWT (= 2.2.0)
   - M13ProgressSuite (from `https://github.com/rogerioth/M13ProgressSuite.git`)
   - Mantle (= 1.5.8)
   - MBProgressHUD (= 0.9.1)
-  - MHVideoPhotoGallery (from `https://github.com/alexshepard/MHVideoPhotoGallery`, commit `0a343f12b60c8719a280db73b1e2b6d25fef164a`)
+  - MHVideoPhotoGallery (from `https://github.com/inaturalist/MHVideoPhotoGallery`, commit `0a343f12b60c8719a280db73b1e2b6d25fef164a`)
   - NSString_stripHtml (= 0.1.0)
   - NXOAuth2Client (from `https://github.com/inaturalist/OAuth2Client`, branch `iNat`)
   - OCMock
@@ -296,15 +296,15 @@ EXTERNAL SOURCES:
     :git: https://github.com/ocshing/Down-gfm
   FontAwesomeKit:
     :commit: 74fe81b8a0a855e6d9cf62f29f02b47237fab25c
-    :git: https://github.com/alexshepard/FontAwesomeKit
+    :git: https://github.com/inaturalist/FontAwesomeKit
   ICViewPager:
     :commit: 4c45423b6a36fb38753af86a1050b6a3a1d548b8
-    :git: https://github.com/alexshepard/ICViewPager.git
+    :git: https://github.com/inaturalist/ICViewPager.git
   M13ProgressSuite:
     :git: https://github.com/rogerioth/M13ProgressSuite.git
   MHVideoPhotoGallery:
     :commit: 0a343f12b60c8719a280db73b1e2b6d25fef164a
-    :git: https://github.com/alexshepard/MHVideoPhotoGallery
+    :git: https://github.com/inaturalist/MHVideoPhotoGallery
   NXOAuth2Client:
     :branch: iNat
     :git: https://github.com/inaturalist/OAuth2Client
@@ -315,16 +315,16 @@ CHECKOUT OPTIONS:
     :git: https://github.com/ocshing/Down-gfm
   FontAwesomeKit:
     :commit: 74fe81b8a0a855e6d9cf62f29f02b47237fab25c
-    :git: https://github.com/alexshepard/FontAwesomeKit
+    :git: https://github.com/inaturalist/FontAwesomeKit
   ICViewPager:
     :commit: 4c45423b6a36fb38753af86a1050b6a3a1d548b8
-    :git: https://github.com/alexshepard/ICViewPager.git
+    :git: https://github.com/inaturalist/ICViewPager.git
   M13ProgressSuite:
     :commit: 203e52a4975296884cc813c7321cdc79aaae514b
     :git: https://github.com/rogerioth/M13ProgressSuite.git
   MHVideoPhotoGallery:
     :commit: 0a343f12b60c8719a280db73b1e2b6d25fef164a
-    :git: https://github.com/alexshepard/MHVideoPhotoGallery
+    :git: https://github.com/inaturalist/MHVideoPhotoGallery
   NXOAuth2Client:
     :commit: d3f5c1cf82be0a75b06f0db7a1d5978c4402a4eb
     :git: https://github.com/inaturalist/OAuth2Client
@@ -386,6 +386,6 @@ SPEC CHECKSUMS:
   VTAcknowledgementsViewController: 575f5841fb47b7d9c852ccb406104ea68de07b21
   YLProgressBar: 531026483d30a5dc82d91a842d4e069b65f08162
 
-PODFILE CHECKSUM: 92526a56acbeb3ca5e903d5c392b9eb5e032cb32
+PODFILE CHECKSUM: b517dbefe28e7430b28d183e4e411f9262935054
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
