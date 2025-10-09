@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <AssetsLibrary/AssetsLibrary.h>
 
 enum {
     ImageStoreOriginalSize = 0,

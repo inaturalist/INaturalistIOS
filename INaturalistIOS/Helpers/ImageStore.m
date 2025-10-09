@@ -9,7 +9,6 @@
 //  Second Edition by Joe Conway and Aaron Hillegass.
 //
 
-#import <AssetsLibrary/AssetsLibrary.h>
 #import <SDWebImage/SDImageCache.h>
 #import <ImageIO/ImageIO.h>
 #import <Photos/Photos.h>
