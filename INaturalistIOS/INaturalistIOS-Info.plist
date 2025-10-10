@@ -90,6 +90,8 @@
 	<string>Export and import ${PRODUCT_NAME} photos to and from your library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Export and import ${PRODUCT_NAME} photos to and from your library.</string>
+	<key>UIDesignRequiresCompatibility</key>
+	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreenRebrand</string>
 	<key>UIMainStoryboardFile</key>
