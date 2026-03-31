@@ -58,10 +58,12 @@
                 @"Amount": @(self.mediaDurationTotal),
                 @"MediaItemsUploaded": commonParams[@"MediaItemsUploaded"],
             }];
-            [[Analytics sharedClient] event:@"ObservationUploadGauge" withProperties:@{
-                @"Amount": @(self.observationDuration),
-                @"MediaItemsUploaded": commonParams[@"MediaItemsUploaded"],
-            }];
+            if (self.observationDuration > 0) {
+                [[Analytics sharedClient] event:@"ObservationUploadGauge" withProperties:@{
+                    @"Amount": @(self.observationDuration),
+                    @"MediaItemsUploaded": commonParams[@"MediaItemsUploaded"],
+                }];
+            }
         }
 
         // TODO: update uploader delegate for EOR/realm
