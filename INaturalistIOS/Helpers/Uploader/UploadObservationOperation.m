@@ -23,6 +23,7 @@
 @property NSDate *observationRequestStartTime;
 @property NSTimeInterval mediaDurationTotal;
 @property NSTimeInterval observationDuration;
+@property NSInteger mediaItemsUploaded;
 @end
 
 @implementation UploadObservationOperation
@@ -33,6 +34,7 @@
         self.uploadedBytes = [NSMutableDictionary dictionary];
         self.mediaDurationTotal = 0;
         self.observationDuration = 0;
+        self.mediaItemsUploaded = 0;
     }
     
     return self;
@@ -45,9 +47,21 @@
         
         if (success && syncError == nil && o && self.operationStartTime) {
             NSTimeInterval totalDuration = [[NSDate date] timeIntervalSinceDate:self.operationStartTime];
-            [[Analytics sharedClient] logMetric:@"TotalUploadGauge" value:@(totalDuration)];
-            [[Analytics sharedClient] logMetric:@"MediaUploadGauge" value:@(self.mediaDurationTotal)];
-            [[Analytics sharedClient] logMetric:@"ObservationUploadGauge" value:@(self.observationDuration)];
+            NSDictionary *commonParams = @{
+                @"MediaItemsUploaded": @(self.mediaItemsUploaded),
+            };
+            [[Analytics sharedClient] event:@"TotalUploadGauge" withProperties:@{
+                @"Amount": @(totalDuration),
+                @"MediaItemsUploaded": commonParams[@"MediaItemsUploaded"],
+            }];
+            [[Analytics sharedClient] event:@"MediaUploadGauge" withProperties:@{
+                @"Amount": @(self.mediaDurationTotal),
+                @"MediaItemsUploaded": commonParams[@"MediaItemsUploaded"],
+            }];
+            [[Analytics sharedClient] event:@"ObservationUploadGauge" withProperties:@{
+                @"Amount": @(self.observationDuration),
+                @"MediaItemsUploaded": commonParams[@"MediaItemsUploaded"],
+            }];
         }
 
         // TODO: update uploader delegate for EOR/realm
@@ -93,6 +107,7 @@
     self.observationRequestStartTime = nil;
     self.mediaDurationTotal = 0;
     self.observationDuration = 0;
+    self.mediaItemsUploaded = 0;
     
     // figure out total bytes to upload
     self.totalBytesToUpload = 0;
@@ -248,6 +263,7 @@
             NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:uploadStartTime];
             [[Analytics sharedClient] logMetric:@"PhotoUploadGauge" value:@(timeInterval)];
             self.mediaDurationTotal += timeInterval;
+            self.mediaItemsUploaded += 1;
         }
 
         // if there are more children to upload, upload first child
