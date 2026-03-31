@@ -19,6 +19,10 @@
 @interface UploadObservationOperation ()
 @property NSInteger totalBytesToUpload;
 @property NSMutableDictionary *uploadedBytes;
+@property NSDate *operationStartTime;
+@property NSDate *observationRequestStartTime;
+@property NSTimeInterval mediaDurationTotal;
+@property NSTimeInterval observationDuration;
 @end
 
 @implementation UploadObservationOperation
@@ -27,6 +31,8 @@
     if (self = [super init]) {
         self.totalBytesToUpload = 0;
         self.uploadedBytes = [NSMutableDictionary dictionary];
+        self.mediaDurationTotal = 0;
+        self.observationDuration = 0;
     }
     
     return self;
@@ -36,6 +42,14 @@
     // notify the delegate about the sync status
     dispatch_async(dispatch_get_main_queue(), ^{
         ExploreObservationRealm *o = [ExploreObservationRealm objectForPrimaryKey:self.rootObjectUUID];
+        
+        if (success && syncError == nil && o && self.operationStartTime) {
+            NSTimeInterval totalDuration = [[NSDate date] timeIntervalSinceDate:self.operationStartTime];
+            [[Analytics sharedClient] logMetric:@"TotalUploadGauge" value:@(totalDuration)];
+            [[Analytics sharedClient] logMetric:@"MediaUploadGauge" value:@(self.mediaDurationTotal)];
+            [[Analytics sharedClient] logMetric:@"ObservationUploadGauge" value:@(self.observationDuration)];
+        }
+
         // TODO: update uploader delegate for EOR/realm
         if (syncError != nil) {
             [self.delegate uploadSessionFailedFor:self.rootObjectUUID error:syncError];
@@ -74,6 +88,11 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.delegate uploadSessionStarted:self.rootObjectUUID];
     });
+
+    self.operationStartTime = [NSDate date];
+    self.observationRequestStartTime = nil;
+    self.mediaDurationTotal = 0;
+    self.observationDuration = 0;
     
     // figure out total bytes to upload
     self.totalBytesToUpload = 0;
@@ -99,6 +118,9 @@
 
 - (void)syncObservation:(ExploreObservationRealm *)observation method:(NSString *)HTTPMethod {
     void (^successBlock)(NSURLSessionDataTask *, id _Nullable) = ^(NSURLSessionDataTask *task, id _Nullable responseObject) {
+        if (self.observationRequestStartTime) {
+            self.observationDuration = [[NSDate date] timeIntervalSinceDate:self.observationRequestStartTime];
+        }
         // this observation has been synced
         ExploreObservationRealm *eor = [ExploreObservationRealm objectForPrimaryKey:self.rootObjectUUID];
         RLMRealm *realm = [RLMRealm defaultRealm];
@@ -123,6 +145,9 @@
     };
     
     void (^failureBlock)(NSURLSessionDataTask *, NSError *) = ^(NSURLSessionDataTask *task, NSError * _Nonnull error) {
+        if (self.observationRequestStartTime) {
+            self.observationDuration = [[NSDate date] timeIntervalSinceDate:self.observationRequestStartTime];
+        }
         
         if ([[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey]) {
             NSHTTPURLResponse *response = [[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey];
@@ -165,6 +190,7 @@
 
         path = [path stringByAppendingFormat:@"?%@", localeQuery];
 
+        self.observationRequestStartTime = [NSDate date];
         [self.nodeSessionManager PUT:path
                           parameters:[observation uploadableRepresentation]
                              success:successBlock
@@ -178,6 +204,7 @@
             path = [path stringByAppendingString:[NSString stringWithFormat:@"&inat_site_id=%ld",
                                                   (long)self.userSiteId]];
         }
+        self.observationRequestStartTime = [NSDate date];
         [self.nodeSessionManager POST:path
                            parameters:[observation uploadableRepresentation]
                              progress:nil
@@ -220,6 +247,7 @@
             // notify analytics about file upload performance
             NSTimeInterval timeInterval = [[NSDate date] timeIntervalSinceDate:uploadStartTime];
             [[Analytics sharedClient] logMetric:@"PhotoUploadGauge" value:@(timeInterval)];
+            self.mediaDurationTotal += timeInterval;
         }
 
         // if there are more children to upload, upload first child
