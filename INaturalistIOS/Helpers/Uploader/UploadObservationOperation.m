@@ -136,7 +136,7 @@
 - (void)syncObservation:(ExploreObservationRealm *)observation method:(NSString *)HTTPMethod {
     void (^successBlock)(NSURLSessionDataTask *, id _Nullable) = ^(NSURLSessionDataTask *task, id _Nullable responseObject) {
         if (self.observationRequestStartTime) {
-            self.observationDuration += [[NSDate date] timeIntervalSinceDate:self.observationRequestStartTime];
+            self.observationDuration = [[NSDate date] timeIntervalSinceDate:self.observationRequestStartTime];
         }
         // this observation has been synced
         ExploreObservationRealm *eor = [ExploreObservationRealm objectForPrimaryKey:self.rootObjectUUID];
@@ -163,7 +163,7 @@
     
     void (^failureBlock)(NSURLSessionDataTask *, NSError *) = ^(NSURLSessionDataTask *task, NSError * _Nonnull error) {
         if (self.observationRequestStartTime) {
-            self.observationDuration += [[NSDate date] timeIntervalSinceDate:self.observationRequestStartTime];
+            self.observationDuration = [[NSDate date] timeIntervalSinceDate:self.observationRequestStartTime];
         }
         
         if ([[error userInfo] valueForKey:AFNetworkingOperationFailingURLResponseErrorKey]) {
