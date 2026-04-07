@@ -12,7 +12,7 @@ You'll also need to copy `config.h.example` to `INaturalistIOS/config.h` and fil
 
 You'll also need to copy `GoogleService-Info.plist.example` to `INaturalistIOS/GoogleService-Info.plist`. This version of GoogleService will disable any firebase related features we use - crash reporting, debug logging, google signin, etc. If you want any of those features, you should signup with Google Firebase and once you have your own `GoogleService-Info.plist` file, copy it here. Some instructions are here: https://firebase.google.com/docs/ios/setup?authuser=1#register-app
 
-That should get you set up for local development with the Simulator. If you want to test on actual devices you'll need to get a provisioning profile from Apple and configure the project to use it: https://developer.apple.com/ios/manage/overview/index.action.
+That should get you set up for local development with the Simulator. If you want to test on actual devices you'll need to get a provisioning profile from Apple and configure the project to use it: [https://developer.apple.com/ios/manage/overview/index.action](https://developer.apple.com/help/account/manage-profiles/create-a-development-provisioning-profile/).
 
 If you run into errors with cocoapods, xcode 14.3, and rsync, follow the instructions [here](https://github.com/CocoaPods/CocoaPods/issues/11808#issuecomment-1509261607)
 
