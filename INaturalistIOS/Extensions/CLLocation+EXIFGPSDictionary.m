@@ -16,7 +16,7 @@
     gps[(NSString *)kCGImagePropertyGPSLatitude] = @(fabs(self.coordinate.latitude));
     gps[(NSString *)kCGImagePropertyGPSLatitudeRef] = self.coordinate.latitude > 0 ? @"N" : @"S";
     gps[(NSString *)kCGImagePropertyGPSLongitude] = @(fabs(self.coordinate.longitude));
-    gps[(NSString *)kCGImagePropertyGPSLongitudeRef] = self.coordinate.latitude > 0 ? @"W" : @"E";
+    gps[(NSString *)kCGImagePropertyGPSLongitudeRef] = self.coordinate.longitude > 0 ? @"E" : @"W";
     if (!isnan(self.altitude)) {
         
         gps[(NSString *)kCGImagePropertyGPSAltitude] = @(fabs(self.altitude));
